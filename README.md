@@ -83,23 +83,13 @@ bx cr images
 > **Note:** For the following steps, you can get the code and build the package by running the get_code.sh script present in scripts directory.
 
 * `git clone` the following projects:
-   * [Web-App](https://github.com/WASdev/sample.microservicebuilder.web-app)
+   * [odm-ondocker](https://github.com/lgrateau/odm-ondocker)
    ```bash
-      git clone https://github.com/WASdev/sample.microservicebuilder.web-app.git
+      git clone https://github.com/lgrateau/odm-ondocker
   ```
-   * [Schedule](https://github.com/WASdev/sample.microservicebuilder.schedule)
-   ```bash
-      git clone https://github.com/WASdev/sample.microservicebuilder.schedule.git
+
   ```
-   * [Speaker](https://github.com/WASdev/sample.microservicebuilder.speaker)
-   ```bash
-      git clone https://github.com/WASdev/sample.microservicebuilder.speaker.git
-  ```
-   * [Session](https://github.com/WASdev/sample.microservicebuilder.session)
-   ```bash
-      git clone https://github.com/WASdev/sample.microservicebuilder.session.git
-  ```
-   * [Vote](https://github.com/WASdev/sample.microservicebuilder.vote)
+   * [Vote - for log](https://github.com/WASdev/sample.microservicebuilder.vote)
    ```bash
       git clone https://github.com/WASdev/sample.microservicebuilder.vote.git
       cd sample.microservicebuilder.vote/
@@ -119,14 +109,6 @@ Build the web-app microservice container
 cd sample.microservicebuilder.web-app
 docker build -t registry.ng.bluemix.net/<namespace>/microservice-webapp .
 docker push registry.ng.bluemix.net/<namespace>/microservice-webapp
-```
-
-Build the vote microservice container
-
-```bash
-cd sample.microservicebuilder.vote
-docker build -t registry.ng.bluemix.net/<namespace>/microservice-vote .
-docker push registry.ng.bluemix.net/<namespace>/microservice-vote
 ```
 
 
