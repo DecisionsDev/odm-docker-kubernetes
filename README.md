@@ -8,18 +8,20 @@ IBM Operational Decision Manager on Kubernetes
 
 This code demonstrates the deployment of an IBM Operational Decision Manager clustered topology using WAS Liberty on a Bluemix Kubernetes Cluster.
 
-[MicroProfile](http://microprofile.io) is a baseline platform definition that optimizes Enterprise Java for a microservices architecture and delivers application portability across multiple MicroProfile runtimes. [Microservice Builder](https://developer.ibm.com/microservice-builder/) builds on top of MicroProfile.io, and provides extension for containerized apps created using the tool to be deployed to Kubernetes.
+[IBM ODM](https://www.ibm.com/support/knowledgecenter/SSQP76_8.9.0/welcome/kc_welcome_odmV.html) is a decisioning platform to aotomate your business policies. Business rules are used at the heart of the platform to implement decision logic on a business vocabulary and run it as web decision services.
 
-The Microservice Builder [sample application](https://github.com/WASdev/sample.microservicebuilder.docs) is a web application for managing a conference and is based on a number of discrete microservices. The front end is written in Angular; the backing microservices are in Java. All run on WebSphere Liberty, in Docker containers managed by Kubernetes.
+We leverage the ODM Docker material put available on this repository [odm-ondocker](https://github.com/lgrateau/odm-ondocker). It includes Docker files and Docker compose descriptors. In this tutorial we will only use the Docker files to build the ODM runtime images that we will instantiate in the Kubernetes cluster.
 
 ![Flow](images/microprofile_kube_code.png)
 
 ## Included Components
+- [IBM ODM](https://www.ibm.com/support/knowledgecenter/SSQP76_8.9.0/welcome/kc_welcome_odmV.html)
 - [Kubernetes Cluster](https://console.ng.bluemix.net/docs/containers/cs_ov.html#cs_ov)
-- [MicroProfile](http://microprofile.io)
-- [Microservice Builder](https://developer.ibm.com/microservice-builder/)
-- [Bluemix DevOps Toolchain Service](https://console.ng.bluemix.net/catalog/services/continuous-delivery)
 - [Bluemix Container Service](https://console.ng.bluemix.net/catalog/?taxonomyNavigation=apps&category=containers)
+- [Bluemix DevOps Toolchain Service](https://console.ng.bluemix.net/catalog/services/continuous-delivery)
+
+## Testing
+This tutorial has been tested on MacOS.
 
 ## Prerequisite
 
@@ -127,22 +129,6 @@ docker build -t registry.ng.bluemix.net/<namespace>/microservice-vote .
 docker push registry.ng.bluemix.net/<namespace>/microservice-vote
 ```
 
-Build the schedule microservice container
-
-```bash
-cd sample.microservicebuilder.schedule
-docker build -t registry.ng.bluemix.net/<namespace>/microservice-schedule .
-docker push registry.ng.bluemix.net/<namespace>/microservice-schedule
-```
-
-Build the speaker microservice container
-
-```bash
-cd sample.microservicebuilder.speaker
-docker build -t registry.ng.bluemix.net/<namespace>/microservice-speaker .
-docker push registry.ng.bluemix.net/<namespace>/microservice-speaker
-```
-
 
 # 4. Create Services and Deployments
 
@@ -184,14 +170,6 @@ Web application home page
 When you click on speaker name
 
 ![Speaker Info](images/ui2.png)
-
-When you click on schedules link
-
-![Schedule Info](images/ui3.png)
-
-When you click on vote link
-
-![Vote Info](images/ui4.png)
 
 ## Troubleshooting
 
