@@ -103,14 +103,50 @@ bx cr images
 
 Use the following commands to build the microservers containers.
 
-Build the web-app microservice container
+Build the decision server container
 
 ```bash
+docker tag dockercompose_decisionserverruntime:latest registry.ng.bluemix.net/<namespace>/dockercompose_decisionserverruntime:latest 
+docker push registry.ng.bluemix.net/<namespace>/dockercompose_decisionserverruntime:latest  
+```
+
+Build the Derby decision db server container
+
+```bash
+dbserver
+docker tag dockercompose_dbserver:latest registry.ng.bluemix.net/<namespace>/dockercompose_dbserver:latest  
+docker push registry.ng.bluemix.net/<namespace>/dockercompose_dbserver:latest
+```
+
+Build the decision center container
+
+```bash
+dockercompose_decisioncenter
+docker tag dockercompose_decisioncenter:latest registry.ng.bluemix.net/<namespace>/dockercompose_decisioncenter:latest  
+docker push registry.ng.bluemix.net/<namespace>/dockercompose_decisioncenter:latest
+```
+
+Build the decision server console runtime container
+
+```bash
+dockercompose_decisionserverconsole
+docker tag dockercompose_decisionserverconsole:latest registry.ng.bluemix.net/<namespace>/dockercompose_decisionserverconsole:latest  
+docker push registry.ng.bluemix.net/<namespace>/dockercompose_decisionserverconsole:latest
+```
+
+Build the decision runner container
+
+```bash
+dockercompose_decisionrunner
+docker tag dockercompose_decisionrunner:latest registry.ng.bluemix.net/<namespace>/dockercompose_decisionrunner:latest
+docker push registry.ng.bluemix.net/<namespace>/dockercompose_decisionrunner:latest
+```
+
+```bash ToDo
 cd sample.microservicebuilder.web-app
 docker build -t registry.ng.bluemix.net/<namespace>/microservice-webapp .
 docker push registry.ng.bluemix.net/<namespace>/microservice-webapp
 ```
-
 
 # 4. Create Services and Deployments
 
@@ -125,7 +161,25 @@ NAME             STATUS    AGE
 ```
 Set the value of `SOURCE_IP` env variable present in deploy-nginx.yaml file present in manifests folder with the public ip of the node.
 
-Deploy the microservice from the manifests directory with the command `kubectl create -f <filename>`.
+Deploy the microservice from the manifests directory with the command `kubectl create -f <filename>` or run the following commands:
+
+```bash
+kubectl run dbserver --image=registry.ng.bluemix.net/odmlab/dockercompose_dbserver:latest
+kubectl expose deployment/dbserver --type=NodePort --port=1527 --name=dbserver
+
+kubectl run decisionserverconsole --image=registry.ng.bluemix.net/odmlab/dockercompose_decisionserverconsole:latest
+kubectl expose deployments decisionserverconsole --type=NodePort --port=9080 --name=decisionserverconsole
+or kubectl expose deployment/decisionserverconsole --type=NodePort --port=9080,1883 --name=decisionserverconsole
+
+kubectl run decisionserverruntime --image=registry.ng.bluemix.net/odmlab/dockercompose_decisionserverruntime:latest 
+kubectl expose deployment/decisionserverruntime --type=NodePort --port=9080 --name=decisionserverruntime
+
+kubectl run decisioncenter --image=registry.ng.bluemix.net/odmlab/dockercompose_decisioncenter:latest
+kubectl expose deployments decisioncenter --type=NodePort --port=9060 --name=decisioncenter
+
+kubectl run decisionrunner --image=registry.ng.bluemix.net/odmlab/dockercompose_decisionrunner:latest
+kubectl expose deployments decisionrunner --type=NodePort --port=9070 --name=decisionrunner
+```
 
 After you have created all the services and deployments, wait for 10 to 15 minutes. You can check the status of your deployment on Kubernetes UI. Run 'kubectl proxy' and go to URL 'http://127.0.0.1:8001/ui' to check when the application containers are ready.
 
