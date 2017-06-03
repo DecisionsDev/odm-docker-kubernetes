@@ -1,0 +1,161 @@
+apiVersion: extensions/v1beta1 # for versions before 1.6.0 use extensions/v1beta1
+kind: Deployment
+metadata:
+  name: dbserver
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: dbserver
+    spec:
+      containers:
+      - name: dbserver
+        image: registry.ng.bluemix.net/odmlab/dockercompose_dbserver
+        ports:
+        - containerPort: 1527
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dbserver
+  labels:
+    run: dbserver
+spec:
+  selector:
+    run: dbserver
+  type: NodePort
+  ports:
+   - protocol: TCP
+     port: 1527
+---
+apiVersion: extensions/v1beta1 # for versions before 1.6.0 use extensions/v1beta1
+kind: Deployment
+metadata:
+  name: decisionserverconsole
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: decisionserverconsole
+    spec:
+      containers:
+      - name: decisionserverconsole
+        image: registry.ng.bluemix.net/odmlab/dockercompose_decisionserverconsole
+        ports:
+        - containerPort: 9080
+        - containerPort: 1883
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: decisionserverconsole
+  labels:
+    name: decisionserverconsole
+spec:
+  selector:
+    run: decisionserverconsole
+  type: NodePort
+  ports:
+   - protocol: TCP
+     port: 9080
+---
+apiVersion: extensions/v1beta1 # for versions before 1.6.0 use extensions/v1beta1
+kind: Deployment
+metadata:
+  name: decisionserverruntime
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        run: decisionserverruntime
+    spec:
+      containers:
+      - name: decisionserverruntime
+        image: registry.ng.bluemix.net/odmlab/dockercompose_decisionserverruntime
+        ports:
+        - containerPort: 9080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: decisionserverruntime
+  labels:
+    run: decisionserverruntime
+spec:
+  selector:
+    run: decisionserverruntime
+  type: NodePort
+  ports:
+   - protocol: TCP
+     port: 9080
+---
+apiVersion: extensions/v1beta1 # for versions before 1.6.0 use extensions/v1beta1
+kind: Deployment
+metadata:
+  name: decisioncenter
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        run: decisioncenter
+    spec:
+      containers:
+      - name: decisioncenter
+        image: registry.ng.bluemix.net/odmlab/dockercompose_decisioncenter
+        env:
+        - name: SAMPLE
+        ports:
+        - containerPort: 9060
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: decisioncenter
+  labels:
+    run: decisioncenter
+spec:
+  selector:
+    run: decisioncenter
+  type: NodePort
+  ports:
+   - protocol: TCP
+     port: 9060
+---
+apiVersion: extensions/v1beta1 # for versions before 1.6.0 use extensions/v1beta1
+kind: Deployment
+metadata:
+  name: decisionrunner
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        run: decisionrunner
+    spec:
+      containers:
+      - name: decisionrunner
+        image: registry.ng.bluemix.net/odmlab/dockercompose_decisionrunner
+        ports:
+        - containerPort: 9070
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: decisionrunner
+  labels:
+    run: decisionrunner
+spec:
+  selector:
+    run: decisionrunner
+  type: NodePort
+  ports:
+   - protocol: TCP
+     port: 9070
+
+
+
+
