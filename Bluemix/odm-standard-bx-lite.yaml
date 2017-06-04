@@ -1,0 +1,157 @@
+apiVersion: extensions/v1beta1 # for versions before 1.6.0 use extensions/v1beta1
+kind: Deployment
+metadata:
+  name: odm-dbserver
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: odm-dbserver
+    spec:
+      containers:
+      - name: odm-dbserver
+        image: registry.ng.bluemix.net/odmlab/ibm-odm-dbserver:8.9.0
+        ports:
+        - containerPort: 1527
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: odm-dbserver
+  labels:
+    run: odm-dbserver
+spec:
+  selector:
+    run: odm-dbserver
+  type: NodePort
+  ports:
+   - protocol: TCP
+     port: 1527
+---
+apiVersion: extensions/v1beta1 # for versions before 1.6.0 use extensions/v1beta1
+kind: Deployment
+metadata:
+  name: odm-decisionserverconsole
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: odm-decisionserverconsole
+    spec:
+      containers:
+      - name: odm-decisionserverconsole
+        image: registry.ng.bluemix.net/odmlab/ibm-odm-decisionserverconsole:8.9.0
+        ports:
+        - containerPort: 9080
+        - containerPort: 1883
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: odm-decisionserverconsole
+  labels:
+    name: odm-decisionserverconsole
+spec:
+  selector:
+    run: odm-decisionserverconsole
+  type: NodePort
+  ports:
+   - protocol: TCP
+     port: 9080
+---
+apiVersion: extensions/v1beta1 # for versions before 1.6.0 use extensions/v1beta1
+kind: Deployment
+metadata:
+  name: odm-decisionserverruntime
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        run: odm-decisionserverruntime
+    spec:
+      containers:
+      - name: odm-decisionserverruntime
+        image: registry.ng.bluemix.net/odmlab/ibm-odm-decisionserverruntime:8.9.0
+        ports:
+        - containerPort: 9080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: odm-decisionserverruntime
+  labels:
+    run: odm-decisionserverruntime
+spec:
+  selector:
+    run: odm-decisionserverruntime
+  type: NodePort
+  ports:
+   - protocol: TCP
+     port: 9080
+---
+apiVersion: extensions/v1beta1 # for versions before 1.6.0 use extensions/v1beta1
+kind: Deployment
+metadata:
+  name: odm-decisioncenter
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        run: odm-decisioncenter
+    spec:
+      containers:
+      - name: odm-decisioncenter
+        image: registry.ng.bluemix.net/odmlab/ibm-odm-decisioncenter:8.9.0
+        env:
+        - name: SAMPLE
+        ports:
+        - containerPort: 9060
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: odm-decisioncenter
+  labels:
+    run: odm-decisioncenter
+spec:
+  selector:
+    run: odm-decisioncenter
+  type: NodePort
+  ports:
+   - protocol: TCP
+     port: 9060
+---
+apiVersion: extensions/v1beta1 # for versions before 1.6.0 use extensions/v1beta1
+kind: Deployment
+metadata:
+  name: odm-decisionrunner
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        run: odm-decisionrunner
+    spec:
+      containers:
+      - name: odm-decisionrunner
+        image: registry.ng.bluemix.net/odmlab/ibm-odm-decisionrunner:8.9.0
+        ports:
+        - containerPort: 9070
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: odm-decisionrunner
+  labels:
+    run: odm-decisionrunner
+spec:
+  selector:
+    run: odm-decisionrunner
+  type: NodePort
+  ports:
+   - protocol: TCP
+     port: 9070

@@ -1,0 +1,103 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: odm-standard-label
+  name: odm-standard
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: dbserver
+        tier: IBM-ODM
+    spec:
+      containers:
+      - env:
+        image: registry.ng.bluemix.net/odmlab/dockercompose_dbserver
+        name: dbserver
+        imagePullPolicy : Always
+        ports:
+        - containerPort: 3001
+          protocol: TCP
+      - env:
+        image: registry.ng.bluemix.net/odmlab/dockercompose_decisionserverconsole
+        name: decisionserverconsole
+        imagePullPolicy : Always
+        ports:
+        - containerPort: 9080
+          protocol: TCP
+      - env:
+        image: registry.ng.bluemix.net/odmlab/dockercompose_decisionserverruntime
+        name: decisionserverruntime
+        imagePullPolicy : Always
+        ports:
+        - containerPort: 9080
+          protocol: TCP
+      - env:
+        image: registry.ng.bluemix.net/odmlab/dockercompose_decisioncenter
+        name: decisioncenter
+        imagePullPolicy : Always
+        ports:
+        - containerPort: 9080
+          protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: decisionserverexecution
+  labels:
+    run: decisionserverexecution
+spec:
+  selector:
+    run: decisionserverconsole
+  type: NodePort
+  ports:
+   - protocol: TCP
+     port: 9080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: decisionserverconsole
+  labels:
+    run: decisionserverconsole
+spec:
+  selector:
+    run: decisionserverconsole
+  type: NodePort
+  ports:
+   - protocol: TCP
+     port: 9080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: decisioncenter
+  labels:
+    run: decisioncenter
+spec:
+  selector:
+    run: decisioncenter
+  type: NodePort
+  ports:
+   - protocol: TCP
+     port: 9060
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: decisionrunner
+  labels:
+    run: decisionrunner
+spec:
+  selector:
+    run: decisionrunner
+  type: NodePort
+  ports:
+   - protocol: TCP
+     port: 9070
+
+

@@ -1,0 +1,33 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: odm-standard-label
+  name: odm-standard
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: dbserver
+        tier: IBM-ODM
+    spec:
+      containers:
+      - env:
+        image: registry.ng.bluemix.net/odmlab/dockercompose_dbserver
+        name: dbserver
+        imagePullPolicy : Always
+        ports:
+        - containerPort: 3001
+          protocol: TCP
+      - env:
+        image: registry.ng.bluemix.net/odmlab/dockercompose_decisionserverconsole
+        name: decisionserverconsole
+        imagePullPolicy : Always
+        ports:
+        - containerPort: 9080
+          protocol: TCP
+
+

@@ -1,0 +1,47 @@
+apiVersion : extensions/v1beta1
+kind : Deployment
+metadata :
+  name : dbserver
+  namespace : default
+  labels :
+    run : dbserver
+  annotations :
+    deployment.kubernetes.io/revision : 1
+spec :
+  replicas : 1
+  strategy :
+    type : RollingUpdate
+  selector :
+    matchLabels :
+      run : dbserver
+    template :
+    metadata :
+      creationTimestamp : null
+    labels :
+      run : dbserver
+    spec :
+  containers :
+  - name : dbserver
+  image : registry.ng.bluemix.net/odmlab/dockercompose_dbserver
+  resources :
+  terminationMessagePath : /dev/termination-log
+  imagePullPolicy : Always
+  restartPolicy : Always
+  terminationGracePeriodSeconds  : 30
+  dnsPolicy : ClusterFirst
+  securityContext :
+  maxUnavailable : 1
+  maxSurge : 1
+status
+  observedGeneration  : 1
+  replicas  : 1
+  updatedReplicas  : 1
+  availableReplicas : 1
+  conditions
+    0
+type : Available
+status : True
+  lastUpdateTime : 2017-05-24T15:26:31Z
+  lastTransitionTime : 2017-05-24T15:26:31Z
+  reason : MinimumReplicasAvailable
+  message : Deployment has minimum availability.
