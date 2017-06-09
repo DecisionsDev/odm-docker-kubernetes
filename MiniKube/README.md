@@ -174,19 +174,48 @@ service "odm-decisionrunner" created
 After few seconds/minutes the following commands to get the ODM Standard containers running in Kubernetes.
 
 ```bash
-$ kubectl get pods
-odm-dbserver-3304526855-2lw7t                1/1       Running   0          1m
-odm-decisioncenter-360265097-8wg5v           1/1       Running   0          1m
-odm-decisioncenter-360265097-t3v74           1/1       Running   0          1m
-odm-decisionrunner-2338004611-28tsj          1/1       Running   0          1m
-odm-decisionrunner-2338004611-dtr51          1/1       Running   0          1m
-odm-decisionserverconsole-1270041048-fcx7l   1/1       Running   0          1m
-odm-decisionserverruntime-3164743559-1kwjf   1/1       Running   0          1m
-odm-decisionserverruntime-3164743559-4fvcw   1/1       Running   0          1m```
+$ kubectl get services
+NAME                        CLUSTER-IP   EXTERNAL-IP   PORT(S)          AGE
+dbserver                    10.0.0.182   <nodes>       1527:31096/TCP   20m
+kubernetes                  10.0.0.1     <none>        443/TCP          2h
+odm-decisioncenter          10.0.0.137   <nodes>       9060:32425/TCP   20m
+odm-decisionrunner          10.0.0.192   <nodes>       9070:32063/TCP   20m
+odm-decisionserverconsole   10.0.0.220   <nodes>       9080:32519/TCP   20m
+odm-decisionserverruntime   10.0.0.112   <nodes>       9080:31204/TCP   20m
 ```
 
 
-Now you can use the link TODO to access your application on browser.
+Now you can use the link to access your application on your browser.
+
+* For Decision Server Runtime:
+```bash
+minikube service odm-decisionserverruntime  --url
+http://192.168.99.100:31204/ 
+```
+Then, open your browser to this URL : http://192.168.99.100:31204/**_DecisionService_**
+
+* For Decision Server Console:
+```bash
+minikube service odm-decisionserverconsole  --url
+http://192.168.99.100:32519 
+```
+Then, open your browser to this URL Ex: http://192.168.99.100:31204/*****res*****
+
+* For Decision Runner:
+```bash
+minikube service odm-decisionrunner  --url
+http://192.168.99.100:32519 
+```
+Then, open your browser to this URL Ex: http://192.168.99.100:31204/*****testing*****
+
+* For Decision Center:
+```bash
+minikube service odm-decisioncenter  --url
+http://192.168.99.100:32519 
+```
+Then, open your browser to this URL Ex:
+   * Decision Center Console : http://192.168.99.100:31204/**_decisioncenter/t/library_**
+   * TeamServer : http://192.168.99.100:31204/*****teamserver*****
 
 If you want to delete the ODM standard images use this command:
 ```bash
