@@ -17,7 +17,7 @@ We leverage the ODM Docker material put available on this repository [odm-ondock
 ## Testing
 This tutorial has been tested on MacOS.
 
-## Prerequisite
+## Prerequisites
 
 * Install a Git client to obtain the sample code.
 * Install a [Docker](https://docs.docker.com/engine/installation/) engine.
@@ -75,7 +75,7 @@ client_address=192.168.99.1
 command=GET
 real path=/
 ```
-# 2. Interacting With your Cluster
+# 2. Interacting With your cluster
 
 ### Kubectl
 
