@@ -24,7 +24,7 @@ metadata:
 spec:
   selector:
     run: dbserver
-  type: NodePort
+  type: LoadBalancer
   ports:
    - protocol: TCP
      port: 1527
@@ -56,7 +56,7 @@ metadata:
 spec:
   selector:
     run: odm-decisionserverconsole
-  type: NodePort
+  type: LoadBalancer
   ports:
    - protocol: TCP
      port: 9080
@@ -120,7 +120,7 @@ metadata:
 spec:
   selector:
     run: odm-decisioncenter
-  type: NodePort
+  type: LoadBalancer
   ports:
    - protocol: TCP
      port: 9060
@@ -151,7 +151,7 @@ metadata:
 spec:
   selector:
     run: odm-decisionrunner
-  type: NodePort
+  type: LoadBalancer
   ports:
    - protocol: TCP
      port: 9070
