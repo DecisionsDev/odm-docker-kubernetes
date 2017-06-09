@@ -29,7 +29,7 @@ This tutorial has been tested on MacOS.
 1. [Install MiniKube](#1-install-minikube)
 2. [Interacting With your Cluster](#2-interacting-with-your-cluster)
 3. [Setup your environment](#3-setup-your-environment)
-4. [Get the ODM Docker material](#4-Get-the-ODM-Docker-material)
+4. [Get the ODM Docker material](#4-get-the-odm-docker-material)
 5. [Create Services and Deployments](#5-create-services-and-deployments)
 # 1. Install MiniKube
 
@@ -76,23 +76,28 @@ command=GET
 real path=/
 ```
 # 2. Interacting With your Cluster
-Kubectl
 
-The minikube start command creates a "kubectl context" called "minikube". This context contains the configuration to communicate with your minikube cluster.
+### Kubectl
+
+The `minikube start` command creates a "[kubectl context](https://kubernetes.io/docs/user-guide/kubectl/v1.6/#-em-set-context-em-)" called "minikube".
+This context contains the configuration to communicate with your minikube cluster.
 
 Minikube sets this context to default automatically, but if you need to switch back to it in the future, run:
 
-kubectl config use-context minikube,
+`kubectl config use-context minikube`,
 
-or pass the context on each command like this: kubectl get pods --context=minikube.
-Dashboard
+or pass the context on each command like this: `kubectl get pods --context=minikube`.
 
-To access the Kubernetes Dashboard, run this command in a shell after starting minikube to get the address:
+### Dashboard
 
+To access the [Kubernetes Dashboard](http://kubernetes.io/docs/user-guide/ui/), run this command in a shell after starting minikube to get the address:
+```shell
 minikube dashboard
+```
 
 
 # 3. Setup your environment 
+
 When using a single VM of kubernetes it's really handy to reuse the Docker daemon inside the VM; as this means you don't have to build on your host machine and push the image into a docker registry - you can just build inside the same docker daemon as minikube which speeds up local experiments.
 
 To be able to work with the docker daemon on your mac/linux host use the [docker-env command](./docs/minikube_docker-env.md) in your shell:
@@ -181,6 +186,7 @@ odm-decisionserverruntime-3164743559-4fvcw   1/1       Running   0          1m``
 ```
 
 
+Now you can use the link TODO to access your application on browser.
 
 If you want to delete the ODM standard images use this command:
 ```bash
@@ -198,18 +204,6 @@ service "odm-decisionrunner" deleted
 ```
 
 
-After few minutes the following commands to get your public IP and NodePort number.
-
-```bash
-$ kubectl get nodes
-NAME             STATUS    AGE
-169.47.241.106   Ready     23h
-$ kubectl get svc nginx-svc
-NAME        CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE
-nginx-svc   10.10.10.167   <nodes>       80:30056/TCP   11s
-```
-
-Now you can use the link **http://[IP]:30056** to access your application on browser.
 
 # License
 [Apache 2.0](LICENSE)
