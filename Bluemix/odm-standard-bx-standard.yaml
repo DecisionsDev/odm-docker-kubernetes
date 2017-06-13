@@ -12,6 +12,8 @@ spec:
       containers:
       - name: dbserver
         image: registry.ng.bluemix.net/odmlab/ibm-odm-dbserver:8.9.0
+        env:
+        - name: SAMPLE
         ports:
         - containerPort: 1527
 ---
@@ -106,8 +108,6 @@ spec:
       containers:
       - name: odm-decisioncenter
         image: registry.ng.bluemix.net/odmlab/ibm-odm-decisioncenter:8.9.0
-        env:
-        - name: SAMPLE
         ports:
         - containerPort: 9060
 ---
