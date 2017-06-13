@@ -15,11 +15,6 @@ spec :
     matchLabels :
       run : dbserver
     template :
-    metadata :
-      creationTimestamp : null
-    labels :
-      run : dbserver
-    spec :
   containers :
   - name : dbserver
   image : registry.ng.bluemix.net/odmlab/dockercompose_dbserver
@@ -41,7 +36,5 @@ status
     0
 type : Available
 status : True
-  lastUpdateTime : 2017-05-24T15:26:31Z
-  lastTransitionTime : 2017-05-24T15:26:31Z
   reason : MinimumReplicasAvailable
   message : Deployment has minimum availability.
