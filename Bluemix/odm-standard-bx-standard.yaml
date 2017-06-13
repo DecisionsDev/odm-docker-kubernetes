@@ -11,7 +11,7 @@ spec:
     spec:
       containers:
       - name: dbserver
-        image: registry.ng.bluemix.net/odmlab/ibm-odm-dbserver:8.9.0
+        image: registry.ng.bluemix.net/odmlab/dbserver:8.9.0
         ports:
         - containerPort: 1527
 ---
