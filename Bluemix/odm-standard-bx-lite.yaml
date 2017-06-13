@@ -42,7 +42,7 @@ spec:
     spec:
       containers:
       - name: odm-decisionserverconsole
-        image: registry.ng.bluemix.net/odmlab/ibm-odm-decisionserverconsole:8.9.0
+        image: registry.ng.bluemix.net/odmlab/decisionserverconsole:8.9.0
         ports:
         - containerPort: 9080
         - containerPort: 1883
@@ -74,7 +74,7 @@ spec:
     spec:
       containers:
       - name: odm-decisionserverruntime
-        image: registry.ng.bluemix.net/odmlab/ibm-odm-decisionserverruntime:8.9.0
+        image: registry.ng.bluemix.net/odmlab/decisionserverruntime:8.9.0
         ports:
         - containerPort: 9080
 ---
@@ -105,7 +105,7 @@ spec:
     spec:
       containers:
       - name: odm-decisioncenter
-        image: registry.ng.bluemix.net/odmlab/ibm-odm-decisioncenter:8.9.0
+        image: registry.ng.bluemix.net/odmlab/decisioncenter:8.9.0
         env:
         - name: SAMPLE
         ports:
@@ -138,7 +138,7 @@ spec:
     spec:
       containers:
       - name: odm-decisionrunner
-        image: registry.ng.bluemix.net/odmlab/ibm-odm-decisionrunner:8.9.0
+        image: registry.ng.bluemix.net/odmlab/decisionrunner:8.9.0
         ports:
         - containerPort: 9070
 ---
