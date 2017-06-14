@@ -1,7 +1,5 @@
-# IBM-ODM-Kubernetes
-IBM Operational Decision Manager on Bluemix Kubernetes cluster
 
-#  Deploy IBM Operational Decision Manager Standard on Kubernetes Cluster
+#  Deploy IBM Operational Decision Manager Standard on a Bluemix Kubernetes Cluster
 
 Full story is described in this article: to be defined
 
@@ -9,14 +7,6 @@ Full story is described in this article: to be defined
 
 ## Testing
 This tutorial has been tested on MacOS.
-
-Web application home page
-
-![Web-app Home Page](images/ui1.png)
-
-When you click on speaker name
-
-![Speaker Info](images/ui2.png)
 
 ## Troubleshooting
 
