@@ -1,6 +1,6 @@
 #  Deploy IBM Operational Decision Manager Standard on Kubernetes MiniKube
 
-This code demonstrates the deployment of an IBM Operational Decision Manager clustered topology on a MiniKube Kubernetes cluster.
+This tutorial explains the deployment of an IBM Operational Decision Manager clustered topology on a MiniKube Kubernetes cluster.
 
 We leverage the ODM Docker material put available on this repository [odm-ondocker](https://github.com/lgrateau/odm-ondocker). It includes Docker files and Docker compose descriptors. ODM containers are based on IBM WAS Liberty. In this tutorial we will only use the Docker files to build the ODM runtime images that we will instantiate in the Kubernetes cluster.
 
