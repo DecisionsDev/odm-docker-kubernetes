@@ -11,10 +11,10 @@ This repository contains Kubernetes deployment descriptors to deploy an ODM Stan
 - [ODM Standard deployment descriptor for a Bluemix standard cluster](./odm-standard-bx-standard.yaml)
 
 ## Testing
-This tutorial has been tested on MacOS.
+This material has been tested on MacOS.
 
 ## Troubleshooting
-
+* If your ODM services cannot be reached just after the creation of the deployment, you may wait for few minutes.
 * If your microservice instance is not running properly, you may check the logs using
 	* `kubectl logs <your-pod-name>`
 * To delete a microservice
