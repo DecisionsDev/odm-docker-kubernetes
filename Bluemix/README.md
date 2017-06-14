@@ -14,7 +14,7 @@ This repository contains Kubernetes deployment descriptors to deploy an ODM Stan
 This material has been tested with the following configuration:
 - MacOS 10.12.4,
 - Kubernetes
-   - client v1.6.2
+   - client 1.6.2
    - server 1.5.6
 - Docker 17.03
 - ODM 8.9.0
