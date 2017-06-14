@@ -24,10 +24,10 @@ This tutorial has been tested on MacOS.
 ## Steps
 
 1. [Install MiniKube](#1-install-minikube)
-2. [Interacting With your Cluster](#2-interacting-with-your-cluster)
+2. [Interacting with your cluster](#2-interacting-with-your-cluster)
 3. [Setup your environment](#3-setup-your-environment)
 4. [Get the ODM Docker material](#4-get-the-odm-docker-material)
-5. [Create Services and Deployments](#5-create-services-and-deployments)
+5. [Create services and deployments](#5-create-services-and-deployments)
 # 1. Install MiniKube
 
 
