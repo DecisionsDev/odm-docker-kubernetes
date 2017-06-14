@@ -28,6 +28,7 @@ This tutorial has been tested on MacOS.
 3. [Setup your environment](#3-setup-your-environment)
 4. [Get the ODM Docker material](#4-get-the-odm-docker-material)
 5. [Create services and deployments](#5-create-services-and-deployments)
+
 # 1. Install MiniKube
 
 
@@ -72,7 +73,7 @@ client_address=192.168.99.1
 command=GET
 real path=/
 ```
-# 2. Interacting With your cluster
+# 2. Interacting with your cluster
 
 ### Kubectl
 
@@ -144,7 +145,7 @@ odmdocker/decisionrunner                               8.9.0                 f4a
 odmdocker/decisionserverconsole                        8.9.0                 d7358780fbde        59 minutes ago      463 MB
 odmdocker/dbserver                                     8.9.0                 364f06111328        About an hour ago   658 MB
 ```
-# 5. Create Services and Deployments
+# 5. Create services and deployments
 
 Get the public ip of the node
 
