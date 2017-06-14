@@ -14,6 +14,7 @@ spec:
         image: registry.ng.bluemix.net/odmlab/ibm-odm-dbserver:8.9.0
         env:
         - name: SAMPLE
+          value: "true"
         ports:
         - containerPort: 1527
 ---
@@ -99,7 +100,7 @@ kind: Deployment
 metadata:
   name: odm-decisioncenter
 spec:
-  replicas: 2
+  replicas: 1
   template:
     metadata:
       labels:
