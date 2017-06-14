@@ -11,7 +11,13 @@ This repository contains Kubernetes deployment descriptors to deploy an ODM Stan
 - [ODM Standard deployment descriptor for a Bluemix standard cluster](./odm-standard-bx-standard.yaml)
 
 ## Testing
-This material has been tested on MacOS.
+This material has been tested with the following configuration:
+- MacOS 10.12.4,
+- Kubernetes
+   - client v1.6.2
+   - server 1.5.6
+- Docker 17.03
+- ODM 8.9.0
 
 ## Troubleshooting
 * If your ODM services cannot be reached just after the creation of the deployment, you may wait for few minutes.
