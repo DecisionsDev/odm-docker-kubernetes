@@ -14,7 +14,7 @@ We leverage the ODM Docker material put available on this repository [odm-ondock
 
 ![Flow](images/ODMinKubernetes-DeploymentOverview.png)
 
-## Deploying ODM Rules in the following clouds
+## Deploying ODM Rules in the following environments
 - [Bluemix Kubernetes Cluster](Bluemix/README.md)
 - [MiniKube](MiniKube/README.md)
  
