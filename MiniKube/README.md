@@ -3,9 +3,9 @@ IBM Operational Decision Manager on Kubernetes MiniKube
 
 #  Deploy IBM Operational Decision Manager Standard on Kubernetes MiniKube
 
-This code demonstrates the deployment of an IBM Operational Decision Manager clustered topology using WAS Liberty on a MiniKube Kubernetes Cluster.
+This code demonstrates the deployment of an IBM Operational Decision Manager clustered topology on a MiniKube Kubernetes cluster.
 
-We leverage the ODM Docker material put available on this repository [odm-ondocker](https://github.com/lgrateau/odm-ondocker). It includes Docker files and Docker compose descriptors. In this tutorial we will only use the Docker files to build the ODM runtime images that we will instantiate in the Kubernetes cluster.
+We leverage the ODM Docker material put available on this repository [odm-ondocker](https://github.com/lgrateau/odm-ondocker). It includes Docker files and Docker compose descriptors. ODM containers are based on IBM WAS Liberty. In this tutorial we will only use the Docker files to build the ODM runtime images that we will instantiate in the Kubernetes cluster.
 
 ![Flow](../images/ODMinKubernetes-Flow.png)
 
@@ -98,14 +98,14 @@ minikube dashboard
 
 # 3. Setup your environment 
 
-When using a single VM of kubernetes it's really handy to reuse the Docker daemon inside the VM; as this means you don't have to build on your host machine and push the image into a docker registry - you can just build inside the same docker daemon as minikube which speeds up local experiments.
+When using a single VM Kubernetes it's really handy to reuse the Docker daemon inside the VM. It means that you don't have to build on your host machine and push the images into a docker registry - you can just build inside the same docker daemon as minikube which speeds up the user experience.
 
 To be able to work with the docker daemon on your mac/linux host use the [docker-env command](./docs/minikube_docker-env.md) in your shell:
 
 ```
 eval $(minikube docker-env)
 ```
-you should now be able to use docker on the command line on your host mac/linux machine talking to the docker daemon inside the minikube VM:
+you should now be able to use Docker on the command line on your host mac/linux machine talking to the docker daemon inside the minikube VM:
 ```
 docker ps
 ```
@@ -231,7 +231,6 @@ service "odm-decisioncenter" deleted
 deployment "odm-decisionrunner" deleted
 service "odm-decisionrunner" deleted
 ```
-
 
 
 # License
