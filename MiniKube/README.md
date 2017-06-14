@@ -1,6 +1,3 @@
-# IBM-ODM-Kubernetes
-IBM Operational Decision Manager on Kubernetes MiniKube
-
 #  Deploy IBM Operational Decision Manager Standard on Kubernetes MiniKube
 
 This code demonstrates the deployment of an IBM Operational Decision Manager clustered topology on a MiniKube Kubernetes cluster.
