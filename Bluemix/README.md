@@ -5,6 +5,11 @@ Full story is described in this article: to be defined
 
 ![Flow](../images/ODMinKubernetes-Flow.png)
 
+## Included Components
+This repository contains Kubernetes deployment descriptors to deploy an ODM Standard topology in your Bluemix cluster:
+- [ODM Standard deployment descriptor for a Bluemix lite cluster](./odm-standard-bx-lite.yaml)
+- [ODM Standard deployment descriptor for a Bluemix standard cluster](./odm-standard-bx-standard.yaml)
+
 ## Testing
 This tutorial has been tested on MacOS.
 
