@@ -1,0 +1,158 @@
+apiVersion: extensions/v1beta1 # for versions before 1.6.0 use extensions/v1beta1
+kind: Deployment
+metadata:
+  name: odm-dbserver
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: dbserver
+    spec:
+      containers:
+      - name: dbserver
+        image: eu.gcr.io/odm890-kubernetes/ibm-odm-dbserver:8.9.0
+        env:
+        - name: SAMPLE
+          value: "true"
+        ports:
+        - containerPort: 1527
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dbserver
+  labels:
+    run: dbserver
+spec:
+  selector:
+    run: dbserver
+  type: LoadBalancer
+  ports:
+   - protocol: TCP
+     port: 1527
+---
+apiVersion: extensions/v1beta1 # for versions before 1.6.0 use extensions/v1beta1
+kind: Deployment
+metadata:
+  name: odm-decisionserverconsole
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: odm-decisionserverconsole
+    spec:
+      containers:
+      - name: odm-decisionserverconsole
+        image: eu.gcr.io/odm890-kubernetes/ibm-odm-decisionserverconsole:8.9.0
+        ports:
+        - containerPort: 9080
+        - containerPort: 1883
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: odm-decisionserverconsole
+  labels:
+    name: odm-decisionserverconsole
+spec:
+  selector:
+    run: odm-decisionserverconsole
+  type: LoadBalancer
+  ports:
+   - protocol: TCP
+     port: 9080
+---
+apiVersion: extensions/v1beta1 # for versions before 1.6.0 use extensions/v1beta1
+kind: Deployment
+metadata:
+  name: odm-decisionserverruntime
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        run: odm-decisionserverruntime
+    spec:
+      containers:
+      - name: odm-decisionserverruntime
+        image: eu.gcr.io/odm890-kubernetes/ibm-odm-decisionserverruntime:8.9.0
+        ports:
+        - containerPort: 9080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: odm-decisionserverruntime
+  labels:
+    run: odm-decisionserverruntime
+spec:
+  selector:
+    run: odm-decisionserverruntime
+  type: NodePort
+  ports:
+   - protocol: TCP
+     port: 9080
+---
+apiVersion: extensions/v1beta1 # for versions before 1.6.0 use extensions/v1beta1
+kind: Deployment
+metadata:
+  name: odm-decisioncenter
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: odm-decisioncenter
+    spec:
+      containers:
+      - name: odm-decisioncenter
+        image: eu.gcr.io/odm890-kubernetes/ibm-odm-decisioncenter:8.9.0
+        ports:
+        - containerPort: 9060
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: odm-decisioncenter
+  labels:
+    run: odm-decisioncenter
+spec:
+  selector:
+    run: odm-decisioncenter
+  type: LoadBalancer
+  ports:
+   - protocol: TCP
+     port: 9060
+---
+apiVersion: extensions/v1beta1 # for versions before 1.6.0 use extensions/v1beta1
+kind: Deployment
+metadata:
+  name: odm-decisionrunner
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        run: odm-decisionrunner
+    spec:
+      containers:
+      - name: odm-decisionrunner
+        image: eu.gcr.io/odm890-kubernetes/ibm-odm-decisionrunner:8.9.0
+        ports:
+        - containerPort: 9070
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: odm-decisionrunner
+  labels:
+    run: odm-decisionrunner
+spec:
+  selector:
+    run: odm-decisionrunner
+  type: LoadBalancer
+  ports:
+   - protocol: TCP
+     port: 9070
