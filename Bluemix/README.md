@@ -1,7 +1,7 @@
 
 #  Deploy IBM Operational Decision Manager Standard on a Bluemix Kubernetes Cluster
 
-Full story is described in this article: to be defined
+Full story is described in this article: https://www.ibm.com/developerworks/library/mw-1706-feillet-bluemix/1706-feillet.html
 
 ![Flow](../images/ODMinKubernetes-Flow.png)
 
