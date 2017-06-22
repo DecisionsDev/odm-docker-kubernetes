@@ -135,11 +135,14 @@ odm-decisionserverruntime   10.43.250.80    <nodes>          9080:32703/TCP   15
 
 With this ODM topology in place you access to web applications to author, deploy, and test your rule based decision services.
 * Decision Center Console : http://DECISION-CENTER-EXTERNAL-IP:PORT/decisioncenter/t/library
+
 Login with rtsAdmin/rtsAdmin. You should see the project library as follows.
-![Decision Center](images/ODM-Kubernetes-gcloud-decision-center.png)
+![Decision Center](images/ODM-Kubernetes-gcloud-decisioncenter.png)
 
 * Decision Server Console:!http://DECISION-SERVER-CONSOLE-EXTERNAL-IP:PORT/res
-![Decision Service Console](images/ODM-Kubernetes-gcloud-decision-server-console.png
+
+Login with resAdmin/resAdmin. You should see the project library as follows.
+![Decision Service Console](images/ODM-Kubernetes-gcloud-decision-serverconsole.png
 
 ## Troubleshooting
 
