@@ -60,74 +60,50 @@ bx cr images
 
 # 2. Get and build the application code
 
-* Install the [Microservice Builder fabric](https://microservicebuilder.mybluemix.net/docs/installing_fabric_task.html) - which provides additional services that run on top of Kubernetes.
-
-> **Note:** For the following steps, you can get the code and build the package by running the get_code.sh script present in scripts directory.
-
 * `git clone` the following projects:
    * [odm-ondocker](https://github.com/lgrateau/odm-ondocker)
    ```bash
       git clone https://github.com/lgrateau/odm-ondocker
   ```
 
-  ```
-   * [Vote - for log](https://github.com/WASdev/sample.microservicebuilder.vote)
-   ```bash
-      git clone https://github.com/WASdev/sample.microservicebuilder.vote.git
-      cd sample.microservicebuilder.vote/
-      git checkout 4bd11a9bcdc7f445d7596141a034104938e08b22
-  ```
-
-* `mvn clean package` in each ../sample.microservicebuilder.* projects
-
-
 # 3. Build application containers
 
 Use the following commands to build the microservers containers.
+Docker registry eu.gcr.io/odm890-kubernetes/ is used as an example. PLease replace it by your registry path.
 
 Build the decision server container
 
 ```bash
-docker tag dockercompose_decisionserverruntime:latest registry.ng.bluemix.net/<namespace>/dockercompose_decisionserverruntime:latest 
-docker push registry.ng.bluemix.net/<namespace>/dockercompose_decisionserverruntime:latest  
+docker tag odmdocker/decisionserverruntime:8.9.0 eu.gcr.io/odm890-kubernetes/ibm-odm-decisionserverruntime:8.9.0 
+gcloud docker -- push eu.gcr.io/odm890-kubernetes/ibm-odm-decisionserverruntime:8.9.0
 ```
 
 Build the Derby decision db server container
 
 ```bash
-dbserver
-docker tag dockercompose_dbserver:latest registry.ng.bluemix.net/<namespace>/dockercompose_dbserver:latest  
-docker push registry.ng.bluemix.net/<namespace>/dockercompose_dbserver:latest
+docker tag odmdocker/dbserver:8.9.0 eu.gcr.io/odm890-kubernetes/ibm-odm-dbserver:8.9.0 
+gcloud docker -- push eu.gcr.io/odm890-kubernetes/ibm-odm-dbserver:8.9.0
 ```
 
 Build the decision center container
 
 ```bash
-dockercompose_decisioncenter
-docker tag dockercompose_decisioncenter:latest registry.ng.bluemix.net/<namespace>/dockercompose_decisioncenter:latest  
-docker push registry.ng.bluemix.net/<namespace>/dockercompose_decisioncenter:latest
+docker tag odmdocker/decisioncenter:8.9.0 eu.gcr.io/odm890-kubernetes/ibm-odm-decisioncenter:8.9.0 
+gcloud docker -- push eu.gcr.io/odm890-kubernetes/ibm-odm-decisioncenter:8.9.0
 ```
 
 Build the decision server console runtime container
 
 ```bash
-dockercompose_decisionserverconsole
-docker tag dockercompose_decisionserverconsole:latest registry.ng.bluemix.net/<namespace>/dockercompose_decisionserverconsole:latest  
-docker push registry.ng.bluemix.net/<namespace>/dockercompose_decisionserverconsole:latest
+docker tag odmdocker/decisionserverconsole:8.9.0 eu.gcr.io/odm890-kubernetes/ibm-odm-decisionserverconsole:8.9.0 
+gcloud docker -- push eu.gcr.io/odm890-kubernetes/ibm-odm-decisionserverconsole:8.9.0
 ```
 
 Build the decision runner container
 
 ```bash
-dockercompose_decisionrunner
-docker tag dockercompose_decisionrunner:latest registry.ng.bluemix.net/<namespace>/dockercompose_decisionrunner:latest
-docker push registry.ng.bluemix.net/<namespace>/dockercompose_decisionrunner:latest
-```
-
-```bash ToDo
-cd sample.microservicebuilder.web-app
-docker build -t registry.ng.bluemix.net/<namespace>/microservice-webapp .
-docker push registry.ng.bluemix.net/<namespace>/microservice-webapp
+docker tag odmdocker/decisionrunner:8.9.0 eu.gcr.io/odm890-kubernetes/ibm-odm-decisionrunner:8.9.0 
+gcloud docker -- push eu.gcr.io/odm890-kubernetes/ibm-odm-decisionrunner:8.9.0
 ```
 
 # 4. Create Services and Deployments
@@ -146,24 +122,10 @@ Set the value of `SOURCE_IP` env variable present in deploy-nginx.yaml file pres
 Deploy the microservice from the manifests directory with the command `kubectl create -f <filename>` or run the following commands:
 
 ```bash
-kubectl run dbserver --image=registry.ng.bluemix.net/odmlab/dockercompose_dbserver:latest
-kubectl expose deployment/dbserver --type=NodePort --port=1527 --name=dbserver
-
-kubectl run decisionserverconsole --image=registry.ng.bluemix.net/odmlab/dockercompose_decisionserverconsole:latest
-kubectl expose deployments decisionserverconsole --type=NodePort --port=9080 --name=decisionserverconsole
-or kubectl expose deployment/decisionserverconsole --type=NodePort --port=9080,1883 --name=decisionserverconsole
-
-kubectl run decisionserverruntime --image=registry.ng.bluemix.net/odmlab/dockercompose_decisionserverruntime:latest 
-kubectl expose deployment/decisionserverruntime --type=NodePort --port=9080 --name=decisionserverruntime
-
-kubectl run decisioncenter --image=registry.ng.bluemix.net/odmlab/dockercompose_decisioncenter:latest
-kubectl expose deployments decisioncenter --type=NodePort --port=9060 --name=decisioncenter
-
-kubectl run decisionrunner --image=registry.ng.bluemix.net/odmlab/dockercompose_decisionrunner:latest
-kubectl expose deployments decisionrunner --type=NodePort --port=9070 --name=decisionrunner
+kubectl create -f odm-standard-gcloud.yaml
 ```
 
-After you have created all the services and deployments, wait for 10 to 15 minutes. You can check the status of your deployment on Kubernetes UI. Run 'kubectl proxy' and go to URL 'http://127.0.0.1:8001/ui' to check when the application containers are ready.
+After you have created all the services and deployments, wait for 5 to 10 minutes. You can check the status of your deployment on Kubernetes UI. Run 'kubectl proxy' and go to URL 'http://127.0.0.1:8001/ui' to check when the application containers are ready.
 
 ![Kubernetes Status Page](images/kube_ui.png)
 
@@ -178,8 +140,6 @@ $ kubectl get svc nginx-svc
 NAME        CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE
 nginx-svc   10.10.10.167   <nodes>       80:30056/TCP   11s
 ```
-
-Now you can use the link **http://[IP]:30056** to access your application on browser.
 
 ![ODM pods](./images/ODM-Kubernetes-gcloud-nodes.png)
 
