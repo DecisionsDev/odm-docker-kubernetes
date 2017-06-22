@@ -146,7 +146,7 @@ With this ODM topology in place you access to web applications to author, deploy
 
 ## Troubleshooting
 
-* If your microservice instance is not running properly, you may check the logs using
+* If your microservice instances are not running properly, you may check the logs using
 	* `kubectl logs <your-pod-name>`
 * To delete a microservice
 	* `kubectl delete -f manifests/<microservice-yaml-file>`
