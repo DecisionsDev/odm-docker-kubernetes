@@ -24,7 +24,7 @@ This tutorial has been tested on MacOS.
 
 ## Steps
 
-1. [Install Docker CLI and Bluemix Container registry Plugin](#1-install-docker-cli-and-bluemix-container-registry-plugin)
+1. [Install Docker CLI and Google Cloud CLI](#1-install-docker-cli-and-google-cloud-cli)
 2. [Get and build the application code](#2-get-and-build-the-application-code)
 3. [Build application containers](#3-build-application-containers)
 4. [Create Services and Deployments](#4-create-services-and-deployments)
