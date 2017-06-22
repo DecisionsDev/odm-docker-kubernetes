@@ -25,40 +25,23 @@ This tutorial has been tested on MacOS.
 ## Steps
 
 1. [Install Docker CLI and Google Cloud CLI](#1-install-docker-cli-and-google-cloud-cli)
-2. [Get and build the application code](#2-get-and-build-the-application-code)
-3. [Build application containers](#3-build-application-containers)
+2. [Get and build the application code](#2-get-ODM-Docker-files)
+3. [Build application containers](#3-build-your-ODM-images)
 4. [Create Services and Deployments](#4-create-services-and-deployments)
 
 # 1. Install Docker and Google Cloud CLI
 
 First, install [Docker CLI](https://www.docker.com/community-edition#/download).
 
-Then, install the Bluemix container registry plugin.
+Then, install the [Google Cloud CLI](https://cloud.google.com/sdk/docs/)
+
+Once the Google Cloud CLI check your configuration.
 
 ```bash
-bx plugin install container-registry -r bluemix
+gcloud info
 ```
 
-Once the plugin is installed you can log into the Bluemix Container Registry.
-
-```bash
-bx cr login
-```
-
-If this is the first time using the Bluemix Container Registry you must set a namespace which identifies your private Bluemix images registry. It can be between 4 and 30 characters.
-
-```bash
-bx cr namespace-add <namespace>
-```
-
-Verify that it works.
-
-```bash
-bx cr images
-```
-
-
-# 2. Get and build the application code
+# 2. Get ODM Docker files
 
 * `git clone` the following projects:
    * [odm-ondocker](https://github.com/lgrateau/odm-ondocker)
@@ -66,9 +49,8 @@ bx cr images
       git clone https://github.com/lgrateau/odm-ondocker
   ```
 
-# 3. Build application containers
+# 3. Build your ODM images
 
-Use the following commands to build the microservers containers.
 Docker registry eu.gcr.io/odm890-kubernetes/ is used as an example. PLease replace it by your registry path.
 
 Build the decision server container
@@ -108,18 +90,10 @@ gcloud docker -- push eu.gcr.io/odm890-kubernetes/ibm-odm-decisionrunner:8.9.0
 
 # 4. Create Services and Deployments
 
-Change the image name given in the respective deployment YAML files for  all the projects in the manifests directory with the newly build image names.
+Edit the odm-standard-gcloud.yaml descriptor.
+Change the image name given in the deployment YAML file with the newly build image names pushed in your Google Docker registry.
 
-Get the public ip of the node
-
-```bash
-$ kubectl get nodes
-NAME             STATUS    AGE
-169.47.241.106   Ready     23h
-```
-Set the value of `SOURCE_IP` env variable present in deploy-nginx.yaml file present in manifests folder with the public ip of the node.
-
-Deploy the microservice from the manifests directory with the command `kubectl create -f <filename>` or run the following commands:
+Then deploy the ODM topology with the following command:
 
 ```bash
 kubectl create -f odm-standard-gcloud.yaml
@@ -134,11 +108,19 @@ After few minutes the following commands to get your public IP and NodePort numb
 
 ```bash
 $ kubectl get nodes
-NAME             STATUS    AGE
-169.47.241.106   Ready     23h
-$ kubectl get svc nginx-svc
-NAME        CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE
-nginx-svc   10.10.10.167   <nodes>       80:30056/TCP   11s
+NAME                                               STATUS    AGE       VERSION
+gke-ibm-odm-cluster-1-default-pool-b02d3eae-cswb   Ready     19h       v1.6.4
+gke-ibm-odm-cluster-1-default-pool-b02d3eae-pvdr   Ready     19h       v1.6.4
+gke-ibm-odm-cluster-1-default-pool-b02d3eae-rt52   Ready     19h       v1.6.4
+
+$ $ kubectl get svc
+NAME                        CLUSTER-IP      EXTERNAL-IP      PORT(S)          AGE
+dbserver                    10.43.248.47    35.187.188.198   1527:32725/TCP   15h
+kubernetes                  10.43.240.1     <none>           443/TCP          19h
+odm-decisioncenter          10.43.240.151   35.187.41.88     9060:32434/TCP   15h
+odm-decisionrunner          10.43.249.122   130.211.62.210   9070:31889/TCP   15h
+odm-decisionserverconsole   10.43.245.253   35.187.110.53    9080:30589/TCP   15h
+odm-decisionserverruntime   10.43.250.80    <nodes>          9080:32703/TCP   15h
 ```
 
 ![ODM pods](./images/ODM-Kubernetes-gcloud-nodes.png)
