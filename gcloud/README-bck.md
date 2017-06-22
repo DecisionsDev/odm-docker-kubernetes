@@ -181,9 +181,7 @@ nginx-svc   10.10.10.167   <nodes>       80:30056/TCP   11s
 
 Now you can use the link **http://[IP]:30056** to access your application on browser.
 
-Web application home page
-
-![Web-app Home Page](images/ui1.png)
+![ODM Services](../images/ODM-Kubernetes-gcloud-services.png)
 
 When you click on speaker name
 
