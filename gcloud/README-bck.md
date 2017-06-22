@@ -25,7 +25,7 @@ This tutorial has been tested on MacOS.
 ## Steps
 
 1. [Install Docker CLI and Google Cloud CLI](#1-install-docker-cli-and-google-cloud-cli)
-2. [Get and build the application code](#2-get-ODM-Docker-files)
+2. [Get and build the application code](#2-get-ODM-Docker-files-and-Kubernetes-manifest)
 3. [Build application containers](#3-build-your-ODM-images)
 4. [Create Services and Deployments](#4-create-services-and-deployments)
 
@@ -41,12 +41,16 @@ Once the Google Cloud CLI check your configuration.
 gcloud info
 ```
 
-# 2. Get ODM Docker files
+# 2. Get ODM Docker files and Kubernetes manifest
 
 * `git clone` the following projects:
    * [odm-ondocker](https://github.com/lgrateau/odm-ondocker)
    ```bash
       git clone https://github.com/lgrateau/odm-ondocker
+  ```
+   * [IBM-ODM-Kubernetes](https://github.com/PierreFeillet/IBM-ODM-Kubernetes)
+   ```bash
+      git clone https://https://github.com/PierreFeillet/IBM-ODM-Kubernetes
   ```
 
 # 3. Build your ODM images
