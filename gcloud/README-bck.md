@@ -141,7 +141,7 @@ Login with rtsAdmin/rtsAdmin. You should see the project library as follows.
 
 * Decision Server Console:!http://DECISION-SERVER-CONSOLE-EXTERNAL-IP:PORT/res
 
-Login with resAdmin/resAdmin. You should see the project library as follows.
+Login with resAdmin/resAdmin. You should see the executable decision services as follows.
 ![Decision Server Console](images/ODM-Kubernetes-gcloud-resconsole.png)
 
 ## Troubleshooting
@@ -152,7 +152,6 @@ Login with resAdmin/resAdmin. You should see the project library as follows.
 	* `kubectl delete -f manifests/<microservice-yaml-file>`
 * To delete everything
 	* `kubectl delete -f manifests`
-
 
 ## References
 
