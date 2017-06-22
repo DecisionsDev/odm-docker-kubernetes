@@ -117,7 +117,7 @@ gke-ibm-odm-cluster-1-default-pool-b02d3eae-cswb   Ready     19h       v1.6.4
 gke-ibm-odm-cluster-1-default-pool-b02d3eae-pvdr   Ready     19h       v1.6.4
 gke-ibm-odm-cluster-1-default-pool-b02d3eae-rt52   Ready     19h       v1.6.4
 
-$ $ kubectl get svc
+$ kubectl get svc
 NAME                        CLUSTER-IP      EXTERNAL-IP      PORT(S)          AGE
 dbserver                    10.43.248.47    35.187.188.198   1527:32725/TCP   15h
 kubernetes                  10.43.240.1     <none>           443/TCP          19h
