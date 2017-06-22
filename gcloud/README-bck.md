@@ -1,4 +1,4 @@
-# Deploy IBM Operational Decision Manager Standard on Google Cloud Container
+# Deploy IBM Operational Decision Manager Standard on Google Cloud Container Engine
 
 This project demonstrates the deployment of an IBM Operational Decision Manager clustered topology using WAS Liberty on Google Cloud. For this we leverage Kubernetes and Docker technologies made available by Google through Google Container Registry and Engine.
 
