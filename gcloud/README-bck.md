@@ -142,7 +142,7 @@ Login with rtsAdmin/rtsAdmin. You should see the project library as follows.
 * Decision Server Console:!http://DECISION-SERVER-CONSOLE-EXTERNAL-IP:PORT/res
 
 Login with resAdmin/resAdmin. You should see the project library as follows.
-![Decision Server Console](images/ODM-Kubernetes-gcloud-decision-resconsole.png)
+![Decision Server Console](images/ODM-Kubernetes-gcloud-resconsole.png)
 
 ## Troubleshooting
 
