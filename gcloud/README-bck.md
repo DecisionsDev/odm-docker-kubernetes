@@ -133,9 +133,10 @@ odm-decisionserverruntime   10.43.250.80    <nodes>          9080:32703/TCP   15
 
 ![ODM pods](./images/ODM-Kubernetes-gcloud-pods.png)
 
-When you click on speaker name
+With this ODM topology in place you access to web applications to author, deploy, and test your rule based decision services.
 
-![Speaker Info](images/ui2.png)
+![Decision Service Console](images/...)
+![Decision Center](images/...)
 
 ## Troubleshooting
 
