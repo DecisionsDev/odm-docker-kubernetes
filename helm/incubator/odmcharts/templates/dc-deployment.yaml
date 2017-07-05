@@ -1,0 +1,18 @@
+apiVersion: extensions/v1beta1 
+kind: Deployment
+metadata:
+  name: odm-decisioncenter
+spec:
+  replicas: {{ .Values.decisionCenter.replicatCount }}
+  template:
+    metadata:
+      labels:
+        run: odm-decisioncenter
+        app: {{ template "name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: odm-decisioncenter
+        image: {{ .Values.image.repository}}/decisioncenter:{{ .Values.image.tag }}
+        ports:
+        - containerPort: 9060

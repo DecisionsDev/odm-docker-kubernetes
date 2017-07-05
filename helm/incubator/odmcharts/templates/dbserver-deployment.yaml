@@ -1,0 +1,21 @@
+apiVersion: extensions/v1beta1 
+kind: Deployment
+metadata:
+  name: dbserver
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: dbserver
+        app: {{ template "name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: dbserver
+        image: {{ .Values.image.repository}}/dbserver:{{ .Values.image.tag }}
+        env:
+        - name: SAMPLE
+          value: "true"
+        ports:
+        - containerPort: 1527
