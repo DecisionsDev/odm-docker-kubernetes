@@ -90,7 +90,7 @@ metadata:
 spec:
   selector:
     run: odm-decisionserverruntime
-  type: NodePort
+  type: LoadBalancer
   ports:
    - protocol: TCP
      port: 9080
