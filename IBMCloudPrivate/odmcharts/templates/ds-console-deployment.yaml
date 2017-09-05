@@ -1,0 +1,21 @@
+apiVersion: extensions/v1beta1 
+kind: Deployment
+metadata:
+  name: odm-decisionserverconsole
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: odm-decisionserverconsole
+        app: {{ template "name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: odm-decisionserverconsole
+        image: {{ .Values.image.repository}}/decisionserverconsole:{{ .Values.image.tag }}
+        ports:
+        - containerPort: 9080
+        - containerPort: 1883
+      imagePullSecrets:
+      - name: admin.registrykey

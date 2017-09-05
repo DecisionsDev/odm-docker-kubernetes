@@ -1,0 +1,15 @@
+apiVersion: v1
+description: A Helm Operational Decision Manager chart for Kubernetes
+name: odmcharts
+version: 0.2.0
+home: https://developer.ibm.com/odm/
+icon: https://developer.ibm.com/odm/wp-content/uploads/sites/38/2014/10/ODMMain.png
+keywords:
+- OperationalDecisionManager
+- businessrules
+maintainers:
+- name: laurentgrateau
+- name: pierrefeillet
+sources:
+- https://github.com/kubernetes/charts
+- https://github.com/ODMDev
