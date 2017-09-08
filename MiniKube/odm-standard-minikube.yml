@@ -36,16 +36,16 @@ spec:
 apiVersion: extensions/v1beta1 # for versions before 1.6.0 use extensions/v1beta1
 kind: Deployment
 metadata:
-  name: odm-decisionserverconsole
+  name: decisionserverconsole
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        run: odm-decisionserverconsole
+        run: decisionserverconsole
     spec:
       containers:
-      - name: odm-decisionserverconsole
+      - name: decisionserverconsole
         image: odmdocker/decisionserverconsole:8.9.0
         ports:
         - containerPort: 9080
@@ -54,12 +54,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: odm-decisionserverconsole
+  name: decisionserverconsole
   labels:
-    name: odm-decisionserverconsole
+    name: decisionserverconsole
 spec:
   selector:
-    run: odm-decisionserverconsole
+    run: decisionserverconsole
   type: NodePort
   ports:
    - protocol: TCP
@@ -68,16 +68,16 @@ spec:
 apiVersion: extensions/v1beta1 # for versions before 1.6.0 use extensions/v1beta1
 kind: Deployment
 metadata:
-  name: odm-decisionserverruntime
+  name: decisionserverruntime
 spec:
   replicas: 2
   template:
     metadata:
       labels:
-        run: odm-decisionserverruntime
+        run: decisionserverruntime
     spec:
       containers:
-      - name: odm-decisionserverruntime
+      - name: decisionserverruntime
         image: odmdocker/decisionserverruntime:8.9.0
         ports:
         - containerPort: 9080
@@ -85,12 +85,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: odm-decisionserverruntime
+  name: decisionserverruntime
   labels:
-    run: odm-decisionserverruntime
+    run: decisionserverruntime
 spec:
   selector:
-    run: odm-decisionserverruntime
+    run: decisionserverruntime
   type: NodePort
   ports:
    - protocol: TCP
@@ -99,16 +99,16 @@ spec:
 apiVersion: extensions/v1beta1 # for versions before 1.6.0 use extensions/v1beta1
 kind: Deployment
 metadata:
-  name: odm-decisioncenter
+  name: decisioncenter
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        run: odm-decisioncenter
+        run: decisioncenter
     spec:
       containers:
-      - name: odm-decisioncenter
+      - name: decisioncenter
         image: odmdocker/decisioncenter:8.9.0
         env:
         - name: SAMPLE
@@ -118,12 +118,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: odm-decisioncenter
+  name: decisioncenter
   labels:
-    run: odm-decisioncenter
+    run: decisioncenter
 spec:
   selector:
-    run: odm-decisioncenter
+    run: decisioncenter
   type: NodePort
   ports:
    - protocol: TCP
@@ -132,16 +132,16 @@ spec:
 apiVersion: extensions/v1beta1 # for versions before 1.6.0 use extensions/v1beta1
 kind: Deployment
 metadata:
-  name: odm-decisionrunner
+  name: decisionrunner
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        run: odm-decisionrunner
+        run: decisionrunner
     spec:
       containers:
-      - name: odm-decisionrunner
+      - name: decisionrunner
         image: odmdocker/decisionrunner:8.9.0
         ports:
         - containerPort: 9080
@@ -149,12 +149,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: odm-decisionrunner
+  name: decisionrunner
   labels:
-    run: odm-decisionrunner
+    run: decisionrunner
 spec:
   selector:
-    run: odm-decisionrunner
+    run: decisionrunner
   type: NodePort
   ports:
    - protocol: TCP
