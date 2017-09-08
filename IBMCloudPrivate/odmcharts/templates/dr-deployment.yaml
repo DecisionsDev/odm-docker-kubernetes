@@ -1,0 +1,20 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: odm-decisionrunner
+spec:
+  replicas: {{ .Values.decisionRunner.replicatCount }}
+  template:
+    metadata:
+      labels:
+        run: odm-decisionrunner
+        app: {{ template "name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: odm-decisionrunner
+        image: {{ .Values.image.repository}}/decisionrunner:{{ .Values.image.tag }}
+        ports:
+        - containerPort: 9070
+      imagePullSecrets:
+      - name: admin.registrykey
