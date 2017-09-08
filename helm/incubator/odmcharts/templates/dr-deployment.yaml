@@ -15,4 +15,4 @@ spec:
       - name: odm-decisionrunner
         image: {{ .Values.image.repository}}/decisionrunner:{{ .Values.image.tag }}
         ports:
-        - containerPort: 9070
+        - containerPort: 9080
