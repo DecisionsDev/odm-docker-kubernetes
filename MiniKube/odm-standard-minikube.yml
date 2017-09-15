@@ -1,3 +1,30 @@
+# A Hostpath persistence volume for development and testing on a single-node cluster
+# It uses a file or directory on the Node to emulate network-attached storage
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: odmpv
+  labels:
+    type: local
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/data/odm"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: odmclaim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
 apiVersion: extensions/v1beta1 # for versions before 1.6.0 use extensions/v1beta1
 kind: Deployment
 metadata:
@@ -9,15 +36,23 @@ spec:
       labels:
         run: dbserver
     spec:
+      volumes:
+      - name: odm-volume
+        persistentVolumeClaim:
+          claimName: odmclaim
       containers:
       - name: dbserver
         image: odmdocker/dbserver:8.9.0
         env:
+        # recreate the database with a sample ruleapp when set to true
         - name: SAMPLE
           value: "true"
         ports:
         - containerPort: 1527
-      
+        volumeMounts:
+          - name: odm-volume
+            # mount path within the container
+            mountPath: /dbs
 ---
 apiVersion: v1
 kind: Service
