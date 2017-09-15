@@ -13,19 +13,8 @@ Username/Password :
   - For Decision Runner: resDeployer/resDeployer
 
 1. Get the application URL by running these commands:
-{{- if .Values.ingress.hostname }}
 
-  http://{{- .Values.ingress.hostname }}
-   * Team Server 
-  http://{{- .Values.ingress.hostname }}/teamserver
-   * Decision Runner
-  http://{{- .Values.ingress.hostname }}/DecisionRunner
-  * Decision Service Console (RES Console)
-  http://{{- .Values.ingress.hostname }}/res
-  * Decision Service Runtime
-  http://{{- .Values.ingress.hostname }}/DecisionService
-
-{{- else if contains "NodePort" .Values.service.type }}
+{{- if contains "NodePort" .Values.service.type }}
 
 -- Decision Center / Business Console
   export NODE_PORT_DC=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services odm-decisioncenter)
