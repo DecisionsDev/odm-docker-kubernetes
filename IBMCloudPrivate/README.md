@@ -20,14 +20,14 @@ This tutorial has been tested on MacOS.
 * Install a [Docker](https://docs.docker.com/engine/installation/) engine.
 * [Docker-compose](https://docs.docker.com/compose/) tool.
 
-
 ## Steps
 
 1. [Install and configure IBM Private Cloud](#1-install-and-configure-ibm-private-cloud)
 2. [Get the ODM Docker material](#2-get-the-odm-docker-material)
-2. [Interacting with your cluster](#2-interacting-with-your-cluster)
-3. [Setup your environment](#3-setup-your-environment)
-5. [Create services and deployments](#5-create-services-and-deployments)
+3. [Tag and deploy ODM Docker material in the IBM Cloud Private Docker Registry](#3-tag-and-deploy-odm-docker-material-in-the-ibm-cloud-private-docker-registry)
+4. [Deploy an ODM topology with the admin console](#4-deploy-an-odm-topology-with-the-admin-console)
+5. [Deploy an ODM topology with a command line](#5-deploy-an-odm-topology-with-a-command-line)
+6. [Create services and deployments](#5-create-services-and-deployments)
 
 # 1. Install and configure IBM Private Cloud
 
@@ -74,27 +74,37 @@ In this usecase, we will the [IBM Cloud Private Docker Registry]
 
 More informations could be found [here](https://www.ibm.com/developerworks/community/blogs/fe25b4ef-ea6a-4d86-a629-6f87ccf4649e/entry/Working_with_the_local_docker_registry_from_Spectrum_Conductor_for_Containers?lang=en)
 
-# 4. Deploy an ODM topology with admin console.
+# 4. Deploy an ODM topology with the admin console.
   - Logon in the IBM Cloud Private console.
-  - Add the ODM Charts repository (System->Repositories) if needed.
+  - Add the ODM Charts repository (System->Repositories) 
+ ![AppCenter](../images/ODM-IBMPrivateCloud-AddRepository.jpg)
+    - Click Add Repository
+    - Name: odmcharts
+    - URL : https://odmdev.github.io/odm-docker-kubernetes/
+ 
   - Go to the App Center. 
   	- You should see the ODM Chart in the package List.
 ![AppCenter](../images/ODM-IBMPrivateCloud-AppCenter.jpg)
 	- Click install button in the ODM Chart
 ![AppCenter-Inst](../images/ODM-IBMPrivateCloud-AppCenterInst.jpg)
+https://odmdev.github.io/odm-docker-kubernetes/
 
 
-The URL is accessible TODO.
-
-# 5. Deploy a topology with the Kubectl command line tool.
+# 5. Deploy an ODM topology with the helm command line tool.
 
 # 5.1. Interacting with your cluster
 
-To interact with kubectl tool you need to set environment variable.
+To interact with kubectl and helm tools you need to set environment variable.
 
-This setting is available in the IBM Private console (username->configure client) or explain in the [IBM Cloud Private knowledge center](https://www.ibm.com/support/knowledgecenter/en/SSBS6K_1.2.0/manage_cluster/cfc_cli.html)  
+This setting is available in the IBM Private console (username->configure client) 
 
+![AppCenter-Username](../images/ODM-IBMPrivateCloud-SetupVariable.jpg)
+  - Click *Configure Client*
+  - Open a command line and copy paste the instructions.
 
+ [IBM Cloud Private knowledge center](https://www.ibm.com/support/knowledgecenter/en/SSBS6K_1.2.0/manage_cluster/cfc_cli.html)  
+
+Installation instruction for helm tool can be found here : 
 
 # 5.2 Deploy the ODM Helm Chart:
 ```bash
