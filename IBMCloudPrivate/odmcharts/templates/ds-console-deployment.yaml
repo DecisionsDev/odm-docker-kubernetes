@@ -28,6 +28,7 @@ spec:
       containers:
       - name: odm-decisionserverconsole
         image: {{ .Values.image.repository}}/decisionserverconsole:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
         - containerPort: 9080
         - containerPort: 1883

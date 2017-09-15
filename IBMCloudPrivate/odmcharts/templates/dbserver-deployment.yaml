@@ -28,6 +28,7 @@ spec:
       containers:
       - name: dbserver
         image: {{ .Values.image.repository}}/dbserver:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
         - name: SAMPLE
           value: "true"

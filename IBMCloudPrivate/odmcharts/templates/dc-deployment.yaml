@@ -17,7 +17,7 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
-  replicas: {{ .Values.decisionCenter.replicatCount }}
+  replicas: {{ .Values.decisionCenter.replicaCount }}
   template:
     metadata:
       labels:
@@ -28,6 +28,7 @@ spec:
       containers:
       - name: odm-decisioncenter
         image: {{ .Values.image.repository}}/decisioncenter:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
         - containerPort: 9060
       imagePullSecrets:

@@ -5,22 +5,9 @@ image:
   repository: mycluster:8500/odmdocker
   tag: 8.9.0
   pullPolicy: IfNotPresent
+
 service:
   type: NodePort
-
-ingress:
-  enabled: false
-  # Used to create Ingress record (should used with service.type: ClusterIP).
-  hosts:
-    - chart-example.local
-  annotations:
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-  tls:
-    # Secrets must be manually created in the namespace.
-    # - secretName: chart-example-tls
-    #   hosts:
-    #     - chart-example.local
 
 
 decisionServerRuntime:
@@ -32,13 +19,3 @@ decisionCenter:
 decisionRunner:
   replicaCount: 1
 
-
-## Configure resource constraint
-enableResourceConstraints: false
-resources:
-  requests:
-    cpu: 500m
-    memory: 512Mi
-  limits:
-    cpu: 500m
-    memory: 512Mi
