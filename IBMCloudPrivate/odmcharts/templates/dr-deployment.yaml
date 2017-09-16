@@ -31,5 +31,7 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
         - containerPort: 9070
+      {{- if .Values.image.imagePullSecrets }}
       imagePullSecrets:
-      - name: admin.registrykey
+{{ toYaml .Values.image.imagePullSecrets | indent 8 }}
+      {{- end }}        
