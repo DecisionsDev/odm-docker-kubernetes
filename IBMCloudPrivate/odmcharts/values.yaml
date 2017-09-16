@@ -5,6 +5,12 @@ image:
   repository: mycluster:8500/odmdocker
   tag: 8.9.0
   pullPolicy: IfNotPresent
+## Optionally specify an array of imagePullSecrets.
+## Secrets must be manually created in the namespace.
+## ref: https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
+##
+  imagePullSecrets:
+   - name: admin.registrykey
 
 service:
   type: NodePort
