@@ -108,115 +108,88 @@ Installation instruction for helm tool can be found here :
 
 # 5.2 Deploy the ODM Helm Chart:
 ```bash
-	cd IBM-ODM-Kubernetes/helm/incubator
-	helm install odmchart
+	cd IBM-ODM-Kubernetes/IBMCloudPrivate
+	helm install odmcharts
  ```
 
 To install Helm client please follow this [guide](https://github.com/kubernetes/helm/blob/master/docs/install.md).
 ```bash
-This should display something like that : 
-NAME:   zooming-tuatara
-LAST DEPLOYED: Tue Sep  5 16:19:10 2017
+NAME:   snug-dog
+LAST DEPLOYED: Sun Sep 17 11:10:33 2017
 NAMESPACE: default
 STATUS: DEPLOYED
 
 RESOURCES:
-==> v1/ConfigMap
-NAME                       DATA  AGE
-zooming-tuatara-configmap  1     1s
-
 ==> v1/Service
 NAME                       CLUSTER-IP  EXTERNAL-IP  PORT(S)         AGE
-odm-decisionrunner         10.0.0.13   <nodes>      9080:30492/TCP  1s
-dbserver                   10.0.0.31   <nodes>      1527:32713/TCP  1s
-odm-decisionserverconsole  10.0.0.2    <nodes>      9080:32448/TCP  1s
-odm-decisioncenter         10.0.0.241  <nodes>      9060:30573/TCP  1s
-odm-decisionserverruntime  10.0.0.205  <nodes>      9080:31173/TCP  1s
+odm-decisionserverconsole  10.0.0.93   <nodes>      9080:30686/TCP  1s
+odm-decisionrunner         10.0.0.137  <nodes>      9080:30533/TCP  1s
+odm-decisioncenter         10.0.0.102  <nodes>      9060:31040/TCP  1s
+dbserver                   10.0.0.99   <nodes>      1527:32359/TCP  1s
+odm-decisionserverruntime  10.0.0.154  <nodes>      9080:32072/TCP  1s
 
 ==> v1beta1/Deployment
 NAME                       DESIRED  CURRENT  UP-TO-DATE  AVAILABLE  AGE
+odm-decisionserverruntime  2        2        2           0          1s
 odm-decisionrunner         1        1        1           0          1s
 dbserver                   1        1        1           0          1s
-odm-decisionserverruntime  2        2        2           0          1s
-odm-decisionserverconsole  1        1        1           0          1s
 odm-decisioncenter         1        1        1           0          1s
+odm-decisionserverconsole  1        1        1           0          1s
 
 
 NOTES:
 Thank you for installing odmcharts.
 
-Your release is named zooming-tuatara.
+For more informations about this template you can take a look in this github https://github.com/ODMDev/odm-docker-kubernetes
+
+ODM Informations
+-----------------
+
+Username/Password :
+  - For Business Console : rtsAdmin/rtsAdmin
+  - For RES : resAdmin/resAdmin
+  - For Decision Runner: resDeployer/resDeployer
+
+1. Get the application URL by running these commands:
+
+-- Decision Center / Business Console
+  export NODE_PORT_DC=$(kubectl get --namespace default -o jsonpath="{.spec.ports[0].nodePort}" services odm-decisioncenter)
+  export NODE_IP=$(kubectl get nodes --namespace default -o jsonpath="{.items[0].status.addresses[0].address}")
+  * Decision Center / Business Console
+  echo http://$NODE_IP:$NODE_PORT_DC/decisioncenter
+
+  * Team Server
+  echo http://$NODE_IP:$NODE_PORT_DC/teamserver
+
+-- Testing and Simulation
+  export NODE_PORT_DR=$(kubectl get --namespace default -o jsonpath="{.spec.ports[0].nodePort}" services odm-decisionrunner)
+  export NODE_IP=$(kubectl get nodes --namespace default -o jsonpath="{.items[0].status.addresses[0].address}")
+  * Decision Runner
+  echo http://$NODE_IP:$NODE_PORT_DR/DecisionRunner
+
+
+-- Decision Service Console (RES Console)
+  export NODE_PORT_DSC=$(kubectl get --namespace default -o jsonpath="{.spec.ports[0].nodePort}" services odm-decisionserverconsole)
+  export NODE_IP=$(kubectl get nodes --namespace default -o jsonpath="{.items[0].status.addresses[0].address}")
+  * Decision Service Console (RES Console)
+  echo http://$NODE_IP:$NODE_PORT_DSC/res
+
+
+-- Decision Service Runtime (Htds)
+ export NODE_PORT_DSC=$(kubectl get --namespace default -o jsonpath="{.spec.ports[0].nodePort}" services odm-decisionserverruntime)
+  export NODE_IP=$(kubectl get nodes --namespace default -o jsonpath="{.items[0].status.addresses[0].address}")
+  * Decision Service Runtime
+  echo http://$NODE_IP:$NODE_PORT_DSC/DecisionService
+
+
+
+Your release is named snug-dog.
 
 To learn more about the release, try:
 
-  $ helm status zooming-tuatara
-  $ helm get zooming-tuatara
-
-
-
-You can list the deployed helm by using this command : helm list
-You remove the previous installed chart by this command : helm delete zooming-tuatara
-
-1. Get the application URL by running these commands:
-  export NODE_PORT=$(kubectl get --namespace default -o jsonpath="{.spec.ports[0].nodePort}" services zooming-tuatara-odmcharts)
-  export NODE_IP=$(kubectl get nodes --namespace default -o jsonpath="{.items[0].status.addresses[0].address}")
-  echo http://$NODE_IP:$NODE_PORT
-
-
-For more informations about this template you can take a look in this github https://github.com/PierreFeillet/IBM-ODM-Kubernetes
- ```
-
-
-
-Now you can use the link to access your application on your browser.
-
-TODO TODO TODO
-
-
-* For Decision Server Runtime:
-```bash
-minikube service odm-decisionserverruntime  --url
-http://192.168.99.100:31204/ 
-```
-Then, open your browser to this URL : http://192.168.99.100:31204/**_DecisionService_**
-
-* For Decision Server Console:
-```bash
-minikube service odm-decisionserverconsole  --url
-http://192.168.99.100:32519 
-```
-Then, open your browser to this URL Ex: http://192.168.99.100:31204/*****res*****
-
-* For Decision Runner:
-```bash
-minikube service odm-decisionrunner  --url
-http://192.168.99.100:32519 
-```
-Then, open your browser to this URL Ex: http://192.168.99.100:31204/*****testing*****
-
-* For Decision Center:
-```bash
-minikube service odm-decisioncenter  --url
-http://192.168.99.100:32519 
-```
-Then, open your browser to this URL Ex:
-   * Decision Center Console : http://192.168.99.100:31204/**_decisioncenter/t/library_**
-   * TeamServer : http://192.168.99.100:31204/*****teamserver*****
-
-If you want to delete the ODM standard images use this command:
-```bash
-$ kubectl delete -f odm-standard-minikube.yml
-deployment "odm-dbserver" deleted
-service "dbserver" deleted
-deployment "odm-decisionserverconsole" deleted
-service "odm-decisionserverconsole" deleted
-deployment "odm-decisionserverruntime" deleted
-service "odm-decisionserverruntime" deleted
-deployment "odm-decisioncenter" deleted
-service "odm-decisioncenter" deleted
-deployment "odm-decisionrunner" deleted
-service "odm-decisionrunner" deleted
-```
+  $ helm status snug-dog
+  $ helm get snug-dog
+  ````
 
 
 # License
