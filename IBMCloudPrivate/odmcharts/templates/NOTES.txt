@@ -1,11 +1,9 @@
 Thank you for installing {{ .Chart.Name }}.
 
-Your release is named {{ .Release.Name }}.
+For more informations about this template you can take a look in this github https://github.com/ODMDev/odm-docker-kubernetes
 
-To learn more about the release, try:
-
-  $ helm status {{ .Release.Name }}
-  $ helm get {{ .Release.Name }}
+ODM Informations
+-----------------
 
 Username/Password : 
   - For Business Console : rtsAdmin/rtsAdmin
@@ -77,4 +75,10 @@ Username/Password :
 {{- end }}
 
 
-For more informations about this template you can take a look in this github https://github.com/ODMDev/odm-docker-kubernetes
+
+Your release is named {{ .Release.Name }}.
+
+To learn more about the release, try:
+
+  $ helm status {{ .Release.Name }}
+  $ helm get {{ .Release.Name }}
