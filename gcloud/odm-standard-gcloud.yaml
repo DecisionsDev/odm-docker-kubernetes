@@ -7,10 +7,10 @@ spec:
   template:
     metadata:
       labels:
-        run: dbserver
+        run: odm-dbserver
     spec:
       containers:
-      - name: dbserver
+      - name: odm-dbserver
         image: eu.gcr.io/odm890-kubernetes/ibm-odm-dbserver:8.9.0
         env:
         - name: SAMPLE
@@ -21,12 +21,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: dbserver
-  labels:
-    run: dbserver
+  name: odm-dbserver
 spec:
   selector:
-    run: dbserver
+    run: odm-dbserver
   type: LoadBalancer
   ports:
    - protocol: TCP
@@ -54,8 +52,6 @@ apiVersion: v1
 kind: Service
 metadata:
   name: odm-decisionserverconsole
-  labels:
-    name: odm-decisionserverconsole
 spec:
   selector:
     run: odm-decisionserverconsole
@@ -85,8 +81,6 @@ apiVersion: v1
 kind: Service
 metadata:
   name: odm-decisionserverruntime
-  labels:
-    run: odm-decisionserverruntime
 spec:
   selector:
     run: odm-decisionserverruntime
@@ -116,8 +110,6 @@ apiVersion: v1
 kind: Service
 metadata:
   name: odm-decisioncenter
-  labels:
-    run: odm-decisioncenter
 spec:
   selector:
     run: odm-decisioncenter
@@ -147,8 +139,6 @@ apiVersion: v1
 kind: Service
 metadata:
   name: odm-decisionrunner
-  labels:
-    run: odm-decisionrunner
 spec:
   selector:
     run: odm-decisionrunner
