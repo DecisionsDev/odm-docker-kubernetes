@@ -1,13 +1,13 @@
 ###############################################################################
 # Licensed Materials - Property of IBM.
 # Copyright IBM Corporation 2017. All Rights Reserved.
-# U.S. Government Users Restricted Rights - Use, duplication or disclosure 
+# U.S. Government Users Restricted Rights - Use, duplication or disclosure
 # restricted by GSA ADP Schedule Contract with IBM Corp.
 #
 # Contributors:
 #  IBM Corporation - initial API and implementation
 ###############################################################################
-apiVersion: extensions/v1beta1 
+apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: odm-decisioncenter
@@ -27,11 +27,11 @@ spec:
     spec:
       containers:
       - name: odm-decisioncenter
-        image: {{ .Values.image.repository}}/decisioncenter:{{ .Values.image.tag }}
+        image: {{ .Values.image.repository}}/{{ .Values.image.prefix }}-decisioncenter:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
         - containerPort: 9060
       {{- if .Values.image.imagePullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.image.imagePullSecrets | indent 8 }}
-      {{- end }}        
+      {{- end }}

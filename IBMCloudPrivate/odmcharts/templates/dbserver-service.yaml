@@ -1,7 +1,7 @@
 ###############################################################################
 # Licensed Materials - Property of IBM.
 # Copyright IBM Corporation 2017. All Rights Reserved.
-# U.S. Government Users Restricted Rights - Use, duplication or disclosure 
+# U.S. Government Users Restricted Rights - Use, duplication or disclosure
 # restricted by GSA ADP Schedule Contract with IBM Corp.
 #
 # Contributors:
@@ -10,16 +10,15 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: dbserver
+  name: odm-dbserver
   labels:
-    run: dbserver
     app: {{ template "name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
   selector:
-    run: dbserver
+    run: odm-dbserver
     app: {{ template "name" . }}
     release: {{ .Release.Name }}
   type: {{ .Values.service.type }}

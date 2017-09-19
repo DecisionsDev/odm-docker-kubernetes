@@ -1,7 +1,7 @@
 ###############################################################################
 # Licensed Materials - Property of IBM.
 # Copyright IBM Corporation 2017. All Rights Reserved.
-# U.S. Government Users Restricted Rights - Use, duplication or disclosure 
+# U.S. Government Users Restricted Rights - Use, duplication or disclosure
 # restricted by GSA ADP Schedule Contract with IBM Corp.
 #
 # Contributors:
@@ -27,11 +27,11 @@ spec:
     spec:
       containers:
       - name: odm-decisionrunner
-        image: {{ .Values.image.repository}}/decisionrunner:{{ .Values.image.tag }}
+        image: {{ .Values.image.repository}}/{{ .Values.image.prefix }}-decisionrunner:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
         - containerPort: 9070
       {{- if .Values.image.imagePullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.image.imagePullSecrets | indent 8 }}
-      {{- end }}        
+      {{- end }}
