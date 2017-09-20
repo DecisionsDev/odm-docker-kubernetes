@@ -10,7 +10,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: odm-dbserver
+  name: dbserver
   labels:
     app: {{ template "name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
@@ -18,7 +18,7 @@ metadata:
     heritage: {{ .Release.Service }}
 spec:
   selector:
-    run: odm-dbserver
+    run: dbserver
     app: {{ template "name" . }}
     release: {{ .Release.Name }}
   type: {{ .Values.service.type }}

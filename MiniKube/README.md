@@ -157,7 +157,7 @@ NAME             STATUS    AGE
 Deploy the odm standard topology from the manifests directory with deployment manifest file :
 ```bash
 $ kubectl create -f odm-standard-minikube.yml
-deployment "odm-dbserver" created
+deployment "dbserver" created
 service "dbserver" created
 deployment "odm-decisionserverconsole" created
 service "odm-decisionserverconsole" created
@@ -218,7 +218,7 @@ Then, open your browser to this URL Ex:
 If you want to delete the ODM standard images use this command:
 ```bash
 $ kubectl delete -f odm-standard-minikube.yml
-deployment "odm-dbserver" deleted
+deployment "dbserver" deleted
 service "dbserver" deleted
 deployment "odm-decisionserverconsole" deleted
 service "odm-decisionserverconsole" deleted

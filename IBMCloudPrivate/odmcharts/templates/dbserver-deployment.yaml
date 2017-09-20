@@ -10,7 +10,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: odm-dbserver
+  name: dbserver
   labels:
     app: {{ template "fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -21,12 +21,12 @@ spec:
   template:
     metadata:
       labels:
-        run: odm-dbserver
+        run: dbserver
         app: {{ template "name" . }}
         release: {{ .Release.Name }}
     spec:
       containers:
-      - name: odm-dbserver
+      - name: dbserver
         image: {{ .Values.image.repository }}/{{ .Values.image.prefix }}-dbserver:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:

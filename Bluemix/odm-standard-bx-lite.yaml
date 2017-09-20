@@ -1,17 +1,17 @@
 apiVersion: extensions/v1beta1 # for versions before 1.6.0 use extensions/v1beta1
 kind: Deployment
 metadata:
-  name: odm-dbserver
+  name: dbserver
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        run: odm-dbserver
+        run: dbserver
     spec:
       containers:
-      - name: odm-dbserver
-        image: registry.ng.bluemix.net/odmlab/ibm-odm-dbserver:8.9.0
+      - name: dbserver
+        image: registry.ng.bluemix.net/odmlab/ibm-dbserver:8.9.0
         env:
         - name: SAMPLE
           value: "true"
@@ -21,10 +21,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: odm-dbserver
+  name: dbserver
 spec:
   selector:
-    run: odm-dbserver
+    run: dbserver
   type: NodePort
   ports:
    - protocol: TCP
