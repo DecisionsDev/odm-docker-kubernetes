@@ -25,6 +25,12 @@ spec:
         app: {{ template "name" . }}
         release: {{ .Release.Name }}
     spec:
+      {{- if .Values.persistence.enabled }}
+      volumes:
+      - name: odm-volume
+        persistentVolumeClaim:
+          claimName: odmclaim
+      {{- end }}
       containers:
       - name: dbserver
         image: {{ .Values.image.repository}}/dbserver:{{ .Values.image.tag }}
@@ -34,5 +40,12 @@ spec:
           value: "true"
         ports:
         - containerPort: 1527
+        {{- if .Values.persistence.enabled }}
+        volumeMounts:
+          - name: odm-volume
+            # mount path within the container
+            mountPath: /dbs
+        {{- end }}
+      {{- if .Values.image.imagePullSecrets }}
       imagePullSecrets:
       - name: admin.registrykey
