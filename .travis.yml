@@ -20,7 +20,7 @@ install:
   - git fetch
   - git checkout -B docs origin/docs
   - git pull  
-  - git checkout -B dev
+  - git checkout dev 
   - ls -R 
   - git branch
 # Building the documentation.
