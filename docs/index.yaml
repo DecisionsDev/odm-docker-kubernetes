@@ -2,9 +2,9 @@ apiVersion: v1
 entries:
   odmcharts:
   - apiVersion: v1
-    created: 2017-09-15T18:06:28.530917711+02:00
+    created: 2017-09-21T21:31:09.850373671+02:00
     description: A Helm Operational Decision Manager chart for Kubernetes
-    digest: 3bca38ac5d0575a5e20b4a32b6f5a302984d214319f715077d14a4b1a938c391
+    digest: 24476be32ee59d595a0745c7838a9f5369c900dd0b066c7f975f81b62da668fa
     home: https://developer.ibm.com/odm/
     icon: https://developer.ibm.com/odm/wp-content/uploads/sites/38/2014/10/ODMMain.png
     keywords:
@@ -20,4 +20,4 @@ entries:
     urls:
     - https://odmdev.github.io/odm-docker-kubernetes/odmcharts-8.9.0.tgz
     version: 8.9.0
-generated: 2017-09-15T18:06:28.529618917+02:00
+generated: 2017-09-21T21:31:09.849788144+02:00
