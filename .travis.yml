@@ -28,7 +28,7 @@ script:
   - cd helm/stable
   - helm init -c
   - helm package odmcharts
-  - cp odmcharts-8.9.0.tgz ../../docs/
+  - cp *.tgz ../../docs/
   - cd ../../docs/
   - helm repo index ./ --url https://odmdev.github.io/odm-docker-kubernetes/
   - git status
