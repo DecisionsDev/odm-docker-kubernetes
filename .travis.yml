@@ -21,8 +21,7 @@ install:
   - git checkout -B docs origin/docs
   - git pull  
   - git checkout dev 
-  - ls -R 
-  - git branch
+
 # Building the documentation.
 script:
   - cd helm/stable
@@ -34,5 +33,5 @@ script:
   - git status
   - git diff
   - git add .
-  - git commit -m "doc updated via travis build."
-  - git push --set-upstream origin HEAD:docs
+#  - git commit -m "doc updated via travis build."
+#  - git push --set-upstream origin HEAD:docs
