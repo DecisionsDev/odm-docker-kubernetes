@@ -18,19 +18,19 @@ install:
   # Cloning destination repository.
   - cd -
   - cd ../
-  - git clone https://$GITHUB_TOKEN@github.com/ODMDev/odm-helm-docs-repo.git
-  - cd odm-helm-docs-repo/
+  - git clone https://$GITHUB_TOKEN@github.com/ODMDev/odm-helm-charts-repo.git
+  - cd odm-helm-charts-repo/
   - git remote rm origin
-  - git remote add origin https://$GITHUB_TOKEN@github.com/ODMDev/odm-helm-docs-repo.git
+  - git remote add origin https://$GITHUB_TOKEN@github.com/ODMDev/odm-helm-charts-repo.git
   - cd ../odm-docker-kubernetes/helm/stable
 
 # Building the documentation.
 script:
   - helm init -c
   - helm package odmcharts
-  - cp *.tgz ../../../odm-helm-docs-repo/
-  - cd ../../../odm-helm-docs-repo/
-  - helm repo index ./ --url https://odmdev.github.io/odm-docker-kubernetes/
+  - cp *.tgz ../../../odm-helm-charts-repo/
+  - cd ../../../odm-helm-charts-repo/
+  - helm repo index ./ --url https://odmdev.github.io/odm-helm-charts-repo/
   - git status
   - git add .
   - git commit -m "doc updated via travis build."
