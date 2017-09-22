@@ -1,0 +1,37 @@
+language: go
+
+# Master is the only reference for documentation.
+branches:
+  only:
+  - dev
+
+install:
+  # Install `helm` in travis environment.
+  - ls $GOPATH
+  - cd $GOPATH/src/
+  - curl https://kubernetes-helm.storage.googleapis.com/helm-v2.6.1-linux-386.tar.gz > helm.tar.gz
+  - tar xzf helm.tar.gz
+  - mv linux-386/helm $GOPATH/bin/
+  # Setting Git user.
+  - git config --global user.email "travis-bot@fake.mail"
+  - git config --global user.name "Travis Bot"
+  # Cloning destination repository.
+  - cd -
+  - cd ../
+  - git clone https://$GITHUB_TOKEN@github.com/Jeremy-Pichon/odm-helm-docs-repo.git
+  - cd odm-helm-docs-repo/
+  - git remote rm origin
+  - git remote add origin https://$GITHUB_TOKEN@github.com/Jeremy-Pichon/odm-helm-docs-repo.git
+  - cd ../odm-docker-kubernetes/helm/stable
+
+# Building the documentation.
+script:
+  - helm init -c
+  - helm package odmcharts
+  - cp *.tgz ../../../odm-helm-docs-repo/
+  - cd ../../../odm-helm-docs-repo/
+  - helm repo index ./ --url https://odmdev.github.io/odm-docker-kubernetes/
+  - git status
+  - git add .
+  - git commit -m "doc updated via travis build."
+  - git push --set-upstream origin master
