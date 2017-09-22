@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 image:
-  repository: mycluster:8500/odmdocker
+  repository: odmdocker
   tag: 8.9.0
   pullPolicy: IfNotPresent
 ## Optionally specify an array of imagePullSecrets.
