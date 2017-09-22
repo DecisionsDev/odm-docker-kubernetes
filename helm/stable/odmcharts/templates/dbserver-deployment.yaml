@@ -43,9 +43,9 @@ spec:
         {{- if .Values.persistence.enabled }}
         volumeMounts:
           - name: odm-volume
-            # mount path within the container
             mountPath: /dbs
         {{- end }}
       {{- if .Values.image.imagePullSecrets }}
       imagePullSecrets:
       - name: admin.registrykey
+      {{- end }}
