@@ -29,7 +29,7 @@ script:
   - helm package odmcharts
   - cp *.tgz ../../docs/
   - cd ../../docs/
-  - helm repo index ./ --url https://odmdev.github.io/odm-docker-kubernetes/
+  - helm repo index ./ --url https://odmdev.github.io/odm-helm-docs-repo/
   - git status
   - git diff
   - git add .
