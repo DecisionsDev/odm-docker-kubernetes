@@ -87,7 +87,7 @@ More informations could be found [here](https://www.ibm.com/developerworks/commu
 ![AppCenter](../images/ODM-IBMPrivateCloud-AppCenter.jpg)
 	- Click install button in the ODM Chart
 ![AppCenter-Inst](../images/ODM-IBMPrivateCloud-AppCenterInst.jpg)
-https://odmdev.github.io/odm-docker-kubernetes/
+https://odmdev.github.io/odm-helm-charts-repo/
 
 
 # 5. Deploy an ODM topology with the helm command line tool.
@@ -109,7 +109,7 @@ Installation instruction for helm tool can be found here :
 # 5.2 Deploy the ODM Helm Chart:
 ```bash
 	cd IBM-ODM-Kubernetes/IBMCloudPrivate
-	helm install odmcharts
+	helm install  odmcharts --set image.pullSecrets=admin.registryKey --set image.repository=mycluster.icp:8500/odmdocker
  ```
 
 To install Helm client please follow this [guide](https://github.com/kubernetes/helm/blob/master/docs/install.md).
