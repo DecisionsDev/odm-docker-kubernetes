@@ -89,7 +89,7 @@ More informations could be found [here](https://www.ibm.com/developerworks/commu
 ![AppCenter-Inst](../images/ODM-IBMPrivateCloud-AppCenterInst.jpg)
 https://odmdev.github.io/odm-helm-charts-repo/
 
-
+ODMCharts parameters are describe in the helm [README](../helm/stable/odmcharts/README.md) file.
 # 5. Deploy an ODM topology with the helm command line tool.
 
 # 5.1. Interacting with your cluster
