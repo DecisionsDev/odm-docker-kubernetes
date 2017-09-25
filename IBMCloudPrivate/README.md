@@ -53,22 +53,22 @@ Once IBM Private Cloud is installed you can interact with the admin console.
 In this usecase, we will the [IBM Cloud Private Docker Registry]
 
 ```bash
-    docker login mycluster:8500 (username/password)  -> admin/admin by default.
+    docker login mycluster.icp:8500 (username/password)  -> admin/admin by default.
 
-    docker tag odmdocker/dbserver:8.9.0 mycluster:8500/odmdocker/dbserver:8.9.0
-    docker push mycluster:8500/odmdocker/dbserver:8.9.0
+    docker tag odmdocker/dbserver:8.9.0 mycluster.icp:8500/odmdocker/dbserver:8.9.0
+    docker push mycluster.icp:8500/odmdocker/dbserver:8.9.0
 
-    docker tag odmdocker/decisionserverconsole:8.9.0 mycluster:8500/odmdocker/decisionserverconsole:8.9.0
-    docker push  mycluster:8500/odmdocker/decisionserverconsole:8.9.0
+    docker tag odmdocker/decisionserverconsole:8.9.0 mycluster.icp:8500/odmdocker/decisionserverconsole:8.9.0
+    docker push  mycluster.icp:8500/odmdocker/decisionserverconsole:8.9.0
 
-    docker tag odmdocker/decisionrunner:8.9.0  mycluster:8500/odmdocker/decisionrunner:8.9.0
-    docker push  mycluster:8500/odmdocker/decisionrunner:8.9.0
+    docker tag odmdocker/decisionrunner:8.9.0  mycluster.icp:8500/odmdocker/decisionrunner:8.9.0
+    docker push  mycluster.icp:8500/odmdocker/decisionrunner:8.9.0
 
-    docker tag odmdocker/decisionserverruntime:8.9.0 mycluster:8500/odmdocker/decisionserverruntime:8.9.0
-    docker push mycluster:8500/odmdocker/decisionserverruntime:8.9.0
+    docker tag odmdocker/decisionserverruntime:8.9.0 mycluster.icp:8500/odmdocker/decisionserverruntime:8.9.0
+    docker push mycluster.icp:8500/odmdocker/decisionserverruntime:8.9.0
 
-    docker tag odmdocker/decisioncenter:8.9.0 mycluster:8500/odmdocker/decisioncenter:8.9.0
-    docker push mycluster:8500/odmdocker/decisioncenter:8.9.0
+    docker tag odmdocker/decisioncenter:8.9.0 mycluster.icp:8500/odmdocker/decisioncenter:8.9.0
+    docker push mycluster.icp:8500/odmdocker/decisioncenter:8.9.0
   ```
 
 
