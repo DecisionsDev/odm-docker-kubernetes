@@ -94,7 +94,7 @@ minikube dashboard
 ```
 
 
-# 3. Setup your environment 
+# 3. Setup your environment
 
 When using a single VM Kubernetes it's really handy to reuse the Docker daemon inside the VM. It means that you don't have to build on your host machine and push the images into a docker registry - you can just build inside the same docker daemon as minikube which speeds up the user experience.
 
@@ -129,10 +129,10 @@ Remember to turn off the imagePullPolicy:Always, as otherwise kubernetes won't u
 
 * Go to the ODM Install directory, clone the odm docker repository.
 ```bash
-      cd <ODM_INSTALLATION>
-      git clone https://github.com/lgrateau/odm-ondocker
-      cp odm-ondocker/src/main/resources/.dockerignore ./
-      docker-compose build
+$ cd <ODM_INSTALLATION>
+$ git clone https://github.com/lgrateau/odm-ondocker
+$ cp odm-ondocker/src/main/resources/.dockerignore ./
+$ docker-compose build
   ```
 
 you should now be able to use the odm docker images:
@@ -187,29 +187,29 @@ Now you can use the link to access your application on your browser.
 
 * For Decision Server Runtime:
 ```bash
-minikube service odm-decisionserverruntime  --url
-http://192.168.99.100:31204/ 
+$ minikube service odm-decisionserverruntime  --url
+http://192.168.99.100:31204/
 ```
 Then, open your browser to this URL : http://192.168.99.100:31204/**_DecisionService_**
 
 * For Decision Server Console:
 ```bash
-minikube service odm-decisionserverconsole  --url
-http://192.168.99.100:32519 
+$ minikube service odm-decisionserverconsole  --url
+http://192.168.99.100:32519
 ```
 Then, open your browser to this URL Ex: http://192.168.99.100:31204/*****res*****
 
 * For Decision Runner:
 ```bash
-minikube service odm-decisionrunner  --url
-http://192.168.99.100:32519 
+$ minikube service odm-decisionrunner  --url
+http://192.168.99.100:32519
 ```
 Then, open your browser to this URL Ex: http://192.168.99.100:31204/*****testing*****
 
 * For Decision Center:
 ```bash
-minikube service odm-decisioncenter  --url
-http://192.168.99.100:32519 
+$ minikube service odm-decisioncenter  --url
+http://192.168.99.100:32519
 ```
 Then, open your browser to this URL Ex:
    * Decision Center Console : http://192.168.99.100:31204/**_decisioncenter/t/library_**
@@ -233,4 +233,3 @@ service "odm-decisionrunner" deleted
 
 # License
 [Apache 2.0](LICENSE)
-
