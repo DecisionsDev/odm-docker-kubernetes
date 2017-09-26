@@ -138,12 +138,12 @@ $ docker-compose build
 you should now be able to use the odm docker images:
 ```
 $ docker images
-REPOSITORY                                             TAG                   IMAGE ID            CREATED             SIZE
-odmdocker/decisionserverruntime                        8.9.0                 021f34b7a79c        54 minutes ago      482 MB
-odmdocker/decisioncenter                               8.9.0                 eaae4b9b4903        57 minutes ago      616 MB
-odmdocker/decisionrunner                               8.9.0                 f4a763608c65        58 minutes ago      498 MB
-odmdocker/decisionserverconsole                        8.9.0                 d7358780fbde        59 minutes ago      463 MB
-odmdocker/dbserver                                     8.9.0                 364f06111328        About an hour ago   658 MB
+REPOSITORY                                         TAG                   IMAGE ID            CREATED             SIZE
+ibmcom/odm-decisionserverruntime                   8.9.0                 021f34b7a79c        54 minutes ago      482 MB
+ibmcom/odm-decisioncenter                          8.9.0                 eaae4b9b4903        57 minutes ago      616 MB
+ibmcom/odm-decisionrunner                          8.9.0                 f4a763608c65        58 minutes ago      498 MB
+ibmcom/odm-decisionserverconsole                   8.9.0                 d7358780fbde        59 minutes ago      463 MB
+ibmcom/dbserver                                    8.9.0                 364f06111328        About an hour ago   658 MB
 ```
 # 5. Create services and deployments
 
@@ -157,7 +157,7 @@ NAME             STATUS    AGE
 Deploy the odm standard topology from the manifests directory with deployment manifest file :
 ```bash
 $ kubectl create -f odm-standard-minikube.yml
-deployment "odm-dbserver" created
+deployment "dbserver" created
 service "dbserver" created
 deployment "odm-decisionserverconsole" created
 service "odm-decisionserverconsole" created
@@ -218,7 +218,7 @@ Then, open your browser to this URL Ex:
 If you want to delete the ODM standard images use this command:
 ```bash
 $ kubectl delete -f odm-standard-minikube.yml
-deployment "odm-dbserver" deleted
+deployment "dbserver" deleted
 service "dbserver" deleted
 deployment "odm-decisionserverconsole" deleted
 service "odm-decisionserverconsole" deleted

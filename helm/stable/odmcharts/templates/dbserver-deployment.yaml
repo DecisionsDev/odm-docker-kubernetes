@@ -33,7 +33,7 @@ spec:
       {{- end }}
       containers:
       - name: dbserver
-        image: {{ .Values.image.repository}}/dbserver:{{ .Values.image.tag }}
+        image: {{ .Values.image.repository }}/{{ .Values.image.prefix }}-dbserver:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
         - name: SAMPLE

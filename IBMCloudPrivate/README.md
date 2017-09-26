@@ -50,25 +50,25 @@ Once IBM Private Cloud is installed you can interact with the admin console.
 
 # 3. Tag and deploy ODM Docker material in the IBM Cloud Private Docker Registry.
 
-In this usecase, we will the [IBM Cloud Private Docker Registry]
+In this use case, we will use the [IBM Cloud Private Docker Registry]
 
 ```bash
     docker login mycluster.icp:8500 (username/password)  -> admin/admin by default.
 
-    docker tag odmdocker/dbserver:8.9.0 mycluster.icp:8500/odmdocker/dbserver:8.9.0
-    docker push mycluster.icp:8500/odmdocker/dbserver:8.9.0
+    docker tag ibmcom/dbserver:8.9.0 mycluster:8500/ibmcom/dbserver:8.9.0
+    docker push mycluster.icp:8500/ibmcom/dbserver:8.9.0
 
-    docker tag odmdocker/decisionserverconsole:8.9.0 mycluster.icp:8500/odmdocker/decisionserverconsole:8.9.0
-    docker push  mycluster.icp:8500/odmdocker/decisionserverconsole:8.9.0
+    docker tag ibmcom/odm-decisionserverconsole:8.9.0 mycluster:8500/ibmcom/odm-decisionserverconsole:8.9.0
+    docker push  mycluster.icp:8500/ibmcom/odm-decisionserverconsole:8.9.0
 
-    docker tag odmdocker/decisionrunner:8.9.0  mycluster.icp:8500/odmdocker/decisionrunner:8.9.0
-    docker push  mycluster.icp:8500/odmdocker/decisionrunner:8.9.0
+    docker tag ibmcom/odm-decisionrunner:8.9.0  mycluster:8500/ibmcom/odm-decisionrunner:8.9.0
+    docker push  mycluster.icp:8500/ibmcom/odm-decisionrunner:8.9.0
 
-    docker tag odmdocker/decisionserverruntime:8.9.0 mycluster.icp:8500/odmdocker/decisionserverruntime:8.9.0
-    docker push mycluster.icp:8500/odmdocker/decisionserverruntime:8.9.0
+    docker tag ibmcom/odm-decisionserverruntime:8.9.0 mycluster:8500/ibmcom/odm-decisionserverruntime:8.9.0
+    docker push mycluster.icp:8500/ibmcom/odm-decisionserverruntime:8.9.0
 
-    docker tag odmdocker/decisioncenter:8.9.0 mycluster.icp:8500/odmdocker/decisioncenter:8.9.0
-    docker push mycluster.icp:8500/odmdocker/decisioncenter:8.9.0
+    docker tag ibmcom/odm-decisioncenter:8.9.0 mycluster:8500/ibmcom/odm-decisioncenter:8.9.0
+    docker push mycluster.icp:8500/ibmcom/odm-decisioncenter:8.9.0
   ```
 
 

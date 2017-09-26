@@ -27,7 +27,7 @@ spec:
     spec:
       containers:
       - name: odm-decisionrunner
-        image: {{ .Values.image.repository}}/decisionrunner:{{ .Values.image.tag }}
+        image: {{ .Values.image.repository}}/{{ .Values.image.prefix }}-decisionrunner:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
         - containerPort: 9070

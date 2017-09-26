@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1 # for versions before 1.6.0 use extensions/v1beta1
 kind: Deployment
 metadata:
-  name: odm-dbserver
+  name: dbserver
 spec:
   replicas: 1
   template:
@@ -11,7 +11,7 @@ spec:
     spec:
       containers:
       - name: dbserver
-        image: registry.ng.bluemix.net/odmlab/ibm-odm-dbserver:8.9.0
+        image: registry.ng.bluemix.net/odmlab/ibm-dbserver:8.9.0
         env:
         - name: SAMPLE
           value: "true"
@@ -22,8 +22,6 @@ apiVersion: v1
 kind: Service
 metadata:
   name: dbserver
-  labels:
-    run: dbserver
 spec:
   selector:
     run: dbserver
@@ -54,8 +52,6 @@ apiVersion: v1
 kind: Service
 metadata:
   name: odm-decisionserverconsole
-  labels:
-    name: odm-decisionserverconsole
 spec:
   selector:
     run: odm-decisionserverconsole
@@ -85,8 +81,6 @@ apiVersion: v1
 kind: Service
 metadata:
   name: odm-decisionserverruntime
-  labels:
-    run: odm-decisionserverruntime
 spec:
   selector:
     run: odm-decisionserverruntime
@@ -116,8 +110,6 @@ apiVersion: v1
 kind: Service
 metadata:
   name: odm-decisioncenter
-  labels:
-    run: odm-decisioncenter
 spec:
   selector:
     run: odm-decisioncenter
@@ -147,8 +139,6 @@ apiVersion: v1
 kind: Service
 metadata:
   name: odm-decisionrunner
-  labels:
-    run: odm-decisionrunner
 spec:
   selector:
     run: odm-decisionrunner

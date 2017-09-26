@@ -27,7 +27,7 @@ spec:
     spec:
       containers:
       - name: odm-decisioncenter
-        image: {{ .Values.image.repository}}/decisioncenter:{{ .Values.image.tag }}
+        image: {{ .Values.image.repository}}/{{ .Values.image.prefix }}-decisioncenter:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
         - containerPort: 9060
