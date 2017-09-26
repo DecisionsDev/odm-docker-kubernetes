@@ -1,13 +1,13 @@
 ###############################################################################
 # Licensed Materials - Property of IBM.
 # Copyright IBM Corporation 2017. All Rights Reserved.
-# U.S. Government Users Restricted Rights - Use, duplication or disclosure 
+# U.S. Government Users Restricted Rights - Use, duplication or disclosure
 # restricted by GSA ADP Schedule Contract with IBM Corp.
 #
 # Contributors:
 #  IBM Corporation - initial API and implementation
 ###############################################################################
-apiVersion: extensions/v1beta1 
+apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: dbserver
@@ -15,7 +15,7 @@ metadata:
     app: {{ template "fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"  
+    heritage: "{{ .Release.Service }}"
 spec:
   replicas: 1
   template:
@@ -25,6 +25,12 @@ spec:
         app: {{ template "name" . }}
         release: {{ .Release.Name }}
     spec:
+      {{- if .Values.persistence.enabled }}
+      volumes:
+      - name: odm-volume
+        persistentVolumeClaim:
+          claimName: odmclaim
+      {{- end }}
       containers:
       - name: dbserver
         image: {{ .Values.image.repository}}/dbserver:{{ .Values.image.tag }}
@@ -34,5 +40,12 @@ spec:
           value: "true"
         ports:
         - containerPort: 1527
+        {{- if .Values.persistence.enabled }}
+        volumeMounts:
+          - name: odm-volume
+            mountPath: /dbs
+        {{- end }}
+        {{- if (not (empty .Values.image.pullSecrets )) }}
       imagePullSecrets:
-      - name: admin.registrykey
+        - name: {{ .Values.image.pullSecrets }}
+         {{- end }}

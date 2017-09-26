@@ -53,22 +53,22 @@ Once IBM Private Cloud is installed you can interact with the admin console.
 In this usecase, we will the [IBM Cloud Private Docker Registry]
 
 ```bash
-    docker login mycluster:8500 (username/password)  -> admin/admin by default.
-    
-    docker tag odmdocker/dbserver:8.9.0 mycluster:8500/odmdocker/dbserver:8.9.0
-    docker push mycluster:8500/odmdocker/dbserver:8.9.0
-    
-    docker tag odmdocker/decisionserverconsole:8.9.0 mycluster:8500/odmdocker/decisionserverconsole:8.9.0
-    docker push  mycluster:8500/odmdocker/decisionserverconsole:8.9.0
-    
-    docker tag odmdocker/decisionrunner:8.9.0  mycluster:8500/odmdocker/decisionrunner:8.9.0
-    docker push  mycluster:8500/odmdocker/decisionrunner:8.9.0
-    
-    docker tag odmdocker/decisionserverruntime:8.9.0 mycluster:8500/odmdocker/decisionserverruntime:8.9.0
-    docker push mycluster:8500/odmdocker/decisionserverruntime:8.9.0
-    
-    docker tag odmdocker/decisioncenter:8.9.0 mycluster:8500/odmdocker/decisioncenter:8.9.0
-    docker push mycluster:8500/odmdocker/decisioncenter:8.9.0
+    docker login mycluster.icp:8500 (username/password)  -> admin/admin by default.
+
+    docker tag odmdocker/dbserver:8.9.0 mycluster.icp:8500/odmdocker/dbserver:8.9.0
+    docker push mycluster.icp:8500/odmdocker/dbserver:8.9.0
+
+    docker tag odmdocker/decisionserverconsole:8.9.0 mycluster.icp:8500/odmdocker/decisionserverconsole:8.9.0
+    docker push  mycluster.icp:8500/odmdocker/decisionserverconsole:8.9.0
+
+    docker tag odmdocker/decisionrunner:8.9.0  mycluster.icp:8500/odmdocker/decisionrunner:8.9.0
+    docker push  mycluster.icp:8500/odmdocker/decisionrunner:8.9.0
+
+    docker tag odmdocker/decisionserverruntime:8.9.0 mycluster.icp:8500/odmdocker/decisionserverruntime:8.9.0
+    docker push mycluster.icp:8500/odmdocker/decisionserverruntime:8.9.0
+
+    docker tag odmdocker/decisioncenter:8.9.0 mycluster.icp:8500/odmdocker/decisioncenter:8.9.0
+    docker push mycluster.icp:8500/odmdocker/decisioncenter:8.9.0
   ```
 
 
@@ -76,27 +76,27 @@ More informations could be found [here](https://www.ibm.com/developerworks/commu
 
 # 4. Deploy an ODM topology with the admin console.
   - Logon in the IBM Cloud Private console.
-  - Add the ODM Charts repository (System->Repositories) 
+  - Add the ODM Charts repository (System->Repositories)
  ![AppCenter](../images/ODM-IBMPrivateCloud-AddRepository.jpg)
     - Click Add Repository
     - Name: odmcharts
-    - URL : https://odmdev.github.io/odm-docker-kubernetes/
- 
-  - Go to the App Center. 
+    - URL :  https://odmdev.github.io/odm-helm-charts-repo/
+
+  - Go to the App Center.
   	- You should see the ODM Chart in the package List.
 ![AppCenter](../images/ODM-IBMPrivateCloud-AppCenter.jpg)
 	- Click install button in the ODM Chart
 ![AppCenter-Inst](../images/ODM-IBMPrivateCloud-AppCenterInst.jpg)
-https://odmdev.github.io/odm-docker-kubernetes/
+https://odmdev.github.io/odm-helm-charts-repo/
 
-
+ODMCharts parameters are describe in the helm [README](../helm/stable/odmcharts/README.md) file.
 # 5. Deploy an ODM topology with the helm command line tool.
 
 # 5.1. Interacting with your cluster
 
 To interact with kubectl and helm tools you need to set environment variable.
 
-This setting is available in the IBM Private console (username->configure client) 
+This setting is available in the IBM Private console (username->configure client)
 
 ![AppCenter-Username](../images/ODM-IBMPrivateCloud-SetupVariable.jpg)
   - Click *Configure Client*
@@ -104,12 +104,12 @@ This setting is available in the IBM Private console (username->configure client
 
  [IBM Cloud Private knowledge center](https://www.ibm.com/support/knowledgecenter/en/SSBS6K_1.2.0/manage_cluster/cfc_cli.html)  
 
-Installation instruction for helm tool can be found here : 
+Installation instruction for helm tool can be found here :
 
 # 5.2 Deploy the ODM Helm Chart:
 ```bash
 	cd IBM-ODM-Kubernetes/IBMCloudPrivate
-	helm install odmcharts
+	helm install  odmcharts --set image.pullSecrets=admin.registryKey --set image.repository=mycluster.icp:8500/odmdocker
  ```
 
 To install Helm client please follow this [guide](https://github.com/kubernetes/helm/blob/master/docs/install.md).
@@ -194,4 +194,3 @@ To learn more about the release, try:
 
 # License
 [Apache 2.0](LICENSE)
-

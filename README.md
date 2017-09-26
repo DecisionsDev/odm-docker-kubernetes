@@ -1,7 +1,7 @@
 # IBM-ODM-Kubernetes
 IBM Operational Decision Manager on Kubernetes
 
-[![Build Status](https://travis-ci.org/PierreFeillet/IBM-ODM-Kubernetes.svg?branch=master)](https://travis-ci.org/PierreFeillet/IBM-ODM-Kubernetes)
+[![Build Status](https://travis-ci.org/ODMDev/odm-docker-kubernetes.svg?branch=master)](https://travis-ci.org/ODMDev/odm-docker-kubernetes)
 
 
 #  Deploy IBM Operational Decision Manager Standard on a Kubernetes Cluster
@@ -17,7 +17,7 @@ We leverage the ODM Docker material put available on this repository [odm-ondock
 ## Deploying ODM Rules in the following environments
 - [Bluemix Kubernetes Cluster](Bluemix/README.md)
 - [MiniKube](MiniKube/README.md)
- 
+
 ## References
 
 # Notice
