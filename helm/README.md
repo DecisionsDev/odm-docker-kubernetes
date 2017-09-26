@@ -7,3 +7,5 @@ Helm is a tool that streamlines installing and managing Kubernetes applications.
         A description of the package (Chart.yaml)
         One or more templates, which contain Kubernetes manifest files
     Charts can be stored on disk, or fetched from remote chart repositories (like Debian or RedHat packages)
+
+The documented ODM Helm Charts could be found here : [stable/odmcharts/README.md](stable/odmcharts/README.md)
