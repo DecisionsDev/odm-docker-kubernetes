@@ -13,7 +13,7 @@ image:
   pullSecrets:
 
 persistence:
-  enabled: false
+  enabled: true
 
 
 service:

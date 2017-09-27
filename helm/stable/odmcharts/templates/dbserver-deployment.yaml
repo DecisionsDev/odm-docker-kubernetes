@@ -27,9 +27,9 @@ spec:
     spec:
       {{- if .Values.persistence.enabled }}
       volumes:
-      - name: odm-volume
+      - name: {{ template "fullname" . }}-volume
         persistentVolumeClaim:
-          claimName: odmclaim
+          claimName: {{ template "fullname" . }}-claim
       {{- end }}
       containers:
       - name: dbserver
@@ -42,7 +42,7 @@ spec:
         - containerPort: 1527
         {{- if .Values.persistence.enabled }}
         volumeMounts:
-          - name: odm-volume
+          - name: {{ template "fullname" . }}-volume
             mountPath: /dbs
         {{- end }}
         {{- if (not (empty .Values.image.pullSecrets )) }}
