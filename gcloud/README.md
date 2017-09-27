@@ -44,51 +44,51 @@ gcloud info
 # 2. Get ODM Docker files and Kubernetes manifest
 
 * `git clone` the following projects:
-   * [odm-ondocker](https://github.com/lgrateau/odm-ondocker)
+   * [odm-ondocker](https://github.com/ODMDev/odm-ondocker)
    ```bash
-      git clone https://github.com/lgrateau/odm-ondocker
+      git clone https://github.com/ODMDev/odm-ondocker
   ```
-   * [IBM-ODM-Kubernetes](https://github.com/PierreFeillet/IBM-ODM-Kubernetes)
+   * [odm-docker-kubernetes](https://github.com/ODMDev/odm-docker-kubernetes)
    ```bash
-      git clone https://https://github.com/PierreFeillet/IBM-ODM-Kubernetes
+      git clone https://github.com/ODMDev/odm-docker-kubernetes
   ```
 
 # 3. Build your ODM images
 
-Docker registry eu.gcr.io/odm890-kubernetes/ is used as an example. PLease replace it by your registry path.
+Docker registry eu.gcr.io/odm890-kubernetes/ is used as an example. Please replace it by your registry path.
 
 Build the decision server container
 
 ```bash
-docker tag odmdocker/decisionserverruntime:8.9.0 eu.gcr.io/odm890-kubernetes/ibm-odm-decisionserverruntime:8.9.0 
+docker tag ibmcom/odm-decisionserverruntime:8.9.0 eu.gcr.io/odm890-kubernetes/ibm-odm-decisionserverruntime:8.9.0
 gcloud docker -- push eu.gcr.io/odm890-kubernetes/ibm-odm-decisionserverruntime:8.9.0
 ```
 
 Build the Derby decision db server container
 
 ```bash
-docker tag odmdocker/dbserver:8.9.0 eu.gcr.io/odm890-kubernetes/ibm-odm-dbserver:8.9.0 
+docker tag ibmcom/dbserver:8.9.0 eu.gcr.io/odm890-kubernetes/ibm-odm-dbserver:8.9.0
 gcloud docker -- push eu.gcr.io/odm890-kubernetes/ibm-odm-dbserver:8.9.0
 ```
 
 Build the decision center container
 
 ```bash
-docker tag odmdocker/decisioncenter:8.9.0 eu.gcr.io/odm890-kubernetes/ibm-odm-decisioncenter:8.9.0 
+docker tag ibmcom/odm-decisioncenter:8.9.0 eu.gcr.io/odm890-kubernetes/ibm-odm-decisioncenter:8.9.0
 gcloud docker -- push eu.gcr.io/odm890-kubernetes/ibm-odm-decisioncenter:8.9.0
 ```
 
 Build the decision server console runtime container
 
 ```bash
-docker tag odmdocker/decisionserverconsole:8.9.0 eu.gcr.io/odm890-kubernetes/ibm-odm-decisionserverconsole:8.9.0 
+docker tag ibmcom/odm-decisionserverconsole:8.9.0 eu.gcr.io/odm890-kubernetes/ibm-odm-decisionserverconsole:8.9.0
 gcloud docker -- push eu.gcr.io/odm890-kubernetes/ibm-odm-decisionserverconsole:8.9.0
 ```
 
 Build the decision runner container
 
 ```bash
-docker tag odmdocker/decisionrunner:8.9.0 eu.gcr.io/odm890-kubernetes/ibm-odm-decisionrunner:8.9.0 
+docker tag ibmcom/odm-decisionrunner:8.9.0 eu.gcr.io/odm890-kubernetes/ibm-odm-decisionrunner:8.9.0
 gcloud docker -- push eu.gcr.io/odm890-kubernetes/ibm-odm-decisionrunner:8.9.0
 ```
 
@@ -157,4 +157,3 @@ With this ODM topology in place you access to web applications to author, deploy
 
 # License
 [Apache 2.0](LICENSE)
-
