@@ -10,7 +10,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: odm-decisioncenter
+  name: {{ template "odm.decisioncenter.fullname" . }}
   labels:
     app: {{ template "fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -21,17 +21,24 @@ spec:
   template:
     metadata:
       labels:
-        run: odm-decisioncenter
+        run: {{ template "odm.decisioncenter.fullname" . }}
         app: {{ template "name" . }}
         release: {{ .Release.Name }}
     spec:
       containers:
-      - name: odm-decisioncenter
+      - name: {{ template "odm.decisioncenter.fullname" . }}
         image: {{ .Values.image.repository}}/{{ .Values.image.prefix }}-decisioncenter:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
         - containerPort: 9060
-        {{- if (not (empty .Values.image.pullSecrets )) }}
+        env:
+          - name: "DBSERVER_NAME"
+            value: {{ template "odm.dbserver.fullname" . }}
+          - name: "DECISIONRUNNER_NAME"
+            value: {{ template "odm.decisionrunner.fullname" . }}
+          - name: "DECISIONSERVERCONSOLE_NAME"
+            value: {{ template "odm.decisionserverconsole.fullname" . }}
+            {{- if (not (empty .Values.image.pullSecrets )) }}
       imagePullSecrets:
         - name: {{ .Values.image.pullSecrets }}
          {{- end }}

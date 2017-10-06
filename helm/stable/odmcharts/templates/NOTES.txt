@@ -5,7 +5,7 @@ For more informations about this template you can take a look in this github htt
 ODM Informations
 -----------------
 
-Username/Password : 
+Username/Password :
   - For Business Console : rtsAdmin/rtsAdmin
   - For RES : resAdmin/resAdmin
   - For Decision Runner: resDeployer/resDeployer
@@ -15,30 +15,30 @@ Username/Password :
 {{- if contains "NodePort" .Values.service.type }}
 
 -- Decision Center / Business Console
-  export NODE_PORT_DC=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services odm-decisioncenter)
+ * Decision Center / Business Console
+  export NODE_PORT_DC=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "odm.decisioncenter.fullname" . }})
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
-  * Decision Center / Business Console
   echo http://$NODE_IP:$NODE_PORT_DC/decisioncenter
 
-  * Team Server 
+  * Team Server
   echo http://$NODE_IP:$NODE_PORT_DC/teamserver
 
--- Testing and Simulation 
-  export NODE_PORT_DR=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services odm-decisionrunner)
+-- Testing and Simulation
+  export NODE_PORT_DR=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "odm.decisionrunner.fullname" . }} )
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
   * Decision Runner
   echo http://$NODE_IP:$NODE_PORT_DR/DecisionRunner
 
 
 -- Decision Service Console (RES Console)
-  export NODE_PORT_DSC=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services odm-decisionserverconsole)
+  export NODE_PORT_DSC=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "odm.decisionserverconsole.fullname" . }})
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
   * Decision Service Console (RES Console)
   echo http://$NODE_IP:$NODE_PORT_DSC/res
 
 
 -- Decision Service Runtime (Htds)
- export NODE_PORT_DSC=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services odm-decisionserverruntime)
+ export NODE_PORT_DSC=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "odm.decisionserverruntime.fullname" . }})
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
   * Decision Service Runtime
   echo http://$NODE_IP:$NODE_PORT_DSC/DecisionService
@@ -46,32 +46,29 @@ Username/Password :
 
 {{- else if contains "LoadBalancer" .Values.service.type }}
      NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-         
+
  -- Decision Center / Business Console
-  export SERVICE_IP_DC=$(kubectl get svc --namespace {{ .Release.Namespace }} odm-decisioncenter -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  export SERVICE_IP_DC=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "odm.decisioncenter.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
   * Decision Center / Business Console
   echo http://$SERVICE_IP_DC:{{ .Values.service.externalPort }}/decisioncenter
 
-  * Team Server 
+  * Team Server
    echo http://$SERVICE_IP_DC:{{ .Values.service.externalPort }}/teamserver
 
--- Testing and Simulation 
-  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} odm-decisionrunner -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+-- Testing and Simulation
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "odm.decisionrunner.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
   echo http://$SERVICE_IP:{{ .Values.service.externalPort }}/DecisionRunner
 
 -- Decision Service Console (RES Console)
-  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} odm-decisionserverconsole -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "odm.decisionserverconsole.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
   echo http://$SERVICE_IP:{{ .Values.service.externalPort }}/res
 
 -- Decision Service Runtime (Htds)
-  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} odm-decisionserverruntime -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "odm.decisionserverruntime.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
   echo http://$SERVICE_IP:{{ .Values.service.externalPort }}/DecisionServicde
 
 {{- else if contains "ClusterIP" .Values.service.type }}
-
--- Testing and Simulation 
-  TODO.
-
+dddd
 {{- end }}
 
 

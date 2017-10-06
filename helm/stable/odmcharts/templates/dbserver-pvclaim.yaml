@@ -10,7 +10,7 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "fullname" . }}-claim
+  name: {{ template "odm.persistenceclaim.fullname" . }}
 spec:
   accessModes:
     - ReadWriteOnce

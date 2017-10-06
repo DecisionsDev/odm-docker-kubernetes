@@ -93,8 +93,12 @@ spec:
     run: odm-decisionserverconsole
   type: NodePort
   ports:
-   - protocol: TCP
+   - name: http
+     protocol: TCP
      port: 9080
+   - name: notification
+     protocol: TCP
+     port: 1883     
 ---
 apiVersion: extensions/v1beta1 # for versions before 1.6.0 use extensions/v1beta1
 kind: Deployment

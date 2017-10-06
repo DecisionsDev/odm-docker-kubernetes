@@ -14,6 +14,7 @@ image:
 
 persistence:
   enabled: true
+  populateDataSample: false
 
 
 service:

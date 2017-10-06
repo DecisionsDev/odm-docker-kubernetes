@@ -10,7 +10,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: odm-decisionserverconsole
+  name: {{ template "odm.decisionserverconsole.fullname" . }}
   labels:
     app: {{ template "fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -21,14 +21,17 @@ spec:
   template:
     metadata:
       labels:
-        run: odm-decisionserverconsole
+        run: {{ template "odm.decisionserverconsole.fullname" . }}
         app: {{ template "name" . }}
         release: {{ .Release.Name }}
     spec:
       containers:
-      - name: odm-decisionserverconsole
+      - name: {{ template "odm.decisionserverconsole.fullname" . }}
         image: {{ .Values.image.repository}}/{{ .Values.image.prefix }}-decisionserverconsole:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+          - name: "DBSERVER_NAME"
+            value: {{ template "odm.dbserver.fullname" . }}
         ports:
         - containerPort: 9080
         - containerPort: 1883

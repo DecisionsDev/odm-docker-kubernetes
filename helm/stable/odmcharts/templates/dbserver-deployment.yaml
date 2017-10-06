@@ -10,7 +10,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: dbserver
+  name: {{ template "odm.dbserver.fullname" . }}
   labels:
     app: {{ template "fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -21,7 +21,7 @@ spec:
   template:
     metadata:
       labels:
-        run: dbserver
+        run: {{ template "odm.dbserver.fullname" . }}
         app: {{ template "name" . }}
         release: {{ .Release.Name }}
     spec:
@@ -29,15 +29,15 @@ spec:
       volumes:
       - name: {{ template "fullname" . }}-volume
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}-claim
+          claimName: {{ template "odm.persistenceclaim.fullname" . }}
       {{- end }}
       containers:
-      - name: dbserver
+      - name: {{ template "odm.dbserver.fullname" . }}
         image: {{ .Values.image.repository }}/dbserver:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
         - name: SAMPLE
-          value: "true"
+          value: "{{ .Values.persistence.populateDataSample }}"
         ports:
         - containerPort: 1527
         {{- if .Values.persistence.enabled }}

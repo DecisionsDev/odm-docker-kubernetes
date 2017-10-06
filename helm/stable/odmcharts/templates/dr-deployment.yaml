@@ -10,7 +10,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: odm-decisionrunner
+  name: {{ template "odm.decisionrunner.fullname" . }}
   labels:
     app: {{ template "fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -21,14 +21,17 @@ spec:
   template:
     metadata:
       labels:
-        run: odm-decisionrunner
+        run: {{ template "odm.decisionrunner.fullname" . }}
         app: {{ template "name" . }}
         release: {{ .Release.Name }}
     spec:
       containers:
-      - name: odm-decisionrunner
+      - name: {{ template "odm.decisionrunner.fullname" . }}
         image: {{ .Values.image.repository}}/{{ .Values.image.prefix }}-decisionrunner:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+          - name: "DBSERVER_NAME"
+            value: {{ template "odm.dbserver.fullname" . }}
         ports:
         - containerPort: 9070
     {{- if (not (empty .Values.imagePullSecrets )) }}

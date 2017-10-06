@@ -10,7 +10,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: odm-decisioncenter
+  name: {{ template "odm.decisioncenter.fullname" . }}
   labels:
     app: {{ template "name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
@@ -18,7 +18,7 @@ metadata:
     heritage: {{ .Release.Service }}
 spec:
   selector:
-    run: odm-decisioncenter
+    run: {{ template "odm.decisioncenter.fullname" . }}
     app: {{ template "name" . }}
     release: {{ .Release.Name }}
   type: {{ .Values.service.type }}
