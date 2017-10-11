@@ -36,14 +36,22 @@ spec:
         image: {{ .Values.image.repository }}/dbserver:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
+        - name: POSTGRES_USER
+          value: "{{ .Values.persistence.postgresql.user }}"
+        - name: POSTGRES_PASSWORD
+          value: "{{ .Values.persistence.postgresql.password }}"
+        - name: POSTGRES_DB
+          value:  "{{ .Values.persistence.postgresql.databasename }}"
+        - name: PGDATA
+          value:  "/pgdata"
         - name: SAMPLE
           value: "{{ .Values.persistence.populateDataSample }}"
         ports:
-        - containerPort: 1527
+        - containerPort: 5432
         {{- if .Values.persistence.enabled }}
         volumeMounts:
           - name: {{ template "fullname" . }}-volume
-            mountPath: /dbs
+            mountPath: /pgdata
         {{- end }}
         {{- if (not (empty .Values.image.pullSecrets )) }}
       imagePullSecrets:

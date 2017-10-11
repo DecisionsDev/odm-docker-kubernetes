@@ -16,7 +16,7 @@ spec:
         - name: SAMPLE
           value: "true"
         ports:
-        - containerPort: 1527
+        - containerPort: 5432
 ---
 apiVersion: v1
 kind: Service
@@ -28,7 +28,7 @@ spec:
   type: NodePort
   ports:
    - protocol: TCP
-     port: 1527
+     port: 5432
 ---
 apiVersion: extensions/v1beta1 # for versions before 1.6.0 use extensions/v1beta1
 kind: Deployment

@@ -52,6 +52,9 @@ The following tables lists the configurable parameters of the Drupal chart and t
 | `image.pullPolicy`                | Image pull policy                     | `IfNotPresent`                                            |
 | `service.type`                    | Kubernetes Service type               | `NodePort`                                                |
 | `persistence.enabled`             | Enable persistence using PVC          | `false`                                                   |
+| `persistence.postgresql.user` | This parameter is used in conjunction with 'persistence.postgresql.password' to set a user and its password. This parameter will create the specified user with superuser power and a database with the same name.  | `odm`                                                   |
+| `persistence.postgresql.password` | This parameter sets the superuser password for PostgreSQL. The default superuser is defined by the 'persistence.postgresql.user' environment variable.  | `odm`                                                   |
+| `persistence.postgresql.databasename` | This parameter can be used to define a different name for the default database that is created when the image is first started.   | `odmdb` |
 | `decisionServerRuntime.replicaCount`| Number of the desired runtime       | `2`                                             |
 | `decisionCenter.replicaCount`     | Number of the desired Decision Center | `1`                                                     |
 | `decisionRunner.replicaCount`     | Number of the desired Decision Runner | `1`                      |
