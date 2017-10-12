@@ -47,28 +47,7 @@ Username/Password :
 {{- else if contains "LoadBalancer" .Values.service.type }}
      NOTE: It may take a few minutes for the LoadBalancer IP to be available.
 
- -- Decision Center / Business Console
-  export SERVICE_IP_DC=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "odm.decisioncenter.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-  * Decision Center / Business Console
-  echo http://$SERVICE_IP_DC:{{ .Values.service.externalPort }}/decisioncenter
-
-  * Team Server
-   echo http://$SERVICE_IP_DC:{{ .Values.service.externalPort }}/teamserver
-
--- Testing and Simulation
-  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "odm.decisionrunner.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-  echo http://$SERVICE_IP:{{ .Values.service.externalPort }}/DecisionRunner
-
--- Decision Service Console (RES Console)
-  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "odm.decisionserverconsole.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-  echo http://$SERVICE_IP:{{ .Values.service.externalPort }}/res
-
--- Decision Service Runtime (Htds)
-  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "odm.decisionserverruntime.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-  echo http://$SERVICE_IP:{{ .Values.service.externalPort }}/DecisionServicde
-
 {{- else if contains "ClusterIP" .Values.service.type }}
-dddd
 {{- end }}
 
 

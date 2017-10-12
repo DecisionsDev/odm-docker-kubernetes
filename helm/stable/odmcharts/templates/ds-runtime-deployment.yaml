@@ -36,7 +36,7 @@ spec:
             value: {{ template "odm.decisionserverconsole.fullname" . }}
         ports:
         - containerPort: 9080
-      {{- if (not (empty .Values.imagePullSecrets )) }}
+      {{- if (not (empty .Values.image.pullSecrets )) }}
       imagePullSecrets:
-        -name: {{ .Values.imagePullSecrets }}
+        -name: {{ .Values.image.pullSecrets }}
       {{- end }}
