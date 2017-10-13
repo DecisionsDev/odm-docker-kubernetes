@@ -4,7 +4,7 @@ IBM Operational Decision Manager on Kubernetes
 [![Build Status](https://travis-ci.org/ODMDev/odm-docker-kubernetes.svg?branch=master)](https://travis-ci.org/ODMDev/odm-docker-kubernetes)
 [![GitHub release](https://img.shields.io/github/release/ODMDev/odm-docker-kubernetes.svg)](https://github.com/ODMDev/odm-docker-kubernetes/releases)
 [![GitHub last commit (branch)](https://img.shields.io/github/last-commit/ODMDev/odm-docker-kubernetes/dev.svg)](https://github.com/ODMDev/odm-docker-kubernetes)
-[![Apache 2.0][license-badge]](https://github.com/ODMDev/odm-docker-kubernetes/blob/master/LICENSE)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 <p align="center">
   <a href="https://join.slack.com/t/odmdev/shared_invite/enQtMjU0NzIwMjM1MTg0LTQyYTMzNGQ4NzJkMDYxMDU5MDRmYTM4MjcxN2RiMzNmZWZmY2UzYzRhMjk0N2FmZjU2YzJlMTRmN2FhZDY4NmQ">
