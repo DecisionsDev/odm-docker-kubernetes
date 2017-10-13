@@ -24,4 +24,4 @@ spec:
   type: {{ .Values.service.type }}
   ports:
    - protocol: TCP
-     port: 1527
+     port: 5432

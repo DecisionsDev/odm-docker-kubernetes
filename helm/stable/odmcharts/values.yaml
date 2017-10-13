@@ -15,6 +15,10 @@ image:
 persistence:
   enabled: true
   populateDataSample: false
+  postgresql:
+    user: odm
+    password: odm
+    databasename: odmdb
 
 
 service:

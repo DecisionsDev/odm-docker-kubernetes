@@ -48,11 +48,11 @@ spec:
         - name: SAMPLE
           value: "true"
         ports:
-        - containerPort: 1527
+        - containerPort: 5432
         volumeMounts:
           - name: odm-volume
             # mount path within the container
-            mountPath: /dbs
+            mountPath: /pgdata
 ---
 apiVersion: v1
 kind: Service
@@ -64,7 +64,7 @@ spec:
   type: NodePort
   ports:
    - protocol: TCP
-     port: 1527
+     port: 5432
 ---
 apiVersion: extensions/v1beta1 # for versions before 1.6.0 use extensions/v1beta1
 kind: Deployment
@@ -98,7 +98,7 @@ spec:
      port: 9080
    - name: notification
      protocol: TCP
-     port: 1883     
+     port: 1883
 ---
 apiVersion: extensions/v1beta1 # for versions before 1.6.0 use extensions/v1beta1
 kind: Deployment
