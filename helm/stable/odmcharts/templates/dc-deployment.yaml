@@ -40,5 +40,5 @@ spec:
             value: {{ template "odm.decisionserverconsole.fullname" . }}
             {{- if (not (empty .Values.image.pullSecrets )) }}
       imagePullSecrets:
-        - name: {{ .Values.image.pullSecrets }}
+      - name: {{ .Values.image.pullSecrets }}
          {{- end }}

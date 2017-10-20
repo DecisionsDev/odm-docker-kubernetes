@@ -9,3 +9,15 @@ Helm is a tool that streamlines installing and managing Kubernetes applications.
     Charts can be stored on disk, or fetched from remote chart repositories (like Debian or RedHat packages)
 
 The documented ODM Helm Charts could be found here : [stable/odmcharts/README.md](stable/odmcharts/README.md)
+
+# 6.0 Put in place your own Helm charts repository
+```bash
+
+    cd helm/stable
+    helm package odmcharts
+    docker run --name some-nginx -v <ABSOLUTE PATH>:/usr/share/nginx/html:ro -p 8090:80 -d nginx
+    ifconfig # to retrieve your IP 
+    helm repo index ./ --url http://<YOUR_IP>:8090/
+    Open a browser to verify the chart is available at this location
+    http://<YOUR_IP>:8090/index.yaml -> Should return a file with the reference of the charts.
+  ````

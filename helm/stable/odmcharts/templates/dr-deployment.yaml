@@ -34,7 +34,7 @@ spec:
             value: {{ template "odm.dbserver.fullname" . }}
         ports:
         - containerPort: 9070
-    {{- if (not (empty .Values.image.pullSecrets )) }}
+        {{- if (not (empty .Values.image.pullSecrets )) }}
       imagePullSecrets:
-        -name: {{ .Values.image.pullSecrets }}
-    {{- end }}
+      - name: {{ .Values.image.pullSecrets }}
+         {{- end }}

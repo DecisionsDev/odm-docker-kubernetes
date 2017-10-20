@@ -55,5 +55,5 @@ spec:
         {{- end }}
         {{- if (not (empty .Values.image.pullSecrets )) }}
       imagePullSecrets:
-        - name: {{ .Values.image.pullSecrets }}
+      - name: {{ .Values.image.pullSecrets }}
          {{- end }}
