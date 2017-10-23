@@ -124,7 +124,7 @@ You should see your private key.
 # 5.3 Deploy the ODM Helm Chart:
 ```bash
 	cd IBM-ODM-Kubernetes/IBMCloudPrivate
-	helm install  odmcharts --set image.pullSecrets=admin.registryKey --set image.repository=mycluster.icp:8500/ibmcom
+	helm install  odmcharts --set image.pullSecrets=admin.registrykey --set image.repository=mycluster.icp:8500/ibmcom
  ```
 
 To install Helm client please follow this [guide](https://github.com/kubernetes/helm/blob/master/docs/install.md).
