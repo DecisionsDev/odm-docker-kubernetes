@@ -55,19 +55,19 @@ In this use case, we will use the [IBM Cloud Private Docker Registry]
 ```bash
     docker login mycluster.icp:8500 (username/password)  -> admin/admin by default.
 
-    docker tag ibmcom/dbserver:8.9.0 mycluster:8500/ibmcom/dbserver:8.9.0
+    docker tag ibmcom/dbserver:8.9.0 mycluster.icp:8500/ibmcom/dbserver:8.9.0
     docker push mycluster.icp:8500/ibmcom/dbserver:8.9.0
 
-    docker tag ibmcom/odm-decisionserverconsole:8.9.0 mycluster:8500/ibmcom/odm-decisionserverconsole:8.9.0
+    docker tag ibmcom/odm-decisionserverconsole:8.9.0 mycluster.icp:8500/ibmcom/odm-decisionserverconsole:8.9.0
     docker push  mycluster.icp:8500/ibmcom/odm-decisionserverconsole:8.9.0
 
-    docker tag ibmcom/odm-decisionrunner:8.9.0  mycluster:8500/ibmcom/odm-decisionrunner:8.9.0
+    docker tag ibmcom/odm-decisionrunner:8.9.0  mycluster.icp:8500/ibmcom/odm-decisionrunner:8.9.0
     docker push  mycluster.icp:8500/ibmcom/odm-decisionrunner:8.9.0
 
-    docker tag ibmcom/odm-decisionserverruntime:8.9.0 mycluster:8500/ibmcom/odm-decisionserverruntime:8.9.0
+    docker tag ibmcom/odm-decisionserverruntime:8.9.0 mycluster.icp:8500/ibmcom/odm-decisionserverruntime:8.9.0
     docker push mycluster.icp:8500/ibmcom/odm-decisionserverruntime:8.9.0
 
-    docker tag ibmcom/odm-decisioncenter:8.9.0 mycluster:8500/ibmcom/odm-decisioncenter:8.9.0
+    docker tag ibmcom/odm-decisioncenter:8.9.0 mycluster.icp:8500/ibmcom/odm-decisioncenter:8.9.0
     docker push mycluster.icp:8500/ibmcom/odm-decisioncenter:8.9.0
   ```
 
@@ -106,10 +106,25 @@ This setting is available in the IBM Private console (username->configure client
 
 Installation instruction for helm tool can be found here :
 
-# 5.2 Deploy the ODM Helm Chart:
+# 5.2 Verify the secret of the registry is available
+
+See more informations in the [IBM Cloud Private knowledge center](
+https://www.ibm.com/support/knowledgecenter/en/SSBS6K_2.1.0/manage_images/imagepullsecret.html)
+
+```bash
+  kubect get secrets
+ ```   
+You should see your private key.
+
+  - If it's not the case create a new one.
+```bash
+  kubectl create secret docker-registry  admin.registrykey --docker-server=mycluster.icp:8500 --docker-username=admin --docker-password=admin --docker-email=laurent.grateau@fr.ibm.com
+ ```   
+
+# 5.3 Deploy the ODM Helm Chart:
 ```bash
 	cd IBM-ODM-Kubernetes/IBMCloudPrivate
-	helm install  odmcharts --set image.pullSecrets=admin.registryKey --set image.repository=mycluster.icp:8500/odmdocker
+	helm install  odmcharts --set image.pullSecrets=admin.registrykey --set image.repository=mycluster.icp:8500/ibmcom
  ```
 
 To install Helm client please follow this [guide](https://github.com/kubernetes/helm/blob/master/docs/install.md).
@@ -190,6 +205,7 @@ To learn more about the release, try:
   $ helm status snug-dog
   $ helm get snug-dog
   ````
+
 
 
 # License
