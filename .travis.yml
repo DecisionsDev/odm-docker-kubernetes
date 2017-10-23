@@ -8,7 +8,6 @@ cache:
 branches:
   only:
   - master
-  - dev-cv-lint-warnings
 
 install:
   # Get ICP CV
