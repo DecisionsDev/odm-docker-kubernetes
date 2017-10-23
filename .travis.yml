@@ -35,7 +35,7 @@ install:
 script:
   - helm init -c
   # --strict should mark warnings as errors. grep make exit 1 on error(s).
-  - $HOME/.cache/cv lint --strict odmcharts | grep -q "no failures"
+  - $HOME/.cache/cv lint --strict odmcharts | grep "no failures"
   - helm package odmcharts
   - cp *.tgz ../../../odm-helm-charts-repo/
   - cd ../../../odm-helm-charts-repo/
