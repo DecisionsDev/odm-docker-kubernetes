@@ -34,7 +34,7 @@ install:
 # Building the documentation.
 script:
   - helm init -c
-  $HOME/.cache/cv lint odmcharts
+  - $HOME/.cache/cv lint odmcharts
   # --strict should mark warnings as errors. grep make exit 1 on error(s).
   # Enable When warnings are closed.
   # - $HOME/.cache/cv lint --strict odmcharts | tee /dev/tty | grep "no failures"
