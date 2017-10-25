@@ -1,8 +1,8 @@
-#  Deploy IBM Operational Decision Manager Standard on IBM Private Cloud
+#  Deploy IBM Operational Decision Manager Standard on IBM Private cloud
 
-This tutorial explains the deployment of an IBM Operational Decision Manager clustered topology on IBM Private Cloud , based on Kubernetes technology.
+This tutorial explains the deployment of an IBM® Operational Decision Manager clustered topology on IBM Cloud private, based on Kubernetes technology.
 
-We leverage the ODM Docker material put available on this repository [odm-ondocker](https://github.com/ODMDev/odm-ondocker). It includes Docker files and Docker compose descriptors. ODM containers are based on IBM WAS Liberty. In this tutorial we will only use the Docker files to build the ODM runtime images that we will instantiate in the Kubernetes cluster.
+We use ODM Docker materials and make them available on the repository [odm-ondocker](https://github.com/ODMDev/odm-ondocker). It includes Docker files and Docker Compose descriptors. ODM containers are based on IBM WebSphere® Application Server Liberty. In this tutorial, we use only the Docker files to build ODM runtime images that will be instantiated in the Kubernetes cluster.
 
 ![Flow](../images/ODMinKubernetes-Flow.png)
 
@@ -11,8 +11,8 @@ We leverage the ODM Docker material put available on this repository [odm-ondock
 - [IBM Private Cloud](https://www.ibm.com/cloud-computing/products/ibm-cloud-private/)
 - [Docker-compose](https://docs.docker.com/compose/)
 
-## Testing
-This tutorial has been tested on MacOS.
+## Test environment
+This tutorial was tested on MacOS.
 
 ## Prerequisites
 
@@ -29,18 +29,18 @@ This tutorial has been tested on MacOS.
 5. [Deploy an ODM topology with a command line](#5-deploy-an-odm-topology-with-a-command-line)
 6. [Create services and deployments](#5-create-services-and-deployments)
 
-# 1. Install and configure IBM Private Cloud
+# 1. Install and configure IBM Cloud private
 
 
-First, install [IBM Private Cloud](https://www.ibm.com/support/knowledgecenter/en/SSBS6K_1.2.0/installing/installing.html).
+Install [IBM Cloud private](https://www.ibm.com/support/knowledgecenter/en/SSBS6K_1.2.0/installing/installing.html).
 
 
-Once IBM Private Cloud is installed you can interact with the admin console.
+You can interact with the admin console when IBM Cloud private is installed.
 
 
 # 2. Get the ODM Docker material
 
-* Go to the ODM Install directory, clone the odm docker repository.
+* Go to the ODM installation directory and clone the ODM docker repository.
 ```bash
       cd <ODM_INSTALLATION>
       git clone https://github.com/ODMDev/odm-ondocker
@@ -48,9 +48,9 @@ Once IBM Private Cloud is installed you can interact with the admin console.
       docker-compose build
   ```
 
-# 3. Tag and deploy ODM Docker material in the IBM Cloud Private Docker Registry.
+# 3. Tag and deploy the ODM Docker material in the IBM Cloud private Docker registry
 
-In this use case, we will use the [IBM Cloud Private Docker Registry]
+In this use case, we use the [IBM Cloud private Docker registry]
 
 ```bash
     docker login mycluster.icp:8500 (username/password)  -> admin/admin by default.
@@ -72,62 +72,62 @@ In this use case, we will use the [IBM Cloud Private Docker Registry]
   ```
 
 
-More informations could be found [here](https://www.ibm.com/developerworks/community/blogs/fe25b4ef-ea6a-4d86-a629-6f87ccf4649e/entry/Working_with_the_local_docker_registry_from_Spectrum_Conductor_for_Containers?lang=en)
+For more information, see [Working with your IBM Cloud private Docker registry](https://www.ibm.com/developerworks/community/blogs/fe25b4ef-ea6a-4d86-a629-6f87ccf4649e/entry/Working_with_the_local_docker_registry_from_Spectrum_Conductor_for_Containers?lang=en)
 
-# 4. Deploy an ODM topology with the admin console.
-  - Logon in the IBM Cloud Private console.
-  - Add the ODM Charts repository (System->Repositories)
+# 4. Deploy an ODM topology with the admin console
+  - Log on to the IBM Cloud private console.
+  - Go to System > Repositories, and add an ODM charts repository.
  ![AppCenter](../images/ODM-IBMPrivateCloud-AddRepository.jpg)
     - Click Add Repository
     - Name: odmcharts
     - URL :  https://odmdev.github.io/odm-helm-charts-repo/
 
-  - Go to the App Center.
-  	- You should see the ODM Chart in the package List.
+  - Go to App Center.
+  	- You can see the ODM chart in the package list.
 ![AppCenter](../images/ODM-IBMPrivateCloud-AppCenter.jpg)
-	- Click install button in the ODM Chart
+	- Click Install Package in the ODM chart
 ![AppCenter-Inst](../images/ODM-IBMPrivateCloud-AppCenterInst.jpg)
 https://odmdev.github.io/odm-helm-charts-repo/
 
-ODMCharts parameters are describe in the helm [README](../helm/stable/odmcharts/README.md) file.
-# 5. Deploy an ODM topology with the helm command line tool.
+Descriptions of ODM charts parameters are available in the Helm [README](../helm/stable/odmcharts/README.md) file.
+# 5. Deploy an ODM topology with the Helm command line tool
 
-# 5.1. Interacting with your cluster
+# 5.1. Interact with your cluster
 
-To interact with kubectl and helm tools you need to set environment variable.
+You must set environment variables to interact with kubectl and Helm tools.
 
-This setting is available in the IBM Private console (username->configure client)
+Click the user name, and select Configure Client in the IBM Cloud private console.
 
 ![AppCenter-Username](../images/ODM-IBMPrivateCloud-SetupVariable.jpg)
-  - Click *Configure Client*
-  - Open a command line and copy paste the instructions.
+  - Click Configure Client.
+  - Open a command line, and follow the instructions in the topic [Accessing your IBM Cloud private cluster by using the kubectl CLI](https://www.ibm.com/support/knowledgecenter/en/SSBS6K_1.2.0/manage_cluster/cfc_cli.html) in IBM Knowledge Center.
 
- [IBM Cloud Private knowledge center](https://www.ibm.com/support/knowledgecenter/en/SSBS6K_1.2.0/manage_cluster/cfc_cli.html)  
+For more information about installating the Helm tool, see [].
 
-Installation instruction for helm tool can be found here :
+# 5.2 Verify the secret of the registry
 
-# 5.2 Verify the secret of the registry is available
+You verify that the secret of the registry is available.
 
-See more informations in the [IBM Cloud Private knowledge center](
-https://www.ibm.com/support/knowledgecenter/en/SSBS6K_2.1.0/manage_images/imagepullsecret.html)
+For more information, see [Identifying the imagePullSecrets value for your namespace](
+https://www.ibm.com/support/knowledgecenter/en/SSBS6K_2.1.0/manage_images/imagepullsecret.html) in IBM Knowledge Center.
 
 ```bash
   kubect get secrets
  ```   
-You should see your private key.
+You can see your private key.
 
-  - If it's not the case create a new one.
+  - If you do not see it, create a new one.
 ```bash
   kubectl create secret docker-registry  admin.registrykey --docker-server=mycluster.icp:8500 --docker-username=admin --docker-password=admin --docker-email=laurent.grateau@fr.ibm.com
  ```   
 
-# 5.3 Deploy the ODM Helm Chart:
+# 5.3 Deploy the ODM Helm chart:
 ```bash
 	cd IBM-ODM-Kubernetes/IBMCloudPrivate
 	helm install  odmcharts --set image.pullSecrets=admin.registrykey --set image.repository=mycluster.icp:8500/ibmcom
  ```
 
-To install Helm client please follow this [guide](https://github.com/kubernetes/helm/blob/master/docs/install.md).
+To install the Helm client, follow this [instructions](https://github.com/kubernetes/helm/blob/master/docs/install.md).
 ```bash
 NAME:   snug-dog
 LAST DEPLOYED: Sun Sep 17 11:10:33 2017
