@@ -44,7 +44,8 @@ Once IBM Private Cloud is installed you can interact with the admin console.
 ```bash
       cd <ODM_INSTALLATION>
       git clone https://github.com/ODMDev/odm-ondocker
-      cp odm-ondocker/src/main/resources/.dockerignore ./
+      cp odm-ondocker/resources/.dockerignore ./
+      cd odm-ondocker
       docker-compose build
   ```
 
