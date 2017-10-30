@@ -19,8 +19,7 @@ persistence:
     user: odm
     password: odm
     databasename: odmdb
-
-
+  
 service:
   type: NodePort
 

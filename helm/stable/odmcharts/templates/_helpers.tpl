@@ -1,12 +1,3 @@
-###############################################################################
-# Licensed Materials - Property of IBM.
-# Copyright IBM Corporation 2017. All Rights Reserved.
-# U.S. Government Users Restricted Rights - Use, duplication or disclosure
-# restricted by GSA ADP Schedule Contract with IBM Corp.
-#
-# Contributors:
-#  IBM Corporation - initial API and implementation
-###############################################################################
 {{/* vim: set filetype=mustache: */}}
 {{/*
 Expand the name of the chart.
@@ -52,5 +43,16 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 
 {{- define "odm.persistenceclaim.fullname" -}}
 {{- $name := default "odm-pvclaim" .Values.nameOverride -}}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+
+{{- define "odm.test.fullname" -}}
+{{- $name := default "odm-test" .Values.nameOverride -}}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{- define "odm.test-configmap.fullname" -}}
+{{- $name := default "odm-test-configmap" .Values.nameOverride -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}

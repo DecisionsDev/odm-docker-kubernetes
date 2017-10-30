@@ -1,4 +1,4 @@
-*-+
+
 # IBM ODM
 
 [IBM ODM](https://www.ibm.com/support/knowledgecenter/SSQP76_8.9.0/welcome/kc_welcome_odmV.html)  is a platform for capturing, automating, and governing repeatable business decisions. You can identify situations to form insights and act with business rules.

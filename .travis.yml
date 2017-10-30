@@ -11,7 +11,7 @@ branches:
 
 install:
   # Get ICP CV
-  - ./get-icp-cv.sh
+  - scripts/./get-icp-cv.sh
   # Install `helm` in travis environment.
   - ls $GOPATH
   - cd $GOPATH/src/
@@ -32,8 +32,13 @@ install:
 
 # Building the documentation.
 script:
+  # Make error if 'LICENSE(D) and IBM are found on a same line.'
+  - sh -c "! egrep  -ri '(LICENSE[D]?).*(IBM)' --exclude='.travis.yml' ."
   - helm init -c
   - $HOME/.cache/cv lint odmcharts
+  # --strict should mark warnings as errors. grep make exit 1 on error(s).
+  # Enable When warnings are closed.
+  # - $HOME/.cache/cv lint --strict odmcharts | tee /dev/tty | grep "no failures"
   - helm package odmcharts
   - cp *.tgz ../../../odm-helm-charts-repo/
   - cd ../../../odm-helm-charts-repo/
