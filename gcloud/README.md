@@ -33,7 +33,7 @@ This tutorial was tested on MacOS.
 
 Install the [Docker CLI](https://www.docker.com/community-edition#/download).
 
-Install the [Google Cloud CLI](https://cloud.google.com/sdk/docs/)
+Install the [Google Cloud CLI](https://cloud.google.com/sdk/docs/).
 
 After the Google Cloud CLI is installed, check your configuration:
 
@@ -78,14 +78,14 @@ docker tag ibmcom/odm-decisioncenter:8.9.0 eu.gcr.io/odm890-kubernetes/ibm-odm-d
 gcloud docker -- push eu.gcr.io/odm890-kubernetes/ibm-odm-decisioncenter:8.9.0
 ```
 
-Build the Decision Server console runtime container
+Build the Decision Server console runtime container:
 
 ```bash
 docker tag ibmcom/odm-decisionserverconsole:8.9.0 eu.gcr.io/odm890-kubernetes/ibm-odm-decisionserverconsole:8.9.0
 gcloud docker -- push eu.gcr.io/odm890-kubernetes/ibm-odm-decisionserverconsole:8.9.0
 ```
 
-Build the Decision Runner container
+Build the Decision Runner container:
 
 ```bash
 docker tag ibmcom/odm-decisionrunner:8.9.0 eu.gcr.io/odm890-kubernetes/ibm-odm-decisionrunner:8.9.0
@@ -103,7 +103,7 @@ Deploy the ODM topology with the following command:
 kubectl create -f odm-standard-gcloud.yaml
 ```
 
-Wait 5 - 10 minutes after you created all the services and deployments. You can check the status of your deployment on the Kubernetes UI. 
+Wait 5 - 10 minutes after you created all the services and deployments. You can check the status of your deployment by using the Kubernetes user interface. 
 
 Run the 'kubectl proxy' command and go to the URL 'http://127.0.0.1:8001/ui' to check when the application containers are ready.
 
@@ -136,7 +136,7 @@ odm-decisionserverruntime   10.43.250.80    <nodes>          9080:32703/TCP   15
 ![ODM pods](./images/ODM-Kubernetes-gcloud-pods.png)
 
 With this ODM topology in place, you can access to web applications to author, deploy, and test your rule-based decision services.
-* Decision Center console : http://DECISION-CENTER-EXTERNAL-IP:PORT/decisioncenter/t/library
+* Decision Center console: http://DECISION-CENTER-EXTERNAL-IP:PORT/decisioncenter/t/library
 
    * Login with the rtsAdmin/rtsAdmin user name and password. You should see the following project library:
    * ![Decision Center](images/ODM-Kubernetes-gcloud-decisioncenter.png)
