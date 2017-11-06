@@ -2,7 +2,7 @@
 
 This tutorial explains the deployment of an IBM® Operational Decision Manager clustered topology on IBM Cloud private, based on Kubernetes technology.
 
-We use ODM Docker materials and make them available in the repository [odm-ondocker](https://github.com/ODMDev/odm-ondocker). It includes Docker files and Docker Compose descriptors. ODM containers are based on IBM WebSphere® Application Server Liberty. In this tutorial, we use only the Docker files to build ODM runtime images that will be instantiated in the Kubernetes cluster.
+We use ODM Docker materials that are available in the repository [odm-ondocker](https://github.com/ODMDev/odm-ondocker). It includes Docker files and Docker Compose descriptors. ODM containers are based on IBM WebSphere® Application Server Liberty. In this tutorial, we use only the Docker files to build ODM runtime images that will be instantiated in the Kubernetes cluster.
 
 ![Flow](../images/ODMinKubernetes-Flow.png)
 
