@@ -20,12 +20,12 @@ This material has been tested with the following configuration:
 - ODM 8.9.0
 
 ## Troubleshooting
-* If your ODM services cannot be reached just after the creation of the deployment, you may wait for few minutes to have connectivity completed in the hosted cluster.
-* If your microservice instance is not running properly, you may check the logs using
+* If your ODM services cannot be reached just after the creation of the deployment, wait for a few minutes to have the connectivity completed in the hosted cluster.
+* If your microservice instance is not running properly, check the logs by using the following command:
 	* `kubectl logs <your-pod-name>`
-* To delete a microservice
+* To delete a microservice:
 	* `kubectl delete -f manifests/<microservice-yaml-file>`
-* To delete everything
+* To delete everything:
 	* `kubectl delete -f manifests`
 
 ## References
