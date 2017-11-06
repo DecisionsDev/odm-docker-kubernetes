@@ -1,4 +1,4 @@
-Helm is a tool that streamlines installing and managing Kubernetes applications. Think of it like apt/yum/homebrew for Kubernetes.
+Helm is a tool that streamlines installation and management of Kubernetes applications. Think of it like apt/yum/homebrew for Kubernetes.
 
     Helm has two parts: a client (helm) and a server (tiller)
     Tiller runs inside of your Kubernetes cluster, and manages releases (installations) of your charts.
@@ -8,9 +8,9 @@ Helm is a tool that streamlines installing and managing Kubernetes applications.
         One or more templates, which contain Kubernetes manifest files
     Charts can be stored on disk, or fetched from remote chart repositories (like Debian or RedHat packages)
 
-The documented ODM Helm Charts could be found here : [stable/odmcharts/README.md](stable/odmcharts/README.md)
+For more information about ODM Helm charts, see [stable/odmcharts/README.md](stable/odmcharts/README.md).
 
-# 6.0 Put in place your own Helm charts repository
+# 6.0 Implement your own Helm charts repository
 ```bash
 
     cd helm/stable
