@@ -1,7 +1,7 @@
 *-+
-# IBM ODM
+# IBM Operational Decision Manager
 
-[IBM ODM](https://www.ibm.com/support/knowledgecenter/SSQP76_8.9.0/welcome/kc_welcome_odmV.html)  is a platform for capturing, automating, and governing repeatable business decisions. You can identify situations to form insights and act with business rules.
+[IBM® Operational Decision Manager (ODM)](https://www.ibm.com/support/knowledgecenter/SSQP76_8.9.0/welcome/kc_welcome_odmV.html)  is a platform for capturing, automating, and governing repeatable business decisions. You can identify situations to form insights and act with business rules.
 
 ## Usages
 
@@ -11,14 +11,14 @@ $ helm install stable/odmcharts
 
 ## Introduction
 
-This chart bootstraps an [IBM ODM](https://www.ibm.com/support/knowledgecenter/SSQP76_8.9.0/welcome/kc_welcome_odmV.html)  deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
+This chart bootstraps an IBM ODM deployment on a [Kubernetes](http://kubernetes.io) cluster by using the [Helm](https://helm.sh) package manager.
 
 ## Prerequisites
 
 - Kubernetes 1.4+ with Beta APIs enabled
 - PV provisioner support in the underlying infrastructure
 
-## Installing the Chart
+## Install the Chart
 
 To install the chart with the release name `my-release`:
 
@@ -30,7 +30,7 @@ The command deploys odmcharts on the Kubernetes cluster in the default configura
 
 > **Tip**: List all releases using `helm list`
 
-## Uninstalling the Chart
+## Uninstall the Chart
 
 To uninstall/delete the `my-release` deployment:
 
