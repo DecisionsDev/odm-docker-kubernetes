@@ -2,7 +2,7 @@
 
 This tutorial explains the deployment of an IBM Operational Decision Manager clustered topology on a MiniKube Kubernetes cluster.
 
-We leverage the ODM Docker material put available on this repository [odm-ondocker](https://github.com/lgrateau/odm-ondocker). It includes Docker files and Docker compose descriptors. ODM containers are based on IBM WAS Liberty. In this tutorial we will only use the Docker files to build the ODM runtime images that we will instantiate in the Kubernetes cluster.
+We leverage the ODM Docker material put available on this repository [odm-ondocker](https://github.com/ODMDev/odm-ondocker). It includes Docker files and Docker compose descriptors. ODM containers are based on IBM WAS Liberty. In this tutorial we will only use the Docker files to build the ODM runtime images that we will instantiate in the Kubernetes cluster.
 
 ![Flow](../images/ODMinKubernetes-Flow.png)
 
@@ -130,7 +130,7 @@ Remember to turn off the imagePullPolicy:Always, as otherwise kubernetes won't u
 * Go to the ODM Install directory, clone the odm docker repository.
 ```bash
 $ cd <ODM_INSTALLATION>
-$ git clone https://github.com/lgrateau/odm-ondocker
+$ git clone https://github.com/ODMDev/odm-ondocker
 $ cp odm-ondocker/src/main/resources/.dockerignore ./
 $ docker-compose build
   ```
