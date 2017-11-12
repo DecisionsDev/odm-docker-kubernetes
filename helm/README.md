@@ -19,12 +19,12 @@ To create your Helm charts repository, run the following commands:
 
     cd helm/stable
     helm package odmcharts
-    docker run --name some-nginx -v _<ABSOLUTE PATH>_:/usr/share/nginx/html:ro -p 8090:80 -d nginx
+    docker run --name some-nginx -v <ABSOLUTE PATH>:/usr/share/nginx/html:ro -p 8090:80 -d nginx
 ```
 Run `ifconfig` to retrieve your IP address.
 Run the following command:
 ```
-    helm repo index ./ --url http://_<YOUR_IP>_:8090/
+    helm repo index ./ --url http://<YOUR_IP>:8090/
 ```
 Open a browser to verify the chart is available at this location: http://_<YOUR_IP>_:8090/index.yaml. It should return a file with the reference of the charts.
 
