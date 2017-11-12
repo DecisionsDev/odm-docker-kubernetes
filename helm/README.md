@@ -1,4 +1,4 @@
-# Overview
+## Overview
 
 Helm is a tool that streamlines installing and managing Kubernetes applications. 
 
@@ -16,7 +16,7 @@ For more information about Helm, see [Kubernetes Helm](https://github.com/kubern
 
 For information about ODM Helm charts, see [stable/odmcharts/README.md](stable/odmcharts/README.md).
 
-# Create your own Helm charts repository
+## Create your own Helm charts repository
 
 To create your Helm charts repository, run the following commands:
 ```
