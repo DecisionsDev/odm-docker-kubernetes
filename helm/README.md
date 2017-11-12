@@ -12,7 +12,7 @@ Charts are Helm packages that contain at least two things:
 
 Charts can be stored on disk or fetched from remote chart repositories, which is similar to Debian or RedHat packages.
 
-For more information about Helm, see [https://github.com/kubernetes/helm](Kubernetes Helm)
+For more information about Helm, see [Kubernetes Helm](https://github.com/kubernetes/helm)
 
 For information about ODM Helm charts, see [stable/odmcharts/README.md](stable/odmcharts/README.md).
 
