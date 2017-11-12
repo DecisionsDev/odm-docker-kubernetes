@@ -18,7 +18,7 @@ $ helm install --name my-release stable/odmcharts
 ```
 
 This command deploys `odmcharts` on the Kubernetes cluster in the default configuration. 
-For information about the parameters that can be configured during the installation, see the [Configuration parameters](#configuration) section.
+For information about the parameters that can be configured during the installation, see the [Configuration parameters](#configuration_parameters) section.
 
 > **Tip**: You can list all releases by using the `helm list` command.
 
