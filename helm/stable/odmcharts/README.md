@@ -18,7 +18,7 @@ $ helm install --name my-release stable/odmcharts
 ```
 
 This command deploys `odmcharts` on the Kubernetes cluster in the default configuration. 
-For information about the parameters that can be configured during the installation, see the [configuration](#configuration) section.
+For information about the parameters that can be configured during the installation, see the [Configuration](#configuration) section.
 
 > **Tip**: You ca list all releases by using the `helm list` command.
 
@@ -36,20 +36,20 @@ This command removes all the Kubernetes components thata are associated with the
 
 The following tables shows the configurable parameters of the Drupal chart and their default values.
 
-| Parameter                         | Description                           | Default                                                   |
+| Parameter                         | Description                           | Default value                                                   |
 | --------------------------------- | ------------------------------------- | --------------------------------------------------------- |
-| `image.repository`                | Specify the Repository                | `odmdocker`                                               |
+| `image.repository`                | Specify the repository                | `odmdocker`                                               |
 | `image.tag`                       | Specify the tag image version         | `8.9.0`                                                   |
 | `image.pullSecrets`               | Specify the image pull secrets        | `nil` (does not add image pull secrets to deployed pods)  |
 | `image.pullPolicy`                | Image pull policy                     | `IfNotPresent`                                            |
-| `service.type`                    | Kubernetes Service type               | `NodePort`                                                |
-| `persistence.enabled`             | Enable persistence using PVC          | `false`                                                   |
-| `persistence.postgresql.user` | This parameter is used in conjunction with 'persistence.postgresql.password' to set a user and its password. This parameter will create the specified user with superuser power and a database with the same name.  | `odm`                                                   |
-| `persistence.postgresql.password` | This parameter sets the superuser password for PostgreSQL. The default superuser is defined by the 'persistence.postgresql.user' environment variable.  | `odm`                                                   |
+| `service.type`                    | Kubernetes service type               | `NodePort`                                                |
+| `persistence.enabled`             | Enable persistence by using PVC       | `false`                                                   |
+| `persistence.postgresql.user` | This parameter is used in conjunction with `persistence.postgresql.password` to set a user and his password. This parameter will create the specified user with superuser power and a database with the same name.  | `odm`                                                   |
+| `persistence.postgresql.password` | This parameter sets the superuser password for PostgreSQL. The default superuser is defined by the `persistence.postgresql.user` environment variable.  | `odm`                                                   |
 | `persistence.postgresql.databasename` | This parameter can be used to define a different name for the default database that is created when the image is first started.   | `odmdb` |
-| `decisionServerRuntime.replicaCount`| Number of the desired runtime       | `2`                                             |
-| `decisionCenter.replicaCount`     | Number of the desired Decision Center | `1`                                                     |
-| `decisionRunner.replicaCount`     | Number of the desired Decision Runner | `1`                      |
+| `decisionServerRuntime.replicaCount`| Number of desired runtime       | `2`                                             |
+| `decisionCenter.replicaCount`     | Number of desired Decision Center | `1`                                                     |
+| `decisionRunner.replicaCount`     | Number of desired Decision Runner | `1`                      |
 
 
 You can specify each parameter by using the `--set key=value[,key=value]` argument in the `helm install` command. 
@@ -82,7 +82,7 @@ If you set the `image` value to one in a private registry, you must [specify an 
 image:
   pullSecrets: SECRET_NAME
 ```
-1. Install the chart by using the `--set image.pullSecrets` parameter:
+2. Install the chart by using the `--set image.pullSecrets` parameter:
 ```console
 helm install --name my-release odmcharts --set image.pullSecrets=admin.registryKey
 ```
