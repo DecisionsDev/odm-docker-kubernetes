@@ -1,6 +1,8 @@
+# Overview
+
 Helm is a tool that streamlines installation and management of Kubernetes applications. 
 
-Helm consists of two parts: a client (`helm`) and a server c`tiller`):
+Helm consists of two parts: a client (`helm`) and a server (`tiller`):
 - Tiller runs inside of your Kubernetes cluster, and manages releases (installations) of your charts.
 - Helm runs on your laptop, CI/CD, or wherever you want it to run.
 
