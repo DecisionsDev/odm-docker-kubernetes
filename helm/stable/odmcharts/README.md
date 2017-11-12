@@ -9,7 +9,7 @@ The ODM chart (`odmchart`) bootstraps an IBM ODM deployment on a [Kubernetes](ht
 - Kubernetes 1.4+ with Beta APIs enabled
 - PV provisioner support in the underlying infrastructure
 
-## Install the ODM Helm chart
+## Installing the ODM chart
 
 Install the chart with the release name `my-release` by using the following command:
 
@@ -18,11 +18,11 @@ $ helm install --name my-release stable/odmcharts
 ```
 
 This command deploys `odmcharts` on the Kubernetes cluster in the default configuration. 
-For information about the parameters that can be configured during the installation, see the [Configuration](#configuration) section.
+For information about the parameters that can be configured during the installation, see the [Configuration parameters](#configuration) section.
 
 > **Tip**: You ca list all releases by using the `helm list` command.
 
-## Uninstall the Chart
+## Uninstalling the chart
 
 You can uninstall and delete the `my-release` deployment by using the following command:
 
@@ -32,7 +32,7 @@ $ helm delete my-release
 
 This command removes all the Kubernetes components thata are associated with the chart, and deletes the release.
 
-## Configuration
+## Configuration parameters
 
 The following tables shows the configurable parameters of the Drupal chart and their default values.
 
