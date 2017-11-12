@@ -84,5 +84,5 @@ image:
 ```
 2. Install the chart by using the `--set image.pullSecrets` parameter:
 ```console
-helm install --name my-release odmcharts --set image.pullSecrets=admin.registryKey
+$ helm install --name my-release odmcharts --set image.pullSecrets=admin.registryKey
 ```
