@@ -172,14 +172,14 @@ Get the application URL by running the following commands:
   ```
   
   - Decision Center / Business console
-  ```
-  echo http://$NODE_IP:$NODE_PORT_DC/decisioncenter
-  ```
+    ```
+    echo http://$NODE_IP:$NODE_PORT_DC/decisioncenter
+    ```
   
   - Team Server
-  ```
-  echo http://$NODE_IP:$NODE_PORT_DC/teamserver
-  ```
+    ```
+    echo http://$NODE_IP:$NODE_PORT_DC/teamserver
+    ```
   
 - Testing and simulation
   ```
@@ -188,9 +188,9 @@ Get the application URL by running the following commands:
   ```
   
   - Decision Runner
-  ```
-  echo http://$NODE_IP:$NODE_PORT_DR/DecisionRunner
-  ```
+    ```
+    echo http://$NODE_IP:$NODE_PORT_DR/DecisionRunner
+    ```
 
 - Decision Service console (Rule Execution Server console)
   ```
@@ -199,9 +199,9 @@ Get the application URL by running the following commands:
   ```
   
   - Decision Service console (Rule Execution Server console)
-  ```
-  echo http://$NODE_IP:$NODE_PORT_DSC/res
-  ```
+    ```
+    echo http://$NODE_IP:$NODE_PORT_DSC/res
+    ```
   
 - Decision Service runtime (HTDS)
   ```
@@ -210,13 +210,13 @@ Get the application URL by running the following commands:
   ```
   
   - Decision Service runtime
-  ```
-  echo http://$NODE_IP:$NODE_PORT_DSC/DecisionService
-  ```
+    ```
+    echo http://$NODE_IP:$NODE_PORT_DSC/DecisionService
+    ```
 
 Your release is named `snug-dog`.
 
-To learn more about the release, try:
+To learn more about the release, use the following commands:
   ```
   $ helm status snug-dog
   $ helm get snug-dog
