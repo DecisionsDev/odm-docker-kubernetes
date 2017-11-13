@@ -98,7 +98,7 @@ You must set environment variables to interact with kubectl and Helm tools.
 
   - Click the menu and go to **Dashboard**. Click the user name in the uppper right corner in the IBM Cloud private console, and then select **Configure client**.
 
-![AppCenter](images/ODM-IBMPrivateCloud-ConfigClient.png)
+![AppCenter](../images/ODM-IBMPrivateCloud-ConfigClient.png)
 
   - Open a command line, and follow the instructions in the topic [Accessing your IBM Cloud private cluster by using the kubectl CLI](https://www.ibm.com/support/knowledgecenter/en/SSBS6K_1.2.0/manage_cluster/cfc_cli.html) in IBM Knowledge Center.
 
