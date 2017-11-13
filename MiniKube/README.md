@@ -1,18 +1,22 @@
-#  Deploy IBM Operational Decision Manager Standard on Kubernetes MiniKube
+#  Deploying IBM Operational Decision Manager Standard on Kubernetes Minikube
 
-This tutorial explains the deployment of an IBM Operational Decision Manager clustered topology on a MiniKube Kubernetes cluster.
+This tutorial explains the deployment of an IBM® Operational Decision Manager (ODM) clustered topology on a Minikube Kubernetes cluster.
 
+<<<<<<< HEAD
 We leverage the ODM Docker material put available on this repository [odm-ondocker](https://github.com/ODMDev/odm-ondocker). It includes Docker files and Docker compose descriptors. ODM containers are based on IBM WAS Liberty. In this tutorial we will only use the Docker files to build the ODM runtime images that we will instantiate in the Kubernetes cluster.
+=======
+The ODM Docker material is used here, which is available in the [odm-ondocker](https://github.com/lgrateau/odm-ondocker) repository. It includes Docker files and Docker compose descriptors. ODM containers are based on IBM WebSphere® Application Server Liberty. In this tutorial, only the Docker files are used to build the ODM runtime images that will be instantiated in the Kubernetes cluster.
+>>>>>>> origin/doc
 
 ![Flow](../images/ODMinKubernetes-Flow.png)
 
 ## Included Components
 - [IBM ODM](https://www.ibm.com/support/knowledgecenter/SSQP76_8.9.0/welcome/kc_welcome_odmV.html)
-- [Kubernetes MiniKube](https://github.com/kubernetes/minikube)
+- [Kubernetes Minikube](https://github.com/kubernetes/minikube)
 - [Docker-compose](https://docs.docker.com/compose/)
 
-## Testing
-This tutorial has been tested on MacOS.
+## Test environment
+This tutorial was tested on MacOS.
 
 ## Prerequisites
 
@@ -23,18 +27,18 @@ This tutorial has been tested on MacOS.
 
 ## Steps
 
-1. [Install MiniKube](#1-install-minikube)
+1. [Installing Minikube](#1-installing-minikube)
 2. [Interacting with your cluster](#2-interacting-with-your-cluster)
-3. [Setup your environment](#3-setup-your-environment)
-4. [Get the ODM Docker material](#4-get-the-odm-docker-material)
-5. [Create services and deployments](#5-create-services-and-deployments)
+3. [Setting up your environment](#3-setting-up-your-environment)
+4. [Getting the ODM Docker material](#4-getting-the-odm-docker-material)
+5. [Creating services and deployments](#5-creating-services-and-deployments)
 
-# 1. Install MiniKube
+# 1. Installing Minikube
 
 
-First, install [MiniKube](https://github.com/kubernetes/minikube).
+Install [Minikube](https://github.com/kubernetes/minikube).
 
-Then, start minikube.
+Start Minikube.
 
 ```bash
 $ minikube start
@@ -48,7 +52,7 @@ Setting up kubeconfig...
 Kubectl is now configured to use the cluster.
 ```
 
-Once MiniKube is installed you can interact with the kubectl tool.
+After Minikube is installed, you can interact with the kubectl tool.
 
 ```bash
 $ kubectl run hello-minikube --image=gcr.io/google_containers/echoserver:1.4 --port=8080
@@ -77,44 +81,47 @@ real path=/
 
 ### Kubectl
 
-The `minikube start` command creates a "[kubectl context](https://kubernetes.io/docs/user-guide/kubectl/v1.6/#-em-set-context-em-)" called "minikube".
-This context contains the configuration to communicate with your minikube cluster.
+The `minikube start` command creates a "[kubectl context](https://kubernetes.io/docs/user-guide/kubectl/v1.6/#-em-set-context-em-)" called "minikube". This context contains the configuration to communicate with your minikube cluster.
 
-Minikube sets this context to default automatically, but if you need to switch back to it in the future, run:
+This context is also set as default automatically. If you want to change it to another context, run the following command:
+```
+kubectl config use-context minikube
+```
 
-`kubectl config use-context minikube`,
-
-or pass the context on each command like this: `kubectl get pods --context=minikube`.
+The following command is another way to set the context: 
+```
+kubectl get pods --context=minikube
+```
 
 ### Dashboard
 
-To access the [Kubernetes Dashboard](http://kubernetes.io/docs/user-guide/ui/), run this command in a shell after starting minikube to get the address:
+To access the [Kubernetes Dashboard](http://kubernetes.io/docs/user-guide/ui/), run the following command in a shell after starting Minikube to get the address:
 ```shell
 minikube dashboard
 ```
 
 
-# 3. Setup your environment
+# 3. Setting up your environment
 
-When using a single VM Kubernetes it's really handy to reuse the Docker daemon inside the VM. It means that you don't have to build on your host machine and push the images into a docker registry - you can just build inside the same docker daemon as minikube which speeds up the user experience.
+When you use a single VM Kubernetes, it is handy to reuse the Docker daemon inside the VM. It means that you do not have to build on your host machine and push the images into a Docker registry. You can just build inside the same Docker daemon as Minikube, which speeds up the user experience.
 
-To be able to work with the docker daemon on your mac/linux host use the [docker-env command](./docs/minikube_docker-env.md) in your shell:
+To work with the docker daemon on your Mac or Linux host, use the [docker-env command](./docs/minikube_docker-env.md) in your shell:
 
 ```
 eval $(minikube docker-env)
 ```
-you should now be able to use Docker on the command line on your host mac/linux machine talking to the docker daemon inside the minikube VM:
+You are now able to use Docker in the command line on your host Mac or Linux machine that is talking to the Docker daemon inside the Minikube VM:
 ```
 docker ps
 ```
 
-On Centos 7, docker may report the following error:
+On Centos 7, Docker might report the following error:
 
 ```
 Could not read CA certificate "/etc/docker/ca.pem": open /etc/docker/ca.pem: no such file or directory
 ```
 
-The fix is to update /etc/sysconfig/docker to ensure that minikube's environment changes are respected:
+To fix this error, update `/etc/sysconfig/docker` to ensure that changes in the Minikube's environment are respected:
 
 ```
 < DOCKER_CERT_PATH=/etc/docker
@@ -124,10 +131,11 @@ The fix is to update /etc/sysconfig/docker to ensure that minikube's environment
 > fi
 ```
 
-Remember to turn off the imagePullPolicy:Always, as otherwise kubernetes won't use images you built locally.
-# 4. Get the ODM Docker material
+> Remember: Turn off `imagePullPolicy:Always`, otherwise Kubernetes will not use the images that you built locally.
 
-* Go to the ODM Install directory, clone the odm docker repository.
+# 4. Getting the ODM Docker material
+
+Go to the ODM installation directory, and clone the ODM Docker repository:
 ```bash
 $ cd <ODM_INSTALLATION>
 $ git clone https://github.com/ODMDev/odm-ondocker
@@ -135,7 +143,7 @@ $ cp odm-ondocker/src/main/resources/.dockerignore ./
 $ docker-compose build
   ```
 
-you should now be able to use the odm docker images:
+You are now able to use the ODM Docker images:
 ```
 $ docker images
 REPOSITORY                                         TAG                   IMAGE ID            CREATED             SIZE
@@ -145,16 +153,16 @@ ibmcom/odm-decisionrunner                          8.9.0                 f4a7636
 ibmcom/odm-decisionserverconsole                   8.9.0                 d7358780fbde        59 minutes ago      463 MB
 ibmcom/dbserver                                    8.9.0                 364f06111328        About an hour ago   658 MB
 ```
-# 5. Create services and deployments
+# 5. Creating services and deployments
 
-Get the public ip of the node
+Get the public IP of the node:
 
 ```bash
 $ kubectl get nodes
 NAME             STATUS    AGE
 169.47.241.106   Ready     23h
 ```
-Deploy the odm standard topology from the manifests directory with deployment manifest file :
+Deploy the ODM Standard topology from the manifests directory with the deployment manifest file:
 ```bash
 $ kubectl create -f odm-standard-minikube.yml
 deployment "dbserver" created
@@ -169,7 +177,7 @@ deployment "odm-decisionrunner" created
 service "odm-decisionrunner" created
 ```
 
-After few seconds/minutes the following commands to get the ODM Standard containers running in Kubernetes.
+After a few seconds or minutes, run the following command to get the ODM Standard containers that are running in Kubernetes:
 
 ```bash
 $ kubectl get services
@@ -183,39 +191,47 @@ odm-decisionserverruntime   10.0.0.112   <nodes>       9080:31204/TCP   20m
 ```
 
 
-Now you can use the link to access your application on your browser.
+Now you can use the following links to access your application on your browser.
 
-* For Decision Server Runtime:
-```bash
-$ minikube service odm-decisionserverruntime  --url
-http://192.168.99.100:31204/
-```
-Then, open your browser to this URL : http://192.168.99.100:31204/**_DecisionService_**
+* Decision Server runtime
 
-* For Decision Server Console:
-```bash
-$ minikube service odm-decisionserverconsole  --url
-http://192.168.99.100:32519
-```
-Then, open your browser to this URL Ex: http://192.168.99.100:31204/*****res*****
+  Run the following command:
+  ```bash
+  $ minikube service odm-decisionserverruntime  --url
+  http://192.168.99.100:31204/
+  ```
+  Open the URL in your browser. For example: http://192.168.99.100:31204/DecisionService
 
-* For Decision Runner:
-```bash
-$ minikube service odm-decisionrunner  --url
-http://192.168.99.100:32519
-```
-Then, open your browser to this URL Ex: http://192.168.99.100:31204/*****testing*****
+* Decision Server console
 
-* For Decision Center:
-```bash
-$ minikube service odm-decisioncenter  --url
-http://192.168.99.100:32519
-```
-Then, open your browser to this URL Ex:
-   * Decision Center Console : http://192.168.99.100:31204/**_decisioncenter/t/library_**
-   * TeamServer : http://192.168.99.100:31204/*****teamserver*****
+  Run the following command:
+  ```bash
+  $ minikube service odm-decisionserverconsole  --url
+  http://192.168.99.100:32519
+  ```
+  Open the URL in your browser. For example: http://192.168.99.100:32519/res
 
-If you want to delete the ODM standard images use this command:
+* Decision Runner
+
+  Run the following command:
+  ```bash
+  $ minikube service odm-decisionrunner  --url
+  http://192.168.99.100:32519
+  ```
+  Open the URL in your browser. For example: http://192.168.99.100:32519/testing
+
+* Decision Center
+
+  Run the following command:
+  ```bash
+  $ minikube service odm-decisioncenter  --url
+  http://192.168.99.100:32519
+  ```
+  Open this URL in our browser. For example:
+   * Decision Center console : http://192.168.99.100:31204/decisioncenter/t/library_
+   * TeamServer : http://192.168.99.100:31204/teamserver
+
+If you want to delete the ODM Standard images, use the following command:
 ```bash
 $ kubectl delete -f odm-standard-minikube.yml
 deployment "dbserver" deleted

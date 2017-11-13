@@ -1,8 +1,8 @@
-#  Deploy IBM Operational Decision Manager Standard on IBM Private cloud
+#  Deploying IBM Operational Decision Manager Standard on IBM Private cloud
 
-This tutorial explains the deployment of an IBM® Operational Decision Manager clustered topology on IBM Cloud private, based on Kubernetes technology.
+This tutorial explains the deployment of an IBM® Operational Decision Manager clustered topology on IBM Cloud private, based on the Kubernetes technology.
 
-We use ODM Docker materials and make them available in the repository [odm-ondocker](https://github.com/ODMDev/odm-ondocker). It includes Docker files and Docker Compose descriptors. ODM containers are based on IBM WebSphere® Application Server Liberty. In this tutorial, we use only the Docker files to build ODM runtime images that will be instantiated in the Kubernetes cluster.
+ODM Docker material is used here, which is available in the [odm-ondocker](https://github.com/ODMDev/odm-ondocker) repository. It includes Docker files and Docker Compose descriptors. ODM containers are based on IBM WebSphere® Application Server Liberty. In this tutorial, only the Docker files are used to build ODM runtime images that will be instantiated in the Kubernetes cluster.
 
 ![Flow](../images/ODMinKubernetes-Flow.png)
 
@@ -22,14 +22,14 @@ This tutorial was tested on MacOS.
 
 ## Steps
 
-1. [Install and configure IBM Cloud private](#1-install-and-configure-ibm-private-cloud)
-2. [Get the ODM Docker material](#2-get-the-odm-docker-material)
-3. [Tag and deploy the ODM Docker material in the IBM Cloud private Docker registry](#3-tag-and-deploy-odm-docker-material-in-the-ibm-cloud-private-docker-registry)
-4. [Deploy an ODM topology with the admin console](#4-deploy-an-odm-topology-with-the-admin-console)
-5. [Deploy an ODM topology with the Helm command line tool](#5-deploy-an-odm-topology-with-a-command-line)
-6. [Create services and deployments](#5-create-services-and-deployments)
+1. [Installing and configuring IBM Cloud private](#1-installing-and-configuring-ibm-cloud-private)
+2. [Getting the ODM Docker material](#2-getting-the-odm-docker-material)
+3. [Tagging and deploying the ODM Docker material in the IBM Cloud private Docker registry](#3-tagging-and-deploying-the-odm-docker-material-in-the-ibm-cloud-private-docker-registry)
+4. [Deploying an ODM topology with the admin console](#4-deploying-an-odm-topology-with-the-admin-console)
+5. [Deploying an ODM topology with the Helm command line tool](#5-deploying-an-odm-topology-with-the-helm-command-line-tool)
 
-# 1. Install and configure IBM Cloud private
+
+# 1. Installing and configuring IBM Cloud private
 
 
 Install [IBM Cloud private](https://www.ibm.com/support/knowledgecenter/en/SSBS6K_1.2.0/installing/installing.html).
@@ -38,7 +38,7 @@ Install [IBM Cloud private](https://www.ibm.com/support/knowledgecenter/en/SSBS6
 You can interact with the admin console when IBM Cloud private is installed.
 
 
-# 2. Get the ODM Docker material
+# 2. Getting the ODM Docker material
 
 * Go to the ODM installation directory and clone the ODM docker repository.
 ```bash
@@ -49,9 +49,9 @@ You can interact with the admin console when IBM Cloud private is installed.
       docker-compose build
   ```
 
-# 3. Tag and deploy the ODM Docker material in the IBM Cloud private Docker registry
+# 3. Tagging and deploying the ODM Docker material in the IBM Cloud private Docker registry
 
-In this use case, we use the [IBM Cloud private Docker registry]
+The [IBM Cloud private Docker registry] is used in this use case.
 
 ```bash
     docker login mycluster.icp:8500 (username/password)  -> admin/admin by default.
@@ -75,60 +75,59 @@ In this use case, we use the [IBM Cloud private Docker registry]
 
 For more information, see [Working with your IBM Cloud private Docker registry](https://www.ibm.com/developerworks/community/blogs/fe25b4ef-ea6a-4d86-a629-6f87ccf4649e/entry/Working_with_the_local_docker_registry_from_Spectrum_Conductor_for_Containers?lang=en)
 
-# 4. Deploy an ODM topology with the admin console
+# 4. Deploying an ODM topology with the admin console
   - Log on to the IBM Cloud private console.
-  - Go to System > Repositories, and add an ODM charts repository.
- ![AppCenter](../images/ODM-IBMPrivateCloud-AddRepository.jpg)
-    - Click Add Repository
+  - Click the menu next to **IBM Cloud Private** and go to **Admin** > **Repositories**.
+  - Click **Add Repository**
+ ![AppCenter](../images/ODM-IBMPrivateCloud_AddRepo.png)
+  - In the Add repository window, enter the following values and click **Add**:
     - Name: odmcharts
     - URL :  https://odmdev.github.io/odm-helm-charts-repo/
 
-  - Go to App Center.
-  	- You can see the ODM chart in the package list.
-![AppCenter](../images/ODM-IBMPrivateCloud-AppCenter.jpg)
-	- Click Install Package in the ODM chart
-![AppCenter-Inst](../images/ODM-IBMPrivateCloud-AppCenterInst.jpg)
+  - Click the menu and go to **Catalog**. You can see the ODM chart (`odmcharts`) in the package list.
+![AppCenter](../images/ODM-IBMPrivateCloud_Catalog.png)
+  - Click `odmcharts`.
+  - Click **Configure** and enter values for the parameters. For more information about the ODM charts parameters, see the Helm [README](../helm/stable/odmcharts/README.md) file.
+  - Click **Install**. The Installation complete window is displayed.
 https://odmdev.github.io/odm-helm-charts-repo/
 
-Descriptions of ODM charts parameters are available in the Helm [README](../helm/stable/odmcharts/README.md) file.
-# 5. Deploy an ODM topology with the Helm command line tool
+# 5. Deploying an ODM topology with the Helm command line tool
 
 # 5.1. Interact with your cluster
 
 You must set environment variables to interact with kubectl and Helm tools.
 
-Click the user name, and select Configure Client in the IBM Cloud private console.
+  - Click the menu and go to **Dashboard**. Click the user name in the uppper right corner in the IBM Cloud private console, and then select **Configure client**.
 
-![AppCenter-Username](../images/ODM-IBMPrivateCloud-SetupVariable.jpg)
-  - Click Configure Client.
+![AppCenter](../images/ODM-IBMPrivateCloud_ConfigClient.png)
+
   - Open a command line, and follow the instructions in the topic [Accessing your IBM Cloud private cluster by using the kubectl CLI](https://www.ibm.com/support/knowledgecenter/en/SSBS6K_1.2.0/manage_cluster/cfc_cli.html) in IBM Knowledge Center.
 
 For more information about installating the Helm tool, see [].
 
-# 5.2 Verify the secret of the registry
+# 5.2 Verifying the secret of the registry
 
 You verify that the secret of the registry is available.
 
 For more information, see [Identifying the imagePullSecrets value for your namespace](
 https://www.ibm.com/support/knowledgecenter/en/SSBS6K_2.1.0/manage_images/imagepullsecret.html) in IBM Knowledge Center.
 
+Run the following command to see your private key:
 ```bash
   kubect get secrets
  ```   
-You can see your private key.
-
-  - If you do not see it, create a new one.
+If you do not see it, create a new one:
 ```bash
   kubectl create secret docker-registry  admin.registrykey --docker-server=mycluster.icp:8500 --docker-username=admin --docker-password=admin --docker-email=laurent.grateau@fr.ibm.com
  ```   
 
-# 5.3 Deploy the ODM Helm chart:
+# 5.3 Deploying the ODM Helm chart:
 ```bash
 	cd IBM-ODM-Kubernetes/IBMCloudPrivate
 	helm install  odmcharts --set image.pullSecrets=admin.registrykey --set image.repository=mycluster.icp:8500/ibmcom
  ```
 
-To install the Helm client, follow this [instructions](https://github.com/kubernetes/helm/blob/master/docs/install.md).
+To install the Helm client, follow the instructions in [Installing Helm](https://github.com/kubernetes/helm/blob/master/docs/install.md).
 ```bash
 NAME:   snug-dog
 LAST DEPLOYED: Sun Sep 17 11:10:33 2017
@@ -155,57 +154,74 @@ odm-decisionserverconsole  1        1        1           0          1s
 
 NOTES:
 Thank you for installing odmcharts.
+  ```
+For more information about this template, see the following github: https://github.com/ODMDev/odm-docker-kubernetes.
 
-For more informations about this template you can take a look in this github https://github.com/ODMDev/odm-docker-kubernetes
-
-ODM Informations
------------------
+# Other information
 
 Username/Password :
-  - For Business Console : rtsAdmin/rtsAdmin
-  - For RES : resAdmin/resAdmin
-  - For Decision Runner: resDeployer/resDeployer
+  - Decision Cener Business console : rtsAdmin/rtsAdmin
+  - Rule Execution Server : resAdmin/resAdmin
+  - Decision Runner: resDeployer/resDeployer
 
-1. Get the application URL by running these commands:
+Get the application URL by running the following commands:
 
--- Decision Center / Business Console
+- Decision Center / Business console
+  ```
   export NODE_PORT_DC=$(kubectl get --namespace default -o jsonpath="{.spec.ports[0].nodePort}" services odm-decisioncenter)
   export NODE_IP=$(kubectl get nodes --namespace default -o jsonpath="{.items[0].status.addresses[0].address}")
-  * Decision Center / Business Console
-  echo http://$NODE_IP:$NODE_PORT_DC/decisioncenter
+  ```
 
-  * Team Server
-  echo http://$NODE_IP:$NODE_PORT_DC/teamserver
+  - Decision Center / Business console
+    ```
+    echo http://$NODE_IP:$NODE_PORT_DC/decisioncenter
+    ```
 
--- Testing and Simulation
+  - Team Server
+    ```
+    echo http://$NODE_IP:$NODE_PORT_DC/teamserver
+    ```
+
+- Testing and simulation
+  ```
   export NODE_PORT_DR=$(kubectl get --namespace default -o jsonpath="{.spec.ports[0].nodePort}" services odm-decisionrunner)
   export NODE_IP=$(kubectl get nodes --namespace default -o jsonpath="{.items[0].status.addresses[0].address}")
-  * Decision Runner
-  echo http://$NODE_IP:$NODE_PORT_DR/DecisionRunner
+  ```
 
+  - Decision Runner
+    ```
+    echo http://$NODE_IP:$NODE_PORT_DR/DecisionRunner
+    ```
 
--- Decision Service Console (RES Console)
+- Decision Service console (Rule Execution Server console)
+  ```
   export NODE_PORT_DSC=$(kubectl get --namespace default -o jsonpath="{.spec.ports[0].nodePort}" services odm-decisionserverconsole)
   export NODE_IP=$(kubectl get nodes --namespace default -o jsonpath="{.items[0].status.addresses[0].address}")
-  * Decision Service Console (RES Console)
-  echo http://$NODE_IP:$NODE_PORT_DSC/res
+  ```
 
+  - Decision Service console (Rule Execution Server console)
+    ```
+    echo http://$NODE_IP:$NODE_PORT_DSC/res
+    ```
 
--- Decision Service Runtime (Htds)
- export NODE_PORT_DSC=$(kubectl get --namespace default -o jsonpath="{.spec.ports[0].nodePort}" services odm-decisionserverruntime)
+- Decision Service runtime (HTDS)
+  ```
+  export NODE_PORT_DSC=$(kubectl get --namespace default -o jsonpath="{.spec.ports[0].nodePort}" services odm-decisionserverruntime)
   export NODE_IP=$(kubectl get nodes --namespace default -o jsonpath="{.items[0].status.addresses[0].address}")
-  * Decision Service Runtime
-  echo http://$NODE_IP:$NODE_PORT_DSC/DecisionService
+  ```
 
+  - Decision Service runtime
+    ```
+    echo http://$NODE_IP:$NODE_PORT_DSC/DecisionService
+    ```
 
+Your release is named `snug-dog`.
 
-Your release is named snug-dog.
-
-To learn more about the release, try:
-
+To learn more about the release, use the following commands:
+  ```
   $ helm status snug-dog
   $ helm get snug-dog
-  ````
+  ```
 
 
 

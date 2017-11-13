@@ -14,21 +14,19 @@ IBM Operational Decision Manager on Kubernetes
   </a>
 </p>
 
-#  Deploy IBM Operational Decision Manager Standard on a Kubernetes Cluster
+#  Deploying IBM Operational Decision Manager Standard on a Kubernetes Cluster
 
-This repository centralizes materials to deploy IBM® Operational Decision Manager (ODM) Standard in Kubernetes. It is deployed in a clustered topology that uses WebSphere® Application Server Liberty on a Kubernetes cluster.
+This repository centralizes materials to deploy [IBM® Operational Decision Manager](https://www.ibm.com/support/knowledgecenter/SSQP76_8.9.0/welcome/kc_welcome_odmV.html) (ODM) Standard in Kubernetes. It is deployed in a clustered topology that uses WebSphere® Application Server Liberty on a Kubernetes cluster.
 
-[IBM ODM](https://www.ibm.com/support/knowledgecenter/SSQP76_8.9.0/welcome/kc_welcome_odmV.html) is a decisioning platform to automate your business policies. Business rules are used at the heart of the platform to implement decision logic on a business vocabulary and run it as web decision services.
+ODM is a decisioning platform to automate your business policies. Business rules are used at the heart of the platform to implement decision logic on a business vocabulary and run it as web decision services.
 
-We use the ODM Docker material and make it available on the repository [odm-ondocker](https://github.com/lgrateau/odm-ondocker). It includes Docker files and Docker Compose descriptors. The Docker files are used to build images of ODM runtimes. The Docker Compose descriptors can be used to group these images and push to your repository for a Kubernetes provisioning. Nevertheless Docker Compose and Kubernetes are two distinct technology paths to provision a container-based topology supported by ODM Standard.
+The ODM Docker material is used here, which is available in the [odm-ondocker](https://github.com/lgrateau/odm-ondocker) repository. It includes Docker files and Docker Compose descriptors. The Docker files are used to build images of ODM runtimes. The Docker Compose descriptors can be used to group these images and push to your repository for a Kubernetes provisioning. Docker Compose and Kubernetes are two distinct technology paths to provision a container-based topology supported by ODM Standard.
 
 ![Flow](images/ODMinKubernetes-DeploymentOverview.png)
 
 ## Deploying ODM Rules in the following environments
 - [Bluemix Kubernetes Cluster](Bluemix/README.md)
 - [MiniKube](MiniKube/README.md)
-
-## References
 
 # Notice
 © Copyright IBM Corporation 2017.
@@ -47,4 +45,3 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ````
-

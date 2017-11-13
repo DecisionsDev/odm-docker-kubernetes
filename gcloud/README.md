@@ -1,49 +1,49 @@
-# Deploy IBM Operational Decision Manager Standard on Google Cloud Container Engine
+# Deploying IBM Operational Decision Manager Standard on Google Cloud Container Engine
 
-This project demonstrates the deployment of an IBM Operational Decision Manager clustered topology using WAS Liberty on Google Cloud. For this we leverage Kubernetes and Docker technologies made available by Google through Google Container Registry and Engine.
+This project demonstrates the deployment of an IBM® Operational Decision Manager (ODM) clustered topology using IBM WebSphere® Application Server Liberty on Google Cloud. We use Kubernetes and Docker technologies. They are available by Google through Google Container Registry and Engine.
 
-We reuse the ODM Docker material put available on this repository [odm-ondocker](https://github.com/lgrateau/odm-ondocker). It includes Docker files and Docker compose descriptors. In this tutorial we will only use the Docker files to build the ODM runtime images that we will instantiate in the Kubernetes cluster.
+The ODM Docker material is use here, which is available in the [odm-ondocker](https://github.com/lgrateau/odm-ondocker) repository. It includes Docker files and Docker compose descriptors. In this tutorial, only the Docker files are used to build the ODM runtime images that will be instantiated in the Kubernetes cluster.
 
 ![Flow](../images/ODMinKubernetes-Flow.png)
 
 ## Included Components
 - [IBM ODM](https://www.ibm.com/support/knowledgecenter/SSQP76_8.9.0/welcome/kc_welcome_odmV.html)
-- [Google Container Engine](...)
-- [Google Container Registry](...)
+- [Google Container Engine](https://cloud.google.com/container-engine/)
+- [Google Container Registry](https://cloud.google.com/container-registry/)
 
-## Testing
-This tutorial has been tested on MacOS.
+## Test environment
+This tutorial was tested on MacOS.
 
-## Prerequisite
+## Prerequisites
 
-* Create a Kubernetes cluster in Google Container Engine [Google Container Engine](...).
+* Create a Kubernetes cluster in [Google Container Engine](https://cloud.google.com/container-engine/).
 * Install a Git client to obtain the sample code.
 * Install a [Docker](https://docs.docker.com/engine/installation/) engine.
 
-## Deploy to Kubernetes Cluster from Google Container
+## Deploying to Kubernetes Cluster from Google Container
 
 ## Steps
 
-1. [Install Docker CLI and Google Cloud CLI](#1-install-docker-cli-and-google-cloud-cli)
-2. [Get and build the application code](#2-get-ODM-Docker-files-and-Kubernetes-manifest)
-3. [Build application containers](#3-build-your-ODM-images)
-4. [Create Services and Deployments](#4-create-services-and-deployments)
+1. [Installing Docker CLI and Google Cloud CLI](#1-installing-docker-cli-and-google-cloud-cli)
+2. [Getting ODM Docker files and Kubernetes manifest](#2-getting-odm-docker-files-and-kubernetes-manifest)
+3. [Building your ODM images](#3-building-your-odm-images)
+4. [Creating services and deployments](#4-creating-services-and-deployments)
 
-# 1. Install Docker and Google Cloud CLI
+# 1. Installing Docker CLI and Google Cloud CLI
 
-First, install [Docker CLI](https://www.docker.com/community-edition#/download).
+Install the [Docker CLI](https://www.docker.com/community-edition#/download).
 
-Then, install the [Google Cloud CLI](https://cloud.google.com/sdk/docs/)
+Install the [Google Cloud CLI](https://cloud.google.com/sdk/docs/).
 
-Once the Google Cloud CLI check your configuration.
+After the Google Cloud CLI is installed, check your configuration:
 
 ```bash
 gcloud info
 ```
 
-# 2. Get ODM Docker files and Kubernetes manifest
+# 2. Getting ODM Docker files and Kubernetes manifest
 
-* `git clone` the following projects:
+* Run the `git clone` command for the following projects:
    * [odm-ondocker](https://github.com/ODMDev/odm-ondocker)
    ```bash
       git clone https://github.com/ODMDev/odm-ondocker
@@ -53,62 +53,63 @@ gcloud info
       git clone https://github.com/ODMDev/odm-docker-kubernetes
   ```
 
-# 3. Build your ODM images
+# 3. Building your ODM images
 
-Docker registry eu.gcr.io/odm890-kubernetes/ is used as an example. Please replace it by your registry path.
+> NOTE: The Docker registry eu.gcr.io/odm890-kubernetes/ is used as an example. You must replace it with your registry path.
 
-Build the decision server container
+Build the Decision Server container:
 
 ```bash
 docker tag ibmcom/odm-decisionserverruntime:8.9.0 eu.gcr.io/odm890-kubernetes/ibm-odm-decisionserverruntime:8.9.0
 gcloud docker -- push eu.gcr.io/odm890-kubernetes/ibm-odm-decisionserverruntime:8.9.0
 ```
 
-Build the Derby decision db server container
+Build the Derby decision db server container:
 
 ```bash
 docker tag ibmcom/dbserver:8.9.0 eu.gcr.io/odm890-kubernetes/ibm-odm-dbserver:8.9.0
 gcloud docker -- push eu.gcr.io/odm890-kubernetes/ibm-odm-dbserver:8.9.0
 ```
 
-Build the decision center container
+Build the Decision Center container:
 
 ```bash
 docker tag ibmcom/odm-decisioncenter:8.9.0 eu.gcr.io/odm890-kubernetes/ibm-odm-decisioncenter:8.9.0
 gcloud docker -- push eu.gcr.io/odm890-kubernetes/ibm-odm-decisioncenter:8.9.0
 ```
 
-Build the decision server console runtime container
+Build the Decision Server console runtime container:
 
 ```bash
 docker tag ibmcom/odm-decisionserverconsole:8.9.0 eu.gcr.io/odm890-kubernetes/ibm-odm-decisionserverconsole:8.9.0
 gcloud docker -- push eu.gcr.io/odm890-kubernetes/ibm-odm-decisionserverconsole:8.9.0
 ```
 
-Build the decision runner container
+Build the Decision Runner container:
 
 ```bash
 docker tag ibmcom/odm-decisionrunner:8.9.0 eu.gcr.io/odm890-kubernetes/ibm-odm-decisionrunner:8.9.0
 gcloud docker -- push eu.gcr.io/odm890-kubernetes/ibm-odm-decisionrunner:8.9.0
 ```
 
-# 4. Create Services and Deployments
+# 4. Creating services and deployments
 
-Edit the odm-standard-gcloud.yaml descriptor.
-Change the image name given in the deployment YAML file with the newly build image names pushed in your Google Docker registry.
+Edit the odm-standard-gcloud.yaml descriptor. Change the image name that is given in the deployment YAML file with the newly built image names that are pushed in your Google Docker registry.
 
-Then deploy the ODM topology with the following command:
+Deploy the ODM topology with the following command:
 
 ```bash
 kubectl create -f odm-standard-gcloud.yaml
 ```
 
-After you have created all the services and deployments, wait for 5 to 10 minutes. You can check the status of your deployment on Kubernetes UI. Run 'kubectl proxy' and go to URL 'http://127.0.0.1:8001/ui' to check when the application containers are ready.
+Wait 5 - 10 minutes after you created all the services and deployments. You can check the status of your deployment by using the Kubernetes user interface.
+
+Run the `kubectl proxy` command, and then go to the URL http://127.0.0.1:8001/ui to check if the yaml file is created when the application containers are ready.
 
 ![Kubernetes Status Page](images/kube_ui.png)
 
 
-After few minutes the following commands to get your public IP and NodePort number.
+After a few minutes, run the following commands to get your public IP and NodePort number.
 
 ```bash
 $ kubectl get nodes
@@ -133,24 +134,24 @@ odm-decisionserverruntime   10.43.250.80    <nodes>          9080:32703/TCP   15
 
 ![ODM pods](./images/ODM-Kubernetes-gcloud-pods.png)
 
-With this ODM topology in place you access to web applications to author, deploy, and test your rule based decision services.
-* Decision Center Console : http://DECISION-CENTER-EXTERNAL-IP:PORT/decisioncenter/t/library
+With this ODM topology in place, you can access to web applications to author, deploy, and test your rule-based decision services.
+* Decision Center console: http://DECISION-CENTER-EXTERNAL-IP:PORT/decisioncenter/t/library
 
-   * Login with rtsAdmin/rtsAdmin. You should see the project library as follows.
+   * Login with the rtsAdmin/rtsAdmin user name and password. You can see the following project library:
    * ![Decision Center](images/ODM-Kubernetes-gcloud-decisioncenter.png)
 
-* Decision Server Console:!http://DECISION-SERVER-CONSOLE-EXTERNAL-IP:PORT/res
+* Decision Server console: http://DECISION-SERVER-CONSOLE-EXTERNAL-IP:PORT/res
 
-   * Login with resAdmin/resAdmin. You should see the executable decision services as follows.
+   * Login with the resAdmin/resAdmin user name and password. You should see the following executable decision services:
    * ![Decision Server Console](images/ODM-Kubernetes-gcloud-resconsole.png)
 
 ## Troubleshooting
 
-* If your microservice instances are not running properly, you may check the logs using
+* If your microservice instances are not running properly, you can check the logs by using the following command:
 	* `kubectl logs <your-pod-name>`
-* To delete a microservice
+* To delete a microservice, use the following command:
 	* `kubectl delete -f manifests/<microservice-yaml-file>`
-* To delete everything
+* To delete everything, use the following command:
 	* `kubectl delete -f manifests`
 
 ## References
