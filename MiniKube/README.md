@@ -2,7 +2,7 @@
 
 This tutorial explains the deployment of an IBM® Operational Decision Manager (ODM) clustered topology on a Minikube Kubernetes cluster.
 
-Use the ODM Docker material that is available in the [odm-ondocker](https://github.com/lgrateau/odm-ondocker) repository. It includes Docker files and Docker compose descriptors. ODM containers are based on IBM WebSphere® Application Server Liberty. In this tutorial, we use only the Docker files to build the ODM runtime images that will be instantiated in the Kubernetes cluster.
+The ODM Docker material is used here, which is available in the [odm-ondocker](https://github.com/lgrateau/odm-ondocker) repository. It includes Docker files and Docker compose descriptors. ODM containers are based on IBM WebSphere® Application Server Liberty. In this tutorial, only the Docker files are used to build the ODM runtime images that will be instantiated in the Kubernetes cluster.
 
 ![Flow](../images/ODMinKubernetes-Flow.png)
 
@@ -84,7 +84,7 @@ This context is also set as default automatically. If you want to change it to a
 kubectl config use-context minikube
 ```
 
-Here is another way to set the context: 
+The following command is another way to set the context: 
 ```
 kubectl get pods --context=minikube
 ```
@@ -106,7 +106,7 @@ To work with the docker daemon on your Mac/Linux host, use the [docker-env comma
 ```
 eval $(minikube docker-env)
 ```
-You are now able to use Docker in the command line on your host Mac/Linux machine that is talking to the Docker daemon inside the Minikube VM:
+You are now able to use Docker in the command line on your host Mac or Linux machine that is talking to the Docker daemon inside the Minikube VM:
 ```
 docker ps
 ```
@@ -117,7 +117,7 @@ On Centos 7, Docker might report the following error:
 Could not read CA certificate "/etc/docker/ca.pem": open /etc/docker/ca.pem: no such file or directory
 ```
 
-To fix this error, update /etc/sysconfig/docker to ensure that changes in the Minikube's environment are respected:
+To fix this error, update `/etc/sysconfig/docker` to ensure that changes in the Minikube's environment are respected:
 
 ```
 < DOCKER_CERT_PATH=/etc/docker
@@ -127,7 +127,7 @@ To fix this error, update /etc/sysconfig/docker to ensure that changes in the Mi
 > fi
 ```
 
-Remember to turn off `imagePullPolicy:Always`, otherwise Kubernetes will not use the images that you built locally.
+> Remember: Turn off `imagePullPolicy:Always`, otherwise Kubernetes will not use the images that you built locally.
 
 # 4. Getting the ODM Docker material
 
@@ -173,7 +173,7 @@ deployment "odm-decisionrunner" created
 service "odm-decisionrunner" created
 ```
 
-After a few seconds/minutes, run the following command to get the ODM Standard containers that are running in Kubernetes:
+After a few seconds or minutes, run the following command to get the ODM Standard containers that are running in Kubernetes:
 
 ```bash
 $ kubectl get services
@@ -190,31 +190,31 @@ odm-decisionserverruntime   10.0.0.112   <nodes>       9080:31204/TCP   20m
 Now you can use the following links to access your application on your browser.
 
 * Decision Server runtime:
-```bash
-$ minikube service odm-decisionserverruntime  --url
-http://192.168.99.100:31204/
-```
+  ```bash
+  $ minikube service odm-decisionserverruntime  --url
+  http://192.168.99.100:31204/
+  ```
    Then, open this URL in your browser. For example: http://192.168.99.100:31204/**_DecisionService_**
 
 * Decision Server console:
-```bash
-$ minikube service odm-decisionserverconsole  --url
-http://192.168.99.100:32519
-```
+  ```bash
+  $ minikube service odm-decisionserverconsole  --url
+  http://192.168.99.100:32519
+  ```
    Then, open this URL in your browser. For example: http://192.168.99.100:31204/*****res*****
 
 * Decision Runner:
-```bash
-$ minikube service odm-decisionrunner  --url
-http://192.168.99.100:32519
-```
+  ```bash
+  $ minikube service odm-decisionrunner  --url
+  http://192.168.99.100:32519
+  ```
    Then, open this URL in your browser. For example: http://192.168.99.100:31204/*****testing*****
 
 * Decision Center:
-```bash
-$ minikube service odm-decisioncenter  --url
-http://192.168.99.100:32519
-```
+  ```bash
+  $ minikube service odm-decisioncenter  --url
+  http://192.168.99.100:32519
+  ```
    Then, open this URL in our browser. For example:
    * Decision Center console : http://192.168.99.100:31204/**_decisioncenter/t/library_**
    * TeamServer : http://192.168.99.100:31204/*****teamserver*****
