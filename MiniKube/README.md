@@ -196,7 +196,7 @@ Now you can use the following links to access your application on your browser.
   $ minikube service odm-decisionserverruntime  --url
   http://192.168.99.100:31204/
   ```
-  Open the URL in your browser. For example: http://192.168.99.100:31204/**_DecisionService_**
+  Open the URL in your browser. For example: http://192.168.99.100:31204/__DecisionService__
 
 * Decision Server console
 
@@ -205,7 +205,7 @@ Now you can use the following links to access your application on your browser.
   $ minikube service odm-decisionserverconsole  --url
   http://192.168.99.100:32519
   ```
-  Open the URL in your browser. For example: http://192.168.99.100:31204/*****res*****
+  Open the URL in your browser. For example: http://192.168.99.100:31204/**res**
 
 * Decision Runner
 
