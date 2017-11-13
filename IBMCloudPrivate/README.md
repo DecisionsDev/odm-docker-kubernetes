@@ -1,8 +1,8 @@
 #  Deploying IBM Operational Decision Manager Standard on IBM Private cloud
 
-This tutorial explains the deployment of an IBM® Operational Decision Manager clustered topology on IBM Cloud private, based on Kubernetes technology.
+This tutorial explains the deployment of an IBM® Operational Decision Manager clustered topology on IBM Cloud private, based on the Kubernetes technology.
 
-Use ODM Docker materials that are available in the [odm-ondocker](https://github.com/ODMDev/odm-ondocker) repository. It includes Docker files and Docker Compose descriptors. ODM containers are based on IBM WebSphere® Application Server Liberty. In this tutorial, only the Docker files are used to build ODM runtime images that will be instantiated in the Kubernetes cluster.
+ODM Docker material is used here, which is available in the [odm-ondocker](https://github.com/ODMDev/odm-ondocker) repository. It includes Docker files and Docker Compose descriptors. ODM containers are based on IBM WebSphere® Application Server Liberty. In this tutorial, only the Docker files are used to build ODM runtime images that will be instantiated in the Kubernetes cluster.
 
 ![Flow](../images/ODMinKubernetes-Flow.png)
 
@@ -78,13 +78,13 @@ For more information, see [Working with your IBM Cloud private Docker registry](
   - Log on to the IBM Cloud private console.
   - Click the menu next to **IBM Cloud Private** and go to **Admin** > **Repositories**. 
   - Click **Add Repository**
- (../images/ODM-IBMPrivateCloud-AddRepo.png)
+ ![AppCenter](../images/ODM-IBMPrivateCloud-AddRepo.png)
   - In the Add repository window, enter the following values and click **Add**:
     - Name: odmcharts
     - URL :  https://odmdev.github.io/odm-helm-charts-repo/
 
   - Click the menu and go to **Catalog**. You can see the ODM chart (`odmcharts`) in the package list.
-(../images/ODM-IBMPrivateCloud-Catalog.png)
+![AppCenter](../images/ODM-IBMPrivateCloud-Catalog.png)
   - Click `odmcharts`.
   - Click **Configure** and enter values for the parameters. For more information about the ODM charts parameters, see the Helm [README](../helm/stable/odmcharts/README.md) file.
   - Click **Install**. The Installation complete window is displayed.
@@ -98,7 +98,7 @@ You must set environment variables to interact with kubectl and Helm tools.
 
   - Click the menu and go to **Dashboard**. Click the user name in the uppper right corner in the IBM Cloud private console, and then select **Configure client**.
 
-(../images/ODM-IBMPrivateCloud-ConfigClient.png)
+![AppCenter](../images/ODM-IBMPrivateCloud-ConfigClient.png)
 
   - Open a command line, and follow the instructions in the topic [Accessing your IBM Cloud private cluster by using the kubectl CLI](https://www.ibm.com/support/knowledgecenter/en/SSBS6K_1.2.0/manage_cluster/cfc_cli.html) in IBM Knowledge Center.
 
