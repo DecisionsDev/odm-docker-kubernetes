@@ -28,8 +28,6 @@ The ODM Docker material is used here, which is available in the [odm-ondocker](h
 - [Bluemix Kubernetes Cluster](Bluemix/README.md)
 - [MiniKube](MiniKube/README.md)
 
-## References
-
 # Notice
 © Copyright IBM Corporation 2017.
 
