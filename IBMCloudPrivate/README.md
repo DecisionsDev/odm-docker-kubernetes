@@ -198,14 +198,14 @@ Get the application URL by running the following commands:
   export NODE_IP=$(kubectl get nodes --namespace default -o jsonpath="{.items[0].status.addresses[0].address}")
   ```
   
-  - Decision Service console (Rule Execution Server xonsole)
+  - Decision Service console (Rule Execution Server console)
   ```
   echo http://$NODE_IP:$NODE_PORT_DSC/res
   ```
   
 - Decision Service runtime (HTDS)
   ```
- export NODE_PORT_DSC=$(kubectl get --namespace default -o jsonpath="{.spec.ports[0].nodePort}" services odm-decisionserverruntime)
+  export NODE_PORT_DSC=$(kubectl get --namespace default -o jsonpath="{.spec.ports[0].nodePort}" services odm-decisionserverruntime)
   export NODE_IP=$(kubectl get nodes --namespace default -o jsonpath="{.items[0].status.addresses[0].address}")
   ```
   
