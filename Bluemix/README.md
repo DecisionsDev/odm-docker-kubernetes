@@ -6,7 +6,7 @@ Full story is described in this article: https://www.ibm.com/developerworks/libr
 ![Flow](../images/ODMinKubernetes-Flow.png)
 
 ## Included Components
-This repository contains Kubernetes deployment descriptors to deploy an ODM Standard topology in your Bluemix cluster:
+This repository contains the following Kubernetes deployment descriptors to deploy an IBM® Operational Decision Manager (ODM) Standard  topology in your Bluemix cluster:
 - [ODM Standard deployment descriptor for a Bluemix lite cluster](./odm-standard-bx-lite.yaml)
 - [ODM Standard deployment descriptor for a Bluemix standard cluster](./odm-standard-bx-standard.yaml)
 
@@ -20,7 +20,7 @@ This material was tested with the following configuration:
 - ODM 8.9.0
 
 ## Troubleshooting
-* If your ODM services cannot be reached just after the creation of the deployment, wait for a few minutes to have the connectivity completed in the hosted cluster.
+* If your ODM services cannot be reached right after the deployment is created, wait for a few minutes so that the connectivity is completed in the hosted cluster.
 * If your microservice instance is not running properly, check the logs by using the following command:
 	* `kubectl logs <your-pod-name>`
 * To delete a microservice, use the following command:
