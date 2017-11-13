@@ -126,7 +126,7 @@ If you do not see it, create a new one:
 	helm install  odmcharts --set image.pullSecrets=admin.registrykey --set image.repository=mycluster.icp:8500/ibmcom
  ```
 
-To install the Helm client, follow this [instructions](https://github.com/kubernetes/helm/blob/master/docs/install.md).
+To install the Helm client, follow the instructions in [Installing Helm](https://github.com/kubernetes/helm/blob/master/docs/install.md).
 ```bash
 NAME:   snug-dog
 LAST DEPLOYED: Sun Sep 17 11:10:33 2017
