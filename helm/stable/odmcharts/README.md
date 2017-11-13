@@ -77,7 +77,8 @@ The `image` parameter can be used to specify which image will be pulled for the 
 If you set the `image` value to one in a private registry, you must [specify an image pull secret](https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod).
 
 1. Manually create image pull secrets in the namespace. For more information, see [this example about YAML reference](https://kubernetes.io/docs/concepts/containers/images/#creating-a-secret-with-a-docker-config). For information about getting an appropriate secrete, see the documentation of your image registry.
-- The parameter to configure the SECRET_NAME is in the value.yaml file:
+
+   The parameter to configure the SECRET_NAME is in the value.yaml file:
 ```yaml
 image:
   pullSecrets: SECRET_NAME
