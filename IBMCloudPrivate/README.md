@@ -78,13 +78,13 @@ For more information, see [Working with your IBM Cloud private Docker registry](
   - Log on to the IBM Cloud private console.
   - Click the menu next to **IBM Cloud Private** and go to **Admin** > **Repositories**. 
   - Click **Add Repository**
- ![AppCenter](../images/ODM-IBMPrivateCloud-AddRepo.png)
+ (../images/ODM-IBMPrivateCloud-AddRepo.png)
   - In the Add repository window, enter the following values and click **Add**:
     - Name: odmcharts
     - URL :  https://odmdev.github.io/odm-helm-charts-repo/
 
   - Click the menu and go to **Catalog**. You can see the ODM chart (`odmcharts`) in the package list.
-![AppCenter](../images/ODM-IBMPrivateCloud-Catalog.png)
+(../images/ODM-IBMPrivateCloud-Catalog.png)
   - Click `odmcharts`.
   - Click **Configure** and enter values for the parameters. For more information about the ODM charts parameters, see the Helm [README](../helm/stable/odmcharts/README.md) file.
   - Click **Install**. The Installation complete window is displayed.
@@ -98,7 +98,7 @@ You must set environment variables to interact with kubectl and Helm tools.
 
   - Click the menu and go to **Dashboard**. Click the user name in the uppper right corner in the IBM Cloud private console, and then select **Configure client**.
 
-![AppCenter-Username](../images/ODM-IBMPrivateCloud-ConfigClient.png)
+(../images/ODM-IBMPrivateCloud-ConfigClient.png)
 
   - Open a command line, and follow the instructions in the topic [Accessing your IBM Cloud private cluster by using the kubectl CLI](https://www.ibm.com/support/knowledgecenter/en/SSBS6K_1.2.0/manage_cluster/cfc_cli.html) in IBM Knowledge Center.
 
@@ -169,22 +169,26 @@ Get the application URL by running the following commands:
   ```
   export NODE_PORT_DC=$(kubectl get --namespace default -o jsonpath="{.spec.ports[0].nodePort}" services odm-decisioncenter)
   export NODE_IP=$(kubectl get nodes --namespace default -o jsonpath="{.items[0].status.addresses[0].address}")
-    ```
+  ```
+  
   - Decision Center / Business console
-    ```
+  ```
   echo http://$NODE_IP:$NODE_PORT_DC/decisioncenter
   ```
+  
   - Team Server
-    ```
+  ```
   echo http://$NODE_IP:$NODE_PORT_DC/teamserver
   ```
+  
 - Testing and simulation
   ```
   export NODE_PORT_DR=$(kubectl get --namespace default -o jsonpath="{.spec.ports[0].nodePort}" services odm-decisionrunner)
   export NODE_IP=$(kubectl get nodes --namespace default -o jsonpath="{.items[0].status.addresses[0].address}")
-    ```
+  ```
+  
   - Decision Runner
-    ```
+  ```
   echo http://$NODE_IP:$NODE_PORT_DR/DecisionRunner
   ```
 
@@ -192,20 +196,22 @@ Get the application URL by running the following commands:
   ```
   export NODE_PORT_DSC=$(kubectl get --namespace default -o jsonpath="{.spec.ports[0].nodePort}" services odm-decisionserverconsole)
   export NODE_IP=$(kubectl get nodes --namespace default -o jsonpath="{.items[0].status.addresses[0].address}")
-    ```
+  ```
+  
   - Decision Service console (Rule Execution Server xonsole)
-    ```
+  ```
   echo http://$NODE_IP:$NODE_PORT_DSC/res
-    ```
+  ```
+  
 - Decision Service runtime (HTDS)
   ```
  export NODE_PORT_DSC=$(kubectl get --namespace default -o jsonpath="{.spec.ports[0].nodePort}" services odm-decisionserverruntime)
   export NODE_IP=$(kubectl get nodes --namespace default -o jsonpath="{.items[0].status.addresses[0].address}")
-    ```
+  ```
+  
   - Decision Service runtime
-    ```
+  ```
   echo http://$NODE_IP:$NODE_PORT_DSC/DecisionService
-
   ```
 
 Your release is named `snug-dog`.
