@@ -79,12 +79,12 @@ real path=/
 
 The `minikube start` command creates a "[kubectl context](https://kubernetes.io/docs/user-guide/kubectl/v1.6/#-em-set-context-em-)" called "minikube". This context contains the configuration to communicate with your minikube cluster.
 
-This context is set as default automatically. If you change it to another context, run the following command:
+This context is also set as default automatically. If you want to change it to another context, run the following command:
 
-`kubectl config use-context minikube`,
+`kubectl config use-context minikube`
 
 Here is another way to set the context: 
-`kubectl get pods --context=minikube`.
+`kubectl get pods --context=minikube`
 
 ### Dashboard
 
