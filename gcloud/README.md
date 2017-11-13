@@ -8,15 +8,15 @@ The ODM Docker material is use here, which is available in the [odm-ondocker](ht
 
 ## Included Components
 - [IBM ODM](https://www.ibm.com/support/knowledgecenter/SSQP76_8.9.0/welcome/kc_welcome_odmV.html)
-- [Google Container Engine](...)
-- [Google Container Registry](...)
+- [Google Container Engine](https://cloud.google.com/container-engine/)
+- [Google Container Registry](https://cloud.google.com/container-registry/)
 
 ## Test environment
 This tutorial was tested on MacOS.
 
 ## Prerequisites
 
-* Create a Kubernetes cluster in [Google Container Engine](...).
+* Create a Kubernetes cluster in [Google Container Engine](https://cloud.google.com/container-engine/).
 * Install a Git client to obtain the sample code.
 * Install a [Docker](https://docs.docker.com/engine/installation/) engine.
 
