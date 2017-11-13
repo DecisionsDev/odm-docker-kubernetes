@@ -1,6 +1,6 @@
 # Deploying IBM Operational Decision Manager Standard on Google Cloud Container Engine
 
-This project demonstrates the deployment of an IBM® Operational Decision Manager clustered topology using IBM WebSphere® Application Server Liberty on Google Cloud. We use Kubernetes and Docker technologies. They are available by Google through Google Container Registry and Engine.
+This project demonstrates the deployment of an IBM® Operational Decision Manager (ODM) clustered topology using IBM WebSphere® Application Server Liberty on Google Cloud. We use Kubernetes and Docker technologies. They are available by Google through Google Container Registry and Engine.
 
 The ODM Docker material is use here, which is available in the [odm-ondocker](https://github.com/lgrateau/odm-ondocker) repository. It includes Docker files and Docker compose descriptors. In this tutorial, only the Docker files are used to build the ODM runtime images that will be instantiated in the Kubernetes cluster.
 
@@ -104,7 +104,7 @@ kubectl create -f odm-standard-gcloud.yaml
 
 Wait 5 - 10 minutes after you created all the services and deployments. You can check the status of your deployment by using the Kubernetes user interface. 
 
-Run the `kubectl proxy` command, and then go to the URL 'http://127.0.0.1:8001/ui' to check if the yaml file is created when the application containers are ready.
+Run the `kubectl proxy` command, and then go to the URL http://127.0.0.1:8001/ui to check if the yaml file is created when the application containers are ready.
 
 ![Kubernetes Status Page](images/kube_ui.png)
 
