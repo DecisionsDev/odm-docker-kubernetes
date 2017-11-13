@@ -84,6 +84,6 @@ If you set the `image` value to one in a private registry, you must [specify an 
      pullSecrets: SECRET_NAME
    ```
 2. Install the chart by using the `--set image.pullSecrets` parameter:
-```console
-$ helm install --name my-release odmcharts --set image.pullSecrets=admin.registryKey
-```
+   ```console
+   $ helm install --name my-release odmcharts --set image.pullSecrets=admin.registryKey
+   ```
