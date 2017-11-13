@@ -1,6 +1,6 @@
-# Installing IBM Operational Decision Manager chart
+# Installing the IBM Operational Decision Manager chart
 
-[IBM® Operational Decision Manager (ODM)](https://www.ibm.com/support/knowledgecenter/SSQP76_8.9.0/welcome/kc_welcome_odmV.html)  is a platform for capturing, automating, and governing repeatable business decisions. You can identify situations to form insights and act with business rules.
+[IBM® Operational Decision Manager (ODM)](https://www.ibm.com/support/knowledgecenter/SSQP76_8.9.0/welcome/kc_welcome_odmV.html) is a platform for capturing, automating, and governing repeatable business decisions. You can identify situations to form insights and act with business rules.
 
 The ODM chart (`odmchart`) bootstraps an IBM ODM deployment on a [Kubernetes](http://kubernetes.io) cluster by using the [Helm](https://helm.sh) package manager.
 
@@ -11,7 +11,7 @@ The ODM chart (`odmchart`) bootstraps an IBM ODM deployment on a [Kubernetes](ht
 
 ## Installing the ODM chart
 
-Install the chart with a release name (for example: `my-release`), by using the following command:
+Install the chart with a release name (for example: `my-release`) by using the following command:
 
 ```console
 $ helm install --name my-release stable/odmcharts
