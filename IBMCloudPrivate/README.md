@@ -22,11 +22,11 @@ This tutorial was tested on MacOS.
 
 ## Steps
 
-1. [Install and configure IBM Cloud private](#1.-installing-and-configuring-ibm-private-cloud)
-2. [Get the ODM Docker material](#2.-getting-the-odm-docker-material)
-3. [Tag and deploy the ODM Docker material in the IBM Cloud private Docker registry](#3.-tagging-and-deploying-odm-docker-material-in-the-ibm-cloud-private-docker-registry)
-4. [Deploy an ODM topology with the admin console](#4.-deploying-an-odm-topology-with-the-admin-console)
-5. [Deploy an ODM topology with the Helm command line tool](#5.-deploying-an-odm-topology-with-the-helm-command-line-tool)
+1. [Installing and configuring IBM Cloud private](#1-installing-and-configuring-ibm-private-cloud)
+2. [Getting the ODM Docker material](#2-getting-the-odm-docker-material)
+3. [Tagging and deploying the ODM Docker material in the IBM Cloud private Docker registry](#3-tagging-and-deploying-the-odm-docker-material-in-the-ibm-cloud-private-docker-registry)
+4. [Deploying an ODM topology with the admin console](#4-deploying-an-odm-topology-with-the-admin-console)
+5. [Deploying an ODM topology with the Helm command line tool](#5-deploying-an-odm-topology-with-the-helm-command-line-tool)
 
 
 # 1. Installing and configuring IBM Cloud private
