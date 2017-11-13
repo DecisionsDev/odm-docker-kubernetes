@@ -79,10 +79,10 @@ If you set the `image` value to one in a private registry, you must [specify an 
 1. Manually create image pull secrets in the namespace. For more information, see [this example about YAML reference](https://kubernetes.io/docs/concepts/containers/images/#creating-a-secret-with-a-docker-config). For information about getting an appropriate secrete, see the documentation of your image registry.
 
    The parameter to configure the SECRET_NAME is in the value.yaml file:
-```yaml
-image:
-  pullSecrets: SECRET_NAME
-```
+   ```yaml
+   image:
+     pullSecrets: SECRET_NAME
+   ```
 2. Install the chart by using the `--set image.pullSecrets` parameter:
 ```console
 $ helm install --name my-release odmcharts --set image.pullSecrets=admin.registryKey
