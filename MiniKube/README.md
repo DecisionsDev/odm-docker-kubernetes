@@ -77,14 +77,13 @@ real path=/
 
 ### Kubectl
 
-The `minikube start` command creates a "[kubectl context](https://kubernetes.io/docs/user-guide/kubectl/v1.6/#-em-set-context-em-)" called "minikube".
-This context contains the configuration to communicate with your minikube cluster.
+The `minikube start` command creates a "[kubectl context](https://kubernetes.io/docs/user-guide/kubectl/v1.6/#-em-set-context-em-)" called "minikube". This context contains the configuration to communicate with your minikube cluster.
 
-Minikube sets this context to default automatically, but if you need to switch back to it in the future, run:
+This context is set as default automatically. If you change it to another context, run the following command:
 
 `kubectl config use-context minikube`,
 
-or pass the context on each command like this: 
+Here is another way to set the context: 
 `kubectl get pods --context=minikube`.
 
 ### Dashboard
@@ -125,7 +124,8 @@ To fix this error, update /etc/sysconfig/docker to ensure that changes in the Mi
 > fi
 ```
 
-Remember to turn off the imagePullPolicy:Always, otherwise Kubernetes will not use the images that you built locally.
+Remember to turn off `imagePullPolicy:Always`, otherwise Kubernetes will not use the images that you built locally.
+
 # 4. Getting the ODM Docker material
 
 Go to the ODM installation directory, and clone the ODM Docker repository:
