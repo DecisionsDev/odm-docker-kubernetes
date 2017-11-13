@@ -190,7 +190,7 @@ odm-decisionserverruntime   10.0.0.112   <nodes>       9080:31204/TCP   20m
 Now you can use the following links to access your application on your browser.
 
 * Decision Server runtime
-  Run the following command:
+   Run the following command:
   ```bash
   $ minikube service odm-decisionserverruntime  --url
   http://192.168.99.100:31204/
