@@ -189,33 +189,37 @@ odm-decisionserverruntime   10.0.0.112   <nodes>       9080:31204/TCP   20m
 
 Now you can use the following links to access your application on your browser.
 
-* Decision Server runtime:
+* Decision Server runtime
+  Run the following command:
   ```bash
   $ minikube service odm-decisionserverruntime  --url
   http://192.168.99.100:31204/
   ```
-   Then, open this URL in your browser. For example: http://192.168.99.100:31204/**_DecisionService_**
+  Open the URL in your browser. For example: http://192.168.99.100:31204/**_DecisionService_**
 
-* Decision Server console:
+* Decision Server console
+  Run the following command:
   ```bash
   $ minikube service odm-decisionserverconsole  --url
   http://192.168.99.100:32519
   ```
-   Then, open this URL in your browser. For example: http://192.168.99.100:31204/*****res*****
+  Open the URL in your browser. For example: http://192.168.99.100:31204/*****res*****
 
-* Decision Runner:
+* Decision Runner
+  Run the following command:
   ```bash
   $ minikube service odm-decisionrunner  --url
   http://192.168.99.100:32519
   ```
-   Then, open this URL in your browser. For example: http://192.168.99.100:31204/*****testing*****
+  Open the URL in your browser. For example: http://192.168.99.100:31204/*****testing*****
 
-* Decision Center:
+* Decision Center
+  Run the following command:
   ```bash
   $ minikube service odm-decisioncenter  --url
   http://192.168.99.100:32519
   ```
-   Then, open this URL in our browser. For example:
+  Open this URL in our browser. For example:
    * Decision Center console : http://192.168.99.100:31204/**_decisioncenter/t/library_**
    * TeamServer : http://192.168.99.100:31204/*****teamserver*****
 
