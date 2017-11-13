@@ -102,7 +102,7 @@ You must set environment variables to interact with kubectl and Helm tools.
 
   - Open a command line, and follow the instructions in the topic [Accessing your IBM Cloud private cluster by using the kubectl CLI](https://www.ibm.com/support/knowledgecenter/en/SSBS6K_1.2.0/manage_cluster/cfc_cli.html) in IBM Knowledge Center.
 
-For more information about installating the Helm tool, see [].
+For more information about installing the Helm tool, see [].
 
 # 5.2 Verifying the secret of the registry
 
