@@ -12,7 +12,7 @@ Charts are Helm packages that contain at least two things:
 
 Charts can be stored on disk or fetched from remote chart repositories, which is similar to Debian or RedHat packages.
 
-For more information about Helm, see [Kubernetes Helm](https://github.com/kubernetes/helm)
+For more information about Helm, see [Kubernetes Helm](https://github.com/kubernetes/helm).
 
 For information about ODM Helm charts, see [stable/odmcharts/README.md](stable/odmcharts/README.md).
 
@@ -30,6 +30,6 @@ Run the following command:
 ```
     helm repo index ./ --url http://<YOUR_IP>:8090/
 ```
-Open a browser to verify the chart is available at this location: http://_<YOUR_IP>_:8090/index.yaml. It should return a file with the reference of the charts.
+Open a browser to verify that the chart is available at this location: http://_<YOUR_IP>_:8090/index.yaml. It should return a file with the reference of the charts.
 
 
