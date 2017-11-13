@@ -20,7 +20,7 @@ This repository centralizes materials to deploy [IBM® Operational Decision Mana
 
 ODM is a decisioning platform to automate your business policies. Business rules are used at the heart of the platform to implement decision logic on a business vocabulary and run it as web decision services.
 
-We use the ODM Docker material that is available in the [odm-ondocker](https://github.com/lgrateau/odm-ondocker) repository. It includes Docker files and Docker Compose descriptors. The Docker files are used to build images of ODM runtimes. The Docker Compose descriptors can be used to group these images and push to your repository for a Kubernetes provisioning. Nevertheless Docker Compose and Kubernetes are two distinct technology paths to provision a container-based topology supported by ODM Standard.
+The ODM Docker material is used, which is available in the [odm-ondocker](https://github.com/lgrateau/odm-ondocker) repository. It includes Docker files and Docker Compose descriptors. The Docker files are used to build images of ODM runtimes. The Docker Compose descriptors can be used to group these images and push to your repository for a Kubernetes provisioning. Docker Compose and Kubernetes are two distinct technology paths to provision a container-based topology supported by ODM Standard.
 
 ![Flow](images/ODMinKubernetes-DeploymentOverview.png)
 
