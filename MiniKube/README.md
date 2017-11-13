@@ -196,7 +196,7 @@ Now you can use the following links to access your application on your browser.
   $ minikube service odm-decisionserverruntime  --url
   http://192.168.99.100:31204/
   ```
-  Open the URL in your browser. For example: http://192.168.99.100:31204/__DecisionService__
+  Open the URL in your browser. For example: http://192.168.99.100:31204/DecisionService
 
 * Decision Server console
 
@@ -205,7 +205,7 @@ Now you can use the following links to access your application on your browser.
   $ minikube service odm-decisionserverconsole  --url
   http://192.168.99.100:32519
   ```
-  Open the URL in your browser. For example: http://192.168.99.100:31204/**res**
+  Open the URL in your browser. For example: http://192.168.99.100:32519/res
 
 * Decision Runner
 
@@ -214,7 +214,7 @@ Now you can use the following links to access your application on your browser.
   $ minikube service odm-decisionrunner  --url
   http://192.168.99.100:32519
   ```
-  Open the URL in your browser. For example: http://192.168.99.100:31204/*****testing*****
+  Open the URL in your browser. For example: http://192.168.99.100:32519/testing
 
 * Decision Center
 
@@ -224,8 +224,8 @@ Now you can use the following links to access your application on your browser.
   http://192.168.99.100:32519
   ```
   Open this URL in our browser. For example:
-   * Decision Center console : http://192.168.99.100:31204/**_decisioncenter/t/library_**
-   * TeamServer : http://192.168.99.100:31204/*****teamserver*****
+   * Decision Center console : http://192.168.99.100:31204/decisioncenter/t/library_
+   * TeamServer : http://192.168.99.100:31204/teamserver
 
 If you want to delete the ODM Standard images, use the following command:
 ```bash
