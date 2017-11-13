@@ -1,8 +1,8 @@
-#  Deploy IBM Operational Decision Manager Standard on Kubernetes Minikube
+#  Deploying IBM Operational Decision Manager Standard on Kubernetes Minikube
 
 This tutorial explains the deployment of an IBM® Operational Decision Manager (ODM) clustered topology on a Minikube Kubernetes cluster.
 
-We use the ODM Docker material that is available on the repository [odm-ondocker](https://github.com/lgrateau/odm-ondocker). It includes Docker files and Docker compose descriptors. ODM containers are based on IBM WebSphere® Application Server Liberty. In this tutorial, we use only the Docker files to build the ODM runtime images that will be instantiated in the Kubernetes cluster.
+Use the ODM Docker material that is available in the [odm-ondocker](https://github.com/lgrateau/odm-ondocker) repository. It includes Docker files and Docker compose descriptors. ODM containers are based on IBM WebSphere® Application Server Liberty. In this tutorial, we use only the Docker files to build the ODM runtime images that will be instantiated in the Kubernetes cluster.
 
 ![Flow](../images/ODMinKubernetes-Flow.png)
 
@@ -23,13 +23,13 @@ This tutorial was tested on MacOS.
 
 ## Steps
 
-1. [Install Minikube](#1-install-minikube)
-2. [Interact with your cluster](#2-interacting-with-your-cluster)
-3. [Set up your environment](#3-setup-your-environment)
-4. [Get the ODM Docker material](#4-get-the-odm-docker-material)
-5. [Create services and deployments](#5-create-services-and-deployments)
+1. [Installing Minikube](#1-installing-minikube)
+2. [Interacting with your cluster](#2-interacting-with-your-cluster)
+3. [Setting up your environment](#3-setting-up-your-environment)
+4. [Getting the ODM Docker material](#4-getting-the-odm-docker-material)
+5. [Creating services and deployments](#5-creating-services-and-deployments)
 
-# 1. Install Minikube
+# 1. Installing Minikube
 
 
 Install [Minikube](https://github.com/kubernetes/minikube).
@@ -73,7 +73,7 @@ client_address=192.168.99.1
 command=GET
 real path=/
 ```
-# 2. Interact with your cluster
+# 2. Interacting with your cluster
 
 ### Kubectl
 
@@ -95,7 +95,7 @@ minikube dashboard
 ```
 
 
-# 3. Set up your environment
+# 3. Setting up your environment
 
 When you use a single VM Kubernetes, it is handy to reuse the Docker daemon inside the VM. It means that you do not have to build on your host machine and push the images into a Docker registry. You can just build inside the same Docker daemon as Minikube, which speeds up the user experience.
 
@@ -126,9 +126,9 @@ To fix this error, update /etc/sysconfig/docker to ensure that changes in the Mi
 ```
 
 Remember to turn off the imagePullPolicy:Always, otherwise Kubernetes will not use the images that you built locally.
-# 4. Get the ODM Docker material
+# 4. Getting the ODM Docker material
 
-* Go to the ODM installation directory, and clone the ODM Docker repository.
+Go to the ODM installation directory, and clone the ODM Docker repository:
 ```bash
 $ cd <ODM_INSTALLATION>
 $ git clone https://github.com/lgrateau/odm-ondocker
@@ -136,7 +136,7 @@ $ cp odm-ondocker/src/main/resources/.dockerignore ./
 $ docker-compose build
   ```
 
-You are now able to use the ODM Docker images.
+You are now able to use the ODM Docker images:
 ```
 $ docker images
 REPOSITORY                                         TAG                   IMAGE ID            CREATED             SIZE
@@ -146,7 +146,7 @@ ibmcom/odm-decisionrunner                          8.9.0                 f4a7636
 ibmcom/odm-decisionserverconsole                   8.9.0                 d7358780fbde        59 minutes ago      463 MB
 ibmcom/dbserver                                    8.9.0                 364f06111328        About an hour ago   658 MB
 ```
-# 5. Create services and deployments
+# 5. Creating services and deployments
 
 Get the public IP of the node:
 
@@ -191,28 +191,28 @@ Now you can use the following links to access your application on your browser.
 $ minikube service odm-decisionserverruntime  --url
 http://192.168.99.100:31204/
 ```
-Then, open this URL in your browser. For example: http://192.168.99.100:31204/**_DecisionService_**
+   Then, open this URL in your browser. For example: http://192.168.99.100:31204/**_DecisionService_**
 
 * Decision Server console:
 ```bash
 $ minikube service odm-decisionserverconsole  --url
 http://192.168.99.100:32519
 ```
-Then, open this URL in your browser. For example: http://192.168.99.100:31204/*****res*****
+   Then, open this URL in your browser. For example: http://192.168.99.100:31204/*****res*****
 
 * Decision Runner:
 ```bash
 $ minikube service odm-decisionrunner  --url
 http://192.168.99.100:32519
 ```
-Then, open this URL in your browser. For example: http://192.168.99.100:31204/*****testing*****
+   Then, open this URL in your browser. For example: http://192.168.99.100:31204/*****testing*****
 
 * Decision Center:
 ```bash
 $ minikube service odm-decisioncenter  --url
 http://192.168.99.100:32519
 ```
-Then, open this URL in our browser. For example:
+   Then, open this URL in our browser. For example:
    * Decision Center console : http://192.168.99.100:31204/**_decisioncenter/t/library_**
    * TeamServer : http://192.168.99.100:31204/*****teamserver*****
 
