@@ -28,7 +28,6 @@ This material was tested with the following configuration:
 * To delete everything, use the following command:
 	* `kubectl delete -f manifests`
 
-## References
 
 # License
 [Apache 2.0](LICENSE)
