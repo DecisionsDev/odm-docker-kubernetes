@@ -136,7 +136,7 @@ Go to the ODM installation directory, and clone the ODM Docker repository:
 ```bash
 $ cd <ODM_INSTALLATION>
 $ git clone https://github.com/ODMDev/odm-ondocker
-$ cp odm-ondocker/src/main/resources/.dockerignore ./
+$ cp odm-ondocker/resources/.dockerignore ./
 $ docker-compose build
   ```
 
