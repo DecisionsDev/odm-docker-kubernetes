@@ -26,8 +26,8 @@ Create an  [AWS Account](https://aws.amazon.com/getting-started/?sc_icontent=aws
 
 ## Steps to deploy ODM on Kubernetes from AWS EKS
 
-1. [Preparing your environment (40 min)](#1-preparing-your-environment)
-2. [Push ODM images in the ECR Registry - Optional (25 min)](#2-push-ODM-images-in-the-ECR-registry-(25 min))
+1. [Preparing your environment (40 min)](#1-preparing-yourenvironment-40-min)
+2. [Push ODM images in the ECR Registry - Optional (25 min)](2-optional-push-odm-images-in-the-ecr-registry-25-min)
 3. [Create an RDS Database (20 min)](#3-create-an-rds-database-(20-min))
 4. [Manage a  digital certificate (10 min)](#4-manage-a-digital-certificate-(10-min))
 5. [Install an IBM Operational Decision Manager release (10 min)](#5-install-an-ibm-operational-decision-manager-release-(10-min))
@@ -36,7 +36,7 @@ Create an  [AWS Account](https://aws.amazon.com/getting-started/?sc_icontent=aws
 See getting https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html for more informations about EKS
 
 -----
-## 1 Preparing your environment
+## 1. Preparing your environment
 ### Create a cluster EKS:  (30 min)
           see the EKS documentation https://docs.aws.amazon.com/eks/latest/userguide/create-cluster.html to setup a cluster. 
 
@@ -69,7 +69,7 @@ Metrics-server is running at https://xxxxx.yl4.eu-west-3.eks.amazonaws.com/api/v
 To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
 ```
 -----
-## 2 (Optional) Push ODM images in the ECR Registry (25 min)
+## 2. (Optional) Push ODM images in the ECR Registry (25 min)
 The ODM images should push in a registry accessible by the EKS cluster. 
 
 In this procedure we will used the [ECR registry](https://docs.aws.amazon.com/AmazonECR/latest/userguide/what-is-ecr.html).
@@ -142,7 +142,7 @@ $ kubectl create secret docker-registry ecrodm --docker-server=<AWS-AccountId>.d
 ```
 > NOTE: ecrodm is the name of the secret that will be used to pull the images from EKS
 -----
-## 3 Create an RDS Database (20 min)
+## 3. Create an RDS Database (20 min)
 
 For this tutorial we have choose postgresql but the procedure should be the same for any others ODM supported database.
  
@@ -157,7 +157,7 @@ After the creation of the RDS Postgresql database an endpoint will be created to
 
 
 -----
-## 4 Manage a  digital certificate (10 min)
+## 4. Manage a  digital certificate (10 min)
 
 - Generate an untrusted certficiate (Optional)
 
@@ -198,7 +198,7 @@ $ keytool -import -v -trustcacerts -alias mycompany -file mycompany.crt -keystor
 ```
 
 -----
-## 5 Install an IBM Operational Decision Manager release (10 min)
+## 5. Install an IBM Operational Decision Manager release (10 min)
 
 
 ### Prepare to install IBM Operational Decision Manager
@@ -286,7 +286,7 @@ $ kubectl get pods
 Table 1. Status of pods
 
 -----
-## 6 Accessing services  
+## 6. Accessing services  
 
 In this section we will explain how put in place an  Application Load Balancer to expose ODM service.
 
