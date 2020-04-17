@@ -371,7 +371,7 @@ spec:
           serviceName: mycompany-odm-decisionrunner
           servicePort: 9443
 ```
-Sample file ingress-mycompany.yaml 
+Source file [ingress-mycompany.yaml](ingress-mycompany.yaml)
 
 #### Deploy the ingress controller 
 ```bash
