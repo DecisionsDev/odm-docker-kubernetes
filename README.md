@@ -5,7 +5,7 @@ IBM Operational Decision Manager on Kubernetes
 [![GitHub release](https://img.shields.io/github/release/ODMDev/odm-docker-kubernetes.svg)](https://github.com/ODMDev/odm-docker-kubernetes/releases)
 [![GitHub last commit (branch)](https://img.shields.io/github/last-commit/ODMDev/odm-docker-kubernetes/dev.svg)](https://github.com/ODMDev/odm-docker-kubernetes)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-
+ 
 <p align="center">
   <a href="https://join.slack.com/t/odmdev/shared_invite/enQtMjU0NzIwMjM1MTg0LTQyYTMzNGQ4NzJkMDYxMDU5MDRmYTM4MjcxN2RiMzNmZWZmY2UzYzRhMjk0N2FmZjU2YzJlMTRmN2FhZDY4NmQ">
         Follow us on slack
@@ -13,7 +13,7 @@ IBM Operational Decision Manager on Kubernetes
         <img src="https://a.slack-edge.com/436da/marketing/img/meta/favicon-32.png">
   </a>
 </p>
-
+ 
 #  Deploying IBM Operational Decision Manager Standard on a Kubernetes Cluster
 
 This repository centralizes materials to deploy [IBM® Operational Decision Manager](https://www.ibm.com/support/knowledgecenter/SSQP76_8.9.0/welcome/kc_welcome_odmV.html) (ODM) Standard in Kubernetes. It is deployed in a clustered topology that uses WebSphere® Application Server Liberty on a Kubernetes cluster.
