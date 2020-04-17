@@ -37,7 +37,7 @@ See getting https://docs.aws.amazon.com/eks/latest/userguide/getting-started.htm
 
 -----
 
-## 1 Preparing your environment (40 min)
+## 1. Preparing your environment (40 min)
 ### Create a cluster EKS:  (30 min)
           see the EKS documentation https://docs.aws.amazon.com/eks/latest/userguide/create-cluster.html to setup a cluster. 
 
