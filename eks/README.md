@@ -36,7 +36,7 @@ Create an  [AWS Account](https://aws.amazon.com/getting-started/?sc_icontent=aws
 See getting https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html for more informations about EKS
 
 -----
-## 1 Preparing your environment
+## 1 Preparing your environment (40 min)
 ### Create a cluster EKS:  (30 min)
           see the EKS documentation https://docs.aws.amazon.com/eks/latest/userguide/create-cluster.html to setup a cluster. 
 
