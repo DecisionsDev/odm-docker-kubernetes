@@ -39,28 +39,28 @@ For more informations about EKS, see getting https://docs.aws.amazon.com/eks/lat
 -----
 
 ### 1. Prepare your environment (40 min)
-#### Create a cluster EKS:  (30 min)
-          see the EKS documentation https://docs.aws.amazon.com/eks/latest/userguide/create-cluster.html to setup a cluster. 
+#### Create an EKS cluster (30 min)
+     To set up an EKS cluster, follow the documentation https://docs.aws.amazon.com/eks/latest/userguide/create-cluster.html  
 
-> NOTE: should be kubernetes equal or up to  1.15
+> NOTE: Use Kubernetes version (equal or up to??)  1.15
        
  
-#### Setup your environment (10 min)
+#### Set up your environment (10 min)
  - [Configure the aws cli](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html)
-```bash 
-Example: 
-    $ aws configure 
-```
+   ```bash 
+   Example: 
+   $ aws configure 
+   ```
 
  - [Create a kubeconfig for Amazon EKS](https://docs.aws.amazon.com/eks/latest/userguide/create-kubeconfig.html)
-```bash 
-Example: 
-    $  aws eks --region eu-west-3 update-kubeconfig --name odm
-```
+   ```bash 
+   Example: 
+   $  aws eks --region eu-west-3 update-kubeconfig --name odm
+   ```
 
  - Check your environment
  
-   If your environment is setup correctly you should be able to get the cluster informations by this command line.
+   If your environment is set up correctly, you get the cluster information by running the following command line:
     
 ```bash
      $ kubectl cluster-info
@@ -72,12 +72,12 @@ To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
 ```
 -----
 ### 2. (Optional) Push ODM images in the ECR Registry (25 min)
-The ODM images should push in a registry accessible by the EKS cluster. 
+The ODM images must be pushed to a registry that the EKS cluster can access. 
 
-In this procedure we will used the [ECR registry](https://docs.aws.amazon.com/AmazonECR/latest/userguide/what-is-ecr.html).
-  If you use an others public registry you can skip the section and go to the next step.
+Here we use the [ECR registry](https://docs.aws.amazon.com/AmazonECR/latest/userguide/what-is-ecr.html).
+If you use another public registry, skip this section and go to the next step.
  
-#### Login the [ECR Registry](https://docs.aws.amazon.com/AmazonECR/latest/userguide/Registries.html)
+#### Log in to the [ECR Registry](https://docs.aws.amazon.com/AmazonECR/latest/userguide/Registries.html)
 ```bash 
 Example: 
     aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin aws_account_id.dkr.ecr.us-east-1.amazonaws.com
@@ -85,7 +85,7 @@ Example:
 
 #### Create the [ECR Repositories instances](https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-create.html)
  
-> NOTE: You need to create one repository by images.
+> NOTE: You need to create one repository per image.
 
 
 ```bash 
@@ -96,11 +96,11 @@ Example:
     $ aws ecr create-repository --repository-name dbserver --image-scanning-configuration scanOnPush=true --region eu-west-3
 ```
 
-#### Load the Operational Decision Manager images locally
+#### Load the ODM images locally
 
  
- 1. Download one or more PPA packages archives (.tgz)  from [IBM Passport Advantage (PPA)](https://www-01.ibm.com/software/passportadvantage/pao_customer.html)  To view the list of Passport Advantage eAssembly installation images, refer to the [8.10.3 download document](https://www.ibm.com/support/pages/ibm-operational-decision-manager-v8103-download-document).
- 2. Extract the .tgz in your local filesystem
+ 1. Download one or more packages (.tgz archives) from [IBM Passport Advantage (PPA)](https://www-01.ibm.com/software/passportadvantage/pao_customer.html).  To view the full list of eAssembly installation images, refer to the [8.10.3 download document](https://www.ibm.com/support/pages/ibm-operational-decision-manager-v8103-download-document).
+ 2. Extract the .tgz archives to your local filesystem.
      ```bash
      $ tar xzf <PPA-ARCHIVE>.tar.gz
      ```
@@ -108,12 +108,12 @@ Example:
     ```bash
     $ docker ps
     ```
- 3. Load the image in your local registry.
+ 3. Load the images to your local registry.
     ```bash
     $ foreach name ( `ls`)  echo $name && docker image load --input $name && end
     ```
   
-   See the [knowledge center](https://www.ibm.com/support/knowledgecenter/SSQP76_8.10.x/com.ibm.odm.kube/topics/tsk_config_odm_prod_kube.html) for more informations.  
+   For more information, see the [knowledge center](https://www.ibm.com/support/knowledgecenter/SSQP76_8.10.x/com.ibm.odm.kube/topics/tsk_config_odm_prod_kube.html).  
      
 #### Tag and push images in the ECR Repository.
 
