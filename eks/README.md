@@ -203,10 +203,10 @@ $ keytool -import -v -trustcacerts -alias mycompany -file mycompany.crt -keystor
 ### 5. Install an IBM Operational Decision Manager release (10 min)
 
 
-#### Prepare to install IBM Operational Decision Manager
+#### Prepare to install ODM
 
 
-#### Create Database secret.
+##### Create a database secret
 
 To secure access to the database, you must create a secret that encrypts the database user and password before you install the Helm release.
 
@@ -219,17 +219,17 @@ Example:
 $ kubectl create secret generic odm-db-secret --from-literal=db-user=postgres --from-literal=db-password=postgres
 ```
 
-#### Create the Kubernetes secret with certificate 
+##### Create the Kubernetes secret with certificate 
 
 ```bash
 $ kubectl create secret generic mycompany-secret --from-file=keystore.jks=mycompany.jks --from-file=truststore.jks=truststore.jks --from-literal=keystore_password=password --from-literal=truststore_password=password
 ```
 
-The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see Defining the security certificate and Working with certificates and SSL.
+The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Defining the security certificate](https://www.ibm.com/support/knowledgecenter/SSQP76_8.10.x/com.ibm.odm.icp/topics/tsk_replace_security_certificate.html?view=kc) and [Working with certificates and SSL](https://www.ibm.com/links?url=https%3A%2F%2Fdocs.oracle.com%2Fcd%2FE19830-01%2F819-4712%2Fablqw%2Findex.html).
 
-#### Installing an ODM helm release
+#### Install an ODM Helm release
 
-Install a Kubernetes release with the default configuration and a name of my-odm-prod-release by using the following command.  
+Install a Kubernetes release with the default configuration and a name of `my-odm-prod-release` by using the following command (??).  
 
 #### Generate the template file
 
@@ -239,16 +239,16 @@ $ helm template <RELEASENAME> ibm-odm-prod --set image.repository=<IMAGE_REPOSIT
 
 ```bash
 Example:
-Ex: helm template mycompany charts/ibm-odm-prod-2.3.0.tgz --set image.arch=amd64 --set image.repository=<AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com --set image.tag=8.10.3.0 --set image.pullSecrets=ecrodm --set image.arch=amd64  --set externalDatabase.type=postgres --set externalDatabase.serverName=database-1.cv8ecjiejtnt.eu-west-3.rds.amazonaws.com   --set externalDatabase.secretCredentials=odm-db-secret --set externalDatabase.port=5432 --set customization.securitySecretRef=mycompany1-secret --set externalDatabase.databaseName=postgres > postgresql.yaml
+helm template mycompany charts/ibm-odm-prod-2.3.0.tgz --set image.arch=amd64 --set image.repository=<AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com --set image.tag=8.10.3.0 --set image.pullSecrets=ecrodm --set image.arch=amd64  --set externalDatabase.type=postgres --set externalDatabase.serverName=database-1.cv8ecjiejtnt.eu-west-3.rds.amazonaws.com   --set externalDatabase.secretCredentials=odm-db-secret --set externalDatabase.port=5432 --set customization.securitySecretRef=mycompany1-secret --set externalDatabase.databaseName=postgres > postgresql.yaml
 ```
 
 
 
->Notes:
->  In 8.10.3.0 there is a bug that avoid the instantiation of the topology. To fix this pb.
+> NOTES:
+>  In ODM 8.10.3.0, there is a bug prevents the instanciation of the topology. To fix this problem:
 > - Edit the postgresql.yaml file
 > - Search "dc-jvm-options"
-> - Delete the block : 
+> - Delete the block: 
 >  resources: 
 > ```yaml
 >   limits:
@@ -272,8 +272,8 @@ Ex: helm template mycompany charts/ibm-odm-prod-2.3.0.tgz --set image.arch=amd64
  $ kubectl apply -f postgresql.yaml
 ```
 
-#### Check the topology.
-Check the status of the pods that have been created by running the following command. 
+#### Check the topology
+Run the following command to check the status of the pods that have been created: 
 ```bash
 $ kubectl get pods
 ```
