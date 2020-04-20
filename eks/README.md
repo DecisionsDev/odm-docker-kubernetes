@@ -145,16 +145,16 @@ $ kubectl create secret docker-registry ecrodm --docker-server=<AWS-AccountId>.d
 -----
 ### 3. Create an RDS Database (20 min)
 
-For this tutorial we have choose postgresql but the procedure should be the same for any others ODM supported database.
+This project uses PostgreSQL but the procedure is the same for any other ODM-supported database.
  
-- Follow this procedure to setup the [RDS Postgresql database](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html). 
+- Follow the procedure described here [RDS Postgresql database](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html) to set up the database. 
 
-> NOTE:  Pay attention to:
-> - Setup incoming trafic to let connexion from EKS possible (setup vpc inboud rule to anywhere)
-> - Ensure you have create a database instance. 
-> - Set the dababase password. 
+> NOTE:  Make sure to:
+> - Set up incoming trafic to allow connection from EKS (set vpc inboud rule to anywhere)
+> - Create a database instance
+> - Set the database password 
 
-After the creation of the RDS Postgresql database an endpoint will be created to access this instance. This enpoint will be called  RDS_POSTGRESQL_SERVERNAME in the next sections.
+After the creation of the RDS Postgresql database, an endpoint is created to access this database instance. This enpoint is named  RDS_POSTGRESQL_SERVERNAME in the next sections.
 
 
 -----
