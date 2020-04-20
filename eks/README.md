@@ -1,28 +1,29 @@
 # Deploying IBM Operational Decision Manager on Amazon EKS
 
-This project demonstrates how to deploy an IBM® Operational Decision Manager (ODM) clustered topology on the Amazon Elastic Kubernetes Service (EKS) cloud service. Kubernetes and Docker technologies are implemented. 
+This project demonstrates how to deploy an IBM® Operational Decision Manager (ODM) clustered topology on the Amazon Elastic Kubernetes Service (EKS) cloud service. This deployment implements Kubernetes and Docker technologies. 
 
 The ODM Docker material is available in Passport Advantage. It includes Docker container images and Helm chart descriptors. 
 
 ![Flow](./images/eks-schema.jpg)
 
-## Included Components
+## Included components
+This project comes with the following components:
 - [IBM Operational Decision Manager](https://www.ibm.com/support/knowledgecenter/en/SSQP76_8.10.x/com.ibm.odm.kube/kc_welcome_odm_kube.html)
 - [Amazon Elastic Kubernetes Service (Amazon EKS)](https://aws.amazon.com/eks/)
 - [Amazon Elastic Container Registry (ECR) ](https://aws.amazon.com/ecr/)
 - [Amazon Relational Database Service (Amazon RDS) ](https://aws.amazon.com/rds/)
 - [Application Load Balancer(ELB)](https://aws.amazon.com/elasticloadbalancing/?nc=sn&loc=0)
 
-## Tutorial environment
-The commands and tools was tested on MacOS.
+## Tested environment
+The commands and tools were tested on MacOS.
 
 ## Prerequisites
-Install this pre-requisite in your machine.
+First, install the following software on your machine:
 * [AWS Cli](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html)
 * [Helm](https://github.com/helm/helm/releases)
-* [Kubectl](https://kubernetes.io/fr/docs/tasks/tools/install-kubectl/)
+* [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 
-Create an  [AWS Account](https://aws.amazon.com/getting-started/?sc_icontent=awssm-evergreen-getting_started&sc_iplace=2up&trk=ha_awssm-evergreen-getting_started&sc_ichannel=ha&sc_icampaign=evergreen-getting_started)
+Then, create an  [AWS Account](https://aws.amazon.com/getting-started/?sc_icontent=awssm-evergreen-getting_started&sc_iplace=2up&trk=ha_awssm-evergreen-getting_started&sc_ichannel=ha&sc_icampaign=evergreen-getting_started)
 
 ## Steps to deploy ODM on Kubernetes from AWS EKS
 
