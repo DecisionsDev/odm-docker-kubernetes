@@ -141,7 +141,7 @@ Exemple: 
 ```bash
 $ kubectl create secret docker-registry ecrodm --docker-server=<AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com --docker-username=AWS --docker-password=$(aws ecr get-login-password --region eu-west-3)
 ```
-> NOTE: ecrodm is the name of the secret that is used to pull the images from EKS.
+> NOTE: `ecrodm` is the name of the secret that is used to pull the images from EKS.
 -----
 ### 3. Create an RDS Database (20 min)
 
@@ -160,9 +160,9 @@ After the creation of the RDS Postgresql database, an endpoint is created to acc
 -----
 ### 4. Manage a  digital certificate (10 min)
 
-#### Generate an untrusted certficiate (Optional)
+#### Generate an untrusted certificate (Optional)
 
-If you have not a trusted certificate  OpenSSL and other crypto and certificate management libraries can be used to generate a certificate .crt file, a private key, define the domain name, and set its expiration date. The following command creates a self-signed certificate (.crt file) and a private key (.key file) that accept the domain name *.mycompany.com. The expiration is set to 1000 days:
+If you do not have a trusted certificate, you can use OpenSSL and other crypto and certificate management libraries to generate a .crt certificate file and a private key, to define the domain name, and to set the expiration date. The following command creates a self-signed certificate (.crt file) and a private key (.key file) that accept the domain name *.mycompany.com*. The expiration is set to 1000 days:
 
 ```bash
 $ openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mycompany.key -out mycompany.crt -subj "/CN=*.mycompany.com/OU=it/O=mycompany/L=Paris/C=FR"
@@ -170,11 +170,12 @@ $ openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mycompany.key -ou
 
 #### Create AWS Server Certificate 
 
+Run the following command:
 ```bash
 $ aws iam upload-server-certificate --server-certificate-name mycompany --certificate-body file://mycompany.crt --private-key file://mycompany.key
 ```
 
-This will output:
+The output of the command is:
 ```yaml
 {
    "ServerCertificateMetadata": {
@@ -188,7 +189,7 @@ This will output:
 }
 ```
 
-> Note the "Arn": "arn:aws:iam::<AWS-AccountId>:server-certificate/mycompany" this will be used late for configuring the ALB.
+> NOTE: "Arn": "arn:aws:iam::<AWS-AccountId>:server-certificate/mycompany" will be used later to configure the Application Load Balancer (ALB).
 
 #### Generate a JKS format to be used in the ODM container 
 
