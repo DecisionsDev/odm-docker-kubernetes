@@ -115,10 +115,9 @@ Example:
   
    For more information, see the [knowledge center](https://www.ibm.com/support/knowledgecenter/SSQP76_8.10.x/com.ibm.odm.kube/topics/tsk_config_odm_prod_kube.html).  
      
-#### Tag and push images in the ECR Repository.
+#### Tag and push the images to the ECR registry
 
-You should tag image to the ECR registry previously created.  
-- Tag the images
+- Tag the images to the ECR registry previously created
 ```bash
 Exemple: 
     $ docker tag odm-decisioncenter:8.10.3.0-amd64 <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/odm/odm-decisioncenter:8.10.3.0-amd64
@@ -127,7 +126,7 @@ Exemple: 
     $ docker tag odm-decisionrunner:8.10.3.0-amd64 <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/odm-decisionrunner:8.10.3.0-amd64
     $ docker tag dbserver:8.10.3.0-amd64 <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/dbserver:8.10.3.0-amd64
 ```
-- Push it to the ECR Registry:
+- Push the images to the ECR registry
 ```bash
 Exemple: 
     $ docker push <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/odm-decisioncenter:8.10.3.0-amd64
@@ -137,12 +136,12 @@ Exemple: 
     $ docker push <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/dbserver:8.10.3.0-amd64
 ```
 
-#### Create a pull secret for  the Registry ECR 
+#### Create a pull secret for the ECR Registry  
 
 ```bash
 $ kubectl create secret docker-registry ecrodm --docker-server=<AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com --docker-username=AWS --docker-password=$(aws ecr get-login-password --region eu-west-3)
 ```
-> NOTE: ecrodm is the name of the secret that will be used to pull the images from EKS
+> NOTE: ecrodm is the name of the secret that is used to pull the images from EKS.
 -----
 ### 3. Create an RDS Database (20 min)
 
