@@ -388,7 +388,7 @@ With this ODM topology in place, you can access to web applications to author, d
 $ export ROOTURL=$(kubectl get ingress mycompany| awk '{print $3}' | tail -1)
 ```
 
-The service is accessible at this following URL:
+The service is accessible at the following URLs:
 
 | *Component* | *URL* | *Username/Password* |
 |---|---|---|
@@ -400,7 +400,7 @@ The service is accessible at this following URL:
 
 ## Troubleshooting
 
-* If your microservice instances are not running properly, check the logs by using the following command:
+* If your microservice instances are not running properly, check the logs by running the following command:
 	* `kubectl logs <your-pod-name>`
 
 
