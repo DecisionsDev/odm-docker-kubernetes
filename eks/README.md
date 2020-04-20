@@ -2,7 +2,7 @@
 
 This project demonstrates the deployment of an IBM® Operational Decision Manager (ODM) clustered topology on Amazon EKS cloud service. We use Kubernetes and Docker technologies. 
 
-The ODM Docker material is use here, which is available in passport Advantage. It includes Docker container images and helm charts descriptors. 
+The ODM Docker material is available in passport Advantage. It includes Docker container images and helm charts descriptors. 
 
 ![Flow](./images/eks-schema.jpg)
 
@@ -188,10 +188,9 @@ This will output:
 }
 ```
 
-> Note the   "Arn": "arn:aws:iam::<AWS-AccountId>:server-certificate/mycompany" this will be used late for configuring the ALB.
+> Note the "Arn": "arn:aws:iam::<AWS-AccountId>:server-certificate/mycompany" this will be used late for configuring the ALB.
 
-
-#### Generate a JKS format to be used in the ODM container
+#### Generate a JKS format to be used in the ODM container 
 
 ```bash
 $ openssl pkcs12 -export -passout pass:password -passin pass:password -inkey mycompany.key -in mycompany.crt -name mycompany -out mycompany.p12
@@ -403,7 +402,7 @@ The service will be accessible at this following URL:
 
 * If your microservice instances are not running properly, you can check the logs by using the following command:
 	* `kubectl logs <your-pod-name>`
-[TODO] Complete troubleshooting guide.
+
 
 ## References
 -  https://aws.amazon.com/blogs/opensource/network-load-balancer-nginx-ingress-controller-eks/
