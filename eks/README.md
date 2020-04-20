@@ -1,8 +1,8 @@
 # Deploying IBM Operational Decision Manager Standard on EKS AWS.
 
-This project demonstrates the deployment of an IBM® Operational Decision Manager (ODM) clustered topology using IBM WebSphere® Application Server Liberty on Google Cloud. We use Kubernetes and Docker technologies. They are available by Google through Google Container Registry and Engine.
+This project demonstrates the deployment of an IBM® Operational Decision Manager (ODM) clustered topology on Amazon EKS cloud service. We use Kubernetes and Docker technologies. 
 
-**TO REVIEW** The ODM Docker material is use here, which is available in the [odm-ondocker](https://github.com/lgrateau/odm-ondocker) repository. It includes Docker files and Docker compose descriptors. In this tutorial, only the Docker files are used to build the ODM runtime images that will be instantiated in the Kubernetes cluster.
+The ODM Docker material is use here, which is available in passport Advantage. It includes Docker container images and helm charts descriptors. 
 
 ![Flow](./images/eks-schema.jpg)
 
@@ -38,13 +38,13 @@ See getting https://docs.aws.amazon.com/eks/latest/userguide/getting-started.htm
 -----
 
 ## 1. Preparing your environment (40 min)
-### Create a cluster EKS:  (30 min)
+#### Create a cluster EKS:  (30 min)
           see the EKS documentation https://docs.aws.amazon.com/eks/latest/userguide/create-cluster.html to setup a cluster. 
 
 > NOTE: should be kubernetes equal or up to  1.15
        
  
-### Setup your environment (10 min)
+#### Setup your environment (10 min)
  - [Configure the aws cli](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html)
 ```bash 
 Example: 
@@ -160,7 +160,7 @@ After the creation of the RDS Postgresql database an endpoint will be created to
 -----
 ## 4. Manage a  digital certificate (10 min)
 
-- Generate an untrusted certficiate (Optional)
+#### Generate an untrusted certficiate (Optional)
 
 If you have not a trusted certificate  OpenSSL and other crypto and certificate management libraries can be used to generate a certificate .crt file, a private key, define the domain name, and set its expiration date. The following command creates a self-signed certificate (.crt file) and a private key (.key file) that accept the domain name *.mycompany.com. The expiration is set to 1000 days:
 
@@ -168,29 +168,30 @@ If you have not a trusted certificate  OpenSSL and other crypto and certificate
 $ openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mycompany.key -out mycompany.crt -subj "/CN=*.mycompany.com/OU=it/O=mycompany/L=Paris/C=FR"
 ```
 
-- Create AWS Server Certificate 
+#### Create AWS Server Certificate 
 
 ```bash
 $ aws iam upload-server-certificate --server-certificate-name mycompany --certificate-body file://mycompany.crt --private-key file://mycompany.key
 ```
 
 This will output:
-```json
+```yaml
 {
-    "ServerCertificateMetadata": {
-        "Path": "/",
-        "ServerCertificateName": "mycompany",
-        "ServerCertificateId": "ASCA4GCFYJYN5C35DTU5X",
-        "Arn": "arn:aws:iam::<AWS-AccountId>:server-certificate/mycompany",
-        "UploadDate": "2020-04-08T13:52:49+00:00",
-        "Expiration": "2023-01-03T13:39:08+00:00"
-    }
+   "ServerCertificateMetadata": {
+      "Path": "/",
+      "ServerCertificateName": "mycompany",
+      "ServerCertificateId": "ASCA4GCFYJYN5C35DTU5X",
+      "Arn": "arn:aws:iam::<AWS-AccountId>:server-certificate/mycompany",
+      "UploadDate": "2020-04-08T13:52:49+00:00",
+      "Expiration": "2023-01-03T13:39:08+00:00"
+    }
 }
 ```
+
 > Note the   "Arn": "arn:aws:iam::<AWS-AccountId>:server-certificate/mycompany" this will be used late for configuring the ALB.
 
 
-* Generate a JKS format to be used in the ODM container
+#### Generate a JKS format to be used in the ODM container
 
 ```bash
 $ openssl pkcs12 -export -passout pass:password -passin pass:password -inkey mycompany.key -in mycompany.crt -name mycompany -out mycompany.p12
@@ -284,6 +285,7 @@ $ kubectl get pods
 | mycompany-odm-decisionrunner-*** | 1/1 | Running | 0 | 44m | 
 | mycompany-odm-decisionserverconsole-*** | 1/1 | Running | 0 | 44m | 
 | mycompany-odm-decisionserverruntime-*** | 1/1 | Running | 0 | 44m | 
+
 Table 1. Status of pods
 
 -----
