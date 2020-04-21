@@ -90,8 +90,8 @@ aws ecr get-login-password --region us-east-1 | docker login --username AWS --pa
 > NOTE: You need to create one repository per image.
 
 
+Example:
 ```bash 
-Example: 
     $ aws ecr create-repository --repository-name odm-decisionrunner --image-scanning-configuration scanOnPush=true --region eu-west-3
     $ aws ecr create-repository --repository-name odm-decisionserverruntime --image-scanning-configuration scanOnPush=true --region eu-west-3
     $ aws ecr create-repository --repository-name odm-decisionserverconsole --image-scanning-configuration scanOnPush=true --region eu-west-3
@@ -101,16 +101,16 @@ Example:
 #### c. Load the ODM images locally
 
  
- 1. Download one or more packages (.tgz archives) from [IBM Passport Advantage (PPA)](https://www-01.ibm.com/software/passportadvantage/pao_customer.html).  To view the full list of eAssembly installation images, refer to the [8.10.3 download document](https://www.ibm.com/support/pages/ibm-operational-decision-manager-v8103-download-document).
- 2. Extract the .tgz archives to your local filesystem.
+ - Download one or more packages (.tgz archives) from [IBM Passport Advantage (PPA)](https://www-01.ibm.com/software/passportadvantage/pao_customer.html).  To view the full list of eAssembly installation images, refer to the [8.10.3 download document](https://www.ibm.com/support/pages/ibm-operational-decision-manager-v8103-download-document).
+ - Extract the .tgz archives to your local filesystem.
      ```bash
      $ tar xzf <PPA-ARCHIVE>.tar.gz
      ```
- 2. Check that you can run a docker command.
+ - Check that you can run a docker command.
     ```bash
     $ docker ps
     ```
- 3. Load the images to your local registry.
+ - Load the images to your local registry.
     ```bash
     $ foreach name ( `ls`)  echo $name && docker image load --input $name && end
     ```
@@ -120,8 +120,8 @@ Example:
 #### d. Tag and push the images to the ECR registry
 
 - Tag the images to the ECR registry previously created
+Example:
 ```bash
-Exemple: 
     $ docker tag odm-decisioncenter:8.10.3.0-amd64 <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/odm/odm-decisioncenter:8.10.3.0-amd64
     $ docker tag odm-decisionserverruntime:8.10.3.0-amd64 <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/odm-decisionserverruntime:8.10.3.0-amd64
     $ docker tag odm-decisionserverconsole:8.10.3.0-amd64 <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/odm-decisionserverconsole:8.10.3.0-amd64
@@ -129,8 +129,8 @@ Exemple: 
     $ docker tag dbserver:8.10.3.0-amd64 <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/dbserver:8.10.3.0-amd64
 ```
 - Push the images to the ECR registry
+Example: 
 ```bash
-Exemple: 
     $ docker push <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/odm-decisioncenter:8.10.3.0-amd64
     $ docker push <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/odm-decisionserverconsole:8.10.3.0-amd64
     $ docker push <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/odm-decisionserverruntime:8.10.3.0-amd64
@@ -146,9 +146,9 @@ $ kubectl create secret docker-registry ecrodm --docker-server=<AWS-AccountId>.d
 > NOTE: `ecrodm` is the name of the secret that is used to pull the images from EKS.
 
 
-### 3. Create an RDS Database (20 min)
+### 3. Create an RDS database (20 min)
 
-This project uses PostgreSQL but the procedure is the same for any other ODM-supported database.
+This project uses PostgreSQL but the procedure is the same for any database supported by ODM.
  
 - Follow the procedure described here [RDS Postgresql database](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html) to set up the database. 
 
@@ -157,7 +157,7 @@ This project uses PostgreSQL but the procedure is the same for any other ODM-sup
 > - Create a database instance
 > - Set the database password 
 
-After the creation of the RDS Postgresql database, an endpoint is created to access this database instance. This enpoint is named  RDS_POSTGRESQL_SERVERNAME in the next sections.
+After the creation of the RDS Postgresql database, an endpoint is created to access this database instance. The enpoint is named  RDS_POSTGRESQL_SERVERNAME in the next sections.
 
 
 ### 4. Manage a  digital certificate (10 min)
