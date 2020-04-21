@@ -7,7 +7,7 @@ The ODM Docker material is available in Passport Advantage. It includes Docker c
 ![Flow](./images/eks-schema.jpg)
 
 ## Included components
-This project comes with the following components:
+The project comes with the following components:
 - [IBM Operational Decision Manager](https://www.ibm.com/support/knowledgecenter/en/SSQP76_8.10.x/com.ibm.odm.kube/kc_welcome_odm_kube.html)
 - [Amazon Elastic Kubernetes Service (Amazon EKS)](https://aws.amazon.com/eks/)
 - [Amazon Elastic Container Registry (ECR) ](https://aws.amazon.com/ecr/)
