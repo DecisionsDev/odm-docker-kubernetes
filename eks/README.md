@@ -296,22 +296,26 @@ Table 1. Status of pods
 
 This section explains how to implement an  Application Load Balancer (ALB) to expose the ODM service.
 
-The following steps expose the ODM service to Internet connectivity. Please refer to the AWS documentation.
+The following steps expose the ODM service to Internet connectivity. Refer to the AWS documentation.
 
 * Create an Application Load Balancer
 * Implement an ingress for ODM services
 
-#### Create an Application Load Balancer
-More informations about ALB can be found here
+#### a. Create an Application Load Balancer
+Find more information about ALB here
 https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/load-balancer-getting-started.html
 
 The following steps allow you to create the ALB. You need to follow this [userguide](https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html#w243aac23b7c17c10b3b1)
-* Create an IAM OIDC provider and associate it with your cluster. 
-* Create an IAM policy called ALBIngressControllerIAMPolicy for the ALB Ingress Controller pod 
-* Create a Kubernetes service account named alb-ingress-controller in the kube-system namespace, a cluster role, and a cluster role binding for the ALB Ingress Controller. Refer to the documentation for the cmd to use.
-* Create an IAM role for the ALB ingress controller and attach the role to the service account created in the previous step
 
-then you shloud deploy the ALB Ingress Controller with the following command.
+- Create an IAM OIDC provider and associate it with your cluster. 
+
+- Create an IAM policy called ALBIngressControllerIAMPolicy for the ALB Ingress Controller pod 
+
+- Create a Kubernetes service account named alb-ingress-controller in the kube-system namespace, a cluster role, and a cluster role binding for the ALB Ingress Controller. Refer to the documentation for the cmd to use.
+
+- Create an IAM role for the ALB ingress controller and attach the role to the service account created in the previous step
+
+- Deploy the ALB Ingress Controller with the following command:
 
 ```bash
 $ curl  
@@ -326,17 +330,17 @@ Edit alb-ingress-controller.yaml and change at least
 ```
 For more information, refer to the https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html#w243aac23b7c17c10b3b1 user guide. 
 
-Then, deploy the Alb ingress controller.
+Then, deploy the ALB ingress controller.
 ```bash
 $ kubectl apply -f alb-ingress-controller.yaml 
 ```
 
-#### Deploy the ingress service for ODM
+#### b. Deploy the ingress service for ODM
 
-##### Write the ingress descriptor
-You need to define an ingress to route your request to the ODM service.
+- Write the ingress descriptor
+You must define an ingress to route your request to the ODM service.
 
-Here is a sample descriptor to implement the ingress.
+Here is a sample descriptor to implement the ingress:
 
 Ingress descriptor:
 ```yaml
@@ -378,12 +382,12 @@ spec:
 ```
 Source file [ingress-mycompany.yaml](ingress-mycompany.yaml)
 
-##### Deploy the ingress controller 
+- Deploy the ingress controller 
 ```bash
 kubectl apply -f ingress-mycompany.yaml 
 ```
 
-After a couple of minute the  ALB reflect the ingress configuration then you will access to the ODM service by retrieving the url with this cmd line:
+After a couple of minutes, the  ALB reflects the ingress configuration. Then you access the ODM service by retrieving the URL with this cmd line???:
 
 
 With this ODM topology in place, you can access to web applications to author, deploy, and test your rule-based decision services.
