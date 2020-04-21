@@ -38,13 +38,13 @@ For more informations about EKS, see [Getting started with EKS](https://docs.aws
 
 
 ### 1. Prepare your environment (40 min)
-#### Create an EKS cluster (30 min)
+#### a. Create an EKS cluster (30 min)
      To set up an EKS cluster, follow the documentation https://docs.aws.amazon.com/eks/latest/userguide/create-cluster.html  
 
 > NOTE: Use Kubernetes version (equal or up to??)  1.15
        
  
-#### Set up your environment (10 min)
+#### b. Set up your environment (10 min)
  - [Configure the aws cli](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html)
    ```bash 
    Example: 
