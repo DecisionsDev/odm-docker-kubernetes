@@ -87,7 +87,7 @@ aws ecr get-login-password --region us-east-1 | docker login --username AWS --pa
 
 #### b. Create the [ECR repository instances](https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-create.html)
  
-> NOTE: You need to create one repository per image.
+> NOTE: You must create one repository per image.
 
 
 Example:
@@ -100,17 +100,19 @@ Example:
 
 #### c. Load the ODM images locally
 
- 
  - Download one or more packages (.tgz archives) from [IBM Passport Advantage (PPA)](https://www-01.ibm.com/software/passportadvantage/pao_customer.html).  To view the full list of eAssembly installation images, refer to the [8.10.3 download document](https://www.ibm.com/support/pages/ibm-operational-decision-manager-v8103-download-document).
+ 
  - Extract the .tgz archives to your local filesystem.
      ```bash
      $ tar xzf <PPA-ARCHIVE>.tar.gz
      ```
- - Check that you can run a docker command.
+
+- Check that you can run a docker command.
     ```bash
     $ docker ps
     ```
- - Load the images to your local registry.
+
+- Load the images to your local registry.
     ```bash
     $ foreach name ( `ls`)  echo $name && docker image load --input $name && end
     ```
@@ -120,6 +122,7 @@ Example:
 #### d. Tag and push the images to the ECR registry
 
 - Tag the images to the ECR registry previously created
+
 Example:
 ```bash
     $ docker tag odm-decisioncenter:8.10.3.0-amd64 <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/odm/odm-decisioncenter:8.10.3.0-amd64
@@ -129,6 +132,7 @@ Example:
     $ docker tag dbserver:8.10.3.0-amd64 <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/dbserver:8.10.3.0-amd64
 ```
 - Push the images to the ECR registry
+
 Example: 
 ```bash
     $ docker push <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/odm-decisioncenter:8.10.3.0-amd64
@@ -150,7 +154,7 @@ $ kubectl create secret docker-registry ecrodm --docker-server=<AWS-AccountId>.d
 
 This project uses PostgreSQL but the procedure is the same for any database supported by ODM.
  
-- Follow the procedure described here [RDS Postgresql database](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html) to set up the database. 
+- To set up the database, follow the procedure described here [RDS Postgresql database](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html). 
 
 > NOTE:  Make sure to:
 > - Set up incoming trafic to allow connection from EKS (set vpc inboud rule to anywhere)
@@ -162,15 +166,15 @@ After the creation of the RDS Postgresql database, an endpoint is created to acc
 
 ### 4. Manage a  digital certificate (10 min)
 
-#### Generate an untrusted certificate (Optional)
+#### a. (Optional) Generate an untrusted certificate 
 
-If you do not have a trusted certificate, you can use OpenSSL and other crypto and certificate management libraries to generate a .crt certificate file and a private key, to define the domain name, and to set the expiration date. The following command creates a self-signed certificate (.crt file) and a private key (.key file) that accept the domain name *.mycompany.com*. The expiration is set to 1000 days:
+If you do not have a trusted certificate, you can use OpenSSL and other cryptography and certificate management libraries to generate a .crt certificate file and a private key, to define the domain name, and to set the expiration date. The following command creates a self-signed certificate (.crt file) and a private key (.key file) that accept the domain name *.mycompany.com*. The expiration is set to 1000 days:
 
 ```bash
 $ openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mycompany.key -out mycompany.crt -subj "/CN=*.mycompany.com/OU=it/O=mycompany/L=Paris/C=FR"
 ```
 
-#### Create AWS Server Certificate 
+#### b. Create AWS Server Certificate 
 
 Run the following command:
 ```bash
@@ -191,9 +195,9 @@ The output of the command is:
 }
 ```
 
-> NOTE: "Arn": "arn:aws:iam::<AWS-AccountId>:server-certificate/mycompany" will be used later to configure the Application Load Balancer (ALB).
+> NOTE: "Arn": "arn:aws:iam::<AWS-AccountId>:server-certificate/mycompany" is used later to configure the Application Load Balancer (ALB).
 
-#### Generate a JKS format to be used in the ODM container 
+#### c. Generate a JKS format to be used in the ODM container 
 
 ```bash
 $ openssl pkcs12 -export -passout pass:password -passin pass:password -inkey mycompany.key -in mycompany.crt -name mycompany -out mycompany.p12
@@ -205,10 +209,9 @@ $ keytool -import -v -trustcacerts -alias mycompany -file mycompany.crt -keystor
 ### 5. Install an IBM Operational Decision Manager release (10 min)
 
 
-#### Prepare to install ODM
+#### a. Prepare to install ODM
 
-
-##### Create a database secret
+- Create a database secret
 
 To secure access to the database, you must create a secret that encrypts the database user and password before you install the Helm release.
 
@@ -216,12 +219,13 @@ To secure access to the database, you must create a secret that encrypts the dat
 $ kubectl create secret generic <odm-db-secret> --from-literal=db-user=<rds-postgresql-user-name> --from-literal=db-password=<rds-postgresql-password> 
 ```
 
-```
+
 Example:
+```
 $ kubectl create secret generic odm-db-secret --from-literal=db-user=postgres --from-literal=db-password=postgres
 ```
 
-##### Create the Kubernetes secret with certificate 
+- Create the Kubernetes secret with certificate 
 
 ```bash
 $ kubectl create secret generic mycompany-secret --from-file=keystore.jks=mycompany.jks --from-file=truststore.jks=truststore.jks --from-literal=keystore_password=password --from-literal=truststore_password=password
@@ -229,25 +233,23 @@ $ kubectl create secret generic mycompany-secret --from-file=keystore.jks=mycomp
 
 The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Defining the security certificate](https://www.ibm.com/support/knowledgecenter/SSQP76_8.10.x/com.ibm.odm.icp/topics/tsk_replace_security_certificate.html?view=kc) and [Working with certificates and SSL](https://www.ibm.com/links?url=https%3A%2F%2Fdocs.oracle.com%2Fcd%2FE19830-01%2F819-4712%2Fablqw%2Findex.html).
 
-#### Install an ODM Helm release
+#### b. Install an ODM Helm release
 
 Install a Kubernetes release with the default configuration and a name of `my-odm-prod-release` by using the following command (??).  
 
-#### Generate the template file
+#### c. Generate the template file
 
 ```bash
 $ helm template <RELEASENAME> ibm-odm-prod --set image.repository=<IMAGE_REPOSITORY> --set image.tag=8.10.3.0 --set image.pullSecrets=ecrodm --set image.arch=amd64  --set externalDatabase.type=postgres --set externalDatabase.serverName=<RDS_POSTGRESQL_SERNAME>   --set externalDatabase.secretCredentials=<odm-db-secret> --set externalDatabase.port=5432  --set customization.securitySecretRef=mycompany-secret charts/ibm-odm-prod-2.3.0.tar.gz > postgresql.yaml 
 ```
 
-```bash
 Example:
+```bash
 helm template mycompany charts/ibm-odm-prod-2.3.0.tgz --set image.arch=amd64 --set image.repository=<AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com --set image.tag=8.10.3.0 --set image.pullSecrets=ecrodm --set image.arch=amd64  --set externalDatabase.type=postgres --set externalDatabase.serverName=database-1.cv8ecjiejtnt.eu-west-3.rds.amazonaws.com   --set externalDatabase.secretCredentials=odm-db-secret --set externalDatabase.port=5432 --set customization.securitySecretRef=mycompany1-secret --set externalDatabase.databaseName=postgres > postgresql.yaml
 ```
 
-
-
 > NOTES:
->  In ODM 8.10.3.0, there is a bug prevents the instanciation of the topology. To fix this problem:
+>  In ODM 8.10.3.0, a bug prevents the instanciation of the topology. To fix this problem:
 > - Edit the postgresql.yaml file
 > - Search "dc-jvm-options"
 > - Delete the block: 
@@ -267,14 +269,13 @@ helm template mycompany charts/ibm-odm-prod-2.3.0.tgz --set image.arch=amd64 --s
 > ```
 
 
-
-#### Apply the template file
+#### d. Apply the template file
 
 ```bash
  $ kubectl apply -f postgresql.yaml
 ```
 
-#### Check the topology
+#### e. Check the topology
 Run the following command to check the status of the pods that have been created: 
 ```bash
 $ kubectl get pods
