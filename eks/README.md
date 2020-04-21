@@ -39,7 +39,7 @@ For more informations about EKS, see [Getting started with EKS](https://docs.aws
 
 ### 1. Prepare your environment (40 min)
 #### a. Create an EKS cluster (30 min)
-     To set up an EKS cluster, follow the documentation [here](https://docs.aws.amazon.com/eks/latest/userguide/create-cluster.html)
+    Follow the documentation [here](https://docs.aws.amazon.com/eks/latest/userguide/create-cluster.html)
      
 > NOTE: Use Kubernetes version (equal or up to??)  1.15
        
@@ -76,15 +76,16 @@ To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
 The ODM images must be pushed to a registry that the EKS cluster can access. 
 
 Here we use the [ECR registry](https://docs.aws.amazon.com/AmazonECR/latest/userguide/what-is-ecr.html).
-If you use another public registry, skip this section and go to the next step.
+If you use another public registry, skip this section and go to step 3.
  
-#### Log in to the [ECR Registry](https://docs.aws.amazon.com/AmazonECR/latest/userguide/Registries.html)
-```bash 
+#### a. Log in to the [ECR registry](https://docs.aws.amazon.com/AmazonECR/latest/userguide/Registries.html)
+ 
 Example: 
-    aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin aws_account_id.dkr.ecr.us-east-1.amazonaws.com
+```bash
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin aws_account_id.dkr.ecr.us-east-1.amazonaws.com
 ```
 
-#### Create the [ECR Repositories instances](https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-create.html)
+#### b. Create the [ECR repository instances](https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-create.html)
  
 > NOTE: You need to create one repository per image.
 
@@ -97,7 +98,7 @@ Example:
     $ aws ecr create-repository --repository-name dbserver --image-scanning-configuration scanOnPush=true --region eu-west-3
 ```
 
-#### Load the ODM images locally
+#### c. Load the ODM images locally
 
  
  1. Download one or more packages (.tgz archives) from [IBM Passport Advantage (PPA)](https://www-01.ibm.com/software/passportadvantage/pao_customer.html).  To view the full list of eAssembly installation images, refer to the [8.10.3 download document](https://www.ibm.com/support/pages/ibm-operational-decision-manager-v8103-download-document).
@@ -116,7 +117,7 @@ Example:
   
    For more information, see the [knowledge center](https://www.ibm.com/support/knowledgecenter/SSQP76_8.10.x/com.ibm.odm.kube/topics/tsk_config_odm_prod_kube.html).  
      
-#### Tag and push the images to the ECR registry
+#### d. Tag and push the images to the ECR registry
 
 - Tag the images to the ECR registry previously created
 ```bash
@@ -137,7 +138,7 @@ Exemple: 
     $ docker push <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/dbserver:8.10.3.0-amd64
 ```
 
-#### Create a pull secret for the ECR Registry  
+#### e. Create a pull secret for the ECR registry  
 
 ```bash
 $ kubectl create secret docker-registry ecrodm --docker-server=<AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com --docker-username=AWS --docker-password=$(aws ecr get-login-password --region eu-west-3)
