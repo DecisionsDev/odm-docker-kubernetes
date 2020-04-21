@@ -36,7 +36,6 @@ Then, create an  [AWS Account](https://aws.amazon.com/getting-started/?sc_iconte
 
 For more informations about EKS, see [Getting started with EKS](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html) 
 
------
 
 ### 1. Prepare your environment (40 min)
 #### Create an EKS cluster (30 min)
@@ -70,7 +69,7 @@ Metrics-server is running at https://xxxxx.yl4.eu-west-3.eks.amazonaws.com/api/v
 
 To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
 ```
------
+
 ### 2. (Optional) Push ODM images in the ECR Registry (25 min)
 The ODM images must be pushed to a registry that the EKS cluster can access. 
 
@@ -142,7 +141,8 @@ Exemple: 
 $ kubectl create secret docker-registry ecrodm --docker-server=<AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com --docker-username=AWS --docker-password=$(aws ecr get-login-password --region eu-west-3)
 ```
 > NOTE: `ecrodm` is the name of the secret that is used to pull the images from EKS.
------
+
+
 ### 3. Create an RDS Database (20 min)
 
 This project uses PostgreSQL but the procedure is the same for any other ODM-supported database.
@@ -157,7 +157,6 @@ This project uses PostgreSQL but the procedure is the same for any other ODM-sup
 After the creation of the RDS Postgresql database, an endpoint is created to access this database instance. This enpoint is named  RDS_POSTGRESQL_SERVERNAME in the next sections.
 
 
------
 ### 4. Manage a  digital certificate (10 min)
 
 #### Generate an untrusted certificate (Optional)
@@ -199,7 +198,7 @@ $ keytool -importkeystore -srckeystore mycompany.p12 -srcstoretype PKCS12 -srcst
 $ keytool -import -v -trustcacerts -alias mycompany -file mycompany.crt -keystore truststore.jks -storepass password -noprompt
 ```
 
------
+
 ### 5. Install an IBM Operational Decision Manager release (10 min)
 
 
@@ -288,7 +287,7 @@ $ kubectl get pods
 
 Table 1. Status of pods
 
------
+
 ### 6. Access the ODM service  
 
 This section explains how to implement an  Application Load Balancer (ALB) to expose the ODM service.
@@ -396,7 +395,7 @@ The service is accessible at the following URLs:
 | Decision Server Console |https://$ROOTURL/res/| odmAdmin/odmAdmin |
 | Decision Server Runtime | https://$ROOTURL/DecisionService/ | odmAdmin/odmAdmin | 
 
-------
+
 
 ## Troubleshooting
 
