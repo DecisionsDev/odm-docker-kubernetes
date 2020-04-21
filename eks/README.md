@@ -25,7 +25,7 @@ First, install the following software on your machine:
 
 Then, create an  [AWS Account](https://aws.amazon.com/getting-started/?sc_icontent=awssm-evergreen-getting_started&sc_iplace=2up&trk=ha_awssm-evergreen-getting_started&sc_ichannel=ha&sc_icampaign=evergreen-getting_started)
 
-## Steps to deploy ODM on Kubernetes from AWS EKS
+## Steps to deploy ODM on Kubernetes from Amazon EKS
 
 1. [Prepare your environment (40 min)](#1-preparing-yourenvironment-40-min)
 2. [Push ODM images to the ECR Registry - Optional (25 min)](#2-optional-push-odm-images-in-the-ecr-registry-25-min)
@@ -34,7 +34,7 @@ Then, create an  [AWS Account](https://aws.amazon.com/getting-started/?sc_iconte
 5. [Install an ODM release (10 min)](#5-install-an-ibm-operational-decision-manager-release-10-min)
 6. [Access the ODM service](#6-accessing-services)
 
-For more informations about EKS, see getting https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html 
+For more informations about EKS, see [Getting started with EKS](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html) 
 
 -----
 
