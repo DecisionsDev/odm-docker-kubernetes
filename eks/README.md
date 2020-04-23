@@ -174,7 +174,7 @@ If you do not have a trusted certificate, you can use OpenSSL and other cryptogr
 $ openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mycompany.key -out mycompany.crt -subj "/CN=*.mycompany.com/OU=it/O=mycompany/L=Paris/C=FR"
 ```
 
-#### b. Create AWS Server Certificate 
+#### b. Create a AWS Server Certificate?? 
 
 Run the following command:
 ```bash
