@@ -296,7 +296,7 @@ Table 1. Status of pods
 
 This section explains how to implement an  Application Load Balancer (ALB) to expose the ODM service.
 
-The following steps expose the ODM service to Internet connectivity. Refer to the AWS documentation.
+The following steps expose the ODM service to Internet connectivity. Refer to the AWS documentation??.
 
 * Create an Application Load Balancer
 * Implement an ingress for ODM services
