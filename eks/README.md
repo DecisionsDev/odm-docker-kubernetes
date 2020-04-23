@@ -166,7 +166,7 @@ After the creation of the RDS Postgresql database, an endpoint is created to acc
 
 ### 4. Manage a  digital certificate (10 min)
 
-#### a. (Optional) Generate an untrusted certificate 
+#### a. (Optional) Generate an untrusted?? certificate 
 
 If you do not have a trusted certificate, you can use OpenSSL and other cryptography and certificate management libraries to generate a .crt certificate file and a private key, to define the domain name, and to set the expiration date. The following command creates a self-signed certificate (.crt file) and a private key (.key file) that accept the domain name *.mycompany.com*. The expiration is set to 1000 days:
 
