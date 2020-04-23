@@ -225,7 +225,7 @@ Example:
 $ kubectl create secret generic odm-db-secret --from-literal=db-user=postgres --from-literal=db-password=postgres
 ```
 
-- Create the Kubernetes secret with certificate 
+- Create the Kubernetes secret with certificate?? 
 
 ```bash
 $ kubectl create secret generic mycompany-secret --from-file=keystore.jks=mycompany.jks --from-file=truststore.jks=truststore.jks --from-literal=keystore_password=password --from-literal=truststore_password=password
