@@ -10,16 +10,16 @@ The ODM Docker material is available in Passport Advantage. It includes Docker c
 The project comes with the following components:
 - [IBM Operational Decision Manager](https://www.ibm.com/support/knowledgecenter/en/SSQP76_8.10.x/com.ibm.odm.kube/kc_welcome_odm_kube.html)
 - [Amazon Elastic Kubernetes Service (Amazon EKS)](https://aws.amazon.com/eks/)
-- [Amazon Elastic Container Registry (ECR) ](https://aws.amazon.com/ecr/)
+- [Amazon Elastic Container Registry (Amazon ECR) ](https://aws.amazon.com/ecr/)
 - [Amazon Relational Database Service (Amazon RDS) ](https://aws.amazon.com/rds/)
 - [Amazon Application Load Balancer(ALB)](https://aws.amazon.com/elasticloadbalancing/?nc=sn&loc=0)
 
 ## Tested environment
-The commands and tools were tested on MacOS.
+The commands and tools have been tested on MacOS.
 
 ## Prerequisites
 First, install the following software on your machine:
-* [AWS Cli](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html)
+* [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html)
 * [Helm](https://github.com/helm/helm/releases)
 * [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 
@@ -28,13 +28,13 @@ Then, create an  [AWS Account](https://aws.amazon.com/getting-started/?sc_iconte
 ## Steps to deploy ODM on Kubernetes from Amazon EKS
 
 1. [Prepare your environment (40 min)](#1-preparing-yourenvironment-40-min)
-2. [Push ODM images to the ECR Registry - Optional (25 min)](#2-optional-push-odm-images-in-the-ecr-registry-25-min)
-3. [Create an RDS Database (20 min)](#3-create-an-rds-database-20-min)
+2. [Push the ODM images to the ECR registry - Optional (25 min)](#2-optional-push-odm-images-in-the-ecr-registry-25-min)
+3. [Create an RDS database (20 min)](#3-create-an-rds-database-20-min)
 4. [Manage a  digital certificate (10 min)](#4-manage-a-digital-certificate-10-min)
 5. [Install an ODM release (10 min)](#5-install-an-ibm-operational-decision-manager-release-10-min)
-6. [Access the ODM service](#6-accessing-services)
+6. [Access the ODM services](#6-accessing-services)
 
-For more informations about EKS, see [Getting started with EKS](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html) 
+For more information, see [Getting started with Amazon EKS](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html) 
 
 
 ### 1. Prepare your environment (40 min)
@@ -62,18 +62,22 @@ For more informations about EKS, see [Getting started with EKS](https://docs.aws
  - Check your environment
  
    If your environment is set up correctly, get the cluster information by running the following command:
-    
    ```bash
    $ kubectl cluster-info
    ```
+   
    Kubernetes master is running at https://xxxxxx.yl4.eu-west-3.eks.amazonaws.com
+   
    CoreDNS is running at https://xxxxx.yl4.eu-west-3.eks.amazonaws.com/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+   
    Metrics-server is running at https://xxxxx.yl4.eu-west-3.eks.amazonaws.com/api/v1/namespaces/kube-system/services/https:metrics-server:/proxy
 
-To further debug and diagnose cluster problems, run 'kubectl cluster-info dump'.
+To further debug and diagnose cluster problems, run the command:
+```
+kubectl cluster-info dump
+```
 
-
-### 2. (Optional) Push ODM images in the ECR Registry (25 min)
+### 2. (Optional) Push the ODM images to the ECR registry (25 min)
 The ODM images must be pushed to a registry that the EKS cluster can access. 
 
 Here we use the [ECR registry](https://docs.aws.amazon.com/AmazonECR/latest/userguide/what-is-ecr.html).
@@ -102,7 +106,7 @@ Example:
 
  - Download one or more packages (.tgz archives) from [IBM Passport Advantage (PPA)](https://www-01.ibm.com/software/passportadvantage/pao_customer.html).  To view the full list of eAssembly installation images, refer to the [8.10.3 download document](https://www.ibm.com/support/pages/ibm-operational-decision-manager-v8103-download-document).
  
- - Extract the .tgz archives to your local filesystem.
+ - Extract the .tgz archives to your local file system.
      ```bash
      $ tar xzf <PPA-ARCHIVE>.tar.gz
      ```
@@ -117,7 +121,7 @@ Example:
     $ foreach name ( `ls`)  echo $name && docker image load --input $name && end
     ```
   
-   For more information, see the [knowledge center](https://www.ibm.com/support/knowledgecenter/SSQP76_8.10.x/com.ibm.odm.kube/topics/tsk_config_odm_prod_kube.html).  
+   For more information, refer to the [ODM knowledge center](https://www.ibm.com/support/knowledgecenter/SSQP76_8.10.x/com.ibm.odm.kube/topics/tsk_config_odm_prod_kube.html).  
      
 #### d. Tag and push the images to the ECR registry
 
@@ -152,16 +156,16 @@ $ kubectl create secret docker-registry ecrodm --docker-server=<AWS-AccountId>.d
 
 ### 3. Create an RDS database (20 min)
 
-This project uses PostgreSQL but the procedure is the same for any database supported by ODM.
+This project uses PostgreSQL but the procedure is valid for any database supported by ODM.
  
-- To set up the database, follow the procedure described here [RDS Postgresql database](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html). 
+To set up the database, follow the procedure described here [RDS PostgreSQL database](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html). (?? give a more precise link)
 
 > NOTE:  Make sure to:
 > - Set up incoming trafic to allow connection from EKS (set vpc inboud rule to anywhere)
 > - Create a database instance
 > - Set the database password 
 
-After the creation of the RDS Postgresql database, an endpoint is created to access this database instance. The enpoint is named  RDS_POSTGRESQL_SERVERNAME in the next sections.
+After the creation of the RDS PostgreSQL database, an endpoint gives access to this database instance. The enpoint is named  RDS_POSTGRESQL_SERVERNAME in the next sections.
 
 
 ### 4. Manage a  digital certificate (10 min)
