@@ -391,6 +391,7 @@ kubectl apply -f ingress-mycompany.yaml 
 ```
 
 After a couple of minutes, the  ALB reflects the ingress configuration. Then you can access the ODM services by retrieving the URL with this command:
+
 ```bash
 kubectl get ingress mycompany| awk '{print $3}' | tail -1)
 ```
