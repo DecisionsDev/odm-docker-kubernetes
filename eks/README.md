@@ -279,7 +279,7 @@ helm template mycompany charts/ibm-odm-prod-2.3.0.tgz --set image.arch=amd64 --s
  $ kubectl apply -f postgresql.yaml
 ```
 
-#### e. Check the topology
+#### c. Check the topology
 Run the following command to check the status of the pods that have been created: 
 ```bash
 $ kubectl get pods
