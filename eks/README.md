@@ -213,7 +213,7 @@ $ keytool -import -v -trustcacerts -alias mycompany -file mycompany.crt -keystor
 ### 5. Install an IBM Operational Decision Manager release (10 min)
 
 
-#### a. Prepare to install ODM
+#### a. Prerequisites
 
 - Create a database secret
 
@@ -239,7 +239,7 @@ The certificate must be the same as the one you used to enable TLS connections i
 
 #### b. Install an ODM Helm release
 
-Install a Kubernetes release with the default configuration and a name of `my-odm-prod-release` by using the following command (??).  
+Install a Kubernetes release with the default configuration and a name of `my-odm-prod-release`.  
 
 - Generate the template file
 
@@ -307,13 +307,13 @@ This section explains how to implement an  Application Load Balancer (ALB) to e
 Find more information about ALB here
 https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/load-balancer-getting-started.html
 
-The following steps allow you to create the ALB. You need to follow this [userguide](https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html#w243aac23b7c17c10b3b1)
+The following steps allow you to create the ALB. Follow this [documentation](https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html#w243aac23b7c17c10b3b1)
 
 - Create an IAM OIDC provider and associate it with your cluster. 
 
-- Create an IAM policy called ALBIngressControllerIAMPolicy for the ALB Ingress Controller pod 
+- Create an IAM policy called `ALBIngressControllerIAMPolicy` for the ALB Ingress Controller pod. 
 
-- Create a Kubernetes service account named alb-ingress-controller in the kube-system namespace, a cluster role, and a cluster role binding for the ALB Ingress Controller. Refer to the documentation for the cmd to use.
+- Create a Kubernetes service account named `alb-ingress-controller` in the kube-system namespace, a cluster role, and a cluster role binding for the ALB Ingress Controller.
 
 - Create an IAM role for the ALB ingress controller and attach the role to the service account created in the previous step
 
@@ -330,7 +330,7 @@ Edit alb-ingress-controller.yaml and change at least
   - --cluster-name=<EKS>
   - --ingress-class=alb"
 ```
-For more information, refer to the https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html#w243aac23b7c17c10b3b1 user guide. 
+For more information, refer to the https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html#w243aac23b7c17c10b3b1. 
 
 Then, deploy the ALB ingress controller.
 ```bash
@@ -340,6 +340,7 @@ $ kubectl apply -f alb-ingress-controller.yaml 
 #### b. Deploy the ingress service for ODM
 
 - Write the ingress descriptor
+
 You must define an ingress to route your request to the ODM services.
 
 Here is a sample descriptor to implement the ingress:
@@ -389,7 +390,7 @@ Source file [ingress-mycompany.yaml](ingress-mycompany.yaml)
 kubectl apply -f ingress-mycompany.yaml 
 ```
 
-After a couple of minutes, the  ALB reflects the ingress configuration. Then you access the ODM services by retrieving the URL with this command:
+After a couple of minutes, the  ALB reflects the ingress configuration. Then you can access the ODM services by retrieving the URL with this command:
 ```bash
 $ export ROOTURL=$(kubectl get ingress mycompany| awk '{print $3}' | tail -1)
 ```
@@ -409,12 +410,14 @@ The services are accessible from the following URLs:
 
 ## Troubleshooting
 
-* If your microservice instances are not running properly, check the logs by running the following command:
-	* `kubectl logs <your-pod-name>`
+If your microservice instances are not running properly, check the logs by running the following command:
+```
+kubectl logs <your-pod-name>
+```
 
 
 ## References
--  https://aws.amazon.com/blogs/opensource/network-load-balancer-nginx-ingress-controller-eks/
+https://aws.amazon.com/blogs/opensource/network-load-balancer-nginx-ingress-controller-eks/
 
 
 # License
