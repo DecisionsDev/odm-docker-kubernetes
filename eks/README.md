@@ -178,7 +178,7 @@ If you do not have a trusted certificate, you can use OpenSSL and other cryptogr
 $ openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mycompany.key -out mycompany.crt -subj "/CN=*.mycompany.com/OU=it/O=mycompany/L=Paris/C=FR"
 ```
 
-#### b. Upload the certificate to the cluster on Amazon (??if b. depends on a. , step a. cannot be optional) 
+#### b. Upload the certificate to the cluster on Amazon 
 
 Run the following command:
 ```bash
