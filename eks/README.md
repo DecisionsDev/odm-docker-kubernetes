@@ -2,9 +2,9 @@
 
 This project demonstrates how to deploy an IBM® Operational Decision Manager (ODM) clustered topology on the Amazon Elastic Kubernetes Service (EKS) cloud service. This deployment implements Kubernetes and Docker technologies. 
 
-The ODM Docker material is available in Passport Advantage. It includes Docker container images and Helm chart descriptors. 
-
 ![Flow](./images/eks-schema.jpg)
+
+The ODM Docker material is available in Passport Advantage. It includes Docker container images and Helm chart descriptors. 
 
 ## Included components
 The project comes with the following components:
@@ -12,7 +12,7 @@ The project comes with the following components:
 - [Amazon Elastic Kubernetes Service (Amazon EKS)](https://aws.amazon.com/eks/)
 - [Amazon Elastic Container Registry (ECR) ](https://aws.amazon.com/ecr/)
 - [Amazon Relational Database Service (Amazon RDS) ](https://aws.amazon.com/rds/)
-- [Application Load Balancer(ELB)](https://aws.amazon.com/elasticloadbalancing/?nc=sn&loc=0)
+- [Amazon Application Load Balancer(ALB)](https://aws.amazon.com/elasticloadbalancing/?nc=sn&loc=0)
 
 ## Tested environment
 The commands and tools were tested on MacOS.
@@ -41,7 +41,7 @@ For more informations about EKS, see [Getting started with EKS](https://docs.aws
 #### a. Create an EKS cluster (30 min)
     Follow the documentation [here](https://docs.aws.amazon.com/eks/latest/userguide/create-cluster.html)
      
-> NOTE: Use Kubernetes version (equal or up to??)  1.15
+> NOTE: Use Kubernetes version 1.15 or higher.
        
  
 #### b. Set up your environment (10 min)
@@ -61,16 +61,17 @@ For more informations about EKS, see [Getting started with EKS](https://docs.aws
 
  - Check your environment
  
-   If your environment is set up correctly, you get the cluster information by running the following command line(???):
+   If your environment is set up correctly, get the cluster information by running the following command:
     
-```bash
-     $ kubectl cluster-info
-Kubernetes master is running at https://xxxxxx.yl4.eu-west-3.eks.amazonaws.com
-CoreDNS is running at https://xxxxx.yl4.eu-west-3.eks.amazonaws.com/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
-Metrics-server is running at https://xxxxx.yl4.eu-west-3.eks.amazonaws.com/api/v1/namespaces/kube-system/services/https:metrics-server:/proxy
+   ```bash
+   $ kubectl cluster-info
+   ```
+   Kubernetes master is running at https://xxxxxx.yl4.eu-west-3.eks.amazonaws.com
+   CoreDNS is running at https://xxxxx.yl4.eu-west-3.eks.amazonaws.com/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+   Metrics-server is running at https://xxxxx.yl4.eu-west-3.eks.amazonaws.com/api/v1/namespaces/kube-system/services/https:metrics-server:/proxy
 
-To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
-```
+To further debug and diagnose cluster problems, run 'kubectl cluster-info dump'.
+
 
 ### 2. (Optional) Push ODM images in the ECR Registry (25 min)
 The ODM images must be pushed to a registry that the EKS cluster can access. 
@@ -88,7 +89,6 @@ aws ecr get-login-password --region us-east-1 | docker login --username AWS --pa
 #### b. Create the [ECR repository instances](https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-create.html)
  
 > NOTE: You must create one repository per image.
-
 
 Example:
 ```bash 
@@ -166,7 +166,7 @@ After the creation of the RDS Postgresql database, an endpoint is created to acc
 
 ### 4. Manage a  digital certificate (10 min)
 
-#### a. (Optional) Generate an untrusted?? certificate 
+#### a. (Optional) Generate a self-signed certificate 
 
 If you do not have a trusted certificate, you can use OpenSSL and other cryptography and certificate management libraries to generate a .crt certificate file and a private key, to define the domain name, and to set the expiration date. The following command creates a self-signed certificate (.crt file) and a private key (.key file) that accept the domain name *.mycompany.com*. The expiration is set to 1000 days:
 
@@ -174,7 +174,7 @@ If you do not have a trusted certificate, you can use OpenSSL and other cryptogr
 $ openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mycompany.key -out mycompany.crt -subj "/CN=*.mycompany.com/OU=it/O=mycompany/L=Paris/C=FR"
 ```
 
-#### b. Create a AWS Server Certificate?? 
+#### b. Upload the certificate to the cluster on Amazon (??if b. depends on a. , step a. cannot be optional) 
 
 Run the following command:
 ```bash
@@ -197,7 +197,7 @@ The output of the command is:
 
 > NOTE: "Arn": "arn:aws:iam::<AWS-AccountId>:server-certificate/mycompany" is used later to configure the Application Load Balancer (ALB).
 
-#### c. Generate a JKS format to be used in the ODM container 
+#### c. Generate a JKS version of the certificate to be used in the ODM container 
 
 ```bash
 $ openssl pkcs12 -export -passout pass:password -passin pass:password -inkey mycompany.key -in mycompany.crt -name mycompany -out mycompany.p12
@@ -225,7 +225,7 @@ Example:
 $ kubectl create secret generic odm-db-secret --from-literal=db-user=postgres --from-literal=db-password=postgres
 ```
 
-- Create the Kubernetes secret with certificate?? 
+- Create a Kubernetes secret from the certificate generated in step 4.
 
 ```bash
 $ kubectl create secret generic mycompany-secret --from-file=keystore.jks=mycompany.jks --from-file=truststore.jks=truststore.jks --from-literal=keystore_password=password --from-literal=truststore_password=password
@@ -237,7 +237,7 @@ The certificate must be the same as the one you used to enable TLS connections i
 
 Install a Kubernetes release with the default configuration and a name of `my-odm-prod-release` by using the following command (??).  
 
-#### c. Generate the template file
+- Generate the template file
 
 ```bash
 $ helm template <RELEASENAME> ibm-odm-prod --set image.repository=<IMAGE_REPOSITORY> --set image.tag=8.10.3.0 --set image.pullSecrets=ecrodm --set image.arch=amd64  --set externalDatabase.type=postgres --set externalDatabase.serverName=<RDS_POSTGRESQL_SERNAME>   --set externalDatabase.secretCredentials=<odm-db-secret> --set externalDatabase.port=5432  --set customization.securitySecretRef=mycompany-secret charts/ibm-odm-prod-2.3.0.tar.gz > postgresql.yaml 
@@ -269,7 +269,7 @@ helm template mycompany charts/ibm-odm-prod-2.3.0.tgz --set image.arch=amd64 --s
 > ```
 
 
-#### d. Apply the template file
+- Apply the template file
 
 ```bash
  $ kubectl apply -f postgresql.yaml
@@ -292,11 +292,9 @@ $ kubectl get pods
 Table 1. Status of pods
 
 
-### 6. Access the ODM service  
+### 6. Access the ODM services  
 
-This section explains how to implement an  Application Load Balancer (ALB) to expose the ODM service.
-
-The following steps expose the ODM service to Internet connectivity. Refer to the AWS documentation??.
+This section explains how to implement an  Application Load Balancer (ALB) to expose the ODM services to Internet connectivity.
 
 * Create an Application Load Balancer
 * Implement an ingress for ODM services
@@ -338,7 +336,7 @@ $ kubectl apply -f alb-ingress-controller.yaml 
 #### b. Deploy the ingress service for ODM
 
 - Write the ingress descriptor
-You must define an ingress to route your request to the ODM service.
+You must define an ingress to route your request to the ODM services.
 
 Here is a sample descriptor to implement the ingress:
 
@@ -387,15 +385,15 @@ Source file [ingress-mycompany.yaml](ingress-mycompany.yaml)
 kubectl apply -f ingress-mycompany.yaml 
 ```
 
-After a couple of minutes, the  ALB reflects the ingress configuration. Then you access the ODM service by retrieving the URL with this cmd line???:
-
-
-With this ODM topology in place, you can access to web applications to author, deploy, and test your rule-based decision services.
+After a couple of minutes, the  ALB reflects the ingress configuration. Then you access the ODM services by retrieving the URL with this command:
 ```bash
 $ export ROOTURL=$(kubectl get ingress mycompany| awk '{print $3}' | tail -1)
 ```
 
-The service is accessible at the following URLs:
+With this ODM topology in place, you can access web applications to author, deploy, and test your rule-based decision services.
+
+
+The services are accessible from the following URLs:
 
 | *Component* | *URL* | *Username/Password* |
 |---|---|---|
