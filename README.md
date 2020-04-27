@@ -25,11 +25,11 @@ The ODM Docker material is used here, which is available in the [odm-ondocker](h
 ![Flow](images/ODMinKubernetes-DeploymentOverview.png)
 
 ## Deploying ODM Rules in the following environments
-- [Bluemix Kubernetes Cluster](Bluemix/README.md)
+- [Amazon EKS](eks/README.md)
 - [MiniKube](MiniKube/README.md)
 
 # Notice
-© Copyright IBM Corporation 2017.
+© Copyright IBM Corporation 2020.
 
 # License
 ```text
