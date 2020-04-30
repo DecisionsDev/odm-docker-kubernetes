@@ -158,7 +158,7 @@ $ kubectl create secret docker-registry ecrodm --docker-server=<AWS-AccountId>.d
 
 This project uses PostgreSQL but the procedure is valid for any database supported by ODM.
  
-To set up the database, follow the procedure described here [RDS PostgreSQL database](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html). (?? give a more precise link)
+To set up the database, follow the procedure described here [RDS PostgreSQL database](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_CreateDBInstance.html).
 
 > NOTE:  Make sure to:
 > - Set up incoming trafic to allow connection from EKS (set vpc inboud rule to anywhere)
@@ -393,7 +393,7 @@ kubectl apply -f ingress-mycompany.yaml 
 After a couple of minutes, the  ALB reflects the ingress configuration. Then you can access the ODM services by retrieving the URL with this command:
 
 ```bash
-kubectl get ingress mycompany| awk '{print $3}' | tail -1)
+export ROOTURL=$(kubectl get ingress mycompany| awk '{print $3}' | tail -1)
 ```
 
 With this ODM topology in place, you can access web applications to author, deploy, and test your rule-based decision services.
