@@ -272,6 +272,25 @@ helm template mycompany charts/ibm-odm-prod-2.3.0.tgz --set image.arch=amd64 --s
 >        emptyDir: {}
 > ```
 
+> NOTES:
+> If you prefer using with helm V3 :
+> ```bash
+> $ helm install
+> ```
+> instead of
+> ```bash
+> $ helm template > mytemplate.yaml
+> $ kubectl apply -f mytemplate.yaml
+> ```
+> There is currently a defect in Helm V3 [https://github.com/helm/helm/issues/3810](https://github.com/helm/helm/issues/3810) generating an error like :
+> Error: INSTALL FAILED: Chart requires kubernetesVersion: >=X.X.X which is incompatible with Kubernetes vX.X.X-xxxxx
+>
+> To workaround this issue :
+> - Uncompress the chart using : tar xvzf ibm-odm-prod-2.3.0.tgz
+> - Edit ibm-odm-prod/Chart.yaml changing the line :
+>   kubeVersion: '>=1.11.0'
+>   by
+>   kubeVersion: '>=1.11.0-0'
 
 - Apply the template file
 
