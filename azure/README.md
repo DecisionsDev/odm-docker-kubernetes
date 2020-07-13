@@ -104,15 +104,15 @@ manage a Kubernetes cluster, you use kubectl, the Kubernetes command-line client
 
 To configure kubectl to connect to your Kubernetes cluster, use the az aks get-credentials command. This command downloads credentials and configures the Kubernetes CLI to use them.
 
-   ```bash
+```bash
     az aks get-credentials --resource-group odm-group --name odm-cluster
-   ```
+```
 
 To verify the connection to your cluster, use the kubectl get command to return a list of the cluster nodes.
 
-   ```bash
+```bash
     kubectl get nodes
-   ```
+```
 
 The following example output shows the single node created in the previous steps. Make sure that the status of the node is Ready:
 Output
@@ -122,9 +122,9 @@ aks-nodepool1-31718369-0   Ready    agent   6m44s   v1.12.8
 
 To further debug and diagnose cluster problems, run the command:
 
-    ```bash
+```bash
     kubectl cluster-info dump
-    ```
+```
 
 ## 2. Create the Postgreql Azure instance
 
@@ -132,16 +132,18 @@ To further debug and diagnose cluster problems, run the command:
 
 Create an Azure Database for PostgreSQL server using the az postgres server create command. A server can contain multiple databases.
 
-    ```bash
-    az postgres server create --resource-group odm-group --name odmpsqlserver   --admin-user myadmin --admin-password 'passw0rd!' --sku-name GP_Gen5_2 --version 9.6 --location francecentral
-    ```
+```bash
+ az postgres server create --resource-group odm-group --name odmpsqlserver \
+                           --admin-user myadmin --admin-password 'passw0rd!' \
+                           --sku-name GP_Gen5_2 --version 9.6 --location francecentral
+```
 
 Verify the database
 To connect to your server, you need to provide host information and access credentials.
 
-    ```bash
-     az postgres server show --resource-group odm-group --name odmpsqlserver
-    ```
+```bash
+ az postgres server show --resource-group odm-group --name odmpsqlserver
+```
 
 Result:
    ```json
@@ -186,9 +188,10 @@ Result:
 ###  Create a firewall rule that allows access from Azure services
 To be able your database and your AKS cluster can communicate you should put in place Firewall rules with this following command:
 
-    ```bash
-    az postgres server firewall-rule create -g odm-group -s odmpsqlserver -n myrule --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0
-    ```
+```bash
+    az postgres server firewall-rule create -g odm-group -s odmpsqlserver \
+                       -n myrule --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0
+```
 
 ## Preparing your environment for ODM installation
 
@@ -208,7 +211,7 @@ To be able your database and your AKS cluster can communicate you should put in 
 4. Take a note of the secret and the server values so that you can set them to the **pullSecrets** and **repository** parameters when you run the helm install for your containers.
 
 ### Create the datasource Secrets for Azure Postgresql
-Copy the files [ds-bc.xml.template] and [ds-res.xml.template] on your local machine and copy it to ***ds-bc.xml / ds-res.xml***
+Copy the files [ds-bc.xml.template](ds-bc.xml.template]) and [ds-res.xml.template](ds-res.xml.template) on your local machine and copy it to ***ds-bc.xml / ds-res.xml***
 
  Replace placeholer  
 - DBNAME : The db name.
@@ -218,19 +221,21 @@ Copy the files [ds-bc.xml.template] and [ds-res.xml.template] on your local mach
   
 Should be something like that if you have not change the value of the cmd line.
 
-```json
-         <properties
-          databaseName="postgres"
-          user="myadmin@odmpsqlserver"
-          password="passw0rd!"
-          portNumber="5432"
-          sslMode="require"
-          serverName="odmpsqlserver.postgres.database.azure.com" />
+```xml
+ <properties
+  databaseName="postgres"
+  user="myadmin@odmpsqlserver"
+  password="passw0rd!"
+  portNumber="5432"
+  sslMode="require"
+  serverName="odmpsqlserver.postgres.database.azure.com" />
 ```
 
-### Create a secrets with this 2 files.
-kubectl create secret generic customdatasource-secret --from-file datasource-ds.xml=ds-res.xml --from-file datasource-dc.xml=ds-bc.xml
+### Create a secrets with this 2 files
 
+```shell
+kubectl create secret generic customdatasource-secret --from-file datasource-ds.xml=ds-res.xml --from-file datasource-dc.xml=ds-bc.xml
+```
 
 
 
@@ -244,19 +249,22 @@ kubectl create secret generic customdatasource-secret --from-file datasource-ds.
 To secure access to the database, you must create a secret that encrypts the database user and password before you install the Helm release.
 
 ```bash
-$ kubectl create secret generic <odm-db-secret> --from-literal=db-user=<rds-postgresql-user-name> --from-literal=db-password=<rds-postgresql-password> 
+kubectl create secret generic <odm-db-secret> --from-literal=db-user=<rds-postgresql-user-name> --from-literal=db-password=<rds-postgresql-password> 
 ```
 
 
 Example:
-```
-$ kubectl create secret generic odm-db-secret --from-literal=db-user=postgres --from-literal=db-password=postgres
+```bash
+kubectl create secret generic odm-db-secret --from-literal=db-user=postgres --from-literal=db-password=postgres
 ```
 
 - Create a Kubernetes secret from the certificate generated in step 4.
 
 ```bash
-$ kubectl create secret generic mycompany-secret --from-file=keystore.jks=mycompany.jks --from-file=truststore.jks=truststore.jks --from-literal=keystore_password=password --from-literal=truststore_password=password
+kubectl create secret generic mycompany-secret --from-file=keystore.jks=mycompany.jks \
+                                               --from-file=truststore.jks=truststore.jks \
+                                               --from-literal=keystore_password=password \
+                                               --from-literal=truststore_password=password
 ```
 
 The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Defining the security certificate](https://www.ibm.com/support/knowledgecenter/SSQP76_8.10.x/com.ibm.odm.icp/topics/tsk_replace_security_certificate.html?view=kc) and [Working with certificates and SSL](https://www.ibm.com/links?url=https%3A%2F%2Fdocs.oracle.com%2Fcd%2FE19830-01%2F819-4712%2Fablqw%2Findex.html).
@@ -264,13 +272,15 @@ The certificate must be the same as the one you used to enable TLS connections i
 #### b. Install an ODM Helm release
 
 ```bash
-helm install mycompany --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=admin.registrykey --set image.arch=amd64 --set image.tag=8.10.4.0 --set externalCustomDatabase.datasourceRef=customdatasource-secret --set service.type=LoadBalancer ibm-odm-prod
+helm install mycompany --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=admin.registrykey \
+                       --set image.arch=amd64 --set image.tag=8.10.4.0 --set service.type=LoadBalancer \
+                       --set externalCustomDatabase.datasourceRef=customdatasource-secret  ibm-odm-prod
 ```
 
 #### c. Check the topology
 Run the following command to check the status of the pods that have been created: 
 ```bash
-$ kubectl get pods
+kubectl get pods
 ```
 
 
