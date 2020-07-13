@@ -211,7 +211,7 @@ To be able your database and your AKS cluster can communicate you should put in 
 4. Take a note of the secret and the server values so that you can set them to the **pullSecrets** and **repository** parameters when you run the helm install for your containers.
 
 ### Create the datasource Secrets for Azure Postgresql
-Copy the files [ds-bc.xml.template](ds-bc.xml.template]) and [ds-res.xml.template](ds-res.xml.template) on your local machine and copy it to ***ds-bc.xml / ds-res.xml***
+Copy the files [ds-bc.xml.template](ds-bc.xml.template]) and [ds-res.xml.template](ds-res.xml.template) on your local machine and copy it to ds-bc.xml / ds-res.xml
 
  Replace placeholer  
 - DBNAME : The db name.
@@ -231,7 +231,8 @@ Should be something like that if you have not change the value of the cmd line.
   serverName="odmpsqlserver.postgres.database.azure.com" />
 ```
 
-### Create a secrets with this 2 files
+### Create a secrets with this 2 files
+
 
 ```shell
 kubectl create secret generic customdatasource-secret --from-file datasource-ds.xml=ds-res.xml --from-file datasource-dc.xml=ds-bc.xml
