@@ -5,7 +5,7 @@ Homepage of Azure : https://portal.azure.com/?feature.quickstart=true#home
 
 ![Flow](./images/aks-schema.jpg)
 
-TODO 
+
 
 The ODM Docker material is available in Passport Advantage. It includes Docker container images and Helm chart descriptors. 
 
