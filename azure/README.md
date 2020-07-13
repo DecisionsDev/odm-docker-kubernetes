@@ -70,16 +70,16 @@ az group create --name odm-group --location francecentral
 
 The following example output shows the resource group created successfully:
    ```json
-{
-  "id": "/subscriptions/<guid>/resourceGroups/odm-group",
-  "location": "eastus",
-  "managedBy": null,
-  "name": "odm-group",
-  "properties": {
-    "provisioningState": "Succeeded"
-  },
-  "tags": null
-}
+    {
+      "id": "/subscriptions/<guid>/resourceGroups/odm-group",
+      "location": "eastus",
+      "managedBy": null,
+      "name": "odm-group",
+      "properties": {
+        "provisioningState": "Succeeded"
+      },
+      "tags": null
+    }
    ```
    
 
@@ -121,9 +121,10 @@ aks-nodepool1-31718369-0   Ready    agent   6m44s   v1.12.8
 
 
 To further debug and diagnose cluster problems, run the command:
-```bash
-kubectl cluster-info dump
-```
+
+    ```bash
+    kubectl cluster-info dump
+    ```
 
 ## 2. Create the Postgreql Azure instance
 
@@ -131,61 +132,63 @@ kubectl cluster-info dump
 
 Create an Azure Database for PostgreSQL server using the az postgres server create command. A server can contain multiple databases.
 
-```bash
-az postgres server create --resource-group odm-group --name odmpsqlserver   --admin-user myadmin --admin-password 'passw0rd!' --sku-name GP_Gen5_2 --version 9.6 --location francecentral
-```
+    ```bash
+    az postgres server create --resource-group odm-group --name odmpsqlserver   --admin-user myadmin --admin-password 'passw0rd!' --sku-name GP_Gen5_2 --version 9.6 --location francecentral
+    ```
 
 Verify the database
 To connect to your server, you need to provide host information and access credentials.
 
-```bash
- az postgres server show --resource-group odm-group --name odmpsqlserver
-```
+    ```bash
+     az postgres server show --resource-group odm-group --name odmpsqlserver
+    ```
+
 Result:
    ```json
    {
-     "administratorLogin": "myadmin",
-  "byokEnforcement": "Disabled",
-  "earliestRestoreDate": "2020-07-13T06:59:05.050000+00:00",
-  "fullyQualifiedDomainName": "odmpsqlserver.postgres.database.azure.com",
-  "id": "/subscriptions/18583f39-c9d2-4813-beba-1a633f94cdaa/resourceGroups/odm-group/providers/Microsoft.DBforPostgreSQL/servers/odmpsqlserver",
-  "identity": null,
-  "infrastructureEncryption": "Disabled",
-  "location": "francecentral",
-  "masterServerId": "",
-  "minimalTlsVersion": "TLSEnforcementDisabled",
-  "name": "odmpsqlserver",
-  "privateEndpointConnections": [],
-  "publicNetworkAccess": "Enabled",
-  "replicaCapacity": 5,
-  "replicationRole": "None",
-  "resourceGroup": "odm-group",
-  "sku": {
-    "capacity": 2,
-    "family": "Gen5",
-    "name": "GP_Gen5_2",
-    "size": null,
-    "tier": "GeneralPurpose"
-  },
-  "sslEnforcement": "Enabled",
-  "storageProfile": {
-    "backupRetentionDays": 7,
-    "geoRedundantBackup": "Disabled",
-    "storageAutogrow": "Enabled",
-    "storageMb": 5120
-  },
-  "tags": null,
-  "type": "Microsoft.DBforPostgreSQL/servers",
-  "userVisibleState": "Ready",
-  "version": "9.6"
-}
+        "administratorLogin": "myadmin",
+        "byokEnforcement": "Disabled",
+        "earliestRestoreDate": "2020-07-13T06:59:05.050000+00:00",
+        "fullyQualifiedDomainName": "odmpsqlserver.postgres.database.azure.com",
+        "id": "/subscriptions/18583f39-c9d2-4813-beba-1a633f94cdaa/resourceGroups/odm-group/providers/Microsoft.DBforPostgreSQL/servers/odmpsqlserver",
+        "identity": null,
+        "infrastructureEncryption": "Disabled",
+        "location": "francecentral",
+        "masterServerId": "",
+        "minimalTlsVersion": "TLSEnforcementDisabled",
+        "name": "odmpsqlserver",
+        "privateEndpointConnections": [],
+        "publicNetworkAccess": "Enabled",
+        "replicaCapacity": 5,
+        "replicationRole": "None",
+        "resourceGroup": "odm-group",
+        "sku": {
+            "capacity": 2,
+            "family": "Gen5",
+            "name": "GP_Gen5_2",
+            "size": null,
+            "tier": "GeneralPurpose"
+         },
+        "sslEnforcement": "Enabled",
+        "storageProfile": {
+           "backupRetentionDays": 7,
+           "geoRedundantBackup": "Disabled",
+           "storageAutogrow": "Enabled",
+           "storageMb": 5120
+        },
+        "tags": null,
+        "type": "Microsoft.DBforPostgreSQL/servers",
+        "userVisibleState": "Ready",
+        "version": "9.6"
+    }
 ```
 
 ###  Create a firewall rule that allows access from Azure services
 To be able your database and your AKS cluster can communicate you should put in place Firewall rules with this following command:
-```bash
-az postgres server firewall-rule create -g odm-group -s odmpsqlserver -n myrule --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0
-```
+
+    ```bash
+    az postgres server firewall-rule create -g odm-group -s odmpsqlserver -n myrule --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0
+    ```
 
 ## Preparing your environment for ODM installation
 
