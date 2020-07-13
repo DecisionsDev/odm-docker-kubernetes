@@ -190,7 +190,7 @@ Result:
 To be able your database and your AKS cluster can communicate you should put in place Firewall rules with this following command:
 
 ```bash
-    az postgres server firewall-rule create -g odm-group -s odmpsqlserver \
+az postgres server firewall-rule create -g odm-group -s odmpsqlserver \
                        -n myrule --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0
 ```
 
