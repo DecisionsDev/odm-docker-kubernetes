@@ -54,7 +54,7 @@ Source from : https://docs.microsoft.com/en-us/azure/aks/kubernetes-walkthrough
 ### a. Login to Azure
 
 After installing the Azure cli use this command line.
-   ```bash
+   ```console
    az login 
    ```
 
@@ -62,7 +62,7 @@ It will open a web browser where you can connect using your Azure credentials
 
 ### b. Create a resource group
  An Azure resource group is a logical group in which Azure resources are deployed and managed. When you create a resource group, you are asked to specify a location. This location is where resource group metadata is stored, it is also where your resources run in Azure if you don't specify another region during resource creation. Create a resource group using the az group create command.
-   ```bash
+   ```console
 az group create --name odm-group --location francecentral
    ```
 
@@ -85,7 +85,7 @@ The following example output shows the resource group created successfully:
 Use the az aks create command to create an AKS cluster. The following example creates a cluster named myAKSCluster with one node. Azure Monitor for containers is also enabled using the --enable-addons monitoring parameter.  This will take several minutes to complete.
  Note
 When creating an AKS cluster a second resource group is automatically created to store the AKS resources. For more information see Why are two resource groups created with AKS?
-   ```bash
+   ```console
 az aks create --resource-group odm-group --name odm-cluster --node-count 2 \
                   --location francecentral --enable-addons monitoring --generate-ssh-keys
    ```
@@ -97,19 +97,19 @@ After a few minutes, the command completes and returns JSON-formatted informatio
 ### d. Set up your environment to this cluster
 manage a Kubernetes cluster, you use kubectl, the Kubernetes command-line client. If you use Azure Cloud Shell, kubectl is already installed. To install kubectl locally, use the az aks install-cli command:
 
-   ```bash
+   ```console
     az aks install-cli
    ```
 
 To configure kubectl to connect to your Kubernetes cluster, use the az aks get-credentials command. This command downloads credentials and configures the Kubernetes CLI to use them.
 
-```bash
+```console
     az aks get-credentials --resource-group odm-group --name odm-cluster
 ```
 
 To verify the connection to your cluster, use the kubectl get command to return a list of the cluster nodes.
 
-```bash
+```console
     kubectl get nodes
 ```
 
@@ -121,7 +121,7 @@ aks-nodepool1-31718369-0   Ready    agent   6m44s   v1.12.8
 
 To further debug and diagnose cluster problems, run the command:
 
-```bash
+```console
     kubectl cluster-info dump
 ```
 
@@ -131,7 +131,7 @@ To further debug and diagnose cluster problems, run the command:
 
 Create an Azure Database for PostgreSQL server using the az postgres server create command. A server can contain multiple databases.
 
-```bash
+```console
  az postgres server create --resource-group odm-group --name odmpsqlserver \
                            --admin-user myadmin --admin-password 'passw0rd!' \
                            --sku-name GP_Gen5_2 --version 9.6 --location francecentral
@@ -140,7 +140,7 @@ Create an Azure Database for PostgreSQL server using the az postgres server crea
 Verify the database
 To connect to your server, you need to provide host information and access credentials.
 
-```bash
+```console
  az postgres server show --resource-group odm-group --name odmpsqlserver
 ```
 
@@ -187,7 +187,7 @@ Result:
 ###  Create a firewall rule that allows access from Azure services
 To be able your database and your AKS cluster can communicate you should put in place Firewall rules with this following command:
 
-```bash
+```console
 az postgres server firewall-rule create -g odm-group -s odmpsqlserver \
                        -n myrule --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0
 ```
@@ -201,7 +201,8 @@ az postgres server firewall-rule create -g odm-group -s odmpsqlserver \
 
 3. Create a pull secret by running a `kubectl create secret` command.
 
-   ```kubectl create secret docker-registry admin.registrykey --docker-server=cp.icr.io --docker-username=cp --docker-password="<API_KEY_GENERATED>" --docker-email=<USER_EMAIL>```
+   ```console
+   kubectl create secret docker-registry admin.registrykey --docker-server=cp.icr.io --docker-username=cp --docker-password="<API_KEY_GENERATED>" --docker-email=<USER_EMAIL>```
 
    > **Note**: The `cp.icr.io` value for the **docker-server** parameter is the only registry domain name that contains the images.
    
@@ -233,7 +234,7 @@ Should be something like that if you have not change the value of the cmd line.
 ### Create a secrets with this 2 files
 
 
-```shell
+```console
 kubectl create secret generic customdatasource-secret --from-file datasource-ds.xml=ds-res.xml --from-file datasource-dc.xml=ds-bc.xml
 ```
 
@@ -248,19 +249,19 @@ kubectl create secret generic customdatasource-secret --from-file datasource-ds.
 
 To secure access to the database, you must create a secret that encrypts the database user and password before you install the Helm release.
 
-```bash
+```console
 kubectl create secret generic <odm-db-secret> --from-literal=db-user=<rds-postgresql-user-name> --from-literal=db-password=<rds-postgresql-password> 
 ```
 
 
 Example:
-```bash
+```console
 kubectl create secret generic odm-db-secret --from-literal=db-user=postgres --from-literal=db-password=postgres
 ```
 
 - Create a Kubernetes secret from the certificate generated in step 4.
 
-```bash
+```console
 kubectl create secret generic mycompany-secret --from-file=keystore.jks=mycompany.jks \
                                                --from-file=truststore.jks=truststore.jks \
                                                --from-literal=keystore_password=password \
@@ -271,7 +272,7 @@ The certificate must be the same as the one you used to enable TLS connections i
 
 #### b. Install an ODM Helm release
 
-```bash
+```console
 helm install mycompany --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=admin.registrykey \
                        --set image.arch=amd64 --set image.tag=8.10.4.0 --set service.type=LoadBalancer \
                        --set externalCustomDatabase.datasourceRef=customdatasource-secret  ibm-odm-prod
@@ -279,7 +280,7 @@ helm install mycompany --set image.repository=cp.icr.io/cp/cp4a/odm --set image.
 
 #### c. Check the topology
 Run the following command to check the status of the pods that have been created: 
-```bash
+```console
 kubectl get pods
 ```
 
@@ -311,7 +312,7 @@ https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/load-balancer-
 ## Troubleshooting
 
 If your microservice instances are not running properly, check the logs by running the following command:
-```
+```console
 kubectl logs <your-pod-name>
 ```
 
