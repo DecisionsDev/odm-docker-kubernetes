@@ -3,9 +3,7 @@
 This project demonstrates how to deploy an IBM® Operational Decision Manager (ODM) clustered topology on the Azure Kubernetes Service (AKS)  (AKS) cloud service. This deployment implements Kubernetes and Docker technologies. 
 Homepage of Azure : https://portal.azure.com/?feature.quickstart=true#home
 
-![Flow](./images/aks-schema.jpg)
-
-
+<img width="800" height="560" src='./images/aks-schema.jpg'/>
 
 The ODM Docker material is available in Passport Advantage. It includes Docker container images and Helm chart descriptors. 
 
