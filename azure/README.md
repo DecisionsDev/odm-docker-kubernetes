@@ -28,7 +28,7 @@ First, install the following software on your machine:
 
 Then, create an  [Create an Azure account and pay as you go](https://azure.microsoft.com/en-us/pricing/purchase-options/pay-as-you-go/)
 
-## Steps to deploy ODM on Kubernetes from Amazon EKS
+## Steps to deploy ODM on Kubernetes from Azure AKS
 
  * [1. Prepare your AKS instance](#1-prepare-your-aks-instance)
      * [a. Login to Azure](#a-login-to-azure)
