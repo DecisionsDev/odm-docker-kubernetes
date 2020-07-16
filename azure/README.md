@@ -240,12 +240,7 @@ kubectl create secret generic customdatasource-secret --from-file datasource-ds.
 
 
 
-### 5. Install an IBM Operational Decision Manager release (10 min)
-
-
-#### a. Prerequisites
-
-- Create a database secret
+### Create a database secret
 
 To secure access to the database, you must create a secret that encrypts the database user and password before you install the Helm release.
 
@@ -258,8 +253,7 @@ Example:
 ```console
 kubectl create secret generic odm-db-secret --from-literal=db-user=postgres --from-literal=db-password=postgres
 ```
-
-- Create a Kubernetes secret from the certificate generated in step 4.
+### Create a Kubernetes secret with the certificate.
 TODO EXPLAIN HOW TO GENERATE CERTIFICATE.
 ```console
 kubectl create secret generic mycompany-secret --from-file=keystore.jks=mycompany.jks \
@@ -270,15 +264,24 @@ kubectl create secret generic mycompany-secret --from-file=keystore.jks=mycompan
 
 The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Defining the security certificate](https://www.ibm.com/support/knowledgecenter/SSQP76_8.10.x/com.ibm.odm.icp/topics/tsk_replace_security_certificate.html?view=kc) and [Working with certificates and SSL](https://www.ibm.com/links?url=https%3A%2F%2Fdocs.oracle.com%2Fcd%2FE19830-01%2F819-4712%2Fablqw%2Findex.html).
 
-#### b. Install an ODM Helm release
+## Install an ODM Helm release and expose it with the service type loadbalalncer
 
+### Allocate public IP.
+```console
+ az aks update \                                                                                                                                                                          
+    --resource-group odm \
+    --name odm-cluster \
+    --load-balancer-managed-outbound-ip-count 4
+```
+
+### Install the ODM Release
 ```console
 helm install mycompany --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=admin.registrykey \
                        --set image.arch=amd64 --set image.tag=8.10.4.0 --set service.type=LoadBalancer \
                        --set externalCustomDatabase.datasourceRef=customdatasource-secret  ibm-odm-prod
 ```
 
-#### c. Check the topology
+### Check the topology
 Run the following command to check the status of the pods that have been created: 
 ```console
 kubectl get pods
@@ -294,7 +297,7 @@ kubectl get pods
 
 Table 1. Status of pods
 
-#### d. Access ODM services
+### Access ODM services
 By setting the **service.type=LoadBalancer** the service are exposed with public ip to access it use this command:
 
 ```console
