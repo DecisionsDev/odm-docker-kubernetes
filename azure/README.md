@@ -97,20 +97,20 @@ After a few minutes, the command completes and returns JSON-formatted informatio
 ### d. Set up your environment to this cluster
 manage a Kubernetes cluster, you use kubectl, the Kubernetes command-line client. If you use Azure Cloud Shell, kubectl is already installed. To install kubectl locally, use the az aks install-cli command:
 
-   ```console
-    az aks install-cli
-   ```
+```console
+az aks install-cli
+```
 
 To configure kubectl to connect to your Kubernetes cluster, use the az aks get-credentials command. This command downloads credentials and configures the Kubernetes CLI to use them.
 
 ```console
-    az aks get-credentials --resource-group odm-group --name odm-cluster
+az aks get-credentials --resource-group odm-group --name odm-cluster
 ```
 
 To verify the connection to your cluster, use the kubectl get command to return a list of the cluster nodes.
 
 ```console
-    kubectl get nodes
+kubectl get nodes
 ```
 
 The following example output shows the single node created in the previous steps. Make sure that the status of the node is Ready:
@@ -122,7 +122,7 @@ aks-nodepool1-31718369-0   Ready    agent   6m44s   v1.12.8
 To further debug and diagnose cluster problems, run the command:
 
 ```console
-    kubectl cluster-info dump
+kubectl cluster-info dump
 ```
 
 ## 2. Create the Postgreql Azure instance
@@ -260,7 +260,7 @@ kubectl create secret generic odm-db-secret --from-literal=db-user=postgres --fr
 ```
 
 - Create a Kubernetes secret from the certificate generated in step 4.
-
+TODO EXPLAIN HOW TO GENERATE CERTIFICATE.
 ```console
 kubectl create secret generic mycompany-secret --from-file=keystore.jks=mycompany.jks \
                                                --from-file=truststore.jks=truststore.jks \
@@ -294,8 +294,25 @@ kubectl get pods
 
 Table 1. Status of pods
 
+#### d. Access ODM services
+By setting the **service.type=LoadBalancer** the service are exposed with public ip to access it use this command:
 
-### 6. Access the ODM services  
+```console
+kubectl get svc
+```
+
+| NAME | TYPE | CLUSTER-IP | EXTERNAL-IP | PORT(S) | AGE |
+| --- | --- | --- | -- | --- | --- | 
+| mycompany-odm-decisionserverruntime | LoadBalancer  |  10.0.118.182 |   xx.xx.xxx.xxx  |     9443:32483/TCP  | 9s |
+| mycompany-odm-decisioncenter | LoadBalancer  |  10.0.118.181 |   xx.xx.xxx.xxx  |     9453:32483/TCP  | 9s |
+| mycompany-odm-decisionrunner | LoadBalancer  |  10.0.166.199 |   xx.xx.xxx.xxx   |  9443:31367/TCP  | 2d17h |
+| mycompany-odm-decisionserverconsole | LoadBalancer |   10.0.224.220  |  xx.xx.xxx.xxx   |      9443:30874/TCP |   9s |
+| mycompany-odm-decisionserverconsole-notif | ClusterIP | 10.0.103.221 |  \<none\> | 1883/TCP |        9s |
+    
+  Then you can open a browser to the https://xx.xx.xxx.xxx:9443 for Decision Server console/runtime and runner and https://xx.xx.xxx.xxx:9453 for Decision center.
+    
+
+### 6. Access the ODM services via ingress
 
 This section explains how to implement an  Application Load Balancer (ALB) to expose the ODM services to Internet connectivity.
 
