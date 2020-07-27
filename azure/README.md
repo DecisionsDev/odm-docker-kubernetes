@@ -253,8 +253,26 @@ Example:
 ```console
 kubectl create secret generic odm-db-secret --from-literal=db-user=postgres --from-literal=db-password=postgres
 ```
-### Create a Kubernetes secret with the certificate.
-TODO EXPLAIN HOW TO GENERATE CERTIFICATE.
+
+### Manage a  digital certificate (10 min)
+
+#### a. (Optional) Generate a self-signed certificate 
+
+If you do not have a trusted certificate, you can use OpenSSL and other cryptography and certificate management libraries to generate a .crt certificate file and a private key, to define the domain name, and to set the expiration date. The following command creates a self-signed certificate (.crt file) and a private key (.key file) that accept the domain name *.mycompany.com*. The expiration is set to 1000 days:
+
+```bash
+$ openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mycompany.key -out mycompany.crt -subj "/CN=*.mycompany.com/OU=it/O=mycompany/L=Paris/C=FR"
+```
+
+#### b. Generate a JKS version of the certificate to be used in the ODM container 
+
+```bash
+$ openssl pkcs12 -export -passout pass:password -passin pass:password -inkey mycompany.key -in mycompany.crt -name mycompany -out mycompany.p12
+$ keytool -importkeystore -srckeystore mycompany.p12 -srcstoretype PKCS12 -srcstorepass password -destkeystore mycompany.jks -deststoretype JKS -deststorepass password
+$ keytool -import -v -trustcacerts -alias mycompany -file mycompany.crt -keystore truststore.jks -storepass password -noprompt
+```
+
+#### c. Create a Kubernetes secret with the certificate.
 ```console
 kubectl create secret generic mycompany-secret --from-file=keystore.jks=mycompany.jks \
                                                --from-file=truststore.jks=truststore.jks \
@@ -263,6 +281,7 @@ kubectl create secret generic mycompany-secret --from-file=keystore.jks=mycompan
 ```
 
 The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Defining the security certificate](https://www.ibm.com/support/knowledgecenter/SSQP76_8.10.x/com.ibm.odm.icp/topics/tsk_replace_security_certificate.html?view=kc) and [Working with certificates and SSL](https://www.ibm.com/links?url=https%3A%2F%2Fdocs.oracle.com%2Fcd%2FE19830-01%2F819-4712%2Fablqw%2Findex.html).
+
 
 ## Install an ODM Helm release and expose it with the service type loadbalalncer
 
