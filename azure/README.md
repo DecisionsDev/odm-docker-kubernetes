@@ -278,7 +278,8 @@ The certificate must be the same as the one you used to enable TLS connections i
 ```console
 helm install mycompany --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=admin.registrykey \
                        --set image.arch=amd64 --set image.tag=8.10.4.0 --set service.type=LoadBalancer \
-                       --set externalCustomDatabase.datasourceRef=customdatasource-secret  ibm-odm-prod
+                       --set externalCustomDatabase.datasourceRef=customdatasource-secret \
+                       --set customization.securitySecretRef=mycompany-secret ibm-odm-prod
 ```
 
 ### Check the topology
