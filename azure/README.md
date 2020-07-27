@@ -269,7 +269,7 @@ The certificate must be the same as the one you used to enable TLS connections i
 ### Allocate public IP.
 ```console
  az aks update \                                                                                                                                                                          
-    --resource-group odm \
+    --resource-group odm-group \
     --name odm-cluster \
     --load-balancer-managed-outbound-ip-count 4
 ```
