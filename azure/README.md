@@ -337,7 +337,7 @@ kubectl get svc
 
 ### 6. Access the ODM services via ingress
 
-This section explains how to expose the ODM services to Internet connectivity with Ingress (reference Microsoft Azure documentation https://docs.microsoft.com/fr-fr/azure/aks/ingress-own-tls.
+This section explains how to expose the ODM services to Internet connectivity with Ingress (reference Microsoft Azure documentation https://docs.microsoft.com/fr-fr/azure/aks/ingress-own-tls).
 
 #### Create an ingress controller
 ##### Create a namespace for your ingress resources
@@ -359,10 +359,16 @@ helm install nginx-ingress stable/nginx-ingress \
 #### Get the ingress controller external IP address
 ```console
 kubectl get service -l app=nginx-ingress --namespace ingress-basic
-kubectl get service -l app=nginx-ingress --namespace ingress-basic
  NAME                             TYPE           CLUSTER-IP     EXTERNAL-IP   PORT(S)                      AGE
 nginx-ingress-controller         LoadBalancer   10.0.61.144    EXTERNAL_IP   80:30386/TCP,443:32276/TCP   6m2s
 nginx-ingress-default-backend    ClusterIP      10.0.192.145   <none>        80/TCP                       6m2s
+```
+#### Create Kubernetes secret for the TLS certificate (https://docs.microsoft.com/en-US/azure/aks/ingress-own-tls#create-kubernetes-secret-for-the-tls-certificate)
+```console
+kubectl create secret tls aks-ingress-tls \
+    --namespace ingress-basic \
+    --key aks-ingress-tls.key \
+    --cert aks-ingress-tls.crt
 ```
 
 #### Deploy an ODM instance
@@ -405,6 +411,18 @@ spec:
         backend:
           serviceName: mycompany-odm-decisioncenter
           servicePort: 9453
+```
+#### Edit your /etc/hosts
+```console
+vi /etc/hosts
+<EXTERNAL_IP> demo.azure.com
+```
+#### Access ODM services
+```console
+Decision Server Console: https://demo.azure.com/res
+Decision Center: https://demo.azure.com/decisioncenter
+Decision Server Runtime: https://demo.azure.com/DecisionService
+Decision Runner: https://demo.azure.com/DecisionRunner 
 ```
 
 ## Troubleshooting
