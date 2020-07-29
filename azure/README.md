@@ -200,7 +200,6 @@ az postgres server firewall-rule create -g odm-group -s odmpsqlserver \
 2. In the **Container software library** tile, verify your entitlement on the **View library** page, and then go to **Get entitlement key** to retrieve the key.
 
 3. Create a pull secret by running a `kubectl create secret` command.
-
    ```console
    kubectl create secret docker-registry admin.registrykey --docker-server=cp.icr.io --docker-username=cp --docker-password="<API_KEY_GENERATED>" --docker-email=<USER_EMAIL>```
 
@@ -365,10 +364,7 @@ nginx-ingress-default-backend    ClusterIP      10.0.192.145   <none>        80/
 ```
 #### Create Kubernetes secret for the TLS certificate (https://docs.microsoft.com/en-US/azure/aks/ingress-own-tls#create-kubernetes-secret-for-the-tls-certificate)
 ```console
-kubectl create secret tls aks-ingress-tls \
-    --namespace ingress-basic \
-    --key aks-ingress-tls.key \
-    --cert aks-ingress-tls.crt
+kubectl create secret tls mycompany-tls --namespace ingress-basic --key mycompany.key --cert mycompany.crt
 ```
 
 #### Deploy an ODM instance
@@ -389,10 +385,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - demo.azure.com
-    secretName: aks-ingress-tls
+    - mycompany.com
+    secretName: mycompany-tls
   rules:
-  - host: demo.azure.com
+  - host: mycompany.com
     http:
       paths:
       - path: /res
