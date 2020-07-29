@@ -337,17 +337,75 @@ kubectl get svc
 
 ### 6. Access the ODM services via ingress
 
-This section explains how to implement an  Application Load Balancer (ALB) to expose the ODM services to Internet connectivity.
+This section explains how to expose the ODM services to Internet connectivity with Ingress (reference Microsoft Azure documentation https://docs.microsoft.com/fr-fr/azure/aks/ingress-own-tls.
 
-* Create an Application Load Balancer
-* Implement an ingress for ODM services
+#### Create an ingress controller
+##### Create a namespace for your ingress resources
+```console
+kubectl create namespace ingress-basic
+```
+##### Add the official stable repository
+```console
+helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+```
+##### Use Helm to deploy an NGINX ingress controller
+```console
+helm install nginx-ingress stable/nginx-ingress \
+    --namespace ingress-basic \
+    --set controller.replicaCount=2 \
+    --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux \
+    --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux
+```
+#### Get the ingress controller external IP address
+```console
+kubectl get service -l app=nginx-ingress --namespace ingress-basic
+kubectl get service -l app=nginx-ingress --namespace ingress-basic
+ NAME                             TYPE           CLUSTER-IP     EXTERNAL-IP   PORT(S)                      AGE
+nginx-ingress-controller         LoadBalancer   10.0.61.144    EXTERNAL_IP   80:30386/TCP,443:32276/TCP   6m2s
+nginx-ingress-default-backend    ClusterIP      10.0.192.145   <none>        80/TCP                       6m2s
+```
 
-#### a. Create an Application Load Balancer
-Find more information about ALB here
-https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/load-balancer-getting-started.html
-
-***TODO***
-
+#### Deploy an ODM instance
+```console
+helm install mycompany --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=admin.registrykey --set image.arch=amd64 --set image.tag=8.10.4.0 --set externalCustomDatabase.datasourceRef=customdatasource-secret ibm-odm-prod
+```
+#### Create an Ingress route
+```console
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: mycompany
+  namespace: ingress-basic
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    nginx.ingress.kubernetes.io/proxy-body-size: 8m
+spec:
+  tls:
+  - hosts:
+    - demo.azure.com
+    secretName: aks-ingress-tls
+  rules:
+  - host: demo.azure.com
+    http:
+      paths:
+      - path: /res
+        backend:
+          serviceName: mycompany-odm-decisionserverconsole
+          servicePort: 9443
+      - path: /DecisionService
+        backend:
+          serviceName: mycompany-odm-decisionserverruntime
+          servicePort: 9443
+      - path: /DecisionRunner
+        backend:
+          serviceName: mycompany-odm-decisionrunner
+          servicePort: 9443
+      - path: /decisioncenter
+        backend:
+          serviceName: mycompany-odm-decisioncenter
+          servicePort: 9453
+```
 
 ## Troubleshooting
 
