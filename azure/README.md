@@ -415,12 +415,32 @@ vi /etc/hosts
 <EXTERNAL_IP> mycompany.com
 ```
 ### Access ODM services
+
+#### We can check that ODM services are in NodePort type 
+
 ```console
-Decision Server Console: https://mycompany.com/res
-Decision Center: https://mycompany.com/decisioncenter
-Decision Server Runtime: https://mycompany.com/DecisionService
-Decision Runner: https://mycompany.com/DecisionRunner 
+kubectl get svc
 ```
+
+| NAME | TYPE | CLUSTER-IP | EXTERNAL-IP | PORT(S) | AGE |
+| --- | --- | --- | -- | --- | --- |
+| mycompany-odm-decisioncenter | NodePort | 10.0.156.79 | <none> | 9453:31328/TCP | 56m |
+| mycompany-odm-decisionrunner | NodePort | 10.0.53.181 | <none> | 9443:31576/TCP | 56m |
+| mycompany-odm-decisionserverconsole | NodePort | 10.0.216.189 | <none> | 9443:30671/TCP | 56m |
+| mycompany-odm-decisionserverconsole-notif | ClusterIP | 10.0.242.117 | <none> | 1883/TCP | 56m |
+| mycompany-odm-decisionserverruntime | NodePort | 10.0.107.18 | <none> | 9443:32114/TCP | 56m |
+| nginx-nginx-ingress-controller | LoadBalancer | 10.0.5.199 | 40.66.60.125 | 80:30157/TCP,443:30409/TCP | 5h6m |
+| nginx-nginx-ingress-default-backend | ClusterIP | 10.0.38.114 | <none> | 80/TCP | 5h6m |
+
+
+#### ODM services are available through the following URLs
+
+| SERVICE NAME | URL | USERNAME/PASSWORD |
+| --- | --- | --- |
+| Decision Server Console | https://mycompany.com/res | odmAdmin/odmAdmin |
+| Decision Center | https://mycompany.com/decisioncenter | odmAdmin/odmAdmin |
+| Decision Server Runtime | https://mycompany.com/DecisionService | odmAdmin/odmAdmin |
+| Decision Runner | https://mycompany.com/DecisionRunner | odmAdmin/odmAdmin |
 
 ## Troubleshooting
 
@@ -431,8 +451,8 @@ kubectl logs <your-pod-name>
 
 
 ## References
-https://docs.microsoft.com/fr-fr/azure/aks/
-
+https://docs.microsoft.com/en-US/azure/aks/
+https://docs.microsoft.com/en-US/azure/aks/ingress-own-tls
 
 # License
 [Apache 2.0](LICENSE)
