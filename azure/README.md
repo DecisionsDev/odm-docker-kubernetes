@@ -382,7 +382,6 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-    nginx.ingress.kubernetes.io/proxy-body-size: 8m
 spec:
   tls:
   - hosts:
@@ -429,7 +428,7 @@ kubectl get svc
 | mycompany-odm-decisionserverconsole | NodePort | 10.0.216.189 | <none> | 9443:30671/TCP | 56m |
 | mycompany-odm-decisionserverconsole-notif | ClusterIP | 10.0.242.117 | <none> | 1883/TCP | 56m |
 | mycompany-odm-decisionserverruntime | NodePort | 10.0.107.18 | <none> | 9443:32114/TCP | 56m |
-| nginx-nginx-ingress-controller | LoadBalancer | 10.0.5.199 | 40.66.60.125 | 80:30157/TCP,443:30409/TCP | 5h6m |
+| nginx-nginx-ingress-controller | LoadBalancer | 10.0.5.199 | <EXTERNAL_IP> | 80:30157/TCP,443:30409/TCP | 5h6m |
 | nginx-nginx-ingress-default-backend | ClusterIP | 10.0.38.114 | <none> | 80/TCP | 5h6m |
 
 
