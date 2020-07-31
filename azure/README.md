@@ -28,26 +28,60 @@ Then, create an  [Create an Azure account and pay as you go](https://azure.micro
 
 ## Steps to deploy ODM on Kubernetes from Azure AKS
 
- * [1. Prepare your AKS instance](#1-prepare-your-aks-instance)
-     * [a. Login to Azure](#a-login-to-azure)
-     * [b. Create a resource group](#b-create-a-resource-group)
-     * [c. Create an AKS cluster (30 min)](#c-create-an-aks-cluster-30-min)
-     * [d. Set up your environment to this cluster](#d-set-up-your-environment-to-this-cluster)
-  * [2. Create the Postgreql Azure instance](#2-create-the-postgreql-azure-instance)
-     * [Create an Azure Database for PostgreSQL](#create-an-azure-database-for-postgresql)
-     * [Create a firewall rule that allows access from Azure services](#create-a-firewall-rule-that-allows-access-from-azure-services)
-  * [Preparing your environment for ODM installation](#preparing-your-environment-for-odm-installation)
-     * [Create a pull secret to pull images from the IBM Entitled Registry that contains ODM Docker images](#create-a-pull-secret-to-pull-images-from-the-ibm-entitled-registry-that-contains-odm-docker-images)
-     * [Create the datasource Secrets for Azure Postgresql](#create-the-datasource-secrets-for-azure-postgresql)
-     * [5. Install an IBM Operational Decision Manager release (10 min)](#5-install-an-ibm-operational-decision-manager-release-10-min)
-        * [a. Prerequisites](#a-prerequisites)
-        * [b. Install an ODM Helm release](#b-install-an-odm-helm-release)
-        * [c. Check the topology](#c-check-the-topology)
-     * [6. Access the ODM services  ](#6-access-the-odm-services)
-        * [a. Create an Application Load Balancer](#a-create-an-application-load-balancer)
-  
+Table of Contents
+=================
 
-## 1. Prepare your AKS instance
+   * [Deploying IBM Operational Decision Manager on Azure AKS](#deploying-ibm-operational-decision-manager-on-azure-aks)
+      * [Included components](#included-components)
+      * [Tested environment](#tested-environment)
+      * [Prerequisites](#prerequisites)
+      * [Steps to deploy ODM on Kubernetes from Azure AKS](#steps-to-deploy-odm-on-kubernetes-from-azure-aks)
+      * [Prepare your AKS instance](#prepare-your-aks-instance)
+         * [a. Login to Azure](#a-login-to-azure)
+         * [b. Create a resource group](#b-create-a-resource-group)
+         * [c. Create an AKS cluster (30 min)](#c-create-an-aks-cluster-30-min)
+         * [d. Set up your environment to this cluster](#d-set-up-your-environment-to-this-cluster)
+      * [Create the Postgreql Azure instance](#create-the-postgreql-azure-instance)
+         * [Create an Azure Database for PostgreSQL](#create-an-azure-database-for-postgresql)
+         * [Create a firewall rule that allows access from Azure services](#create-a-firewall-rule-that-allows-access-from-azure-services)
+      * [Preparing your environment for ODM installation](#preparing-your-environment-for-odm-installation)
+         * [Create a pull secret to pull images from the IBM Entitled Registry that contains ODM Docker images](#create-a-pull-secret-to-pull-images-from-the-ibm-entitled-registry-that-contains-odm-docker-images)
+         * [(Optional) Push the ODM images to the ACR (Azure Container Registry)](#optional-push-the-odm-images-to-the-acr-azure-container-registry)
+            * [1. create an ACR](#1-create-an-acr)
+            * [2. Login to the ACR registry](#2-login-to-the-acr-registry)
+            * [3. Load the ODM images locally](#3-load-the-odm-images-locally)
+            * [4. Tag and push the images to the ACR registry](#4-tag-and-push-the-images-to-the-acr-registry)
+            * [5. Create a registry key to access to the ACR registry](#5-create-a-registry-key-to-access-to-the-acr-registry)
+         * [Create the datasource Secrets for Azure Postgresql](#create-the-datasource-secrets-for-azure-postgresql)
+         * [Create a secrets with this 2 files](#create-a-secrets-with-this-2-files)
+         * [Create a database secret](#create-a-database-secret)
+         * [Manage a  digital certificate (10 min)](#manage-a-digital-certificate-10-min)
+            * [a. (Optional) Generate a self-signed certificate](#a-optional-generate-a-self-signed-certificate)
+            * [b. Generate a JKS version of the certificate to be used in the ODM container ](#b-generate-a-jks-version-of-the-certificate-to-be-used-in-the-odm-container)
+            * [c. Create a Kubernetes secret with the certificate.](#c-create-a-kubernetes-secret-with-the-certificate)
+      * [Install an ODM Helm release and expose it with the service type loadbalalncer](#install-an-odm-helm-release-and-expose-it-with-the-service-type-loadbalalncer)
+         * [Allocate public IP.](#allocate-public-ip)
+         * [Install the ODM Release](#install-the-odm-release)
+         * [Check the topology](#check-the-topology)
+         * [Access ODM services](#access-odm-services)
+      * [Access the ODM services via ingress](#access-the-odm-servicesvia-ingress)
+         * [Create an ingress controller](#create-an-ingress-controller)
+            * [Create a namespace for your ingress resources](#create-a-namespace-for-your-ingress-resources)
+            * [Add the official stable repository](#add-the-official-stable-repository)
+            * [Use Helm to deploy an NGINX ingress controller](#use-helm-to-deploy-an-nginx-ingress-controller)
+         * [Get the ingress controller external IP address](#get-the-ingress-controller-external-ip-address)
+         * [Create Kubernetes secret for the TLS certificate (<a href="https://docs.microsoft.com/en-US/azure/aks/ingress-own-tls#create-kubernetes-secret-for-the-tls-certificate" rel="nofollow">https://docs.microsoft.com/en-US/azure/aks/ingress-own-tls#create-kubernetes-secret-for-the-tls-certificate</a>)](#create-kubernetes-secret-for-the-tls-certificate-httpsdocsmicrosoftcomen-usazureaksingress-own-tlscreate-kubernetes-secret-for-the-tls-certificate)
+         * [Deploy an ODM instance](#deploy-an-odm-instance)
+         * [Create an Ingress route](#create-an-ingress-route)
+         * [Edit your /etc/hosts](#edit-your-etchosts)
+         * [Access ODM services](#access-odm-services-1)
+            * [We can check that ODM services are in NodePort type](#we-can-check-that-odm-services-are-in-nodeport-type)
+            * [ODM services are available through the following URLs](#odm-services-are-available-through-the-following-urls)
+      * [Troubleshooting](#troubleshooting)
+      * [References](#references)
+   * [License](#license)
+
+## Prepare your AKS instance
 
 Source from : https://docs.microsoft.com/en-us/azure/aks/kubernetes-walkthrough
 
@@ -125,7 +159,7 @@ To further debug and diagnose cluster problems, run the command:
 kubectl cluster-info dump
 ```
 
-## 2. Create the Postgreql Azure instance
+## Create the Postgreql Azure instance
 
 ### Create an Azure Database for PostgreSQL
 
@@ -192,7 +226,7 @@ az postgres server firewall-rule create -g odm-group -s odmpsqlserver \
                        -n myrule --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0
 ```
 
-## 3. Preparing your environment for ODM installation
+## Preparing your environment for ODM installation
 
 ### Create a pull secret to pull images from the IBM Entitled Registry that contains ODM Docker images
 1. Log in to [MyIBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary) with the IBMid and password that are associated with the entitled software.
