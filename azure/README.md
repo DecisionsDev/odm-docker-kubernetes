@@ -192,7 +192,7 @@ az postgres server firewall-rule create -g odm-group -s odmpsqlserver \
                        -n myrule --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0
 ```
 
-## Preparing your environment for ODM installation
+## 3. Preparing your environment for ODM installation
 
 ### Create a pull secret to pull images from the IBM Entitled Registry that contains ODM Docker images
 1. Log in to [MyIBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary) with the IBMid and password that are associated with the entitled software.
@@ -208,6 +208,61 @@ az postgres server firewall-rule create -g odm-group -s odmpsqlserver \
    > **Note**: Use “cp” for the docker-username. The docker-email has to be a valid email address (associated to your IBM ID). Make sure you are copying the Entitlement Key in the docker-password field within double-quotes.
 
 4. Take a note of the secret and the server values so that you can set them to the **pullSecrets** and **repository** parameters when you run the helm install for your containers.
+
+### (Optional) Push the ODM images to the ACR (Azure Container Registry)
+
+Reference documentation: ref. documentation: https://docs.microsoft.com/fr-fr/azure/container-registry/container-registry-get-started-azure-cli
+
+#### 1. create an ACR 
+```console
+az acr create --resource-group odm-group --name odmregistry --sku Basic
+```
+Note the <loginServer> which will be displayed in the json output (e.g.: "loginServer": "registryodm.azurecr.io").
+    
+#### 2. Login to the ACR registry
+```console
+az acr login --name registryodm
+```
+#### 3. Load the ODM images locally
+
+ - Download one or more packages (.tgz archives) from [IBM Passport Advantage (PPA)](https://www-01.ibm.com/software/passportadvantage/pao_customer.html).  To view the full list of eAssembly installation images, refer to the [8.10.4 download document](https://www.ibm.com/support/pages/ibm-operational-decision-manager-v8104-download-document).
+ 
+ - Extract the .tgz archives to your local file system.
+     ```bash
+     $ tar xzf <PPA-ARCHIVE>.tar.gz
+     ```
+
+- Load the images to your local registry.
+    ```bash
+    $ cd images
+    $ foreach name ( `ls`)  echo $name && docker image load --input $name && end
+    ```
+
+   For more information, refer to the [ODM knowledge center](https://www.ibm.com/support/knowledgecenter/SSQP76_8.10.x/com.ibm.odm.kube/topics/tsk_config_odm_prod_kube.html).
+
+#### 4. Tag and push the images to the ACR registry
+
+- Tag the images to the ACR registry previously created
+```bash
+    $ docker tag odm-decisionserverconsole:8.10.4.0-amd64 <loginServer>/odm-decisionserverconsole:8.10.4.0-amd64
+    $ docker tag dbserver:8.10.4.0-amd64 <loginServer>/dbserver:8.10.4.0-amd64
+    $ docker tag odm-decisioncenter:8.10.4.0-amd64 <loginServer>/odm-decisioncenter:8.10.4.0-amd64
+    $ docker tag odm-decisionserverruntime:8.10.4.0-amd64 <loginServer>/odm-decisionserverruntime:8.10.4.0-amd64
+    $ docker tag odm-decisionrunner:8.10.4.0-amd64 <loginServer>/odm-decisionrunner:8.10.4.0-amd64
+```
+- Push the images to the ACR registry
+```bash
+    $ docker push <loginServer>/odm-decisioncenter:8.10.4.0-amd64
+    $ docker push <loginServer>/odm-decisionserverconsole:8.10.4.0-amd64
+    $ docker push <loginServer>/odm-decisionserverruntime:8.10.4.0-amd64
+    $ docker push <loginServer>/odm-decisionrunner:8.10.4.0-amd64
+    $ docker push <loginServer>/dbserver:8.10.4.0-amd64
+```
+#### 5. Create a registry key to access to the ACR registry
+```console
+kubectl create secret docker-registry admin.registrykey --docker-server="registryodm.azurecr.io" --docker-username="registryodm" --docker-password="lSycuCFWnbIc8828xr4d87cbkn=OUWCg" --docker-email="mycompany@email.com"
+```
+Credentials can be found here: https://portal.azure.com/#@ibm.onmicrosoft.com/resource/subscriptions/36d56f7a-94b5-4b27-bd27-8dcf98753217/resourceGroups/odm-group/providers/Microsoft.ContainerRegistry/registries/registryodm/accessKey
 
 ### Create the datasource Secrets for Azure Postgresql
 Copy the files [ds-bc.xml.template](ds-bc.xml.template]) and [ds-res.xml.template](ds-res.xml.template) on your local machine and copy it to ds-bc.xml / ds-res.xml
@@ -231,13 +286,9 @@ Should be something like that if you have not change the value of the cmd line.
 ```
 
 ### Create a secrets with this 2 files
-
-
 ```console
 kubectl create secret generic customdatasource-secret --from-file datasource-ds.xml=ds-res.xml --from-file datasource-dc.xml=ds-bc.xml
 ```
-
-
 
 ### Create a database secret
 
@@ -246,8 +297,6 @@ To secure access to the database, you must create a secret that encrypts the dat
 ```console
 kubectl create secret generic <odm-db-secret> --from-literal=db-user=<rds-postgresql-user-name> --from-literal=db-password=<rds-postgresql-password> 
 ```
-
-
 Example:
 ```console
 kubectl create secret generic odm-db-secret --from-literal=db-user=postgres --from-literal=db-password=postgres
@@ -286,7 +335,7 @@ The certificate must be the same as the one you used to enable TLS connections i
 
 ### Allocate public IP.
 ```console
- az aks update \                                                                                                                                                                          
+ az aks update \
     --resource-group odm-group \
     --name odm-cluster \
     --load-balancer-managed-outbound-ip-count 4
@@ -370,9 +419,13 @@ kubectl create secret tls mycompany-tls --namespace ingress-basic --key mycompan
 
 ### Deploy an ODM instance
 ```console
-helm install mycompany --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=admin.registrykey --set image.arch=amd64 --set image.tag=8.10.4.0 --set externalCustomDatabase.datasourceRef=customdatasource-secret ibm-odm-prod
+helm install mycompany --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=admin.registrykey \
+                        --set image.arch=amd64 --set image.tag=8.10.4.0 \
+                        --set externalCustomDatabase.datasourceRef=customdatasource-secret ibm-odm-prod
 ```
+
 ### Create an Ingress route
+Create a yaml file ingress-odm.yml as follow:
 ```console
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -382,6 +435,8 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    # Sticky session parameter needed for DecisionCenter see https://github.com/kubernetes/ingress-nginx/tree/master/docs/examples/affinity/cookie
+    nginx.ingress.kubernetes.io/affinity: "cookie"
 spec:
   tls:
   - hosts:
@@ -408,6 +463,12 @@ spec:
           serviceName: mycompany-odm-decisioncenter
           servicePort: 9453
 ```
+
+Apply ingress route:
+```console
+kubectl apply -f ingress-odm.yml
+```
+
 ### Edit your /etc/hosts
 ```console
 vi /etc/hosts
@@ -452,6 +513,7 @@ kubectl logs <your-pod-name>
 ## References
 https://docs.microsoft.com/en-US/azure/aks/
 https://docs.microsoft.com/en-US/azure/aks/ingress-own-tls
+https://docs.microsoft.com/fr-fr/azure/container-registry/container-registry-get-started-azure-cli
 
 # License
 [Apache 2.0](LICENSE)
