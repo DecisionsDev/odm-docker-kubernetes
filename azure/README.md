@@ -31,7 +31,7 @@ Then, [create an Azure account and pay as you go](https://azure.microsoft.com/en
 ### Table of Contents
 =================
     
-    * [Prepare your AKS instance](#prepare-your-aks-instance)
+   * [Prepare your AKS instance](#prepare-your-aks-instance)
          * [a. Login to Azure](#a-login-to-azure)
          * [b. Create a resource group](#b-create-a-resource-group)
          * [c. Create an AKS cluster (30 min)](#c-create-an-aks-cluster-30-min)
