@@ -24,11 +24,11 @@ First, install the following software on your machine:
 * [Helm](https://github.com/helm/helm/releases)
 
 
-Then, [Create an Azure account and pay as you go](https://azure.microsoft.com/en-us/pricing/purchase-options/pay-as-you-go/)
+Then, [create an Azure account and pay as you go](https://azure.microsoft.com/en-us/pricing/purchase-options/pay-as-you-go/)
 
 ## Steps to deploy ODM on Kubernetes from Azure AKS
 
-Table of Contents
+### Table of Contents
 =================
 
    * [Deploying IBM Operational Decision Manager on Azure AKS](#deploying-ibm-operational-decision-manager-on-azure-aks)
