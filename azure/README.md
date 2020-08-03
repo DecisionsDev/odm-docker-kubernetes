@@ -125,19 +125,19 @@ After a few minutes, the command completes and returns JSON-formatted informatio
 > NOTE: By default, a Kubernetes cluster version 1.16 or higher is created.
        
 ### d. Set up your environment to this cluster
-manage a Kubernetes cluster, you use kubectl, the Kubernetes command-line client. If you use Azure Cloud Shell, kubectl is already installed. To install kubectl locally, use the az aks install-cli command:
+To manage a Kubernetes cluster, use kubectl, the Kubernetes command-line client. If you use Azure Cloud Shell, kubectl is already installed. To install kubectl locally, use the `az aks install-cli` command:
 
 ```console
 az aks install-cli
 ```
 
-To configure kubectl to connect to your Kubernetes cluster, use the az aks get-credentials command. This command downloads credentials and configures the Kubernetes CLI to use them.
+To configure kubectl to connect to your Kubernetes cluster, use the `az aks get-credentials` command. This command downloads credentials and configures the Kubernetes CLI to use them.
 
 ```console
 az aks get-credentials --resource-group odm-group --name odm-cluster
 ```
 
-To verify the connection to your cluster, use the kubectl get command to return a list of the cluster nodes.
+To verify the connection to your cluster, use the kubectl get command to return the list of cluster nodes.
 
 ```console
 kubectl get nodes
@@ -149,17 +149,17 @@ NAME                       STATUS   ROLES   AGE   �
 aks-nodepool1-31718369-0   Ready    agent   6m44s   v1.12.8
 
 
-To further debug and diagnose cluster problems, run the command:
+To further debug and diagnose cluster problems, run the following command:
 
 ```console
 kubectl cluster-info dump
 ```
 
-## Create the Postgreql Azure instance
+## Create the Postgresql Azure instance
 
 ### Create an Azure Database for PostgreSQL
 
-Create an Azure Database for PostgreSQL server using the az postgres server create command. A server can contain multiple databases.
+Create an Azure Database for PostgreSQL server by using the `az postgres server create` command. A server can contain multiple databases.
 
 ```console
  az postgres server create --resource-group odm-group --name odmpsqlserver \
@@ -167,7 +167,7 @@ Create an Azure Database for PostgreSQL server using the az postgres server crea
                            --sku-name GP_Gen5_2 --version 9.6 --location francecentral
 ```
 
-Verify the database
+Verify the database.
 To connect to your server, you need to provide host information and access credentials.
 
 ```console
@@ -215,7 +215,7 @@ Result:
 ```
 
 ###  Create a firewall rule that allows access from Azure services
-To be able your database and your AKS cluster can communicate you should put in place Firewall rules with this following command:
+To make sure your database and your AKS cluster can communicate, put in place firewall rules with the following command:
 
 ```console
 az postgres server firewall-rule create -g odm-group -s odmpsqlserver \
