@@ -224,7 +224,7 @@ az postgres server firewall-rule create -g odm-group -s odmpsqlserver \
 
 ## Preparing your environment for ODM installation
 
-### Create a pull secret to pull images from the IBM Entitled Registry that contains ODM Docker images
+### Create a pull secret to pull images from the IBM Entitled Registry that contains the ODM Docker images
 1. Log in to [MyIBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary) with the IBMid and password that are associated with the entitled software.
 
 2. In the **Container software library** tile, verify your entitlement on the **View library** page, and then go to **Get entitlement key** to retrieve the key.
@@ -235,7 +235,7 @@ az postgres server firewall-rule create -g odm-group -s odmpsqlserver \
 
    > **Note**: The `cp.icr.io` value for the **docker-server** parameter is the only registry domain name that contains the images.
    
-   > **Note**: Use “cp” for the docker-username. The docker-email has to be a valid email address (associated to your IBM ID). Make sure you are copying the Entitlement Key in the docker-password field within double-quotes.
+   > **Note**: Use “cp” for the docker-username. The docker-email has to be a valid email address (associated with your IBM ID). Make sure you are copying the Entitlement Key in the docker-password field between double-quotes.
 
 4. Take a note of the secret and the server values so that you can set them to the **pullSecrets** and **repository** parameters when you run the helm install for your containers.
 
@@ -243,13 +243,13 @@ az postgres server firewall-rule create -g odm-group -s odmpsqlserver \
 
 Reference documentation: ref. documentation: https://docs.microsoft.com/fr-fr/azure/container-registry/container-registry-get-started-azure-cli
 
-#### 1. create an ACR 
+#### 1. Create an ACR 
 ```console
 az acr create --resource-group odm-group --name odmregistry --sku Basic
 ```
 Note the <loginServer> which will be displayed in the json output (e.g.: "loginServer": "registryodm.azurecr.io").
     
-#### 2. Login to the ACR registry
+#### 2. Log in to the ACR registry
 ```console
 az acr login --name registryodm
 ```
@@ -288,13 +288,13 @@ az acr login --name registryodm
     $ docker push <loginServer>/odm-decisionrunner:8.10.4.0-amd64
     $ docker push <loginServer>/dbserver:8.10.4.0-amd64
 ```
-#### 5. Create a registry key to access to the ACR registry
+#### 5. Create a registry key to access the ACR registry
 ```console
 kubectl create secret docker-registry admin.registrykey --docker-server="registryodm.azurecr.io" --docker-username="registryodm" --docker-password="lSycuCFWnbIc8828xr4d87cbkn=OUWCg" --docker-email="mycompany@email.com"
 ```
 Credentials can be found here: https://portal.azure.com/#@ibm.onmicrosoft.com/resource/subscriptions/36d56f7a-94b5-4b27-bd27-8dcf98753217/resourceGroups/odm-group/providers/Microsoft.ContainerRegistry/registries/registryodm/accessKey
 
-### Create the datasource Secrets for Azure Postgresql
+### Create the datasource secrets for Azure Postgresql
 Copy the files [ds-bc.xml.template](ds-bc.xml.template]) and [ds-res.xml.template](ds-res.xml.template) on your local machine and copy it to ds-bc.xml / ds-res.xml
 
  Replace placeholer  
@@ -315,7 +315,7 @@ Should be something like that if you have not change the value of the cmd line.
   serverName="odmpsqlserver.postgres.database.azure.com" />
 ```
 
-### Create a secrets with this 2 files
+### Create a secret from these 2 files
 ```console
 kubectl create secret generic customdatasource-secret --from-file datasource-ds.xml=ds-res.xml --from-file datasource-dc.xml=ds-bc.xml
 ```
