@@ -73,30 +73,30 @@ Then, [create an Azure account and pay as you go](https://azure.microsoft.com/en
          * [Access ODM services](#access-odm-services-1)
             * [We can check that ODM services are in NodePort type](#we-can-check-that-odm-services-are-in-nodeport-type)
             * [ODM services are available through the following URLs](#odm-services-are-available-through-the-following-urls)
-      * [Troubleshooting](#troubleshooting)
-      * [References](#references)
+   * [Troubleshooting](#troubleshooting)
+   * [References](#references)
    * [License](#license)
 
 ## Prepare your AKS instance
 
-Source from : https://docs.microsoft.com/en-us/azure/aks/kubernetes-walkthrough
+Source: https://docs.microsoft.com/en-us/azure/aks/kubernetes-walkthrough
 
-### a. Login to Azure
+### a. Log in to Azure
 
-After installing the Azure cli use this command line.
+After installing the Azure CLI, use the following command line.
    ```console
    az login 
    ```
 
-It will open a web browser where you can connect using your Azure credentials
+A web browser opens where you can connect with your Azure credentials.
 
 ### b. Create a resource group
- An Azure resource group is a logical group in which Azure resources are deployed and managed. When you create a resource group, you are asked to specify a location. This location is where resource group metadata is stored, it is also where your resources run in Azure if you don't specify another region during resource creation. Create a resource group using the az group create command.
+ An Azure resource group is a logical group in which Azure resources are deployed and managed. When you create a resource group, you are asked to specify a location. This location is where resource group metadata is stored. It is also where your resources run in Azure, if you don't specify another region during resource creation. Create a resource group by running the `az group create` command.
    ```console
 az group create --name odm-group --location francecentral
    ```
 
-The following example output shows the resource group created successfully:
+The following example output shows that the resource group has been created successfully:
    ```json
     {
       "id": "/subscriptions/<guid>/resourceGroups/odm-group",
