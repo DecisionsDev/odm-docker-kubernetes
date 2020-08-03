@@ -1,7 +1,7 @@
 # Deploying IBM Operational Decision Manager on Azure AKS
 
-This project demonstrates how to deploy an IBM® Operational Decision Manager (ODM) clustered topology on the Azure Kubernetes Service (AKS)  (AKS) cloud service. This deployment implements Kubernetes and Docker technologies. 
-Homepage of Azure : https://portal.azure.com/?feature.quickstart=true#home
+This project demonstrates how to deploy an IBM® Operational Decision Manager (ODM) clustered topology on the Azure Kubernetes Service (AKS) cloud service. This deployment implements Kubernetes and Docker technologies. 
+Here is the home page of Microsoft Azure: https://portal.azure.com/?feature.quickstart=true#home
 
 <img width="800" height="560" src='./images/aks-schema.jpg'/>
 
@@ -15,16 +15,16 @@ The project comes with the following components:
 - [AKS Networking](https://docs.microsoft.com/en-us/azure/aks/concepts-network)
 
 ## Tested environment
-The commands and tools have been tested on MacOS.
+The commands and tools have been tested on macOS.
 
 ## Prerequisites
 First, install the following software on your machine:
 
-* [Install Azure cli Az CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) 
+* [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) 
 * [Helm](https://github.com/helm/helm/releases)
 
 
-Then, create an  [Create an Azure account and pay as you go](https://azure.microsoft.com/en-us/pricing/purchase-options/pay-as-you-go/)
+Then, [Create an Azure account and pay as you go](https://azure.microsoft.com/en-us/pricing/purchase-options/pay-as-you-go/)
 
 ## Steps to deploy ODM on Kubernetes from Azure AKS
 
