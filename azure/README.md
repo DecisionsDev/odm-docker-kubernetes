@@ -30,12 +30,6 @@ Then, [create an Azure account and pay as you go](https://azure.microsoft.com/en
 
 ### Table of Contents
 =================
-
-   * [Deploying IBM Operational Decision Manager on Azure AKS](#deploying-ibm-operational-decision-manager-on-azure-aks)
-      * [Included components](#included-components)
-      * [Tested environment](#tested-environment)
-      * [Prerequisites](#prerequisites)
-      * [Steps to deploy ODM on Kubernetes from Azure AKS](#steps-to-deploy-odm-on-kubernetes-from-azure-aks)
       * [Prepare your AKS instance](#prepare-your-aks-instance)
          * [a. Login to Azure](#a-login-to-azure)
          * [b. Create a resource group](#b-create-a-resource-group)
