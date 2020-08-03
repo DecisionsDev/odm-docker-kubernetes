@@ -112,9 +112,9 @@ The following example output shows that the resource group has been created succ
    
 
 ### c. Create an AKS cluster (30 min)
-Use the az aks create command to create an AKS cluster. The following example creates a cluster named myAKSCluster with one node. Azure Monitor for containers is also enabled using the --enable-addons monitoring parameter.  This will take several minutes to complete.
- Note
-When creating an AKS cluster a second resource group is automatically created to store the AKS resources. For more information see Why are two resource groups created with AKS?
+Use the `az aks create` command to create an AKS cluster. The following example creates a cluster named myAKSCluster with one node. Azure Monitor for containers is also enabled using the `--enable-addons monitoring` parameter.  The operation takes several minutes to complete.
+> NOTE:
+During the creation of the AKS cluster, a second resource group is automatically created to store the AKS resources. For more information, see Why are two resource groups created with AKS?
    ```console
 az aks create --resource-group odm-group --name odm-cluster --node-count 2 \
                   --location francecentral --enable-addons monitoring --generate-ssh-keys
@@ -122,7 +122,7 @@ az aks create --resource-group odm-group --name odm-cluster --node-count 2 \
 
 After a few minutes, the command completes and returns JSON-formatted information about the cluster.
 
-> NOTE: By default this will create a Kubernetes version 1.16 or higher.
+> NOTE: By default, a Kubernetes cluster version 1.16 or higher is created.
        
 ### d. Set up your environment to this cluster
 manage a Kubernetes cluster, you use kubectl, the Kubernetes command-line client. If you use Azure Cloud Shell, kubectl is already installed. To install kubectl locally, use the az aks install-cli command:
