@@ -361,9 +361,9 @@ kubectl create secret generic mycompany-secret --from-file=keystore.jks=mycompan
 The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Defining the security certificate](https://www.ibm.com/support/knowledgecenter/SSQP76_8.10.x/com.ibm.odm.icp/topics/tsk_replace_security_certificate.html?view=kc) and [Working with certificates and SSL](https://www.ibm.com/links?url=https%3A%2F%2Fdocs.oracle.com%2Fcd%2FE19830-01%2F819-4712%2Fablqw%2Findex.html).
 
 
-## Install an ODM Helm release and expose it with the service type loadbalalncer
+## Install an ODM Helm release and expose it with the service type loadbalancer
 
-### Allocate public IP.
+### Allocate a public IP
 ```console
  az aks update \
     --resource-group odm-group \
