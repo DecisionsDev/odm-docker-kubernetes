@@ -413,12 +413,12 @@ kubectl get svc
   You can then open a browser on https://xx.xx.xxx.xxx:9443 to access Decision Server console, Decision Server Runtime, and Decision Runner and on https://xx.xx.xxx.xxx:9453 to access Decision Center.
     
 
-## Access the ODM services via ingress
+## Access the ODM services via Ingress
 
-This section explains how to expose the ODM services to Internet connectivity with Ingress (reference Microsoft Azure documentation https://docs.microsoft.com/fr-fr/azure/aks/ingress-own-tls).
+This section explains how to expose the ODM services to Internet connectivity with Ingress. For reference, see the Microsoft Azure documentation https://docs.microsoft.com/fr-fr/azure/aks/ingress-own-tls.
 
 ### Create an ingress controller
-#### Create a namespace for your ingress resources
+#### Create a namespace for your Ingress resources
 ```console
 kubectl create namespace ingress-basic
 ```
@@ -426,7 +426,7 @@ kubectl create namespace ingress-basic
 ```console
 helm repo add stable https://kubernetes-charts.storage.googleapis.com/
 ```
-#### Use Helm to deploy an NGINX ingress controller
+#### Use Helm to deploy an NGINX Ingress controller
 ```console
 helm install nginx-ingress stable/nginx-ingress \
     --namespace ingress-basic \
@@ -434,15 +434,15 @@ helm install nginx-ingress stable/nginx-ingress \
     --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux \
     --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux
 ```
-### Get the ingress controller external IP address
+### Get the Ingress controller external IP address
 ```console
 kubectl get service -l app=nginx-ingress --namespace ingress-basic
  NAME                             TYPE           CLUSTER-IP     EXTERNAL-IP   PORT(S)                      AGE
 nginx-ingress-controller         LoadBalancer   10.0.61.144    EXTERNAL_IP   80:30386/TCP,443:32276/TCP   6m2s
 nginx-ingress-default-backend    ClusterIP      10.0.192.145   <none>        80/TCP                       6m2s
 ```
-### Create Kubernetes secret for the TLS certificate (https://docs.microsoft.com/en-US/azure/aks/ingress-own-tls#create-kubernetes-secret-for-the-tls-certificate)
-You must create the appropriate certificate files: mycompany.key mycompany.crt as defined in https://github.com/ODMDev/odm-docker-kubernetes/tree/azure/azure#a-optional-generate-a-self-signed-certificate.
+### Create a Kubernetes secret for the TLS certificate (https://docs.microsoft.com/en-US/azure/aks/ingress-own-tls#create-kubernetes-secret-for-the-tls-certificate)
+You must create the appropriate certificate files: `mycompany.key` and `mycompany.crt` as defined in https://github.com/ODMDev/odm-docker-kubernetes/tree/azure/azure#a-optional-generate-a-self-signed-certificate.
 ```console
 kubectl create secret tls mycompany-tls --namespace ingress-basic --key mycompany.key --cert mycompany.crt
 ```
@@ -455,7 +455,7 @@ helm install mycompany --set image.repository=cp.icr.io/cp/cp4a/odm --set image.
 ```
 
 ### Create an Ingress route
-Create a yaml file ingress-odm.yml as follow:
+Create a YAML file, ingress-odm.yml, as follows:
 ```console
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -494,7 +494,7 @@ spec:
           servicePort: 9453
 ```
 
-Apply ingress route:
+Apply an Ingress route:
 ```console
 kubectl apply -f ingress-odm.yml
 ```
@@ -504,9 +504,9 @@ kubectl apply -f ingress-odm.yml
 vi /etc/hosts
 <EXTERNAL_IP> mycompany.com
 ```
-### Access ODM services
+### Access the ODM services
 
-#### We can check that ODM services are in NodePort type 
+#### Check whether the ODM services are in NodePort type 
 
 ```console
 kubectl get svc
