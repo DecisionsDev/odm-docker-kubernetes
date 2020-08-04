@@ -294,16 +294,16 @@ kubectl create secret docker-registry admin.registrykey --docker-server="registr
 ```
 Credentials can be found here: https://portal.azure.com/#@ibm.onmicrosoft.com/resource/subscriptions/36d56f7a-94b5-4b27-bd27-8dcf98753217/resourceGroups/odm-group/providers/Microsoft.ContainerRegistry/registries/registryodm/accessKey
 
-### Create the datasource secrets for Azure Postgresql
+### Create the datasource secrets for Azure PostgreSQL
 Copy the files [ds-bc.xml.template](ds-bc.xml.template]) and [ds-res.xml.template](ds-res.xml.template) on your local machine and copy it to ds-bc.xml / ds-res.xml
 
- Replace placeholer  
-- DBNAME : The db name.
-- USERNAME : The db username. 
-- PASSWORD : The db password
-- SERVERNAME : The name of the db server name
+ Replace the following placeholers:  
+- DBNAME : The database name.
+- USERNAME : The database username. 
+- PASSWORD : The database password
+- SERVERNAME : The name of the database server name
   
-Should be something like that if you have not change the value of the cmd line.
+It should be something like in the following extract, if you have not changed the values of the command line.
 
 ```xml
  <properties
@@ -322,7 +322,7 @@ kubectl create secret generic customdatasource-secret --from-file datasource-ds.
 
 ### Create a database secret
 
-To secure access to the database, you must create a secret that encrypts the database user and password before you install the Helm release.
+To secure access to the database, you must create a secret that encrypts the database user and password, before you install the Helm release.
 
 ```console
 kubectl create secret generic <odm-db-secret> --from-literal=db-user=<rds-postgresql-user-name> --from-literal=db-password=<rds-postgresql-password> 
