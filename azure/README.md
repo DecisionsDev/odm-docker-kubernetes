@@ -315,7 +315,7 @@ It should be something like in the following extract, if you have not changed th
   serverName="odmpsqlserver.postgres.database.azure.com" />
 ```
 
-### Create a secret from these 2 files
+### Create a secret from these two files
 ```console
 kubectl create secret generic customdatasource-secret --from-file datasource-ds.xml=ds-res.xml --from-file datasource-dc.xml=ds-bc.xml
 ```
@@ -396,7 +396,7 @@ kubectl get pods
 Table 1. Status of pods
 
 ### Access ODM services
-By setting the **service.type=LoadBalancer** the service are exposed with public ip to access it use this command:
+By setting `service.type=LoadBalancer`, the services are exposed with a public IP to be accessed with the following command:
 
 ```console
 kubectl get svc
@@ -410,7 +410,7 @@ kubectl get svc
 | mycompany-odm-decisionserverconsole | LoadBalancer |   10.0.224.220  |  xx.xx.xxx.xxx   |      9443:30874/TCP |   9s |
 | mycompany-odm-decisionserverconsole-notif | ClusterIP | 10.0.103.221 |  \<none\> | 1883/TCP |        9s |
     
-  Then you can open a browser to the https://xx.xx.xxx.xxx:9443 for Decision Server console/runtime and runner and https://xx.xx.xxx.xxx:9453 for Decision center.
+  You can then open a browser on https://xx.xx.xxx.xxx:9443 to access Decision Server console, Decision Server Runtime, and Decision Runner and on https://xx.xx.xxx.xxx:9453 to access Decision Center.
     
 
 ## Access the ODM services via ingress
