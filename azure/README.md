@@ -137,7 +137,7 @@ To configure kubectl to connect to your Kubernetes cluster, use the `az aks get-
 az aks get-credentials --resource-group odm-group --name odm-cluster
 ```
 
-To verify the connection to your cluster, use the kubectl get command to return the list of cluster nodes.
+To verify the connection to your cluster, use the `kubectl get` command to return the list of cluster nodes.
 
 ```console
 kubectl get nodes
@@ -155,7 +155,7 @@ To further debug and diagnose cluster problems, run the following command:
 kubectl cluster-info dump
 ```
 
-## Create the Postgresql Azure instance
+## Create the PostgreSQL Azure instance
 
 ### Create an Azure Database for PostgreSQL
 
@@ -222,9 +222,9 @@ az postgres server firewall-rule create -g odm-group -s odmpsqlserver \
                        -n myrule --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0
 ```
 
-## Preparing your environment for ODM installation
+## Prepare your environment for the ODM installation
 
-### Create a pull secret to pull images from the IBM Entitled Registry that contains the ODM Docker images
+### Create a pull secret to pull the ODM Docker images from the IBM Entitled Registry 
 1. Log in to [MyIBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary) with the IBMid and password that are associated with the entitled software.
 
 2. In the **Container software library** tile, verify your entitlement on the **View library** page, and then go to **Get entitlement key** to retrieve the key.
@@ -233,21 +233,21 @@ az postgres server firewall-rule create -g odm-group -s odmpsqlserver \
    ```console
    kubectl create secret docker-registry admin.registrykey --docker-server=cp.icr.io --docker-username=cp --docker-password="<API_KEY_GENERATED>" --docker-email=<USER_EMAIL>```
 
-   > **Note**: The `cp.icr.io` value for the **docker-server** parameter is the only registry domain name that contains the images.
+  > **Note**: The `cp.icr.io` value for the docker-server parameter is the only registry domain name that contains the images.
    
-   > **Note**: Use “cp” for the docker-username. The docker-email has to be a valid email address (associated with your IBM ID). Make sure you are copying the Entitlement Key in the docker-password field between double-quotes.
+  > **Note**: Use `cp` for the docker-username. docker-email has to be a valid email address (associated with your IBM ID). Make sure you put the Entitlement Key in the docker-password field between double-quotes.
 
-4. Take a note of the secret and the server values so that you can set them to the **pullSecrets** and **repository** parameters when you run the helm install for your containers.
+4. Make a note of the secret and the server values so that you can set them to the `pullSecrets` and `repository` parameters when you run the helm install for your containers.
 
 ### (Optional) Push the ODM images to the ACR (Azure Container Registry)
 
-Reference documentation: ref. documentation: https://docs.microsoft.com/fr-fr/azure/container-registry/container-registry-get-started-azure-cli
+See reference documentation: https://docs.microsoft.com/fr-fr/azure/container-registry/container-registry-get-started-azure-cli
 
-#### 1. Create an ACR 
+#### 1. Create an ACR registry
 ```console
 az acr create --resource-group odm-group --name odmregistry --sku Basic
 ```
-Note the <loginServer> which will be displayed in the json output (e.g.: "loginServer": "registryodm.azurecr.io").
+Note the <loginServer> that will be displayed in the JSON output (e.g.: "loginServer": "registryodm.azurecr.io").
     
 #### 2. Log in to the ACR registry
 ```console
