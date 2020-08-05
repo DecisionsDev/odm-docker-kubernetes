@@ -160,7 +160,7 @@ kubectl cluster-info dump
 
 ### Create an Azure Database for PostgreSQL
 
-Create an Azure Database for PostgreSQL server by using the `az postgres server create` command. A server can contain multiple databases.
+Create an Azure Database for PostgreSQL server by running the `az postgres server create` command. A server can contain multiple databases.
 
 ```console
  az postgres server create --resource-group odm-group --name odmpsqlserver \
@@ -248,7 +248,7 @@ See reference documentation: https://docs.microsoft.com/fr-fr/azure/container-re
 ```console
 az acr create --resource-group odm-group --name odmregistry --sku Basic
 ```
-Note the <loginServer> that will be displayed in the JSON output (e.g.: "loginServer": "registryodm.azurecr.io").
+Note the loginServer that will be displayed in the JSON output (e.g.: "loginServer": "registryodm.azurecr.io").
     
 #### 2. Log in to the ACR registry
 ```console
