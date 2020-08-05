@@ -29,21 +29,21 @@ Then, [create an Azure account and pay as you go](https://azure.microsoft.com/en
 ## Steps to deploy ODM on Kubernetes from Azure AKS
 
    * [Prepare your AKS instance](#prepare-your-aks-instance)
-      * [a. Log in to Azure](#a-log-in-to-azure)
-      * [b. Create a resource group](#b-create-a-resource-group)
-      * [c. Create an AKS cluster (30 min)](#c-create-an-aks-cluster-30-min)
-      * [d. Set up your environment to this cluster](#d-set-up-your-environment-to-this-cluster)
+      * [Log in to Azure](#log-in-to-azure)
+      * [Create a resource group](#create-a-resource-group)
+      * [Create an AKS cluster (30 min)](#create-an-aks-cluster-30-min)
+      * [Set up your environment to this cluster](#set-up-your-environment-to-this-cluster)
    * [Create the PostgreSQL Azure instance](#create-the-postgresql-azure-instance)
       * [Create an Azure Database for PostgreSQL](#create-an-azure-database-for-postgresql)
       * [Create a firewall rule that allows access from Azure services](#create-a-firewall-rule-that-allows-access-from-azure-services)
    * [Prepare your environment for the ODM installation](#prepare-your-environment-for-the-odm-installation)
       * [Create a pull secret to pull the ODM Docker images from the IBM Entitled Registry](#create-a-pull-secret-to-pull-the-odm-docker-images-from-the-ibm-entitled-registry)
       * [(Optional) Push the ODM images to the ACR (Azure Container Registry)](#optional-push-the-odm-images-to-the-acr-azure-container-registry)
-         * [1. Create an ACR registry](#1-create-an-acr-registry)
-         * [2. Log in to the ACR registry](#2-log-in-to-the-acr-registry)
-         * [3. Load the ODM images locally](#3-load-the-odm-images-locally)
-         * [4. Tag and push the images to the ACR registry](#4-tag-and-push-the-images-to-the-acr-registry)
-         * [5. Create a registry key to access the ACR registry](#5-create-a-registry-key-to-access-the-acr-registry)
+         * [a. Create an ACR registry](#a-create-an-acr-registry)
+         * [b. Log in to the ACR registry](#b-log-in-to-the-acr-registry)
+         * [c. Load the ODM images locally](#c-load-the-odm-images-locally)
+         * [d. Tag and push the images to the ACR registry](#d-tag-and-push-the-images-to-the-acr-registry)
+         * [e. Create a registry key to access the ACR registry](#e-create-a-registry-key-to-access-the-acr-registry)
       * [Create the datasource secrets for Azure PostgreSQL](#create-the-datasource-secrets-for-azure-postgresql)
       * [Create a secret with the two files](#create-a-secret-with-the-two-files)
       * [Create a database secret](#create-a-database-secret)
@@ -58,17 +58,17 @@ Then, [create an Azure account and pay as you go](https://azure.microsoft.com/en
       * [Access the ODM services](#access-the-odm-services)
    * [Access the ODM services through Ingress](#access-the-odm-services-through-ingress)
       * [Create an Ingress controller](#create-an-ingress-controller)
-         * [Create a namespace for your Ingress resources](#create-a-namespace-for-your-ingress-resources)
-         * [Add the official stable repository](#add-the-official-stable-repository)
-         * [Use Helm to deploy an NGINX Ingress controller](#use-helm-to-deploy-an-nginx-ingress-controller)
+         * [a. Create a namespace for your Ingress resources](#a-create-a-namespace-for-your-ingress-resources)
+         * [b. Add the official stable repository](#b-add-the-official-stable-repository)
+         * [c. Use Helm to deploy an NGINX Ingress controller](#c-use-helm-to-deploy-an-nginx-ingress-controller)
       * [Get the Ingress controller external IP address](#get-the-ingress-controller-external-ip-address)
       * [Create a Kubernetes secret for the TLS certificate (<a href="https://docs.microsoft.com/en-US/azure/aks/ingress-own-tls#create-kubernetes-secret-for-the-tls-certificate" rel="nofollow">https://docs.microsoft.com/en-US/azure/aks/ingress-own-tls#create-kubernetes-secret-for-the-tls-certificate</a>)](#create-a-kubernetes-secret-for-the-tls-certificate-httpsdocsmicrosoftcomen-usazureaksingress-own-tlscreate-kubernetes-secret-for-the-tls-certificate)
       * [Deploy an ODM instance](#deploy-an-odm-instance)
       * [Create an Ingress route](#create-an-ingress-route)
       * [Edit your /etc/hosts](#edit-your-etchosts)
       * [Access ODM services](#access-odm-services)
-         * [Check that ODM services are in NodePort type](#check-that-odm-services-are-in-nodeport-type)
-         * [ODM services are available through the following URLs](#odm-services-are-available-through-the-following-urls)
+         * [a. Check that ODM services are in NodePort type](#a-check-that-odm-services-are-in-nodeport-type)
+         * [b. ODM services are available through the following URLs](#b-odm-services-are-available-through-the-following-urls)
    * [Troubleshooting](#troubleshooting)
    * [References](#references)
    * [License](#license)
@@ -77,7 +77,7 @@ Then, [create an Azure account and pay as you go](https://azure.microsoft.com/en
 
 Source: https://docs.microsoft.com/en-us/azure/aks/kubernetes-walkthrough
 
-### a. Log in to Azure
+### Log in to Azure
 
 After installing the Azure CLI, use the following command line.
    ```console
@@ -86,7 +86,7 @@ After installing the Azure CLI, use the following command line.
 
 A web browser opens where you can connect with your Azure credentials.
 
-### b. Create a resource group
+### Create a resource group
  An Azure resource group is a logical group in which Azure resources are deployed and managed. When you create a resource group, you are asked to specify a location. This location is where resource group metadata is stored. It is also where your resources run in Azure, if you don't specify another region during resource creation. Create a resource group by running the `az group create` command.
    ```console
 az group create --name odm-group --location francecentral
@@ -107,7 +107,7 @@ The following example output shows that the resource group has been created succ
    ```
    
 
-### c. Create an AKS cluster (30 min)
+### Create an AKS cluster (30 min)
 Use the `az aks create` command to create an AKS cluster. The following example creates a cluster named myAKSCluster with one node. Azure Monitor for containers is also enabled using the `--enable-addons monitoring` parameter.  The operation takes several minutes to complete.
 > NOTE:
 During the creation of the AKS cluster, a second resource group is automatically created to store the AKS resources. For more information, see Why are two resource groups created with AKS?
@@ -120,7 +120,7 @@ After a few minutes, the command completes and returns JSON-formatted informatio
 
 > NOTE: By default, a Kubernetes cluster version 1.16 or higher is created.
        
-### d. Set up your environment to this cluster
+### Set up your environment to this cluster
 To manage a Kubernetes cluster, use kubectl, the Kubernetes command-line client. If you use Azure Cloud Shell, kubectl is already installed. To install kubectl locally, use the `az aks install-cli` command:
 
 ```console
@@ -240,17 +240,17 @@ az postgres server firewall-rule create -g odm-group -s odmpsqlserver \
 
 See reference documentation: https://docs.microsoft.com/fr-fr/azure/container-registry/container-registry-get-started-azure-cli
 
-#### 1. Create an ACR registry
+#### a. Create an ACR registry
 ```console
 az acr create --resource-group odm-group --name odmregistry --sku Basic
 ```
 Note the `loginServer` that will be displayed in the JSON output (e.g.: "loginServer": "registryodm.azurecr.io").
     
-#### 2. Log in to the ACR registry
+#### b. Log in to the ACR registry
 ```console
 az acr login --name registryodm
 ```
-#### 3. Load the ODM images locally
+#### c. Load the ODM images locally
 
  - Download one or more packages (.tgz archives) from [IBM Passport Advantage (PPA)](https://www-01.ibm.com/software/passportadvantage/pao_customer.html).  To view the full list of eAssembly installation images, refer to the [8.10.4 download document](https://www.ibm.com/support/pages/ibm-operational-decision-manager-v8104-download-document).
  
@@ -267,7 +267,7 @@ az acr login --name registryodm
 
    For more information, refer to the [ODM knowledge center](https://www.ibm.com/support/knowledgecenter/SSQP76_8.10.x/com.ibm.odm.kube/topics/tsk_config_odm_prod_kube.html).
 
-#### 4. Tag and push the images to the ACR registry
+#### d. Tag and push the images to the ACR registry
 
 - Tag the images to the ACR registry previously created
 ```bash
@@ -285,7 +285,7 @@ az acr login --name registryodm
     $ docker push <loginServer>/odm-decisionrunner:8.10.4.0-amd64
     $ docker push <loginServer>/dbserver:8.10.4.0-amd64
 ```
-#### 5. Create a registry key to access the ACR registry
+#### e. Create a registry key to access the ACR registry
 ```console
 kubectl create secret docker-registry admin.registrykey --docker-server="registryodm.azurecr.io" --docker-username="registryodm" --docker-password="lSycuCFWnbIc8828xr4d87cbkn=OUWCg" --docker-email="mycompany@email.com"
 ```
@@ -415,15 +415,15 @@ kubectl get svc
 This section explains how to expose the ODM services to Internet connectivity with Ingress. For reference, see the Microsoft Azure documentation https://docs.microsoft.com/fr-fr/azure/aks/ingress-own-tls.
 
 ### Create an Ingress controller
-#### Create a namespace for your Ingress resources
+#### a. Create a namespace for your Ingress resources
 ```console
 kubectl create namespace ingress-basic
 ```
-#### Add the official stable repository
+#### b. Add the official stable repository
 ```console
 helm repo add stable https://kubernetes-charts.storage.googleapis.com/
 ```
-#### Use Helm to deploy an NGINX Ingress controller
+#### c. Use Helm to deploy an NGINX Ingress controller
 ```console
 helm install nginx-ingress stable/nginx-ingress \
     --namespace ingress-basic \
@@ -503,7 +503,7 @@ vi /etc/hosts
 ```
 ### Access the ODM services
 
-#### Check that ODM services are in NodePort type 
+#### a. Check that ODM services are in NodePort type 
 
 ```console
 kubectl get svc
@@ -520,7 +520,7 @@ kubectl get svc
 | nginx-nginx-ingress-default-backend | ClusterIP | 10.0.38.114 | <none> | 80/TCP | 5h6m |
 
 
-#### ODM services are available through the following URLs
+#### b. ODM services are available through the following URLs
 
 | SERVICE NAME | URL | USERNAME/PASSWORD |
 | --- | --- | --- |
