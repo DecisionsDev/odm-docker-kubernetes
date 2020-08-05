@@ -351,7 +351,7 @@ $ keytool -importkeystore -srckeystore mycompany.p12 -srcstoretype PKCS12 -srcst
 $ keytool -import -v -trustcacerts -alias mycompany -file mycompany.crt -keystore truststore.jks -storepass password -noprompt
 ```
 
-#### c. Create a Kubernetes secret with the certificate.
+#### c. Create a Kubernetes secret with the certificate
 ```console
 kubectl create secret generic mycompany-secret --from-file=keystore.jks=mycompany.jks \
                                                --from-file=truststore.jks=truststore.jks \
@@ -507,7 +507,7 @@ vi /etc/hosts
 ```
 ### Access the ODM services
 
-#### Check whether the ODM services are in NodePort type 
+#### Check that ODM services are in NodePort type 
 
 ```console
 kubectl get svc
