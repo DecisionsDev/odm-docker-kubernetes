@@ -43,7 +43,7 @@ Then, [create an Azure account and pay as you go](https://azure.microsoft.com/en
       * [Prepare your environment for the ODM installation](#prepare-your-environment-for-the-odm-installation)
          * [Create a pull secret to pull the ODM Docker images from the IBM Entitled Registry](#create-a-pull-secret-to-pull-the-odm-docker-images-from-the-ibm-entitled-registry)
          * [(Optional) Push the ODM images to the ACR (Azure Container Registry)](#optional-push-the-odm-images-to-the-acr-azure-container-registry)
-            * [1. Create an ACR](#1-create-an-acr)
+            * [1. Create an ACR registry](#1-create-an-acr-registry)
             * [2. Log in to the ACR registry](#2-log-in-to-the-acr-registry)
             * [3. Load the ODM images locally](#3-load-the-odm-images-locally)
             * [4. Tag and push the images to the ACR registry](#4-tag-and-push-the-images-to-the-acr-registry)
@@ -55,7 +55,7 @@ Then, [create an Azure account and pay as you go](https://azure.microsoft.com/en
             * [a. (Optional) Generate a self-signed certificate](#a-optional-generate-a-self-signed-certificate)
             * [b. Generate a JKS version of the certificate to be used in the ODM container ](#b-generate-a-jks-version-of-the-certificate-to-be-used-in-the-odm-container)
             * [c. Create a Kubernetes secret with the certificate](#c-create-a-kubernetes-secret-with-the-certificate)
-      * [Install an ODM Helm release and expose it with the service type loadbalancer](#install-an-odm-helm-release-and-expose-it-with-the-service-type-loadbalalncer)
+      * [Install an ODM Helm release and expose it with the service type loadbalancer](#install-an-odm-helm-release-and-expose-it-with-the-service-type-loadbalancer)
          * [Allocate a public IP](#allocate-a-public-ip)
          * [Install the ODM release](#install-the-odm-release)
          * [Check the topology](#check-the-topology)
@@ -316,7 +316,7 @@ It should be something like in the following extract, if you have not changed th
   serverName="odmpsqlserver.postgres.database.azure.com" />
 ```
 
-### Create a secret from these two files
+### Create a secret with the two files
 ```console
 kubectl create secret generic customdatasource-secret --from-file datasource-ds.xml=ds-res.xml --from-file datasource-dc.xml=ds-bc.xml
 ```
