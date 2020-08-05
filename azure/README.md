@@ -248,7 +248,7 @@ See reference documentation: https://docs.microsoft.com/fr-fr/azure/container-re
 ```console
 az acr create --resource-group odm-group --name odmregistry --sku Basic
 ```
-Note the loginServer that will be displayed in the JSON output (e.g.: "loginServer": "registryodm.azurecr.io").
+Note the `<loginServer> that will be displayed in the JSON output (e.g.: "loginServer": "registryodm.azurecr.io").
     
 #### 2. Log in to the ACR registry
 ```console
@@ -296,7 +296,7 @@ kubectl create secret docker-registry admin.registrykey --docker-server="registr
 Credentials can be found here: https://portal.azure.com/#@ibm.onmicrosoft.com/resource/subscriptions/36d56f7a-94b5-4b27-bd27-8dcf98753217/resourceGroups/odm-group/providers/Microsoft.ContainerRegistry/registries/registryodm/accessKey
 
 ### Create the datasource secrets for Azure PostgreSQL
-Copy the files [ds-bc.xml.template](ds-bc.xml.template]) and [ds-res.xml.template](ds-res.xml.template) on your local machine and copy it to ds-bc.xml / ds-res.xml
+Copy the files [ds-bc.xml.template](ds-bc.xml.template]) and [ds-res.xml.template](ds-res.xml.template) on your local machine and copy it?? to ds-bc.xml / ds-res.xml
 
  Replace the following placeholers:  
 - DBNAME : The database name.
@@ -304,7 +304,7 @@ Copy the files [ds-bc.xml.template](ds-bc.xml.template]) and [ds-res.xml.templat
 - PASSWORD : The database password
 - SERVERNAME : The name of the database server name
   
-It should be something like in the following extract, if you have not changed the values of the command line.
+It should be something like in the following extract, if you have not changed the values of the command line.??
 
 ```xml
  <properties
