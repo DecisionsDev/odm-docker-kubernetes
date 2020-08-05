@@ -145,8 +145,9 @@ kubectl get nodes
 
 The following example output shows the single node created in the previous steps. Make sure that the status of the node is Ready:
 Output
-NAME                       STATUS   ROLES   AGE     VERSION
-aks-nodepool1-31718369-0   Ready    agent   6m44s   v1.12.8
+| NAME | STATUS | ROLES | AGE | VERSION |
+|---|---|---|---|---|
+| aks-nodepool1-31718369-0  | Ready  |  agent |  6m44s  | v1.12.8 |
 
 
 To further debug and diagnose cluster problems, run the following command:
