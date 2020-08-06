@@ -439,7 +439,7 @@ nginx-ingress-controller         LoadBalancer   10.0.61.144    EXTERNAL_IP   80:
 nginx-ingress-default-backend    ClusterIP      10.0.192.145   <none>        80/TCP                       6m2s
 ```
 ### Create a Kubernetes secret for the TLS certificate (https://docs.microsoft.com/en-US/azure/aks/ingress-own-tls#create-kubernetes-secret-for-the-tls-certificate)
-You must create the appropriate certificate files: `mycompany.key` and `mycompany.crt` as defined in https://github.com/ODMDev/odm-docker-kubernetes/tree/azure/azure#a-optional-generate-a-self-signed-certificate.
+You must create the appropriate certificate files: `mycompany.key` and `mycompany.crt`, as defined in [a. (Optional) Generate a self-signed certificate](#a-optional-generate-a-self-signed-certificate).
 ```console
 kubectl create secret tls mycompany-tls --namespace ingress-basic --key mycompany.key --cert mycompany.crt
 ```
@@ -452,7 +452,7 @@ helm install mycompany --set image.repository=cp.icr.io/cp/cp4a/odm --set image.
 ```
 
 ### Create an Ingress route
-Create a YAML file, ingress-odm.yml, as follows:
+Create a YAML file named `ingress-odm.yml`, as follows:
 ```console
 apiVersion: extensions/v1beta1
 kind: Ingress
