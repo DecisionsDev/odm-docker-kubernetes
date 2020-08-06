@@ -292,9 +292,9 @@ kubectl create secret docker-registry admin.registrykey --docker-server="registr
 Credentials can be found here: https://portal.azure.com/#@ibm.onmicrosoft.com/resource/subscriptions/36d56f7a-94b5-4b27-bd27-8dcf98753217/resourceGroups/odm-group/providers/Microsoft.ContainerRegistry/registries/registryodm/accessKey
 
 ### Create the datasource secrets for Azure PostgreSQL
-Copy the files [ds-bc.xml.template](ds-bc.xml.template) and [ds-res.xml.template](ds-res.xml.template) on your local machine and rename them to ds-bc.xml and ds-res.xml
+Copy the files [ds-bc.xml.template](ds-bc.xml.template) and [ds-res.xml.template](ds-res.xml.template) on your local machine and rename them to `ds-bc.xml` and `ds-res.xml`.
 
- Replace the following placeholers:  
+ Replace the following placeholers:
 - DBNAME : The database name
 - USERNAME : The database username 
 - PASSWORD : The database password
