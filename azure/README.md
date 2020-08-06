@@ -110,7 +110,7 @@ The following example output shows that the resource group has been created succ
 ### Create an AKS cluster (30 min)
 Use the `az aks create` command to create an AKS cluster. The following example creates a cluster named myAKSCluster with one node. Azure Monitor for containers is also enabled using the `--enable-addons monitoring` parameter.  The operation takes several minutes to complete.
 > NOTE:
-During the creation of the AKS cluster, a second resource group is automatically created to store the AKS resources. For more information, see Why are two resource groups created with AKS?
+During the creation of the AKS cluster, a second resource group is automatically created to store the AKS resources. For more information, see Why are two resource groups created with AKS??
    ```console
 az aks create --resource-group odm-group --name odm-cluster --node-count 2 \
                   --location francecentral --enable-addons monitoring --generate-ssh-keys
@@ -140,7 +140,7 @@ kubectl get nodes
 ```
 
 The following example output shows the single node created in the previous steps. Make sure that the status of the node is Ready:
-Output
+Output??
 | NAME | STATUS | ROLES | AGE | VERSION |
 |---|---|---|---|---|
 | aks-nodepool1-31718369-0  | Ready  |  agent |  6m44s  | v1.12.8 |
@@ -232,9 +232,9 @@ az postgres server firewall-rule create -g odm-group -s odmpsqlserver \
 
   > **Note**: The `cp.icr.io` value for the docker-server parameter is the only registry domain name that contains the images.
    
-  > **Note**: Use `cp` for the docker-username. docker-email has to be a valid email address (associated with your IBM ID). Make sure you put the Entitlement Key in the docker-password field between double-quotes.
+  > **Note**: Use `cp` for the docker-username. docker-email has to be a valid email address (associated with your IBMid). Make sure you put the Entitlement Key in the docker-password field between double-quotes.
 
-4. Make a note of the secret and the server values so that you can set them to the `pullSecrets` and `repository` parameters when you run the helm install for your containers.
+4. Make a note of the secret and the server values so that you can set them to the `pullSecrets` and `repository` parameters when you run `helm install` for your containers.
 
 ### (Optional) Push the ODM images to the ACR (Azure Container Registry)
 
