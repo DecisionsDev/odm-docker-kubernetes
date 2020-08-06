@@ -110,7 +110,7 @@ The following example output shows that the resource group has been created succ
 ### Create an AKS cluster (30 min)
 Use the `az aks create` command to create an AKS cluster. The following example creates a cluster named myAKSCluster with one node. Azure Monitor for containers is also enabled using the `--enable-addons monitoring` parameter.  The operation takes several minutes to complete.
 > NOTE:
-During the creation of the AKS cluster, a second resource group is automatically created to store the AKS resources. For more information, see Why are two resource groups created with AKS??
+During the creation of the AKS cluster, a second resource group is automatically created to store the AKS resources. For more information, see [Why are two resource groups created with AKS](https://docs.microsoft.com/en-us/answers/questions/25725/why-are-two-resource-groups-created-with-aks.html).
    ```console
 az aks create --resource-group odm-group --name odm-cluster --node-count 2 \
                   --location francecentral --enable-addons monitoring --generate-ssh-keys
@@ -139,8 +139,8 @@ To verify the connection to your cluster, use the `kubectl get` command to retur
 kubectl get nodes
 ```
 
-The following example output shows the single node created in the previous steps. Make sure that the status of the node is Ready:
-Output??
+The following example output shows the single node created in the previous steps. Make sure that the status of the node is Ready.
+
 | NAME | STATUS | ROLES | AGE | VERSION |
 |---|---|---|---|---|
 | aks-nodepool1-31718369-0  | Ready  |  agent |  6m44s  | v1.12.8 |
@@ -292,7 +292,7 @@ kubectl create secret docker-registry admin.registrykey --docker-server="registr
 Credentials can be found here: https://portal.azure.com/#@ibm.onmicrosoft.com/resource/subscriptions/36d56f7a-94b5-4b27-bd27-8dcf98753217/resourceGroups/odm-group/providers/Microsoft.ContainerRegistry/registries/registryodm/accessKey
 
 ### Create the datasource secrets for Azure PostgreSQL
-Copy the files [ds-bc.xml.template](ds-bc.xml.template]) ??broken link?? and [ds-res.xml.template](ds-res.xml.template) on your local machine and copy it?? to ds-bc.xml / ds-res.xml
+Copy the files [ds-bc.xml.template](ds-bc.xml.template) and [ds-res.xml.template](ds-res.xml.template) on your local machine and rename them to ds-bc.xml and ds-res.xml
 
  Replace the following placeholers:  
 - DBNAME : The database name
@@ -300,7 +300,7 @@ Copy the files [ds-bc.xml.template](ds-bc.xml.template]) ??broken link?? and [ds
 - PASSWORD : The database password
 - SERVERNAME : The name of the database server
   
-It should be something like in the following extract, if you have not changed the values of the command line.??
+It should be something like in the following extract.
 
 ```xml
  <properties
