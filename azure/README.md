@@ -238,7 +238,7 @@ az postgres server firewall-rule create -g odm-group -s odmpsqlserver \
 
 ### (Optional) Push the ODM images to the ACR (Azure Container Registry)
 
-See reference documentation: https://docs.microsoft.com/fr-fr/azure/container-registry/container-registry-get-started-azure-cli
+See reference documentation: https://docs.microsoft.com/en-US/azure/container-registry/container-registry-get-started-azure-cli
 
 #### a. Create an ACR registry
 ```console
@@ -292,13 +292,13 @@ kubectl create secret docker-registry admin.registrykey --docker-server="registr
 Credentials can be found here: https://portal.azure.com/#@ibm.onmicrosoft.com/resource/subscriptions/36d56f7a-94b5-4b27-bd27-8dcf98753217/resourceGroups/odm-group/providers/Microsoft.ContainerRegistry/registries/registryodm/accessKey
 
 ### Create the datasource secrets for Azure PostgreSQL
-Copy the files [ds-bc.xml.template](ds-bc.xml.template]) and [ds-res.xml.template](ds-res.xml.template) on your local machine and copy it?? to ds-bc.xml / ds-res.xml
+Copy the files [ds-bc.xml.template](ds-bc.xml.template]) ??broken link?? and [ds-res.xml.template](ds-res.xml.template) on your local machine and copy it?? to ds-bc.xml / ds-res.xml
 
  Replace the following placeholers:  
-- DBNAME : The database name.
-- USERNAME : The database username. 
+- DBNAME : The database name
+- USERNAME : The database username 
 - PASSWORD : The database password
-- SERVERNAME : The name of the database server name
+- SERVERNAME : The name of the database server
   
 It should be something like in the following extract, if you have not changed the values of the command line.??
 
@@ -333,7 +333,7 @@ kubectl create secret generic odm-db-secret --from-literal=db-user=postgres --fr
 
 #### a. (Optional) Generate a self-signed certificate 
 
-If you do not have a trusted certificate, you can use OpenSSL and other cryptography and certificate management libraries to generate a .crt certificate file and a private key, to define the domain name, and to set the expiration date. The following command creates a self-signed certificate (.crt file) and a private key (.key file) that accept the domain name *.mycompany.com*. The expiration is set to 1000 days:
+If you do not have a trusted certificate, you can use OpenSSL and other cryptography and certificate management libraries to generate a certificate file and a private key, to define the domain name, and to set the expiration date. The following command creates a self-signed certificate (.crt file) and a private key (.key file) that accept the domain name *.mycompany.com*. The expiration is set to 1000 days:
 
 ```bash
 $ openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mycompany.key -out mycompany.crt -subj "/CN=*.mycompany.com/OU=it/O=mycompany/L=Paris/C=FR"
@@ -358,7 +358,7 @@ kubectl create secret generic mycompany-secret --from-file=keystore.jks=mycompan
 The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Defining the security certificate](https://www.ibm.com/support/knowledgecenter/SSQP76_8.10.x/com.ibm.odm.icp/topics/tsk_replace_security_certificate.html?view=kc) and [Working with certificates and SSL](https://www.ibm.com/links?url=https%3A%2F%2Fdocs.oracle.com%2Fcd%2FE19830-01%2F819-4712%2Fablqw%2Findex.html).
 
 
-## Install an ODM Helm release and expose it with the service type loadbalancer
+## Install an ODM Helm release and expose it with the service type LoadBalancer
 
 ### Allocate a public IP
 ```console
@@ -368,7 +368,7 @@ The certificate must be the same as the one you used to enable TLS connections i
     --load-balancer-managed-outbound-ip-count 4
 ```
 
-### Install the ODM Release
+### Install the ODM release
 ```console
 helm install mycompany --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=admin.registrykey \
                        --set image.arch=amd64 --set image.tag=8.10.4.0 --set service.type=LoadBalancer \
@@ -383,7 +383,7 @@ kubectl get pods
 ```
 
 
-| *NAME* | *READY* | *STATUS* | *RESTARTS* | *AGE* |
+| NAME | READY | STATUS | RESTARTS | AGE |
 |---|---|---|---|---|
 | mycompany-odm-decisioncenter-*** | 1/1 | Running | 0 | 44m |  
 | mycompany-odm-decisionrunner-*** | 1/1 | Running | 0 | 44m | 
@@ -407,12 +407,12 @@ kubectl get svc
 | mycompany-odm-decisionserverconsole | LoadBalancer |   10.0.224.220  |  xx.xx.xxx.xxx   |      9443:30874/TCP |   9s |
 | mycompany-odm-decisionserverconsole-notif | ClusterIP | 10.0.103.221 |  \<none\> | 1883/TCP |        9s |
     
-  You can then open a browser on https://xx.xx.xxx.xxx:9443 to access Decision Server console, Decision Server Runtime, and Decision Runner and on https://xx.xx.xxx.xxx:9453 to access Decision Center.
+  You can then open a browser on https://xx.xx.xxx.xxx:9443 to access Decision Server console, Decision Server Runtime, and Decision Runner, and on https://xx.xx.xxx.xxx:9453 to access Decision Center.
     
 
 ## Access the ODM services through Ingress
 
-This section explains how to expose the ODM services to Internet connectivity with Ingress. For reference, see the Microsoft Azure documentation https://docs.microsoft.com/fr-fr/azure/aks/ingress-own-tls.
+This section explains how to expose the ODM services to Internet connectivity with Ingress. For reference, see the Microsoft Azure documentation https://docs.microsoft.com/en-US/azure/aks/ingress-own-tls.
 
 ### Create an Ingress controller
 #### a. Create a namespace for your Ingress resources
