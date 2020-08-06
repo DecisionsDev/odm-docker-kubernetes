@@ -539,8 +539,10 @@ kubectl logs <your-pod-name>
 
 ## References
 https://docs.microsoft.com/en-US/azure/aks/
+
 https://docs.microsoft.com/en-US/azure/aks/ingress-own-tls
-https://docs.microsoft.com/fr-fr/azure/container-registry/container-registry-get-started-azure-cli
+
+https://docs.microsoft.com/en-US/azure/container-registry/container-registry-get-started-azure-cli
 
 # License
 [Apache 2.0](LICENSE)
