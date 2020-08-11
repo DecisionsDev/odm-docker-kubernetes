@@ -26,6 +26,7 @@ The ODM Docker material is used here, which is available in the [odm-ondocker](h
 
 ## Deploying ODM Rules in the following environments
 - [Amazon EKS](eks/README.md)
+- [Azure AKS](aks/README.md)
 - [MiniKube](MiniKube/README.md)
 
 # Notice
