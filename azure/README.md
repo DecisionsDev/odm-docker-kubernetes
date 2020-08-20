@@ -244,7 +244,7 @@ See reference documentation: https://docs.microsoft.com/en-US/azure/container-re
    ```console
    az acr create --resource-group odm-group --name <registryname> --sku Basic
    ```
-   Note the `loginServer` that will be displayed in the JSON output (e.g.: "loginServer": "registryodm.azurecr.io").
+   Make a note of the `loginServer` that will be displayed in the JSON output (e.g.: "loginServer": "registryodm.azurecr.io").
 
    > **Note**: The registry name must be unique within Azure.
 
@@ -257,16 +257,18 @@ See reference documentation: https://docs.microsoft.com/en-US/azure/container-re
   - Download one or more packages (.tgz archives) from [IBM Passport Advantage (PPA)](https://www-01.ibm.com/software/passportadvantage/pao_customer.html).  To view the full list of eAssembly installation images, refer to the [8.10.4 download document](https://www.ibm.com/support/pages/ibm-operational-decision-manager-v8104-download-document).
 
   - Extract the .tgz archives to your local file system.
+
      ```console
-   tar xzf <PPA-ARCHIVE>.tar.gz
+     tar xzf <PPA-ARCHIVE>.tar.gz
      ```
 
   - Load the images to your local registry.
+
     ```console
-   for name in images/*.tar.gz; do echo $name && docker image load --input $name; done
+    for name in images/*.tar.gz; do echo $name && docker image load --input $name; done
     ```
 
-   For more information, refer to the [ODM knowledge center](https://www.ibm.com/support/knowledgecenter/SSQP76_8.10.x/com.ibm.odm.kube/topics/tsk_config_odm_prod_kube.html).
+  For more information, refer to the [ODM knowledge center](https://www.ibm.com/support/knowledgecenter/SSQP76_8.10.x/com.ibm.odm.kube/topics/tsk_config_odm_prod_kube.html).
 
 4. Tag and push the images to the ACR registry
 
@@ -286,13 +288,13 @@ See reference documentation: https://docs.microsoft.com/en-US/azure/container-re
    $ docker push <loginServer>/odm-decisionrunner:8.10.4.0-amd64
    $ docker push <loginServer>/dbserver:8.10.4.0-amd64
    ```
-5.  Create a registry key to access the ACR registry
-      ```console
+5. Create a registry key to access the ACR registry
+    ```console
     kubectl create secret docker-registry registry-secret --docker-server="<loginServer>" \
             --docker-username="<adminUsername>" --docker-password="<adminPassword>" \
             --docker-email="mycompany@email.com"
-      ```
-      Refer to the [documentation](https://docs.microsoft.com/en-US/azure/container-registry/container-registry-tutorial-prepare-registry#enable-admin-account) to enable the registry's admin account and get the credentials in the Container registry portal.
+    ```
+    Refer to the [documentation](https://docs.microsoft.com/en-US/azure/container-registry/container-registry-tutorial-prepare-registry#enable-admin-account) to enable the registry's admin account and get the credentials in the Container registry portal.
 
 ### Create the datasource secrets for Azure PostgreSQL
 Copy the files [ds-bc.xml.template](ds-bc.xml.template) and [ds-res.xml.template](ds-res.xml.template) on your local machine and rename them to `ds-bc.xml` and `ds-res.xml`.
