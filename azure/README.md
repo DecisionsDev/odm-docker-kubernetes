@@ -15,13 +15,13 @@ The project comes with the following components:
 - [AKS Networking](https://docs.microsoft.com/en-us/azure/aks/concepts-network)
 
 ## Tested environment
-The commands and tools have been tested on macOS.
+The commands and tools have been tested on macOS and linux.
 
 ## Prerequisites
 First, install the following software on your machine:
 
 * [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)
-* [Helm](https://github.com/helm/helm/releases)
+* [Helm v3](https://github.com/helm/helm/releases)
 
 
 Then, [create an Azure account and pay as you go](https://azure.microsoft.com/en-us/pricing/purchase-options/pay-as-you-go/)
@@ -105,7 +105,7 @@ Use the `az aks create` command to create an AKS cluster. The following example 
 During the creation of the AKS cluster, a second resource group is automatically created to store the AKS resources. For more information, see [Why are two resource groups created with AKS](https://docs.microsoft.com/en-us/answers/questions/25725/why-are-two-resource-groups-created-with-aks.html).
    ```console
 az aks create --resource-group odm-group --name odm-cluster --node-count 2 \
-                  --location francecentral --enable-addons monitoring --generate-ssh-keys
+              --location francecentral --enable-addons monitoring --generate-ssh-keys
    ```
 
 After a few minutes, the command completes and returns JSON-formatted information about the cluster.
@@ -208,27 +208,31 @@ To make sure your database and your AKS cluster can communicate, put in place fi
 
 ```console
 az postgres server firewall-rule create -g odm-group -s odmpsqlserver \
-                       -n myrule --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0
+            -n myrule --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0
 ```
 
 ## Prepare your environment for the ODM installation (20 min)
 ### Getting access to container images
 
-To get access to the ODM container images, you must have an IBM entitlement registry key to pull the images from the IBM docker registry or download the ODM on Kubernetes package (.tgz file) from Passport Advantage® (PPA) and then push it to the Azure Container Registry. 
+To get access to the ODM container images, you must have an IBM entitlement registry key to pull the images from the IBM docker registry or download the ODM on Kubernetes package (.tgz file) from Passport Advantage® (PPA) and then push it to the Azure Container Registry.
   * To access image from IBM entitlement registry follow the instructions in the section  [Create a pull secret to pull the ODM Docker images from the IBM Entitled Registry](#create-a-pull-secret-to-pull-the-odm-docker-images-from-the-ibm-entitled-registry)
-  * To push image in the Azure Container Registry follow the instructions  in the section  [Push the ODM images to the ACR (Azure Container Registry](#push-the-odm-images-to-the-acr-azure-container-registry)  
+  * To push image in the Azure Container Registry follow the instructions  in the section  [Push the ODM images to the ACR (Azure Container Registry](#push-the-odm-images-to-the-acr-azure-container-registry)
+
 #### Create a pull secret to pull the ODM Docker images from the IBM Entitled Registry
+
 1. Log in to [MyIBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary) with the IBMid and password that are associated with the entitled software.
 
 2. In the **Container software library** tile, verify your entitlement on the **View library** page, and then go to **Get entitlement key** to retrieve the key.
 
 3. Create a pull secret by running a `kubectl create secret` command.
    ```console
-   kubectl create secret docker-registry registrySecret --docker-server=cp.icr.io --docker-username=cp --docker-password="<API_KEY_GENERATED>" --docker-email=<USER_EMAIL>```
+   kubectl create secret docker-registry registry-secret --docker-server=cp.icr.io --docker-username=cp \
+                  --docker-password="<API_KEY_GENERATED>" --docker-email=<USER_EMAIL>
+   ```
 
-  > **Note**: The `cp.icr.io` value for the docker-server parameter is the only registry domain name that contains the images.
+   > **Note**: The `cp.icr.io` value for the docker-server parameter is the only registry domain name that contains the images.
 
-  > **Note**: Use `cp` for the docker-username. docker-email has to be a valid email address (associated with your IBMid). Make sure you put the Entitlement Key in the docker-password field between double-quotes.
+   > **Note**: Use `cp` for the docker-username. docker-email has to be a valid email address (associated with your IBMid). Make sure you put the Entitlement Key in the docker-password field between double-quotes.
 
 4. Make a note of the secret and the server values so that you can set them to the `pullSecrets` and `repository` parameters when you run `helm install` for your containers.
 
@@ -238,54 +242,59 @@ See reference documentation: https://docs.microsoft.com/en-US/azure/container-re
 
 1. Create an ACR registry
    ```console
-   az acr create --resource-group odm-group --name odmregistry --sku Basic
+   az acr create --resource-group odm-group --name <registryname> --sku Basic
    ```
-   Note the `loginServer` that will be displayed in the JSON output (e.g.: "loginServer": "registryodm.azurecr.io").
+   Make a note of the `loginServer` that will be displayed in the JSON output (e.g.: "loginServer": "registryodm.azurecr.io").
+
+   > **Note**: The registry name must be unique within Azure.
 
 2. Log in to the ACR registry
    ```console
-   $ az acr login --name registryodm
+   az acr login --name <registryname>
    ```
 3. Load the ODM images locally
 
- - Download one or more packages (.tgz archives) from [IBM Passport Advantage (PPA)](https://www-01.ibm.com/software/passportadvantage/pao_customer.html).  To view the full list of eAssembly installation images, refer to the [8.10.4 download document](https://www.ibm.com/support/pages/ibm-operational-decision-manager-v8104-download-document).
+  - Download one or more packages (.tgz archives) from [IBM Passport Advantage (PPA)](https://www-01.ibm.com/software/passportadvantage/pao_customer.html).  To view the full list of eAssembly installation images, refer to the [8.10.4 download document](https://www.ibm.com/support/pages/ibm-operational-decision-manager-v8104-download-document).
 
- - Extract the .tgz archives to your local file system.
-     ```bash
-   $ tar xzf <PPA-ARCHIVE>.tar.gz
+  - Extract the .tgz archives to your local file system.
+
+     ```console
+     tar xzf <PPA-ARCHIVE>.tar.gz
      ```
 
-- Load the images to your local registry.
-    ```bash
-   $ cd images
-   $ foreach name ( `ls`)  echo $name && docker image load --input $name && end
+  - Load the images to your local registry.
+
+    ```console
+    for name in images/*.tar.gz; do echo $name && docker image load --input $name; done
     ```
 
-   For more information, refer to the [ODM knowledge center](https://www.ibm.com/support/knowledgecenter/SSQP76_8.10.x/com.ibm.odm.kube/topics/tsk_config_odm_prod_kube.html).
+  For more information, refer to the [ODM knowledge center](https://www.ibm.com/support/knowledgecenter/SSQP76_8.10.x/com.ibm.odm.kube/topics/tsk_config_odm_prod_kube.html).
 
 4. Tag and push the images to the ACR registry
 
-- Tag the images to the ACR registry previously created
-   ```bash
+  - Tag the images to the ACR registry previously created
+   ```console
    $ docker tag odm-decisionserverconsole:8.10.4.0-amd64 <loginServer>/odm-decisionserverconsole:8.10.4.0-amd64
    $ docker tag dbserver:8.10.4.0-amd64 <loginServer>/dbserver:8.10.4.0-amd64
    $ docker tag odm-decisioncenter:8.10.4.0-amd64 <loginServer>/odm-decisioncenter:8.10.4.0-amd64
    $ docker tag odm-decisionserverruntime:8.10.4.0-amd64 <loginServer>/odm-decisionserverruntime:8.10.4.0-amd64
    $ docker tag odm-decisionrunner:8.10.4.0-amd64 <loginServer>/odm-decisionrunner:8.10.4.0-amd64
    ```
-- Push the images to the ACR registry
-   ```bash
+   - Push the images to the ACR registry
+   ```console
    $ docker push <loginServer>/odm-decisioncenter:8.10.4.0-amd64
    $ docker push <loginServer>/odm-decisionserverconsole:8.10.4.0-amd64
    $ docker push <loginServer>/odm-decisionserverruntime:8.10.4.0-amd64
    $ docker push <loginServer>/odm-decisionrunner:8.10.4.0-amd64
    $ docker push <loginServer>/dbserver:8.10.4.0-amd64
    ```
-5.  Create a registry key to access the ACR registry
-      ```console
-    kubectl create secret docker-registry registrySecret --docker-server="registryodm.azurecr.io" --docker-username="registryodm" --docker-password="" --docker-email="mycompany@email.com"
-      ```
-Credentials can be found here in the Container registry portal.
+5. Create a registry key to access the ACR registry
+    ```console
+    kubectl create secret docker-registry registry-secret --docker-server="<loginServer>" \
+            --docker-username="<adminUsername>" --docker-password="<adminPassword>" \
+            --docker-email="mycompany@email.com"
+    ```
+    Refer to the [documentation](https://docs.microsoft.com/en-US/azure/container-registry/container-registry-tutorial-prepare-registry#enable-admin-account) to enable the registry's admin account and get the credentials in the Container registry portal.
 
 ### Create the datasource secrets for Azure PostgreSQL
 Copy the files [ds-bc.xml.template](ds-bc.xml.template) and [ds-res.xml.template](ds-res.xml.template) on your local machine and rename them to `ds-bc.xml` and `ds-res.xml`.
@@ -311,7 +320,8 @@ It should be something like in the following extract.
 Create a secret with this two modified files
 
 ```console
-kubectl create secret generic customdatasource-secret --from-file datasource-ds.xml=ds-res.xml --from-file datasource-dc.xml=ds-bc.xml
+kubectl create secret generic customdatasource-secret \
+        --from-file datasource-ds.xml=ds-res.xml --from-file datasource-dc.xml=ds-bc.xml
 ```
 
 ### Manage a  digital certificate (10 min)
@@ -320,19 +330,25 @@ kubectl create secret generic customdatasource-secret --from-file datasource-ds.
 
 If you do not have a trusted certificate, you can use OpenSSL and other cryptography and certificate management libraries to generate a certificate file and a private key, to define the domain name, and to set the expiration date. The following command creates a self-signed certificate (.crt file) and a private key (.key file) that accept the domain name *.mycompany.com*. The expiration is set to 1000 days:
 
-```bash
-$ openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mycompany.key -out mycompany.crt -subj "/CN=*.mycompany.com/OU=it/O=mycompany/L=Paris/C=FR"
+```console
+openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mycompany.key \
+        -out mycompany.crt -subj "/CN=*.mycompany.com/OU=it/O=mycompany/L=Paris/C=FR"
 ```
 
 2. Generate a JKS version of the certificate to be used in the ODM container 
 
-```bash
-$ openssl pkcs12 -export -passout pass:password -passin pass:password -inkey mycompany.key -in mycompany.crt -name mycompany -out mycompany.p12
-$ keytool -importkeystore -srckeystore mycompany.p12 -srcstoretype PKCS12 -srcstorepass password -destkeystore mycompany.jks -deststoretype JKS -deststorepass password
-$ keytool -import -v -trustcacerts -alias mycompany -file mycompany.crt -keystore truststore.jks -storepass password -noprompt
+```console
+$ openssl pkcs12 -export -passout pass:password -passin pass:password \
+          -inkey mycompany.key -in mycompany.crt -name mycompany -out mycompany.p12
+$ keytool -importkeystore -srckeystore mycompany.p12 -srcstoretype PKCS12 \
+                          -srcstorepass password -destkeystore mycompany.jks \
+                          -deststoretype JKS -deststorepass password
+$ keytool -import -v -trustcacerts -alias mycompany -file mycompany.crt \
+                  -keystore truststore.jks -storepass password -noprompt
 ```
 
 3. Create a Kubernetes secret with the certificate
+
 ```console
 kubectl create secret generic mycompany-secret --from-file=keystore.jks=mycompany.jks \
                                                --from-file=truststore.jks=truststore.jks \
@@ -355,11 +371,13 @@ The certificate must be the same as the one you used to enable TLS connections i
 
 ### Install the ODM release
 ```console
-helm install mycompany --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=registrySecret \
+helm install mycompany --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=registry-secret \
                        --set image.arch=amd64 --set image.tag=8.10.4.0 --set service.type=LoadBalancer \
                        --set externalCustomDatabase.datasourceRef=customdatasource-secret \
                        --set customization.securitySecretRef=mycompany-secret ibm-odm-prod
 ```
+
+> Note: If you choose to push the ODM images to the Azure Container Registry, the `image.repository` should eb set to your `loginServer` value.
 
 ### Check the topology
 Run the following command to check the status of the pods that have been created: 
@@ -429,7 +447,7 @@ This section explains how to expose the ODM services to Internet connectivity wi
    nginx-ingress-default-backend    ClusterIP      10.0.192.145   <none>        80/TCP                       6m2s
    ```
 
-### Create a Kubernetes secret for the TLS certificate 
+### Create a Kubernetes secret for the TLS certificate
 
 For more informations see https://docs.microsoft.com/en-US/azure/aks/ingress-own-tls#create-kubernetes-secret-for-the-tls-certificate
 
@@ -440,7 +458,7 @@ kubectl create secret tls mycompany-tls --namespace ingress-basic --key mycompan
 
 ### Install the ODM release
 ```console
-helm install mycompany --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=admin.registrykey \
+helm install mycompany --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=registry-secret \
                         --set image.arch=amd64 --set image.tag=8.10.4.0 \
                         --set externalCustomDatabase.datasourceRef=customdatasource-secret ibm-odm-prod
 ```
