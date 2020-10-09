@@ -87,7 +87,7 @@ If you use another public registry, skip this section and go to step 3.
  
 Example: 
 ```bash
-aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin aws_account_id.dkr.ecr.us-east-1.amazonaws.com
+aws ecr get-login-password --region eu-west-3 | docker login --username AWS --password-stdin <aws_account_id>.ecr.eu-west-3.amazonaws.com
 ```
 
 #### b. Create the [ECR repository instances](https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-create.html)
@@ -96,6 +96,7 @@ aws ecr get-login-password --region us-east-1 | docker login --username AWS --pa
 
 Example:
 ```bash 
+    $ aws ecr create-repository --repository-name odm-decisioncenter --image-scanning-configuration scanOnPush=true --region eu-west-3
     $ aws ecr create-repository --repository-name odm-decisionrunner --image-scanning-configuration scanOnPush=true --region eu-west-3
     $ aws ecr create-repository --repository-name odm-decisionserverruntime --image-scanning-configuration scanOnPush=true --region eu-west-3
     $ aws ecr create-repository --repository-name odm-decisionserverconsole --image-scanning-configuration scanOnPush=true --region eu-west-3
@@ -118,7 +119,7 @@ Example:
 
 - Load the images to your local registry.
     ```bash
-    $ foreach name ( `ls`)  echo $name && docker image load --input $name && end
+    $ cd images && for images in $(ls); do docker load -i ${images} ; done
     ```
   
    For more information, refer to the [ODM knowledge center](https://www.ibm.com/support/knowledgecenter/SSQP76_8.10.x/com.ibm.odm.kube/topics/tsk_config_odm_prod_kube.html).  
@@ -129,7 +130,7 @@ Example:
 
 Example:
 ```bash
-    $ docker tag odm-decisioncenter:8.10.3.0-amd64 <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/odm/odm-decisioncenter:8.10.3.0-amd64
+    $ docker tag odm-decisioncenter:8.10.3.0-amd64 <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/odm-decisioncenter:8.10.3.0-amd64
     $ docker tag odm-decisionserverruntime:8.10.3.0-amd64 <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/odm-decisionserverruntime:8.10.3.0-amd64
     $ docker tag odm-decisionserverconsole:8.10.3.0-amd64 <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/odm-decisionserverconsole:8.10.3.0-amd64
     $ docker tag odm-decisionrunner:8.10.3.0-amd64 <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/odm-decisionrunner:8.10.3.0-amd64
@@ -323,38 +324,9 @@ This section explains how to implement an  Application Load Balancer (ALB) to e
 * Implement an ingress for ODM services
 
 #### a. Create an Application Load Balancer
-Find more information about ALB here
-https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/load-balancer-getting-started.html
+Create an appropriate Load Balancer following this [documentation](https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/load-balancer-getting-started.html)
 
-The following steps allow you to create the ALB. Follow this [documentation](https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html#w243aac23b7c17c10b3b1)
-
-- Create an IAM OIDC provider and associate it with your cluster. 
-
-- Create an IAM policy called `ALBIngressControllerIAMPolicy` for the ALB Ingress Controller pod. 
-
-- Create a Kubernetes service account named `alb-ingress-controller` in the kube-system namespace, a cluster role, and a cluster role binding for the ALB Ingress Controller.
-
-- Create an IAM role for the ALB ingress controller and attach the role to the service account created in the previous step
-
-- Deploy the ALB Ingress Controller with the following command:
-
-```bash
-$ curl  
-https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/v1.1.4/docs/examples/alb-ingress-controller.yaml
-  > alb-ingress-controller.yaml
-```
-
-Edit alb-ingress-controller.yaml and change at least
-```yaml
-  - --cluster-name=<EKS>
-  - --ingress-class=alb"
-```
-For more information, refer to the https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html#w243aac23b7c17c10b3b1. 
-
-Then, deploy the ALB ingress controller.
-```bash
-$ kubectl apply -f alb-ingress-controller.yaml 
-```
+And then follow step by step this [documentation](https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html#w243aac23b7c17c10b3b1) to create an ALB Ingress Controller on Amazon EKS.
 
 #### b. Deploy the ingress service for ODM
 
