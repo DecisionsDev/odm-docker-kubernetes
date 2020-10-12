@@ -118,11 +118,13 @@ Example:
     ```
 
 - Load the images to your local registry.
+
     a. Log in to Docker
     ```bash
     $ docker login REGISTRY_URL
     ```
     When prompted, enter your Docker user name and password.
+    
     b. Load the container images into your internal Docker registry.
     ```bash
     $ for name in images/*.tar.gz; do echo $name && docker image load --input $name; done
