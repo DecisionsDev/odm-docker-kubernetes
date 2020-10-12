@@ -118,8 +118,14 @@ Example:
     ```
 
 - Load the images to your local registry.
+    a. Log in to Docker
     ```bash
-    $ cd images && for images in $(ls); do docker load -i ${images} ; done
+    $ docker login REGISTRY_URL
+    ```
+    When prompted, enter your Docker user name and password.
+    b. Load the container images into your internal Docker registry.
+    ```bash
+    $ for name in images/*.tar.gz; do echo $name && docker image load --input $name; done
     ```
   
    For more information, refer to the [ODM knowledge center](https://www.ibm.com/support/knowledgecenter/SSQP76_8.10.x/com.ibm.odm.kube/topics/tsk_config_odm_prod_kube.html).  
