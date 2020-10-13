@@ -248,17 +248,39 @@ The certificate must be the same as the one you used to enable TLS connections i
 
 #### b. Install an ODM Helm release
 
+  - To be able to install an ODM Release you should download one or more packages (.tgz archives) from [IBM Passport Advantage (PPA)](https://www-01.ibm.com/software/passportadvantage/pao_customer.html).  To view the full list of eAssembly installation images, refer to the [8.10.4 download document](https://www.ibm.com/support/pages/ibm-operational-decision-manager-v8104-download-document).
+
+  - Extract the .tgz archives to your local file system.
+
+     ```console
+     tar xzvf <PPA-ARCHIVE>.tar.gz
+
+     ```
+
+  - In the following exemple The charts directory will contains the helm charts used to install the ODM product which can be used in the helm install steps.
+       ```console
+     tar xvzf ../odm_on_icp_8.10.4.0-x86_64.tar.gz
+     
+     x **charts/ibm-odm-prod-20.2.0.tgz**
+     x images/62c1fb8661ea1900640d52df6e37cfc2459d564ccbb9629a8b11cf55ce22a338.tar.gz
+     x images/a3f317777246322130496cb16fb51fda6fd960ed934fd04719cb6093cc402377.tar.gz
+     x images/9973544f91066e1cfe0e432aa5eee030a6438024838c567d02f9a1149e8d5d97.tar.gz
+     x images/0abeaef38fb8a0c7f08e27be18ebc9cdc047274c9f7963edf2479113801eb6fa.tar.gz
+     x images/a4347e82b875d4b8b42cfe1950db9eef8d79b458c2a80d1d950b363a69a495a7.tar.gz
+     x manifest.json
+     x manifest.yaml
+     ```    
 Install a Kubernetes release with the default configuration and a name of `my-odm-prod-release`.  
 
 - Generate the template file
 
 ```bash
-$ helm template <RELEASENAME> ibm-odm-prod --set image.repository=<IMAGE_REPOSITORY> --set image.tag=8.10.3.0 --set image.pullSecrets=ecrodm --set image.arch=amd64  --set externalDatabase.type=postgres --set externalDatabase.serverName=<RDS_POSTGRESQL_SERNAME>   --set externalDatabase.secretCredentials=<odm-db-secret> --set externalDatabase.port=5432  --set customization.securitySecretRef=mycompany-secret charts/ibm-odm-prod-2.3.0.tar.gz > postgresql.yaml 
+$ helm template <RELEASENAME> ibm-odm-prod --set image.repository=<IMAGE_REPOSITORY> --set image.tag=8.10.3.0 --set image.pullSecrets=ecrodm --set image.arch=amd64  --set externalDatabase.type=postgres --set externalDatabase.serverName=<RDS_POSTGRESQL_SERNAME>   --set externalDatabase.secretCredentials=<odm-db-secret> --set externalDatabase.port=5432  --set customization.securitySecretRef=mycompany-secret charts/ibm-odm-prod-20.2.0.tar.gz > postgresql.yaml 
 ```
 
 Example:
 ```bash
-helm template mycompany charts/ibm-odm-prod-2.3.0.tgz --set image.arch=amd64 --set image.repository=<AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com --set image.tag=8.10.3.0 --set image.pullSecrets=ecrodm --set image.arch=amd64  --set externalDatabase.type=postgres --set externalDatabase.serverName=database-1.cv8ecjiejtnt.eu-west-3.rds.amazonaws.com   --set externalDatabase.secretCredentials=odm-db-secret --set externalDatabase.port=5432 --set customization.securitySecretRef=mycompany1-secret --set externalDatabase.databaseName=postgres > postgresql.yaml
+helm template mycompany charts/ibm-odm-prod-20.2.0.tar.gz  --set image.arch=amd64 --set image.repository=<AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com --set image.tag=8.10.3.0 --set image.pullSecrets=ecrodm --set image.arch=amd64  --set externalDatabase.type=postgres --set externalDatabase.serverName=database-1.cv8ecjiejtnt.eu-west-3.rds.amazonaws.com   --set externalDatabase.secretCredentials=odm-db-secret --set externalDatabase.port=5432 --set customization.securitySecretRef=mycompany1-secret --set externalDatabase.databaseName=postgres > postgresql.yaml
 ```
 
 > NOTES:
