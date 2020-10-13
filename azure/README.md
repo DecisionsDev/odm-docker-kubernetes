@@ -370,14 +370,39 @@ The certificate must be the same as the one you used to enable TLS connections i
 ```
 
 ### Install the ODM release
+
+
+  - Download one or more packages (.tgz archives) from [IBM Passport Advantage (PPA)](https://www-01.ibm.com/software/passportadvantage/pao_customer.html).  To view the full list of eAssembly installation images, refer to the [8.10.4 download document](https://www.ibm.com/support/pages/ibm-operational-decision-manager-v8104-download-document).
+
+  - Extract the .tgz archives to your local file system.
+
+     ```console
+     tar xzvf <PPA-ARCHIVE>.tar.gz
+
+     ```
+
+  - In the following exemple The charts directory will contains the helm charts used to install the ODM product which can be used in the helm install steps.
+       ```console
+     tar xvzf ../odm_on_icp_8.10.4.0-x86_64.tar.gz
+     
+     x **charts/ibm-odm-prod-20.2.0.tgz**
+     x images/62c1fb8661ea1900640d52df6e37cfc2459d564ccbb9629a8b11cf55ce22a338.tar.gz
+     x images/a3f317777246322130496cb16fb51fda6fd960ed934fd04719cb6093cc402377.tar.gz
+     x images/9973544f91066e1cfe0e432aa5eee030a6438024838c567d02f9a1149e8d5d97.tar.gz
+     x images/0abeaef38fb8a0c7f08e27be18ebc9cdc047274c9f7963edf2479113801eb6fa.tar.gz
+     x images/a4347e82b875d4b8b42cfe1950db9eef8d79b458c2a80d1d950b363a69a495a7.tar.gz
+     x manifest.json
+     x manifest.yaml
+     ```    
+
 ```console
 helm install mycompany --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=registry-secret \
                        --set image.arch=amd64 --set image.tag=8.10.4.0 --set service.type=LoadBalancer \
                        --set externalCustomDatabase.datasourceRef=customdatasource-secret \
-                       --set customization.securitySecretRef=mycompany-secret ibm-odm-prod
+                       --set customization.securitySecretRef=mycompany-secret charts/ibm-odm-prod-20.2.0.tgz
 ```
 
-> Note: If you choose to push the ODM images to the Azure Container Registry, the `image.repository` should eb set to your `loginServer` value.
+> Note: If you choose to push the ODM images to the Azure Container Registry, the `image.repository` should be set to your `loginServer` value.
 
 ### Check the topology
 Run the following command to check the status of the pods that have been created: 
