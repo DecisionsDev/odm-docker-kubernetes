@@ -3,7 +3,7 @@ entries:
   ibm-odm-dev:
   - apiVersion: v1
     appVersion: 8.10.5.0
-    created: "2020-10-30T15:54:14.808329+01:00"
+    created: "2020-10-30T16:45:33.227224+01:00"
     description: IBM Operational Decision Manager for Developers
     digest: 4d4fa3bba4681572f7820d146c268c3d6b0a183eb8cce796392891f8384071f0
     home: https://developer.ibm.com/odm/
@@ -24,10 +24,33 @@ entries:
     urls:
     - https://raw.githubusercontent.com/ODMDev/odm-docker-kubernetes/openshfithelmsupport/charts/ibm-odm-dev-20.3.0.tgz
     version: 20.3.0
+  - apiVersion: v1
+    appVersion: 8.10.4.0
+    created: "2020-10-30T16:45:33.224926+01:00"
+    description: IBM Operational Decision Manager for Developers
+    digest: 6a18d7920bb2bf50c82b1eace7a76f6c506fc96eaa538dfa060477d3c9647602
+    home: https://developer.ibm.com/odm/
+    icon: https://raw.githubusercontent.com/ODMDev/ruledesigner/master/icons/odmicon.png
+    keywords:
+    - OperationalDecisionManager
+    - businessrules
+    - Limited
+    - ICP
+    - amd64
+    - s390x
+    - ppc64le
+    - ICPRHOCP
+    kubeVersion: '>=1.11.0'
+    maintainers:
+    - name: ODMDev
+    name: ibm-odm-dev
+    urls:
+    - https://raw.githubusercontent.com/ODMDev/odm-docker-kubernetes/openshfithelmsupport/charts/ibm-odm-dev-20.2.0.tgz
+    version: 20.2.0
   ibm-odm-prod:
   - apiVersion: v1
     appVersion: 8.10.5.0
-    created: "2020-10-30T15:54:14.811062+01:00"
+    created: "2020-10-30T16:45:33.233109+01:00"
     description: IBM Operational Decision Manager
     digest: f8e65b499e0b6e3212fc293752f21602cb30d727e40dacbdc3318f467e2ac723
     home: https://developer.ibm.com/odm/
@@ -48,4 +71,4 @@ entries:
     urls:
     - https://raw.githubusercontent.com/ODMDev/odm-docker-kubernetes/openshfithelmsupport/charts/ibm-odm-prod-20.3.0.tgz
     version: 20.3.0
-generated: "2020-10-30T15:54:14.803675+01:00"
+generated: "2020-10-30T16:45:33.223063+01:00"
