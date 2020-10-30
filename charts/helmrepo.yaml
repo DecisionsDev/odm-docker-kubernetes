@@ -1,0 +1,8 @@
+apiVersion: helm.openshift.io/v1beta1
+kind: HelmChartRepository
+metadata:
+  name: odm-repo
+spec:
+  name: odm-repo
+  connectionConfig:
+    url: https://raw.githubusercontent.com/ODMDev/odm-docker-kubernetes/openshfithelmsupport/charts/
