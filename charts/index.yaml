@@ -3,7 +3,7 @@ entries:
   ibm-odm-dev:
   - apiVersion: v1
     appVersion: 8.10.5.0
-    created: "2020-10-30T14:32:46.811739+01:00"
+    created: "2020-10-30T15:24:44.55878+01:00"
     description: IBM Operational Decision Manager for Developers
     digest: 4d4fa3bba4681572f7820d146c268c3d6b0a183eb8cce796392891f8384071f0
     home: https://developer.ibm.com/odm/
@@ -22,6 +22,6 @@ entries:
     - name: ODMDev
     name: ibm-odm-dev
     urls:
-    - ibm-odm-dev-20.3.0.tgz
+    - https://raw.githubusercontent.com/ODMDev/odm-docker-kubernetes/openshfithelmsupport/charts/ibm-odm-dev-20.3.0.tgz
     version: 20.3.0
-generated: "2020-10-30T14:32:46.808766+01:00"
+generated: "2020-10-30T15:24:44.556526+01:00"
