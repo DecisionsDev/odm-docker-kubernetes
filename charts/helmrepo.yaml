@@ -5,4 +5,4 @@ metadata:
 spec:
   name: odm-repo
   connectionConfig:
-    url: https://raw.githubusercontent.com/ODMDev/odm-docker-kubernetes/openshfithelmsupport/charts/
+    url: https://raw.githubusercontent.com/ODMDev/odm-docker-kubernetes/test-ui/charts/
