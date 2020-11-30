@@ -313,11 +313,11 @@ In order to load the container images from the extracted folder into your Docker
 
     ```console
     export IMAGE_TAG_NAME=<IMAGE_TAG_NAME>
-    docker tag odm-decisionserverconsole:$IMAGE_TAG_NAME $DOCKER_REGISTRY/odm-decisionserverconsole:$IMAGE_TAG_NAME
-    docker tag dbserver:$IMAGE_TAG_NAME $DOCKER_REGISTRY/dbserver:$IMAGE_TAG_NAME
-    docker tag odm-decisioncenter:$IMAGE_TAG_NAME $DOCKER_REGISTRY/odm-decisioncenter:$IMAGE_TAG_NAME
-    docker tag odm-decisionserverruntime:$IMAGE_TAG_NAME $DOCKER_REGISTRY/odm-decisionserverruntime:$IMAGE_TAG_NAME
-    docker tag odm-decisionrunner:$IMAGE_TAG_NAME $DOCKER_REGISTRY/odm-decisionrunner:$IMAGE_TAG_NAME
+    docker tag odm-decisionserverconsole:${IMAGE_TAG_NAME}-amd64 $DOCKER_REGISTRY/odm-decisionserverconsole:$IMAGE_TAG_NAME
+    docker tag dbserver:${IMAGE_TAG_NAME}-amd64 $DOCKER_REGISTRY/dbserver:$IMAGE_TAG_NAME
+    docker tag odm-decisioncenter:${IMAGE_TAG_NAME}-amd64 $DOCKER_REGISTRY/odm-decisioncenter:$IMAGE_TAG_NAME
+    docker tag odm-decisionserverruntime:${IMAGE_TAG_NAME}-amd64 $DOCKER_REGISTRY/odm-decisionserverruntime:$IMAGE_TAG_NAME
+    docker tag odm-decisionrunner:${IMAGE_TAG_NAME}-amd64 $DOCKER_REGISTRY/odm-decisionrunner:$IMAGE_TAG_NAME
     ```
 
 5. Push the images to your registry.
