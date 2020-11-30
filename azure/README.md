@@ -248,9 +248,9 @@ Switch to the extracted folder:
 
 To get access to the ODM container images, you must have an IBM entitlement registry key to pull the images from the IBM Entitled registry (option A) or download the ODM on Kubernetes package (.tgz file) from Passport Advantage® (PPA) and then push it to the Azure Container Registry (option B.)
 
-  * To access image from IBM entitlement registry follow the instructions in the section [Create a pull secret to pull the ODM Docker images from the IBM Entitled Registry](#create-a-pull-secret-to-pull-the-odm-docker-images-from-the-ibm-entitled-registry)
+  * To access image from IBM entitlement registry follow the instructions in the section [Create a pull secret to pull the ODM Docker images from the IBM Entitled Registry](#option-a--using-the-ibm-entitled-registry-with-your-ibmid)
 
-  * To push image in the Azure Container Registry follow the instructions  in the section [Push the ODM images to the ACR (Azure Container Registry](#push-the-odm-images-to-the-acr-azure-container-registry)
+  * To push image in the Azure Container Registry follow the instructions  in the section [Push the ODM images to the ACR (Azure Container Registry](#option-b--using-the-download-archives-from-ibm-passport-advantage-ppa)
 
 #### Option A:  Using the IBM Entitled registry with your IBMid
 
@@ -275,7 +275,7 @@ where:
 
 Make a note of the secret name so that you can set it for the image.pullSecrets parameter when you run a helm install of your containers. The image.repository parameter must be set to cp.icr.io/cp/cp4a/odm.
 
-### Option B:  Using the download archives from IBM Passport Advantage (PPA)
+#### Option B:  Using the download archives from IBM Passport Advantage (PPA)
 
 Prerequisites:  You must install Docker.
 
