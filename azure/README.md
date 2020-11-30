@@ -303,19 +303,23 @@ In order to load the container images from the extracted folder into your Docker
 
 4. Tag the images loaded locally with your registry name.
 
+    ```console
     $ docker tag odm-decisionserverconsole:<IMAGE_TAG_NAME> <loginServer>/odm-decisionserverconsole:<IMAGE_TAG_NAME>
     $ docker tag dbserver:<IMAGE_TAG_NAME> <loginServer>/dbserver:<IMAGE_TAG_NAME>
     $ docker tag odm-decisioncenter:<IMAGE_TAG_NAME> <loginServer>/odm-decisioncenter:<IMAGE_TAG_NAME>
     $ docker tag odm-decisionserverruntime:<IMAGE_TAG_NAME> <loginServer>/odm-decisionserverruntime:<IMAGE_TAG_NAME>
     $ docker tag odm-decisionrunner:<IMAGE_TAG_NAME> <loginServer>/odm-decisionrunner:<IMAGE_TAG_NAME>
+    ```
 
 5. Push the images to your registry.
 
+    ```console
     $ docker push <loginServer>/odm-decisioncenter:<IMAGE_TAG_NAME>
     $ docker push <loginServer>/odm-decisionserverconsole:<IMAGE_TAG_NAME>
     $ docker push <loginServer>/odm-decisionserverruntime:<IMAGE_TAG_NAME>
     $ docker push <loginServer>/odm-decisionrunner:<IMAGE_TAG_NAME>
     $ docker push <loginServer>/dbserver:<IMAGE_TAG_NAME>
+    ```
 
 6. Create a registry key to access the ACR registry
 
