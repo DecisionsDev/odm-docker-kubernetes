@@ -72,7 +72,7 @@ Source: https://docs.microsoft.com/en-us/azure/aks/kubernetes-walkthrough
 
 After installing the Azure CLI, use the following command line.
    ```console
-   az login [--tenant <name>onmicrosoft.com]
+   az login [--tenant <name>.onmicrosoft.com]
    ```
 
 A web browser opens where you can connect with your Azure credentials.
@@ -159,6 +159,8 @@ Create an Azure Database for PostgreSQL server by running the `az postgres serve
                            --sku-name GP_Gen5_2 --version 9.6 --location francecentral
 ```
 
+> **Note**: The PostgreSQL server name must be unique within Azure.
+
 Verify the database.
 To connect to your server, you need to provide host information and access credentials.
 
@@ -216,23 +218,23 @@ az postgres server firewall-rule create -g odm-group -s odmpsqlserver \
 
 ## Prepare your environment for the ODM installation (20 min)
 
-### Download the PPA to get the Helm chart.
+### Download the PPA to get the Helm chart
 
-Download the IBM Operational Decision Manager images from (IBM Passport Advantage (PPA))[https://www-01.ibm.com/software/passportadvantage/pao_customer.html].
+Download the IBM Operational Decision Manager images from [IBM Passport Advantage (PPA)](https://www-01.ibm.com/software/passportadvantage/pao_customer.html).
 
 To view the list of Passport Advantage eAssembly installation images, refer to the ODM download documents.
 
-- For 8.10.0:  (8.10.0 download document)[https://www.ibm.com/support/pages/node/729289]
+- For 8.10.0:  [8.10.0 download document](https://www.ibm.com/support/pages/node/729289)
 
-- For 8.10.1:  (8.10.1 download document)[https://www.ibm.com/support/pages/node/843082]
+- For 8.10.1:  [8.10.1 download document](https://www.ibm.com/support/pages/node/843082)
 
-- For 8.10.2:  (8.10.2 download document)[https://www.ibm.com/support/pages/node/878711]
+- For 8.10.2:  [8.10.2 download document](https://www.ibm.com/support/pages/node/878711)
 
-- For 8.10.3:  (8.10.3 download document)[https://www.ibm.com/support/pages/node/1085931]
+- For 8.10.3:  [8.10.3 download document](https://www.ibm.com/support/pages/node/1085931)
 
-- For 8.10.4:  (8.10.4 download document)[https://www.ibm.com/support/pages/node/6172197]
+- For 8.10.4:  [8.10.4 download document](https://www.ibm.com/support/pages/node/6172197)
 
-- For 8.10.5:  (8.10.5 download document)[https://www.ibm.com/support/pages/node/310661]
+- For 8.10.5:  [8.10.5 download document](https://www.ibm.com/support/pages/node/310661)
 
 Extract the file that contains both the Helm chart and the images.  The name of the file includes the chart version number:
 
@@ -242,17 +244,17 @@ Switch to the extracted folder:
 
     $ cd PPA_NAME
 
-### Access the container images.
+### Access the container images
 
 To get access to the ODM container images, you must have an IBM entitlement registry key to pull the images from the IBM Entitled registry (option A) or download the ODM on Kubernetes package (.tgz file) from Passport Advantage® (PPA) and then push it to the Azure Container Registry (option B.)
 
-  * To access image from IBM entitlement registry follow the instructions in the section  [Create a pull secret to pull the ODM Docker images from the IBM Entitled Registry](#create-a-pull-secret-to-pull-the-odm-docker-images-from-the-ibm-entitled-registry)
+  * To access image from IBM entitlement registry follow the instructions in the section [Create a pull secret to pull the ODM Docker images from the IBM Entitled Registry](#create-a-pull-secret-to-pull-the-odm-docker-images-from-the-ibm-entitled-registry)
 
-  * To push image in the Azure Container Registry follow the instructions  in the section  [Push the ODM images to the ACR (Azure Container Registry](#push-the-odm-images-to-the-acr-azure-container-registry)
+  * To push image in the Azure Container Registry follow the instructions  in the section [Push the ODM images to the ACR (Azure Container Registry](#push-the-odm-images-to-the-acr-azure-container-registry)
 
 #### Option A:  Using the IBM Entitled registry with your IBMid
 
-Log in to (MyIBM Container Software Library)[https://myibm.ibm.com/products-services/containerlibrary] with the IBMid and password that are associated with the entitled software.
+Log in to [MyIBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary) with the IBMid and password that are associated with the entitled software.
 
 In the Container software library tile, verify your entitlement on the View library page, and then go to Get entitlement key to retrieve the key.
 
@@ -279,7 +281,7 @@ Prerequisites:  You must install Docker.
 
 In order to load the container images from the extracted folder into your Docker registry, you must:
 
-1. Create an (ACR registry)[https://docs.microsoft.com/en-US/azure/container-registry/container-registry-get-started-azure-cli]:
+1. Create an [ACR registry](https://docs.microsoft.com/en-US/azure/container-registry/container-registry-get-started-azure-cli):
 
    ```console
    az acr create --resource-group odm-group --name <registryname> --sku Basic
