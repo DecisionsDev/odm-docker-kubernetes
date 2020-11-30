@@ -271,7 +271,13 @@ where:
 
 > Note:  The cp.icr.io value for the docker-server parameter is the only registry domain name that contains the images. You must set the docker-username to cp to use an entitlement key as docker-password.
 
-Make a note of the secret name so that you can set it for the image.pullSecrets parameter when you run a helm install of your containers. The image.repository parameter must be set to cp.icr.io/cp/cp4a/odm.
+Make a note of the secret name so that you can set it for the image.pullSecrets parameter when you run a helm install of your containers:
+
+```console
+export DOCKER_REGISTRY=cp.icr.io/cp/cp4a/odm
+```
+
+The image.repository parameter must be set to cp.icr.io/cp/cp4a/odm.
 
 #### Option B:  Using the download archives from IBM Passport Advantage (PPA)
 
@@ -400,7 +406,6 @@ kubectl create secret generic mycompany-secret --from-file=keystore.jks=mycompan
 
 The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Defining the security certificate](https://www.ibm.com/support/knowledgecenter/SSQP76_8.10.x/com.ibm.odm.icp/topics/tsk_replace_security_certificate.html?view=kc) and [Working with certificates and SSL](https://www.ibm.com/links?url=https%3A%2F%2Fdocs.oracle.com%2Fcd%2FE19830-01%2F819-4712%2Fablqw%2Findex.html).
 
-
 ## Install an ODM Helm release and expose it with the service type LoadBalancer (10 min)
 
 ### Allocate a public IP
@@ -412,7 +417,6 @@ The certificate must be the same as the one you used to enable TLS connections i
 ```
 
 ### Install the ODM release
-
 
   - Download one or more packages (.tgz archives) from [IBM Passport Advantage (PPA)](https://www-01.ibm.com/software/passportadvantage/pao_customer.html).  To view the full list of eAssembly installation images, refer to the [8.10.4 download document](https://www.ibm.com/support/pages/ibm-operational-decision-manager-v8104-download-document).
 
@@ -438,20 +442,21 @@ The certificate must be the same as the one you used to enable TLS connections i
      ```    
 
 ```console
-helm install mycompany --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=registry-secret \
-                       --set image.arch=amd64 --set image.tag=8.10.4.0 --set service.type=LoadBalancer \
+helm install mycompany --set image.repository=$DOCKER_REGISTRY --set image.pullSecrets=registry-secret \
+                       --set image.arch=amd64 --set image.tag=$IMAGE_TAG_NAME --set service.type=LoadBalancer \
                        --set externalCustomDatabase.datasourceRef=customdatasource-secret \
                        --set customization.securitySecretRef=mycompany-secret charts/ibm-odm-prod-20.2.0.tgz
 ```
 
-> Note: If you choose to push the ODM images to the Azure Container Registry, the `image.repository` should be set to your `loginServer` value.
+> Remember:  If you choose to use the IBM Entitled registry, the `image.repository` must be set to cp.icr.io/cp/cp4a/odm.  If you choose to push the ODM images to the Azure Container Registry, the `image.repository` should be set to your `loginServer` value.
 
 ### Check the topology
-Run the following command to check the status of the pods that have been created: 
+
+Run the following command to check the status of the pods that have been created:
+
 ```console
 kubectl get pods
 ```
-
 
 | NAME | READY | STATUS | RESTARTS | AGE |
 |---|---|---|---|---|
