@@ -308,7 +308,7 @@ In order to load the container images from the extracted folder into your Docker
 4. Tag the images loaded locally with your registry name.
 
     ```console
-    export IMAGE_TAG_NAME=<IMAGE_TAG_NAME>
+    $ export IMAGE_TAG_NAME=<IMAGE_TAG_NAME>
     $ docker tag odm-decisionserverconsole:$IMAGE_TAG_NAME $loginServer/odm-decisionserverconsole:$IMAGE_TAG_NAME
     $ docker tag dbserver:$IMAGE_TAG_NAME $loginServer/dbserver:$IMAGE_TAG_NAME
     $ docker tag odm-decisioncenter:$IMAGE_TAG_NAME $loginServer/odm-decisioncenter:$IMAGE_TAG_NAME
