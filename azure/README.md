@@ -271,13 +271,11 @@ where:
 
 > Note:  The cp.icr.io value for the docker-server parameter is the only registry domain name that contains the images. You must set the docker-username to cp to use an entitlement key as docker-password.
 
-Make a note of the secret name so that you can set it for the image.pullSecrets parameter when you run a helm install of your containers:
+Make a note of the secret name so that you can set it for the image.pullSecrets parameter when you run a helm install of your containers.  The image.repository parameter must be set to cp.icr.io/cp/cp4a/odm:
 
 ```console
 export DOCKER_REGISTRY=cp.icr.io/cp/cp4a/odm
 ```
-
-The image.repository parameter must be set to cp.icr.io/cp/cp4a/odm.
 
 #### Option B:  Using the download archives from IBM Passport Advantage (PPA)
 
