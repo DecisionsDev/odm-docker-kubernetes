@@ -288,7 +288,7 @@ In order to load the container images from the extracted folder into your Docker
    Make a note of the `loginServer` that will be displayed in the JSON output (e.g.: "loginServer": "registryodm.azurecr.io"):
 
    ```console
-   export loginServer=<loginServer>
+   export DOCKER_REGISTRY=<loginServer>
    ```
 
    > **Note**: The registry name must be unique within Azure.
@@ -309,34 +309,34 @@ In order to load the container images from the extracted folder into your Docker
 
     ```console
     export IMAGE_TAG_NAME=<IMAGE_TAG_NAME>
-    docker tag odm-decisionserverconsole:$IMAGE_TAG_NAME $loginServer/odm-decisionserverconsole:$IMAGE_TAG_NAME
-    docker tag dbserver:$IMAGE_TAG_NAME $loginServer/dbserver:$IMAGE_TAG_NAME
-    docker tag odm-decisioncenter:$IMAGE_TAG_NAME $loginServer/odm-decisioncenter:$IMAGE_TAG_NAME
-    docker tag odm-decisionserverruntime:$IMAGE_TAG_NAME $loginServer/odm-decisionserverruntime:$IMAGE_TAG_NAME
-    docker tag odm-decisionrunner:$IMAGE_TAG_NAME $loginServer/odm-decisionrunner:$IMAGE_TAG_NAME
+    docker tag odm-decisionserverconsole:$IMAGE_TAG_NAME $DOCKER_REGISTRY/odm-decisionserverconsole:$IMAGE_TAG_NAME
+    docker tag dbserver:$IMAGE_TAG_NAME $DOCKER_REGISTRY/dbserver:$IMAGE_TAG_NAME
+    docker tag odm-decisioncenter:$IMAGE_TAG_NAME $DOCKER_REGISTRY/odm-decisioncenter:$IMAGE_TAG_NAME
+    docker tag odm-decisionserverruntime:$IMAGE_TAG_NAME $DOCKER_REGISTRY/odm-decisionserverruntime:$IMAGE_TAG_NAME
+    docker tag odm-decisionrunner:$IMAGE_TAG_NAME $DOCKER_REGISTRY/odm-decisionrunner:$IMAGE_TAG_NAME
     ```
 
 5. Push the images to your registry.
 
     ```console
-    docker push $loginServer/odm-decisioncenter:$IMAGE_TAG_NAME
-    docker push $loginServer/odm-decisionserverconsole:$IMAGE_TAG_NAME
-    docker push $loginServer/odm-decisionserverruntime:$IMAGE_TAG_NAME
-    docker push $loginServer/odm-decisionrunner:$IMAGE_TAG_NAME
-    docker push $loginServer/dbserver:$IMAGE_TAG_NAME
+    docker push $DOCKER_REGISTRY/odm-decisioncenter:$IMAGE_TAG_NAME
+    docker push $DOCKER_REGISTRY/odm-decisionserverconsole:$IMAGE_TAG_NAME
+    docker push $DOCKER_REGISTRY/odm-decisionserverruntime:$IMAGE_TAG_NAME
+    docker push $DOCKER_REGISTRY/odm-decisionrunner:$IMAGE_TAG_NAME
+    docker push $DOCKER_REGISTRY/dbserver:$IMAGE_TAG_NAME
     ```
 
 6. Create a registry key to access the ACR registry
 
     ```console
-    kubectl create secret docker-registry registry-secret --docker-server="<loginServer>" \
+    kubectl create secret docker-registry registry-secret --docker-server="$DOCKER_REGISTRY" \
             --docker-username="<adminUsername>" --docker-password="<adminPassword>" \
             --docker-email="mycompany@email.com"
     ```
 
     Refer to the [documentation](https://docs.microsoft.com/en-US/azure/container-registry/container-registry-tutorial-prepare-registry#enable-admin-account) to enable the registry's admin account and get the credentials in the Container registry portal.
 
-  Make a note of the secret name so that you can set it for the image.pullSecrets parameter when you run a helm install of your containers. The image.repository parameter must be set to <REGISTRY_URL>.
+  Make a note of the secret name so that you can set it for the image.pullSecrets parameter when you run a helm install of your containers. The image.repository parameter must be set to <loginServer> (ie $DOCKER_REGISTRY).
 
 ### Create the datasource secrets for Azure PostgreSQL
 Copy the files [ds-bc.xml.template](ds-bc.xml.template) and [ds-res.xml.template](ds-res.xml.template) on your local machine and rename them to `ds-bc.xml` and `ds-res.xml`.
