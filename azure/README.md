@@ -1,7 +1,7 @@
 # Deploying IBM Operational Decision Manager on Azure AKS
 
 This project demonstrates how to deploy an IBM® Operational Decision Manager (ODM) clustered topology on the Azure Kubernetes Service (AKS) cloud service. This deployment implements Kubernetes and Docker technologies.
-Here is the home page of Microsoft Azure: https://portal.azure.com/?feature.quickstart=true#home
+Here is the home page of Microsoft Azure: https://portal.azure.com/#home
 
 <img width="800" height="560" src='./images/aks-schema.jpg'/>
 
@@ -22,7 +22,6 @@ First, install the following software on your machine:
 
 * [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)
 * [Helm v3](https://github.com/helm/helm/releases)
-
 
 Then, [create an Azure account and pay as you go](https://azure.microsoft.com/en-us/pricing/purchase-options/pay-as-you-go/)
 
@@ -73,22 +72,25 @@ Source: https://docs.microsoft.com/en-us/azure/aks/kubernetes-walkthrough
 
 After installing the Azure CLI, use the following command line.
    ```console
-   az login 
+   az login [--tenant <name>onmicrosoft.com]
    ```
 
 A web browser opens where you can connect with your Azure credentials.
 
 ### Create a resource group
- An Azure resource group is a logical group in which Azure resources are deployed and managed. When you create a resource group, you are asked to specify a location. This location is where resource group metadata is stored. It is also where your resources run in Azure, if you don't specify another region during resource creation. Create a resource group by running the `az group create` command.
+
+An Azure resource group is a logical group in which Azure resources are deployed and managed. When you create a resource group, you are asked to specify a location. This location is where resource group metadata is stored. It is also where your resources run in Azure, if you don't specify another region during resource creation. Create a resource group by running the `az group create` command.
+
    ```console
-az group create --name odm-group --location francecentral
+az group create --name odm-group --location francecentral [--tags Owner=pylochou@fr.ibm.com Team=DBA Usage=temp Usage_desc="Update Azure documentation" Delete_date=2020-12-05]
    ```
 
 The following example output shows that the resource group has been created successfully:
+
    ```json
     {
       "id": "/subscriptions/<guid>/resourceGroups/odm-group",
-      "location": "eastus",
+      "location": "francecentral",
       "managedBy": null,
       "name": "odm-group",
       "properties": {
@@ -98,9 +100,10 @@ The following example output shows that the resource group has been created succ
     }
    ```
 
-
 ### Create an AKS cluster
+
 Use the `az aks create` command to create an AKS cluster. The following example creates a cluster named odm-cluster with two nodes. Azure Monitor for containers is also enabled using the `--enable-addons monitoring` parameter.  The operation takes several minutes to complete.
+
 > NOTE:
 During the creation of the AKS cluster, a second resource group is automatically created to store the AKS resources. For more information, see [Why are two resource groups created with AKS](https://docs.microsoft.com/en-us/answers/questions/25725/why-are-two-resource-groups-created-with-aks.html).
    ```console
@@ -135,8 +138,8 @@ The following example output shows the single node created in the previous steps
 
 | NAME | STATUS | ROLES | AGE | VERSION |
 |---|---|---|---|---|
-| aks-nodepool1-31718369-0  | Ready  |  agent |  6m44s  | v1.12.8 |
-
+| aks-nodepool1-21196610-vmss000000 | Ready | agent | 5m27s | v1.17.13 |
+| aks-nodepool1-21196610-vmss000001 | Ready | agent | 5m25s | v1.17.13 |
 
 To further debug and diagnose cluster problems, run the following command:
 
@@ -212,89 +215,119 @@ az postgres server firewall-rule create -g odm-group -s odmpsqlserver \
 ```
 
 ## Prepare your environment for the ODM installation (20 min)
-### Getting access to container images
 
-To get access to the ODM container images, you must have an IBM entitlement registry key to pull the images from the IBM docker registry or download the ODM on Kubernetes package (.tgz file) from Passport Advantage® (PPA) and then push it to the Azure Container Registry.
+### Download the PPA to get the Helm chart.
+
+Download the IBM Operational Decision Manager images from (IBM Passport Advantage (PPA))[https://www-01.ibm.com/software/passportadvantage/pao_customer.html].
+
+To view the list of Passport Advantage eAssembly installation images, refer to the ODM download documents.
+
+- For 8.10.0:  (8.10.0 download document)[https://www.ibm.com/support/pages/node/729289]
+
+- For 8.10.1:  (8.10.1 download document)[https://www.ibm.com/support/pages/node/843082]
+
+- For 8.10.2:  (8.10.2 download document)[https://www.ibm.com/support/pages/node/878711]
+
+- For 8.10.3:  (8.10.3 download document)[https://www.ibm.com/support/pages/node/1085931]
+
+- For 8.10.4:  (8.10.4 download document)[https://www.ibm.com/support/pages/node/6172197]
+
+- For 8.10.5:  (8.10.5 download document)[https://www.ibm.com/support/pages/node/310661]
+
+Extract the file that contains both the Helm chart and the images.  The name of the file includes the chart version number:
+
+    tar xvzf PPA_NAME.tar.gz
+
+Switch to the extracted folder:
+
+    $ cd PPA_NAME
+
+### Access the container images.
+
+To get access to the ODM container images, you must have an IBM entitlement registry key to pull the images from the IBM Entitled registry (option A) or download the ODM on Kubernetes package (.tgz file) from Passport Advantage® (PPA) and then push it to the Azure Container Registry (option B.)
+
   * To access image from IBM entitlement registry follow the instructions in the section  [Create a pull secret to pull the ODM Docker images from the IBM Entitled Registry](#create-a-pull-secret-to-pull-the-odm-docker-images-from-the-ibm-entitled-registry)
+
   * To push image in the Azure Container Registry follow the instructions  in the section  [Push the ODM images to the ACR (Azure Container Registry](#push-the-odm-images-to-the-acr-azure-container-registry)
 
-#### Create a pull secret to pull the ODM Docker images from the IBM Entitled Registry
+#### Option A:  Using the IBM Entitled registry with your IBMid
 
-1. Log in to [MyIBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary) with the IBMid and password that are associated with the entitled software.
+Log in to (MyIBM Container Software Library)[https://myibm.ibm.com/products-services/containerlibrary] with the IBMid and password that are associated with the entitled software.
 
-2. In the **Container software library** tile, verify your entitlement on the **View library** page, and then go to **Get entitlement key** to retrieve the key.
+In the Container software library tile, verify your entitlement on the View library page, and then go to Get entitlement key to retrieve the key.
 
-3. Create a pull secret by running a `kubectl create secret` command.
-   ```console
-   kubectl create secret docker-registry registry-secret --docker-server=cp.icr.io --docker-username=cp \
-                  --docker-password="<API_KEY_GENERATED>" --docker-email=<USER_EMAIL>
-   ```
+Create a pull secret by running a kubectl create secret command.
 
-   > **Note**: The `cp.icr.io` value for the docker-server parameter is the only registry domain name that contains the images.
+    ```console
+    $ kubectl create secret docker-registry <REGISTRY_SECRET> --docker-server=cp.icr.io --docker-username=cp \
+    --docker-password="<API_KEY_GENERATED>" --docker-email=<USER_EMAIL>
+    ```
 
-   > **Note**: Use `cp` for the docker-username. docker-email has to be a valid email address (associated with your IBMid). Make sure you put the Entitlement Key in the docker-password field between double-quotes.
+where:
 
-4. Make a note of the secret and the server values so that you can set them to the `pullSecrets` and `repository` parameters when you run `helm install` for your containers.
+* <REGISTRY_SECRET> is the secret name
+* <API_KEY_GENERATED> is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
+* <USER_EMAIL> is the email address associated with your IBMid.
 
-#### Push the ODM images to the ACR (Azure Container Registry)
+> Note:  The cp.icr.io value for the docker-server parameter is the only registry domain name that contains the images. You must set the docker-username to cp to use an entitlement key as docker-password.
 
-See reference documentation: https://docs.microsoft.com/en-US/azure/container-registry/container-registry-get-started-azure-cli
+Make a note of the secret name so that you can set it for the image.pullSecrets parameter when you run a helm install of your containers. The image.repository parameter must be set to cp.icr.io/cp/cp4a/odm.
 
-1. Create an ACR registry
+### Option B:  Using the download archives from IBM Passport Advantage (PPA)
+
+Prerequisites:  You must install Docker.
+
+In order to load the container images from the extracted folder into your Docker registry, you must:
+
+1. Create an (ACR registry)[https://docs.microsoft.com/en-US/azure/container-registry/container-registry-get-started-azure-cli]:
+
    ```console
    az acr create --resource-group odm-group --name <registryname> --sku Basic
    ```
+
    Make a note of the `loginServer` that will be displayed in the JSON output (e.g.: "loginServer": "registryodm.azurecr.io").
 
    > **Note**: The registry name must be unique within Azure.
 
 2. Log in to the ACR registry
+
    ```console
    az acr login --name <registryname>
    ```
-3. Load the ODM images locally
 
-  - Download one or more packages (.tgz archives) from [IBM Passport Advantage (PPA)](https://www-01.ibm.com/software/passportadvantage/pao_customer.html).  To view the full list of eAssembly installation images, refer to the [8.10.4 download document](https://www.ibm.com/support/pages/ibm-operational-decision-manager-v8104-download-document).
+3. Load the container images into your internal Docker registry.
 
-  - Extract the .tgz archives to your local file system.
-
-     ```console
-     tar xzf <PPA-ARCHIVE>.tar.gz
-     ```
-
-  - Load the images to your local registry.
-
-    ```console
-    for name in images/*.tar.gz; do echo $name && docker image load --input $name; done
-    ```
+    $ for name in images/*.tar.gz; do echo $name && docker image load --input $name ; done
 
   For more information, refer to the [ODM knowledge center](https://www.ibm.com/support/knowledgecenter/SSQP76_8.10.x/com.ibm.odm.kube/topics/tsk_config_odm_prod_kube.html).
 
-4. Tag and push the images to the ACR registry
+4. Tag the images loaded locally with your registry name.
 
-  - Tag the images to the ACR registry previously created
-   ```console
-   $ docker tag odm-decisionserverconsole:8.10.4.0-amd64 <loginServer>/odm-decisionserverconsole:8.10.4.0-amd64
-   $ docker tag dbserver:8.10.4.0-amd64 <loginServer>/dbserver:8.10.4.0-amd64
-   $ docker tag odm-decisioncenter:8.10.4.0-amd64 <loginServer>/odm-decisioncenter:8.10.4.0-amd64
-   $ docker tag odm-decisionserverruntime:8.10.4.0-amd64 <loginServer>/odm-decisionserverruntime:8.10.4.0-amd64
-   $ docker tag odm-decisionrunner:8.10.4.0-amd64 <loginServer>/odm-decisionrunner:8.10.4.0-amd64
-   ```
-   - Push the images to the ACR registry
-   ```console
-   $ docker push <loginServer>/odm-decisioncenter:8.10.4.0-amd64
-   $ docker push <loginServer>/odm-decisionserverconsole:8.10.4.0-amd64
-   $ docker push <loginServer>/odm-decisionserverruntime:8.10.4.0-amd64
-   $ docker push <loginServer>/odm-decisionrunner:8.10.4.0-amd64
-   $ docker push <loginServer>/dbserver:8.10.4.0-amd64
-   ```
-5. Create a registry key to access the ACR registry
+    $ docker tag odm-decisionserverconsole:<IMAGE_TAG_NAME> <loginServer>/odm-decisionserverconsole:<IMAGE_TAG_NAME>
+    $ docker tag dbserver:<IMAGE_TAG_NAME> <loginServer>/dbserver:<IMAGE_TAG_NAME>
+    $ docker tag odm-decisioncenter:<IMAGE_TAG_NAME> <loginServer>/odm-decisioncenter:<IMAGE_TAG_NAME>
+    $ docker tag odm-decisionserverruntime:<IMAGE_TAG_NAME> <loginServer>/odm-decisionserverruntime:<IMAGE_TAG_NAME>
+    $ docker tag odm-decisionrunner:<IMAGE_TAG_NAME> <loginServer>/odm-decisionrunner:<IMAGE_TAG_NAME>
+
+5. Push the images to your registry.
+
+    $ docker push <loginServer>/odm-decisioncenter:<IMAGE_TAG_NAME>
+    $ docker push <loginServer>/odm-decisionserverconsole:<IMAGE_TAG_NAME>
+    $ docker push <loginServer>/odm-decisionserverruntime:<IMAGE_TAG_NAME>
+    $ docker push <loginServer>/odm-decisionrunner:<IMAGE_TAG_NAME>
+    $ docker push <loginServer>/dbserver:<IMAGE_TAG_NAME>
+
+6. Create a registry key to access the ACR registry
+
     ```console
     kubectl create secret docker-registry registry-secret --docker-server="<loginServer>" \
             --docker-username="<adminUsername>" --docker-password="<adminPassword>" \
             --docker-email="mycompany@email.com"
     ```
+
     Refer to the [documentation](https://docs.microsoft.com/en-US/azure/container-registry/container-registry-tutorial-prepare-registry#enable-admin-account) to enable the registry's admin account and get the credentials in the Container registry portal.
+
+  Make a note of the secret name so that you can set it for the image.pullSecrets parameter when you run a helm install of your containers. The image.repository parameter must be set to <REGISTRY_URL>.
 
 ### Create the datasource secrets for Azure PostgreSQL
 Copy the files [ds-bc.xml.template](ds-bc.xml.template) and [ds-res.xml.template](ds-res.xml.template) on your local machine and rename them to `ds-bc.xml` and `ds-res.xml`.
@@ -384,7 +417,7 @@ The certificate must be the same as the one you used to enable TLS connections i
   - In the following exemple The charts directory will contains the helm charts used to install the ODM product which can be used in the helm install steps.
        ```console
      tar xvzf ../odm_on_icp_8.10.4.0-x86_64.tar.gz
-     
+
      x **charts/ibm-odm-prod-20.2.0.tgz**
      x images/62c1fb8661ea1900640d52df6e37cfc2459d564ccbb9629a8b11cf55ce22a338.tar.gz
      x images/a3f317777246322130496cb16fb51fda6fd960ed934fd04719cb6093cc402377.tar.gz
