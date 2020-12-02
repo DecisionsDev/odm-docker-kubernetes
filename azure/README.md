@@ -158,7 +158,7 @@ Create an Azure Database for PostgreSQL server by running the `az postgres serve
 
 ```console
  az postgres server create --resource-group odm-group --name odmpsqlserver \
-                           --admin-user myadmin --admin-password 'passw0rd!' --ssl-enforcement Disabled \
+                           --admin-user myadmin --admin-password 'passw0rd!' \
                            --sku-name GP_Gen5_2 --version 9.6 --location francecentral
 ```
 
