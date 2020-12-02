@@ -173,43 +173,44 @@ To connect to your server, you need to provide host information and access crede
 ```
 
 Result:
-   ```json
-   {
-        "administratorLogin": "myadmin",
-        "byokEnforcement": "Disabled",
-        "earliestRestoreDate": "2020-07-13T06:59:05.050000+00:00",
-        "fullyQualifiedDomainName": "odmpsqlserver.postgres.database.azure.com",
-        "id": "/subscriptions/xxxx-xx-xxxx-beba-1a633f94cdaa/resourceGroups/odm-group/providers/Microsoft.DBforPostgreSQL/servers/odmpsqlserver",
-        "identity": null,
-        "infrastructureEncryption": "Disabled",
-        "location": "francecentral",
-        "masterServerId": "",
-        "minimalTlsVersion": "TLSEnforcementDisabled",
-        "name": "odmpsqlserver",
-        "privateEndpointConnections": [],
-        "publicNetworkAccess": "Enabled",
-        "replicaCapacity": 5,
-        "replicationRole": "None",
-        "resourceGroup": "odm-group",
-        "sku": {
-            "capacity": 2,
-            "family": "Gen5",
-            "name": "GP_Gen5_2",
-            "size": null,
-            "tier": "GeneralPurpose"
-         },
-        "sslEnforcement": "Enabled",
-        "storageProfile": {
-           "backupRetentionDays": 7,
-           "geoRedundantBackup": "Disabled",
-           "storageAutogrow": "Enabled",
-           "storageMb": 5120
-        },
-        "tags": null,
-        "type": "Microsoft.DBforPostgreSQL/servers",
-        "userVisibleState": "Ready",
-        "version": "9.6"
-    }
+
+```json
+{
+  "administratorLogin": "myadmin",
+  "byokEnforcement": "Disabled",
+  "earliestRestoreDate": "2020-07-13T06:59:05.050000+00:00",
+  "fullyQualifiedDomainName": "odmpsqlserver.postgres.database.azure.com",
+  "id": "/subscriptions/xxxx-xx-xxxx-beba-1a633f94cdaa/resourceGroups/odm-group/providers/Microsoft.DBforPostgreSQL/servers/odmpsqlserver",
+  "identity": null,
+  "infrastructureEncryption": "Disabled",
+  "location": "francecentral",
+  "masterServerId": "",
+  "minimalTlsVersion": "TLSEnforcementDisabled",
+  "name": "odmpsqlserver",
+  "privateEndpointConnections": [],
+  "publicNetworkAccess": "Enabled",
+  "replicaCapacity": 5,
+  "replicationRole": "None",
+  "resourceGroup": "odm-group",
+  "sku": {
+    "capacity": 2,
+    "family": "Gen5",
+    "name": "GP_Gen5_2",
+    "size": null,
+    "tier": "GeneralPurpose"
+  },
+  "sslEnforcement": "Enabled",
+  "storageProfile": {
+    "backupRetentionDays": 7,
+    "geoRedundantBackup": "Disabled",
+    "storageAutogrow": "Enabled",
+    "storageMb": 5120
+  },
+  "tags": null,
+  "type": "Microsoft.DBforPostgreSQL/servers",
+  "userVisibleState": "Ready",
+  "version": "9.6"
+}
 ```
 
 Make a note of the server name that is displayed in the JSON output (e.g.: "fullyQualifiedDomainName": "odmpsqlserver.postgres.database.azure.com") as it will be used [later](#create-the-datasource-secrets-for-azure-postgresql).
