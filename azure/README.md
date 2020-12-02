@@ -139,10 +139,11 @@ kubectl get nodes
 
 The following example output shows the single node created in the previous steps. Make sure that the status of the node is Ready.
 
-| NAME | STATUS | ROLES | AGE | VERSION |
-|---|---|---|---|---|
-| aks-nodepool1-21196610-vmss000000 | Ready | agent | 5m27s | v1.17.13 |
-| aks-nodepool1-21196610-vmss000001 | Ready | agent | 5m25s | v1.17.13 |
+```console
+NAME                                STATUS   ROLES   AGE   VERSION
+aks-nodepool1-21196610-vmss000000   Ready    agent   97m   v1.17.13
+aks-nodepool1-21196610-vmss000001   Ready    agent   97m   v1.17.13
+```
 
 To further debug and diagnose cluster problems, run the following command:
 
@@ -172,7 +173,7 @@ To connect to your server, you need to provide host information and access crede
 ```
 
 Result:
-   ```javascript
+   ```json
    {
         "administratorLogin": "myadmin",
         "byokEnforcement": "Disabled",
@@ -478,6 +479,7 @@ kubectl get pods
 Table 1. Status of pods
 
 ### Access ODM services
+
 By setting `service.type=LoadBalancer`, the services are exposed with a public IP to be accessed with the following command:
 
 ```console
@@ -546,8 +548,10 @@ helm install mycompany --set image.repository=cp.icr.io/cp/cp4a/odm --set image.
 ```
 
 ### Create an Ingress route
+
 Create a YAML file named `ingress-odm.yml`, as follows:
-```console
+
+```yaml
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
