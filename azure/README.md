@@ -451,7 +451,7 @@ Then you can install the product:
 
 ```console
 helm install mycompany --set image.repository=$DOCKER_REGISTRY --set image.pullSecrets=registry-secret \
-                       --set image.arch=amd64 --set image.tag=$IMAGE_TAG_NAME --set service.type=LoadBalancer \
+                       --set image.arch=amd64 --set image.tag=$ODM_VERSION --set service.type=LoadBalancer \
                        --set externalCustomDatabase.datasourceRef=customdatasource-secret \
                        --set customization.securitySecretRef=mycompany-secret charts/ibm-odm-prod-20.2.0.tgz
 ```
