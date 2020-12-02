@@ -430,19 +430,19 @@ The certificate must be the same as the one you used to enable TLS connections i
 
      ```
 
-  - In the following exemple The charts directory will contains the helm charts used to install the ODM product which can be used in the helm install steps.
-       ```console
-     tar xvzf ../odm_on_icp_8.10.4.0-x86_64.tar.gz
+  - In the following exemple, the charts directory will contains the helm charts used to install the ODM product which can be used in the helm install steps.
 
-     x **charts/ibm-odm-prod-20.2.0.tgz**
-     x images/62c1fb8661ea1900640d52df6e37cfc2459d564ccbb9629a8b11cf55ce22a338.tar.gz
-     x images/a3f317777246322130496cb16fb51fda6fd960ed934fd04719cb6093cc402377.tar.gz
-     x images/9973544f91066e1cfe0e432aa5eee030a6438024838c567d02f9a1149e8d5d97.tar.gz
-     x images/0abeaef38fb8a0c7f08e27be18ebc9cdc047274c9f7963edf2479113801eb6fa.tar.gz
-     x images/a4347e82b875d4b8b42cfe1950db9eef8d79b458c2a80d1d950b363a69a495a7.tar.gz
-     x manifest.json
-     x manifest.yaml
-     ```    
+        % tar zxfv odm_on_icp_8.10.5.0-x86_64.tar.gz
+        charts/
+        charts/**ibm-odm-prod-20.3.0.tgz**
+        images/
+        images/odm-decisionserverconsole_8.10.5.0-amd64.tar.gz
+        images/odm-decisionserverruntime_8.10.5.0-amd64.tar.gz
+        images/odm-decisionrunner_8.10.5.0-amd64.tar.gz
+        images/odm-decisioncenter_8.10.5.0-amd64.tar.gz
+        images/dbserver_8.10.5.0-amd64.tar.gz
+        manifest.json
+        manifest.yaml
 
 ```console
 helm install mycompany --set image.repository=$DOCKER_REGISTRY --set image.pullSecrets=registry-secret \
