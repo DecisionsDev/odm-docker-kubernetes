@@ -112,7 +112,9 @@ az aks create --resource-group odm-group --name odm-cluster --node-count 2 \
               --location francecentral --enable-addons monitoring --generate-ssh-keys
    ```
 
-After a few minutes, the command completes and returns JSON-formatted information about the cluster.
+After a few minutes, the command completes and returns JSON-formatted information about the cluster.  Make a note of the newly-created Resource Group that is displayed in the JSON output (e.g.: "nodeResourceGroup": "MC_odm-group_odm-cluster_francecentral") if you have to tag it, for instance:
+
+    az group update --name MC_odm-group_odm-cluster_francecentral --tags Owner=pylochou@fr.ibm.com Team=DBA Usage=temp Usage_desc="Update Azure documentation" Delete_date=2020-12-05
 
 > NOTE: By default, a Kubernetes cluster version 1.16 or higher is created.
        
