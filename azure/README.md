@@ -311,7 +311,9 @@ In order to load the container images from the extracted folder into your Docker
 
 3. Load the container images into your internal Docker registry.
 
+    ```console
     $ for name in images/*.tar.gz; do echo $name && docker image load --input $name ; done
+    ```
 
   For more information, refer to the [ODM knowledge center](https://www.ibm.com/support/knowledgecenter/SSQP76_8.10.x/com.ibm.odm.kube/topics/tsk_config_odm_prod_kube.html).
 
