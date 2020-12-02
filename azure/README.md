@@ -334,15 +334,13 @@ In order to load the container images from the extracted folder into your Docker
     docker push $DOCKER_REGISTRY/dbserver:$IMAGE_TAG_NAME
     ```
 
-6. Create a registry key to access the ACR registry
+6. Create a registry key to access the ACR registry.  Refer to the [documentation](https://docs.microsoft.com/en-US/azure/container-registry/container-registry-tutorial-prepare-registry#enable-admin-account) to enable the registry's admin account and get the credentials in the Container registry portal, then:
 
     ```console
     kubectl create secret docker-registry registry-secret --docker-server="$DOCKER_REGISTRY" \
             --docker-username="<adminUsername>" --docker-password="<adminPassword>" \
             --docker-email="mycompany@email.com"
     ```
-
-    Refer to the [documentation](https://docs.microsoft.com/en-US/azure/container-registry/container-registry-tutorial-prepare-registry#enable-admin-account) to enable the registry's admin account and get the credentials in the Container registry portal.
 
   Make a note of the secret name so that you can set it for the image.pullSecrets parameter when you run a helm install of your containers. The image.repository parameter must be set to \<loginServer\> (ie $DOCKER_REGISTRY).
 
