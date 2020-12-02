@@ -46,7 +46,7 @@ Then, [create an Azure account and pay as you go](https://azure.microsoft.com/en
       - [Option A:  Using the IBM Entitled registry with your IBMid](#option-a---using-the-ibm-entitled-registry-with-your-ibmid)
       - [Option B:  Using the download archives from IBM Passport Advantage (PPA)](#option-b---using-the-download-archives-from-ibm-passport-advantage--ppa-)
     + [Create the datasource secrets for Azure PostgreSQL](#create-the-datasource-secrets-for-azure-postgresql)
-    + [Manage a digital certificate (10 min)](#manage-a-digital-certificate-10-min)
+    + [Manage a digital certificate (10 min)](#manage-adigital-certificate-10-min)
   * [Install an ODM Helm release and expose it with the service type LoadBalancer (10 min)](#install-an-odm-helm-release-and-expose-it-with-the-service-type-loadbalancer--10-min-)
     + [Allocate a public IP](#allocate-a-public-ip)
     + [Install the ODM release](#install-the-odm-release)
