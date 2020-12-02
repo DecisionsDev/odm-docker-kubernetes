@@ -209,7 +209,10 @@ Result:
     }
 ```
 
+Make a note of the server name that is displayed in the JSON output (e.g.: "fullyQualifiedDomainName": "odmpsqlserver.postgres.database.azure.com") as it will be used [later](#create-the-datasource-secrets-for-azure-postgresql).
+
 ###  Create a firewall rule that allows access from Azure services
+
 To make sure your database and your AKS cluster can communicate, put in place firewall rules with the following command:
 
 ```console
@@ -344,6 +347,7 @@ In order to load the container images from the extracted folder into your Docker
   Make a note of the secret name so that you can set it for the image.pullSecrets parameter when you run a helm install of your containers. The image.repository parameter must be set to \<loginServer\> (ie $DOCKER_REGISTRY).
 
 ### Create the datasource secrets for Azure PostgreSQL
+
 Copy the files [ds-bc.xml.template](ds-bc.xml.template) and [ds-res.xml.template](ds-res.xml.template) on your local machine and rename them to `ds-bc.xml` and `ds-res.xml`.
 
  Replace the following placeholers:
