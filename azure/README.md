@@ -319,11 +319,11 @@ In order to load the container images from the extracted folder into your Docker
 
     ```console
     export IMAGE_TAG_NAME=<IMAGE_TAG_NAME>
-    docker tag odm-decisionserverconsole:${IMAGE_TAG_NAME}-amd64 $DOCKER_REGISTRY/odm-decisionserverconsole:$IMAGE_TAG_NAME
-    docker tag dbserver:${IMAGE_TAG_NAME}-amd64 $DOCKER_REGISTRY/dbserver:$IMAGE_TAG_NAME
-    docker tag odm-decisioncenter:${IMAGE_TAG_NAME}-amd64 $DOCKER_REGISTRY/odm-decisioncenter:$IMAGE_TAG_NAME
-    docker tag odm-decisionserverruntime:${IMAGE_TAG_NAME}-amd64 $DOCKER_REGISTRY/odm-decisionserverruntime:$IMAGE_TAG_NAME
-    docker tag odm-decisionrunner:${IMAGE_TAG_NAME}-amd64 $DOCKER_REGISTRY/odm-decisionrunner:$IMAGE_TAG_NAME
+    docker tag odm-decisionserverconsole:${IMAGE_TAG_NAME}-amd64 $DOCKER_REGISTRY/odm-decisionserverconsole:$IMAGE_TAG_NAME-amd64
+    docker tag dbserver:${IMAGE_TAG_NAME}-amd64 $DOCKER_REGISTRY/dbserver:$IMAGE_TAG_NAME-amd64
+    docker tag odm-decisioncenter:${IMAGE_TAG_NAME}-amd64 $DOCKER_REGISTRY/odm-decisioncenter:$IMAGE_TAG_NAME-amd64
+    docker tag odm-decisionserverruntime:${IMAGE_TAG_NAME}-amd64 $DOCKER_REGISTRY/odm-decisionserverruntime:$IMAGE_TAG_NAME-amd64
+    docker tag odm-decisionrunner:${IMAGE_TAG_NAME}-amd64 $DOCKER_REGISTRY/odm-decisionrunner:$IMAGE_TAG_NAME-amd64
     ```
 
 5. Push the images to your registry.
@@ -432,17 +432,21 @@ The certificate must be the same as the one you used to enable TLS connections i
 
   - In the following exemple, the charts directory will contains the helm charts used to install the ODM product which can be used in the helm install steps.
 
-        % tar zxfv odm_on_icp_8.10.5.0-x86_64.tar.gz
-        charts/
-        charts/**ibm-odm-prod-20.3.0.tgz**
-        images/
-        images/odm-decisionserverconsole_8.10.5.0-amd64.tar.gz
-        images/odm-decisionserverruntime_8.10.5.0-amd64.tar.gz
-        images/odm-decisionrunner_8.10.5.0-amd64.tar.gz
-        images/odm-decisioncenter_8.10.5.0-amd64.tar.gz
-        images/dbserver_8.10.5.0-amd64.tar.gz
-        manifest.json
-        manifest.yaml
+    ```console
+    % tar zxfv odm_on_icp_8.10.5.0-x86_64.tar.gz
+    charts/
+    charts/** ibm-odm-prod-20.3.0.tgz **
+    images/
+    images/odm-decisionserverconsole_8.10.5.0-amd64.tar.gz
+    images/odm-decisionserverruntime_8.10.5.0-amd64.tar.gz
+    images/odm-decisionrunner_8.10.5.0-amd64.tar.gz
+    images/odm-decisioncenter_8.10.5.0-amd64.tar.gz
+    images/dbserver_8.10.5.0-amd64.tar.gz
+    manifest.json
+    manifest.yaml
+    ```
+
+Then you can install the product:
 
 ```console
 helm install mycompany --set image.repository=$DOCKER_REGISTRY --set image.pullSecrets=registry-secret \
