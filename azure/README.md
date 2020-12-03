@@ -114,11 +114,14 @@ az aks create --resource-group odm-group --name odm-cluster --node-count 2 \
 
 After a few minutes, the command completes and returns JSON-formatted information about the cluster.  Make a note of the newly-created Resource Group that is displayed in the JSON output (e.g.: "nodeResourceGroup": "MC_odm-group_odm-cluster_francecentral") if you have to tag it, for instance:
 
+    ```console
     az group update --name MC_odm-group_odm-cluster_francecentral --tags Owner=pylochou@fr.ibm.com Team=DBA Usage=temp Usage_desc="Update Azure documentation" Delete_date=2020-12-05
+    ```
 
 > NOTE: By default, a Kubernetes cluster version 1.16 or higher is created.
        
 ### Set up your environment to this cluster
+
 To manage a Kubernetes cluster, use kubectl, the Kubernetes command-line client. If you use Azure Cloud Shell, kubectl is already installed. To install kubectl locally, use the `az aks install-cli` command:
 
 ```console
@@ -246,11 +249,15 @@ To view the list of Passport Advantage eAssembly installation images, refer to t
 
 Extract the file that contains both the Helm chart and the images.  The name of the file includes the chart version number:
 
+    ```console
     tar xvzf PPA_NAME.tar.gz
+    ```
 
 Switch to the extracted folder:
 
+    ```console
     $ cd PPA_NAME
+    ```
 
 ### Access the container images
 
@@ -268,8 +275,10 @@ In the Container software library tile, verify your entitlement on the View libr
 
 Create a pull secret by running a kubectl create secret command.
 
+    ```console
     $ kubectl create secret docker-registry <REGISTRY_SECRET> --docker-server=cp.icr.io --docker-username=cp \
-    --docker-password="<API_KEY_GENERATED>" --docker-email=<USER_EMAIL>
+        --docker-password="<API_KEY_GENERATED>" --docker-email=<USER_EMAIL>
+    ```
 
 where:
 

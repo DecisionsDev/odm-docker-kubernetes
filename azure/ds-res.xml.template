@@ -1,28 +1,35 @@
-<server>
 <!-- decision server datasource -->
-  <dataSource id="resdatasource"
-     jndiName="jdbc/resdatasource" jdbcDriverRef="postgresql-driver" validationTimeout="0" type="javax.sql.ConnectionPoolDataSource">
+<server>
 
-        <connectionManager
-    			maxPoolSize="25"
-    			minPoolSize="10"
-    			connectionTimout="10s"
-    			agedTimeout="30m" />
-         <properties
-          databaseName="DBNAME"
-          user="USERNAME"
-          password="PASSWORD"
-          portNumber="5432"
-          sslMode="require"
-          serverName="SERVERNAME" />
+  <dataSource id="resdatasource"
+    jndiName="jdbc/resdatasource"
+    jdbcDriverRef="postgresql-driver"
+    validationTimeout="0"
+    type="javax.sql.ConnectionPoolDataSource">
+
+    <connectionManager
+      maxPoolSize="25"
+      minPoolSize="10"
+      connectionTimout="10s"
+      agedTimeout="30m" />
+
+    <properties
+      databaseName="DBNAME"
+      user="USERNAME"
+      password="PASSWORD"
+      portNumber="5432"
+      sslMode="require"
+      serverName="SERVERNAME" />
+
   </dataSource>
 
   <jdbcDriver id="postgresql-driver"
-            javax.sql.ConnectionPoolDataSource="org.postgresql.ds.PGConnectionPoolDataSource"
-            javax.sql.XADataSource="org.postgresql.xa.PGXADataSource"
-            libraryRef="postgresql-library"/>
+    javax.sql.ConnectionPoolDataSource="org.postgresql.ds.PGConnectionPoolDataSource"
+    javax.sql.XADataSource="org.postgresql.xa.PGXADataSource"
+    libraryRef="postgresql-library"/>
 
   <library id="postgresql-library">
-	    <fileset id="postgresql-fileset"  dir="${server.config.dir}/resources" />
+    <fileset id="postgresql-fileset" dir="${server.config.dir}/resources" />
   </library>
+
 </server>
