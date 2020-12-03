@@ -221,7 +221,7 @@ To make sure your database and your AKS cluster can communicate, put in place fi
 
 ```console
 az postgres server firewall-rule create -g odm-group -s odmpsqlserver \
-            -n myrule --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0
+            -n myrule --start-ip-address 0.0.0.0 --end-ip-address 255.255.255.255
 ```
 
 ## Prepare your environment for the ODM installation (20 min)
