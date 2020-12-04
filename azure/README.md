@@ -163,9 +163,9 @@ kubectl cluster-info dump
 Create an Azure Database for PostgreSQL server by running the `az postgres server create` command. A server can contain multiple databases.
 
 ```console
- az postgres server create --resource-group odm-group --name odmpsqlserver \
-                           --admin-user myadmin --admin-password 'passw0rd!' \
-                           --sku-name GP_Gen5_2 --version 9.6 --location francecentral
+az postgres server create --resource-group odm-group --name odmpsqlserver \
+                          --admin-user myadmin --admin-password 'passw0rd!' \
+                          --sku-name GP_Gen5_2 --version 9.6 --location francecentral
 ```
 
 > **Note**: The PostgreSQL server name must be unique within Azure.
@@ -174,7 +174,7 @@ Verify the database.
 To connect to your server, you need to provide host information and access credentials.
 
 ```console
- az postgres server show --resource-group odm-group --name odmpsqlserver
+az postgres server show --resource-group odm-group --name odmpsqlserver
 ```
 
 Result:
@@ -251,15 +251,15 @@ To view the list of Passport Advantage eAssembly installation images, refer to t
 
 Extract the file that contains both the Helm chart and the images.  The name of the file includes the chart version number:
 
-    ```console
-    tar xvzf PPA_NAME.tar.gz
-    ```
+```console
+tar xvzf PPA_NAME.tar.gz
+```
 
 Switch to the extracted folder:
 
-    ```console
-    $ cd PPA_NAME
-    ```
+```console
+$ cd PPA_NAME
+```
 
 ### Access the container images
 
