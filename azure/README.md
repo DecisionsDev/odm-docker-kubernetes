@@ -277,10 +277,10 @@ In the Container software library tile, verify your entitlement on the View libr
 
 Create a pull secret by running a kubectl create secret command.
 
-    ```console
-    $ kubectl create secret docker-registry <REGISTRY_SECRET> --docker-server=cp.icr.io --docker-username=cp \
-        --docker-password="<API_KEY_GENERATED>" --docker-email=<USER_EMAIL>
-    ```
+```console
+$ kubectl create secret docker-registry <REGISTRY_SECRET> --docker-server=cp.icr.io --docker-username=cp \
+    --docker-password="<API_KEY_GENERATED>" --docker-email=<USER_EMAIL>
+```
 
 where:
 
