@@ -19,6 +19,7 @@
       password="PASSWORD"
       portNumber="5432"
       sslMode="require"
+      gssEncMode="disable"
       serverName="SERVERNAME" />
 
   </dataSource>
