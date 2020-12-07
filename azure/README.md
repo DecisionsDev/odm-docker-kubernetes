@@ -468,7 +468,7 @@ Then you can install the product:
 helm install mycompany --set image.repository=$DOCKER_REGISTRY --set image.pullSecrets=registry-secret \
                        --set image.arch=amd64 --set image.tag=$ODM_VERSION --set service.type=LoadBalancer \
                        --set externalCustomDatabase.datasourceRef=customdatasource-secret \
-                       --set customization.securitySecretRef=mycompany-secret charts/ibm-odm-prod-20.2.0.tgz
+                       --set customization.securitySecretRef=mycompany-secret charts/ibm-odm-prod-20.3.0.tgz
 ```
 
 > Remember:  If you choose to use the IBM Entitled registry, the `image.repository` must be set to cp.icr.io/cp/cp4a/odm.  If you choose to push the ODM images to the Azure Container Registry, the `image.repository` should be set to your `loginServer` value.
