@@ -334,7 +334,7 @@ In order to load the container images from the extracted folder into your Docker
 
     ```console
     export ODM_VERSION=<ODM_VERSION>
-    export IMAGE_TAG_NAME=${ODM_VERSION}-amd64
+    export IMAGE_TAG_NAME=${ODM_VERSION:-8.10.5.0}-amd64
     docker tag odm-decisionserverconsole:$IMAGE_TAG_NAME $DOCKER_REGISTRY/odm-decisionserverconsole:$IMAGE_TAG_NAME
     docker tag dbserver:$IMAGE_TAG_NAME $DOCKER_REGISTRY/dbserver:$IMAGE_TAG_NAME
     docker tag odm-decisioncenter:$IMAGE_TAG_NAME $DOCKER_REGISTRY/odm-decisioncenter:$IMAGE_TAG_NAME
@@ -466,7 +466,7 @@ Then you can install the product:
 
 ```console
 helm install mycompany --set image.repository=$DOCKER_REGISTRY --set image.pullSecrets=registry-secret \
-                       --set image.arch=amd64 --set image.tag=$ODM_VERSION --set service.type=LoadBalancer \
+                       --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.10.5.0} --set service.type=LoadBalancer \
                        --set externalCustomDatabase.datasourceRef=customdatasource-secret \
                        --set customization.securitySecretRef=mycompany-secret charts/ibm-odm-prod-20.3.0.tgz
 ```
