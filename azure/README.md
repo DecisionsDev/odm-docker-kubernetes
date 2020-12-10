@@ -83,7 +83,7 @@ A web browser opens where you can connect with your Azure credentials.
 An Azure resource group is a logical group in which Azure resources are deployed and managed. When you create a resource group, you are asked to specify a location. This location is where resource group metadata is stored. It is also where your resources run in Azure, if you don't specify another region during resource creation. Create a resource group by running the `az group create` command.
 
    ```console
-az group create --name odm-group --location francecentral [--tags Owner=pylochou@fr.ibm.com Team=DBA Usage=temp Usage_desc="Update Azure documentation" Delete_date=2020-12-05]
+az group create --name odm-group --location francecentral [--tags Owner=pylochou@fr.ibm.com Team=DBA Usage=demo Usage_desc="Azure customers support" Delete_date=2021-02-15]
    ```
 
 The following example output shows that the resource group has been created successfully:
@@ -117,7 +117,7 @@ After a few minutes, the command completes and returns JSON-formatted informatio
 
 ```console
 az group update --name MC_odm-group_odm-cluster_francecentral \
-    --tags Owner=pylochou@fr.ibm.com Team=DBA Usage=temp Usage_desc="Update Azure documentation" Delete_date=2020-12-05
+    --tags Owner=pylochou@fr.ibm.com Team=DBA Usage=demo Usage_desc="Azure customers support" Delete_date=2021-02-15
 ```
 
 > NOTE: By default, a Kubernetes cluster version 1.16 or higher is created.
