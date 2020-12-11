@@ -496,7 +496,6 @@ kubectl get svc
 
   You can then open a browser on https://xx.xx.xxx.xxx:9443 to access Decision Server console, Decision Server Runtime, and Decision Runner, and on https://xx.xx.xxx.xxx:9453 to access Decision Center.
 
-
 ## Install an ODM Helm release and expose it with an Ingress controller (15 min)
 
 This section explains how to expose the ODM services to Internet connectivity with Ingress. For reference, see the Microsoft Azure documentation https://docs.microsoft.com/en-US/azure/aks/ingress-own-tls.
@@ -504,32 +503,35 @@ This section explains how to expose the ODM services to Internet connectivity wi
 ### Create an Ingress controller
 
 1. Create a namespace for your Ingress resources
-   ```console
-   kubectl create namespace ingress-basic
-   ```
+
+    ```console
+    kubectl create namespace ingress-basic
+    ```
 
 2. Add the official stable repository
 
-   ```console
-   helm repo add stable https://kubernetes-charts.storage.googleapis.com/
-   ```
+    ```console
+    helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+    ```
 
 3. Use Helm to deploy an NGINX Ingress controller
-   ```console
-   helm install nginx-ingress stable/nginx-ingress \
+
+    ```console
+    helm install nginx-ingress ingress-nginx/ingress-nginx \
       --namespace ingress-basic \
       --set controller.replicaCount=2 \
       --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux \
       --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux
-   ```
+    ```
 
 4. Get the Ingress controller external IP address
-   ```console
-   kubectl get service -l app=nginx-ingress --namespace ingress-basic
-   NAME                             TYPE           CLUSTER-IP     EXTERNAL-IP   PORT(S)                      AGE
-   nginx-ingress-controller         LoadBalancer   10.0.61.144    EXTERNAL_IP   80:30386/TCP,443:32276/TCP   6m2s
-   nginx-ingress-default-backend    ClusterIP      10.0.192.145   <none>        80/TCP                       6m2s
-   ```
+
+    ```console
+    kubectl get service -l app.kubernetes.io/name=ingress-nginx --namespace ingress-basic
+    NAME                                               TYPE           CLUSTER-IP     EXTERNAL-IP    PORT(S)                      AGE
+    nginx-ingress-ingress-nginx-controller             LoadBalancer   10.0.191.246   EXTERNAL-IP   80:30222/TCP,443:31103/TCP   3m8s
+    nginx-ingress-ingress-nginx-controller-admission   ClusterIP      10.0.214.250   <none>         443/TCP                      3m8s
+    ```
 
 ### Create a Kubernetes secret for the TLS certificate
 
@@ -541,10 +543,11 @@ kubectl create secret tls mycompany-tls --namespace ingress-basic --key mycompan
 ```
 
 ### Install the ODM release
+
 ```console
-helm install mycompany --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=registry-secret \
-                        --set image.arch=amd64 --set image.tag=8.10.4.0 \
-                        --set externalCustomDatabase.datasourceRef=customdatasource-secret ibm-odm-prod
+helm install mycompany --set image.repository=$DOCKER_REGISTRY --set image.pullSecrets=registry-secret \
+                       --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.10.5.0} \
+                       --set externalCustomDatabase.datasourceRef=customdatasource-secret ibm-odm-prod
 ```
 
 ### Create an Ingress route
