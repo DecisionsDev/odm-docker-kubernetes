@@ -235,19 +235,7 @@ az postgres server firewall-rule create -g odm-group -s odmpsqlserver \
 
 Download the IBM Operational Decision Manager images from [IBM Passport Advantage (PPA)](https://www-01.ibm.com/software/passportadvantage/pao_customer.html).
 
-To view the list of Passport Advantage eAssembly installation images, refer to the ODM download documents.
-
-- For 8.10.0:  [8.10.0 download document](https://www.ibm.com/support/pages/node/729289)
-
-- For 8.10.1:  [8.10.1 download document](https://www.ibm.com/support/pages/node/843082)
-
-- For 8.10.2:  [8.10.2 download document](https://www.ibm.com/support/pages/node/878711)
-
-- For 8.10.3:  [8.10.3 download document](https://www.ibm.com/support/pages/node/1085931)
-
-- For 8.10.4:  [8.10.4 download document](https://www.ibm.com/support/pages/node/6172197)
-
-- For 8.10.5:  [8.10.5 download document](https://www.ibm.com/support/pages/node/310661)
+Refer to the [ODM download document](https://www.ibm.com/support/pages/node/310661) to view the list of Passport Advantage eAssembly installation images.
 
 Extract the file that contains both the Helm chart and the images.  The name of the file includes the chart version number:
 
