@@ -411,7 +411,7 @@ $ keytool -importkeystore -srckeystore mycompany.p12 -srcstoretype PKCS12 \
                           -srcstorepass password -destkeystore mycompany.jks \
                           -deststoretype JKS -deststorepass password
 $ keytool -import -v -trustcacerts -alias mycompany -file mycompany.crt \
-                  -keystore truststore.jks -storepass password -noprompt
+                  -keystore truststore.jks -storepass password -storetype jks -noprompt
 ```
 
 3. Create a Kubernetes secret with the certificate
