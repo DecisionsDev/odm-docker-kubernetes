@@ -437,7 +437,7 @@ The certificate must be the same as the one you used to enable TLS connections i
 
 You can now install the product.
 
-If you choose to use Entitled Registry for images and to download the Helm chart from IBM's public Helm charts repository [(option A above)](#option-a---using-the-ibm-entitled-registry-with-your-ibmid):
+If you choose to use Entitled Registry for images and to download the Helm chart from IBM's public Helm charts repository [(option A above)](#option-a--using-the-ibm-entitled-registry-with-your-ibmid):
 
 ```console
 helm install mycompany --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=registry-secret \
@@ -446,7 +446,7 @@ helm install mycompany --set image.repository=cp.icr.io/cp/cp4a/odm --set image.
                        --set customization.securitySecretRef=mycompany-secret ibmcharts/ibm-odm-prod --version 20.3.0
 ```
 
-If you downloaded the PPA archive and prefer to use the Helm chart archive from it [(option B above)](#option-b---using-the-download-archives-from-ibm-passport-advantage--ppa-):
+If you downloaded the PPA archive and prefer to use the Helm chart archive from it [(option B above)](#option-b--using-the-download-archives-from-ibm-passport-advantage-ppa):
 
 ```console
 helm install mycompany --set image.repository=$DOCKER_REGISTRY --set image.pullSecrets=registry-secret \
@@ -537,7 +537,7 @@ kubectl create secret tls mycompany-tls --namespace ingress-basic --key mycompan
 
 You can now install the product.
 
-If you choose to use Entitled Registry for images and to download the Helm chart from IBM's public Helm charts repository [(option A above)](#option-a---using-the-ibm-entitled-registry-with-your-ibmid):
+If you choose to use Entitled Registry for images and to download the Helm chart from IBM's public Helm charts repository [(option A above)](#option-a--using-the-ibm-entitled-registry-with-your-ibmid):
 
 ```console
 helm install mycompany --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=registry-secret \
@@ -545,7 +545,7 @@ helm install mycompany --set image.repository=cp.icr.io/cp/cp4a/odm --set image.
                        --set externalCustomDatabase.datasourceRef=customdatasource-secret ibmcharts/ibm-odm-prod --version 20.3.0
 ```
 
-If you downloaded the PPA archive and prefer to use the Helm chart archive from it [(option B above)](#option-b---using-the-download-archives-from-ibm-passport-advantage--ppa-):
+If you downloaded the PPA archive and prefer to use the Helm chart archive from it [(option B above)](#option-b--using-the-download-archives-from-ibm-passport-advantage-ppa):
 
 ```console
 helm install mycompany --set image.repository=$DOCKER_REGISTRY --set image.pullSecrets=registry-secret \
