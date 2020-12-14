@@ -438,19 +438,21 @@ You can now install the product.
 If you choose to use Entitled Registry for images and to download the Helm chart from IBM's public Helm charts repository [(option A above)](#option-a--using-the-ibm-entitled-registry-with-your-ibmid):
 
 ```console
-helm install mycompany --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=registry-secret \
-                       --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.10.5.0} --set service.type=LoadBalancer \
-                       --set externalCustomDatabase.datasourceRef=customdatasource-secret \
-                       --set customization.securitySecretRef=mycompany-secret ibmcharts/ibm-odm-prod --version 20.3.0
+helm install mycompany ibmcharts/ibm-odm-prod --version 20.3.0 \
+        --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=registry-secret \
+        --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.10.5.0} --set service.type=LoadBalancer \
+        --set externalCustomDatabase.datasourceRef=customdatasource-secret \
+        --set customization.securitySecretRef=mycompany-secret
 ```
 
 If you downloaded the PPA archive and prefer to use the Helm chart archive from it [(option B above)](#option-b--using-the-download-archives-from-ibm-passport-advantage-ppa):
 
 ```console
-helm install mycompany --set image.repository=$DOCKER_REGISTRY --set image.pullSecrets=registry-secret \
-                       --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.10.5.0} --set service.type=LoadBalancer \
-                       --set externalCustomDatabase.datasourceRef=customdatasource-secret \
-                       --set customization.securitySecretRef=mycompany-secret charts/ibm-odm-prod-20.3.0.tgz
+helm install mycompany charts/ibm-odm-prod-20.3.0.tgz \
+        --set image.repository=$DOCKER_REGISTRY --set image.pullSecrets=registry-secret \
+        --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.10.5.0} --set service.type=LoadBalancer \
+        --set externalCustomDatabase.datasourceRef=customdatasource-secret \
+        --set customization.securitySecretRef=mycompany-secret
 ```
 
 > Remember:  If you choose to use the IBM Entitled registry, the `image.repository` must be set to cp.icr.io/cp/cp4a/odm.  If you choose to push the ODM images to the Azure Container Registry, the `image.repository` should be set to your `loginServer` value.
@@ -538,17 +540,19 @@ You can now install the product.
 If you choose to use Entitled Registry for images and to download the Helm chart from IBM's public Helm charts repository [(option A above)](#option-a--using-the-ibm-entitled-registry-with-your-ibmid):
 
 ```console
-helm install mycompany --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=registry-secret \
-                       --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.10.5.0} \
-                       --set externalCustomDatabase.datasourceRef=customdatasource-secret ibmcharts/ibm-odm-prod --version 20.3.0
+helm install mycompany ibmcharts/ibm-odm-prod --version 20.3.0 \
+        --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=registry-secret \
+        --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.10.5.0} \
+        --set externalCustomDatabase.datasourceRef=customdatasource-secret
 ```
 
 If you downloaded the PPA archive and prefer to use the Helm chart archive from it [(option B above)](#option-b--using-the-download-archives-from-ibm-passport-advantage-ppa):
 
 ```console
-helm install mycompany --set image.repository=$DOCKER_REGISTRY --set image.pullSecrets=registry-secret \
-                       --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.10.5.0} \
-                       --set externalCustomDatabase.datasourceRef=customdatasource-secret charts/ibm-odm-prod-20.3.0.tgz
+helm install mycompany charts/ibm-odm-prod-20.3.0.tgz \
+        --set image.repository=$DOCKER_REGISTRY --set image.pullSecrets=registry-secret \
+        --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.10.5.0} \
+        --set externalCustomDatabase.datasourceRef=customdatasource-secret
 ```
 
 > Remember:  If you choose to use the IBM Entitled registry, the `image.repository` must be set to cp.icr.io/cp/cp4a/odm.  If you choose to push the ODM images to the Azure Container Registry, the `image.repository` should be set to your `loginServer` value.
