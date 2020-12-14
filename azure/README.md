@@ -273,6 +273,8 @@ NAME                  	CHART VERSION	APP VERSION	DESCRIPTION
 ibmcharts/ibm-odm-prod	20.3.0       	8.10.5.0   	IBM Operational Decision Manager
 ```
 
+You can now proceed to the [datasource secret's creation](#create-the-datasource-secrets-for-azure-postgresql).
+
 #### Option B:  Using the download archives from IBM Passport Advantage (PPA)
 
 Prerequisites:  You must install Docker.
@@ -356,6 +358,8 @@ In order to load the container images from the extracted folder into your Docker
     ```
 
   Make a note of the secret name so that you can set it for the image.pullSecrets parameter when you run a helm install of your containers. The image.repository parameter must be set to \<loginServer\> (ie $DOCKER_REGISTRY).
+
+You can now proceed to the [datasource secret's creation](#create-the-datasource-secrets-for-azure-postgresql).
 
 ### Create the datasource secrets for Azure PostgreSQL
 
