@@ -28,7 +28,7 @@ Then, create an  [AWS Account](https://aws.amazon.com/getting-started/?sc_iconte
 ## Steps to deploy ODM on Kubernetes from Amazon EKS
 
 1. [Prepare your environment (40 min)](#1-preparing-yourenvironment-40-min)
-2. [Push the ODM images to the ECR registry - Optional (25 min)](#2-optional-push-odm-images-in-the-ecr-registry-25-min)
+2. [Prepare your environment for the ODM installation (25 min)](#2-prepare-your-environment-for-the-odm-installation-25-min)
 3. [Create an RDS database (20 min)](#3-create-an-rds-database-20-min)
 4. [Manage a  digital certificate (10 min)](#4-manage-a-digital-certificate-10-min)
 5. [Install an ODM release (10 min)](#5-install-an-ibm-operational-decision-manager-release-10-min)
@@ -77,8 +77,65 @@ To further debug and diagnose cluster problems, run the command:
 kubectl cluster-info dump
 ```
 
-### 2. (Optional) Push the ODM images to the ECR registry (25 min)
-The ODM images must be pushed to a registry that the EKS cluster can access. 
+
+## Prepare your environment for the ODM installation (25 min)
+
+To get access to the ODM material, you must have an IBM entitlement registry key to pull the images from the IBM Entitled registry (option A) or download the ODM on Kubernetes package (.tgz file) from Passport Advantage® (PPA) and then push it to the AWS Container Registry (option B).
+
+* To access image from IBM entitlement registry follow the instructions in the section [Create a pull secret to pull the ODM Docker images from the IBM Entitled Registry](#option-a--using-the-ibm-entitled-registry-with-your-ibmid)
+
+* To push image in the Azure Container Registry follow the instructions in the section [Push the ODM images to the ACR (Azure Container Registry](#option-b--using-the-download-archives-from-ibm-passport-advantage-ppa)
+
+#### Option A:  Using the IBM Entitled registry with your IBMid
+
+Log in to [MyIBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary) with the IBMid and password that are associated with the entitled software.
+
+In the Container software library tile, verify your entitlement on the View library page, and then go to Get entitlement key to retrieve the key.
+
+Create a pull secret by running a kubectl create secret command.
+
+```console
+$ kubectl create secret docker-registry <REGISTRY_SECRET> --docker-server=cp.icr.io --docker-username=cp \
+    --docker-password="<API_KEY_GENERATED>" --docker-email=<USER_EMAIL>
+```
+
+where:
+
+* <REGISTRY_SECRET> is the secret name
+* <API_KEY_GENERATED> is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
+* <USER_EMAIL> is the email address associated with your IBMid.
+
+> Note:  The cp.icr.io value for the docker-server parameter is the only registry domain name that contains the images. You must set the docker-username to cp to use an entitlement key as docker-password.
+
+Make a note of the secret name so that you can set it for the image.pullSecrets parameter when you run a helm install of your containers.  The image.repository parameter will later be set to cp.icr.io/cp/cp4a/odm.
+
+Add the public IBM Helm charts repository:
+
+```console
+helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo/entitled
+helm repo update
+```
+
+Check you can access ODM's chart
+
+```console
+helm search repo ibm-odm-prod
+NAME                  	CHART VERSION	APP VERSION	DESCRIPTION                     
+ibmcharts/ibm-odm-prod	20.3.0       	8.10.5.0   	IBM Operational Decision Manager
+```
+
+You can now proceed to the [Create an RDS database (20 min)](#3-create-an-rds-database-20-min).
+
+#### Option B:  Using the download archives from IBM Passport Advantage (PPA)
+
+Prerequisites:  You must install Docker.
+
+Download the IBM Operational Decision Manager chart and images from [IBM Passport Advantage (PPA)](https://www-01.ibm.com/software/passportadvantage/pao_customer.html).
+
+Refer to the [ODM download document](https://www.ibm.com/support/pages/node/310661) to view the list of Passport Advantage eAssembly installation images.
+
+
+Now we are ready to push the ODM images to a private registry that the EKS cluster can access. 
 
 Here we use the [ECR registry](https://docs.aws.amazon.com/AmazonECR/latest/userguide/what-is-ecr.html).
 If you use another public registry, skip this section and go to step 3.
@@ -105,12 +162,24 @@ Example:
 
 #### c. Load the ODM images locally
 
- - Download one or more packages (.tgz archives) from [IBM Passport Advantage (PPA)](https://www-01.ibm.com/software/passportadvantage/pao_customer.html).  To view the full list of eAssembly installation images, refer to the [8.10.3 download document](https://www.ibm.com/support/pages/ibm-operational-decision-manager-v8103-download-document).
+ - Download one or more packages (.tgz archives) from [IBM Passport Advantage (PPA)](https://www-01.ibm.com/software/passportadvantage/pao_customer.html).  To view the full list of eAssembly installation images, refer to the [8.10.5 download document](https://www.ibm.com/support/pages/ibm-operational-decision-manager-v8105-download-document).
  
  - Extract the .tgz archives to your local file system.
-     ```bash
-     $ tar xzf <PPA-ARCHIVE>.tar.gz
-     ```
+Extract the file that contains both the Helm chart and the images.  The name of the file includes the chart version number:
+
+```console
+$ mkdir ODM-PPA
+$ cd ODM-PPA
+$ tar zxvf PPA_NAME.tar.gz
+charts/ibm-odm-prod-20.3.0.tgz
+images/odm-decisionserverconsole_8.10.5.0-amd64.tar.gz
+images/odm-decisionserverruntime_8.10.5.0-amd64.tar.gz
+images/odm-decisionrunner_8.10.5.0-amd64.tar.gz
+images/odm-decisioncenter_8.10.5.0-amd64.tar.gz
+images/dbserver_8.10.5.0-amd64.tar.gz
+manifest.json
+manifest.yaml
+```
 
 - Check that you can run a docker command.
     ```bash
@@ -138,21 +207,21 @@ Example:
 
 Example:
 ```bash
-    $ docker tag odm-decisioncenter:8.10.3.0-amd64 <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/odm-decisioncenter:8.10.3.0-amd64
-    $ docker tag odm-decisionserverruntime:8.10.3.0-amd64 <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/odm-decisionserverruntime:8.10.3.0-amd64
-    $ docker tag odm-decisionserverconsole:8.10.3.0-amd64 <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/odm-decisionserverconsole:8.10.3.0-amd64
-    $ docker tag odm-decisionrunner:8.10.3.0-amd64 <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/odm-decisionrunner:8.10.3.0-amd64
-    $ docker tag dbserver:8.10.3.0-amd64 <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/dbserver:8.10.3.0-amd64
+    $ docker tag odm-decisioncenter:8.10.5.0-amd64 <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/odm-decisioncenter:8.10.5.0-amd64
+    $ docker tag odm-decisionserverruntime:8.10.5.0-amd64 <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/odm-decisionserverruntime:8.10.5.0-amd64
+    $ docker tag odm-decisionserverconsole:8.10.5.0-amd64 <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/odm-decisionserverconsole:8.10.5.0-amd64
+    $ docker tag odm-decisionrunner:8.10.5.0-amd64 <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/odm-decisionrunner:8.10.5.0-amd64
+    $ docker tag dbserver:8.10.5.0-amd64 <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/dbserver:8.10.5.0-amd64
 ```
 - Push the images to the ECR registry
 
 Example: 
 ```bash
-    $ docker push <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/odm-decisioncenter:8.10.3.0-amd64
-    $ docker push <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/odm-decisionserverconsole:8.10.3.0-amd64
-    $ docker push <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/odm-decisionserverruntime:8.10.3.0-amd64
-    $ docker push <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/odm-decisionrunner:8.10.3.0-amd64
-    $ docker push <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/dbserver:8.10.3.0-amd64
+    $ docker push <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/odm-decisioncenter:8.10.5.0-amd64
+    $ docker push <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/odm-decisionserverconsole:8.10.5.0-amd64
+    $ docker push <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/odm-decisionserverruntime:8.10.5.0-amd64
+    $ docker push <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/odm-decisionrunner:8.10.5.0-amd64
+    $ docker push <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/dbserver:8.10.5.0-amd64
 ```
 
 #### e. Create a pull secret for the ECR registry  
@@ -253,16 +322,16 @@ Install a Kubernetes release with the default configuration and a name of `my-od
 - Generate the template file
 
 ```bash
-$ helm template <RELEASENAME> ibm-odm-prod --set image.repository=<IMAGE_REPOSITORY> --set image.tag=8.10.3.0 --set image.pullSecrets=ecrodm --set image.arch=amd64  --set externalDatabase.type=postgres --set externalDatabase.serverName=<RDS_POSTGRESQL_SERNAME>   --set externalDatabase.secretCredentials=<odm-db-secret> --set externalDatabase.port=5432  --set customization.securitySecretRef=mycompany-secret charts/ibm-odm-prod-2.3.0.tar.gz > postgresql.yaml 
+$ helm template <RELEASENAME> ibm-odm-prod --set image.repository=<IMAGE_REPOSITORY> --set image.tag=8.10.5.0 --set image.pullSecrets=ecrodm --set image.arch=amd64  --set externalDatabase.type=postgres --set externalDatabase.serverName=<RDS_POSTGRESQL_SERNAME>   --set externalDatabase.secretCredentials=<odm-db-secret> --set externalDatabase.port=5432  --set customization.securitySecretRef=mycompany-secret charts/ibm-odm-prod-2.3.0.tar.gz > postgresql.yaml 
 ```
 
 Example:
 ```bash
-helm template mycompany charts/ibm-odm-prod-2.3.0.tgz --set image.arch=amd64 --set image.repository=<AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com --set image.tag=8.10.3.0 --set image.pullSecrets=ecrodm --set image.arch=amd64  --set externalDatabase.type=postgres --set externalDatabase.serverName=database-1.cv8ecjiejtnt.eu-west-3.rds.amazonaws.com   --set externalDatabase.secretCredentials=odm-db-secret --set externalDatabase.port=5432 --set customization.securitySecretRef=mycompany1-secret --set externalDatabase.databaseName=postgres > postgresql.yaml
+helm template mycompany charts/ibm-odm-prod-2.3.0.tgz --set image.arch=amd64 --set image.repository=<AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com --set image.tag=8.10.5.0 --set image.pullSecrets=ecrodm --set image.arch=amd64  --set externalDatabase.type=postgres --set externalDatabase.serverName=database-1.cv8ecjiejtnt.eu-west-3.rds.amazonaws.com   --set externalDatabase.secretCredentials=odm-db-secret --set externalDatabase.port=5432 --set customization.securitySecretRef=mycompany1-secret --set externalDatabase.databaseName=postgres > postgresql.yaml
 ```
 
 > NOTES:
->  In ODM 8.10.3.0, a bug prevents the instanciation of the topology. To fix this problem:
+>  In ODM 8.10.5.0, a bug prevents the instanciation of the topology. To fix this problem:
 > - Edit the postgresql.yaml file
 > - Search "dc-jvm-options"
 > - Delete the block: 
