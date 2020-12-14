@@ -9,13 +9,13 @@ The ODM Docker material is available in Passport Advantage. It includes Docker c
 
 ## Included components
 The project comes with the following components:
-- [IBM Operational Decision Manager](https://www.ibm.com/support/knowledgecenter/en/SSQP76_8.10.x/com.ibm.odm.kube/kc_welcome_odm_kube.html)
-- [Azure Kubernetes Service (AKS)](https://docs.microsoft.com/en-us/azure/aks/)
+- [IBM Operational Decision Manager](https://www.ibm.com/support/knowledgecenter/en/SSQP76_8.10.x/welcome/kc_welcome_odmV.html)
 - [Azure Database for PostgreSQL](https://docs.microsoft.com/en-us/azure/postgresql/)
-- [AKS Networking](https://docs.microsoft.com/en-us/azure/aks/concepts-network)
+- [Azure Kubernetes Service (AKS)](https://docs.microsoft.com/en-us/azure/aks/)
+- [Network concepts for applications in AKS](https://docs.microsoft.com/en-us/azure/aks/concepts-network)
 
 ## Tested environment
-The commands and tools have been tested on macOS and linux.
+The commands and tools have been tested on macOS and Linux.
 
 ## Prerequisites
 First, install the following software on your machine:
@@ -23,7 +23,7 @@ First, install the following software on your machine:
 * [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)
 * [Helm v3](https://github.com/helm/helm/releases)
 
-Then, [create an Azure account and pay as you go](https://azure.microsoft.com/en-us/pricing/purchase-options/pay-as-you-go/)
+Then [create an Azure account and pay as you go](https://azure.microsoft.com/en-us/pricing/purchase-options/pay-as-you-go/).
 
 ## Steps to deploy ODM on Kubernetes from Azure AKS
 
@@ -69,42 +69,42 @@ Source: https://docs.microsoft.com/en-us/azure/aks/kubernetes-walkthrough
 
 ### Log in to Azure
 
-After installing the Azure CLI, use the following command line.
-   ```console
-   az login [--tenant <name>.onmicrosoft.com]
-   ```
+After installing the Azure CLI, use the following command line:
 
-A web browser opens where you can connect with your Azure credentials.
+```console
+az login [--tenant <name>.onmicrosoft.com]
+```
+
+A Web browser opens where you can connect with your Azure credentials.
 
 ### Create a resource group
 
 An Azure resource group is a logical group in which Azure resources are deployed and managed. When you create a resource group, you are asked to specify a location. This location is where resource group metadata is stored. It is also where your resources run in Azure, if you don't specify another region during resource creation. Create a resource group by running the `az group create` command.
 
-   ```console
+```console
 az group create --name odm-group --location francecentral [--tags Owner=pylochou@fr.ibm.com Team=DBA Usage=demo Usage_desc="Azure customers support" Delete_date=2021-02-15]
-   ```
+```
 
 The following example output shows that the resource group has been created successfully:
 
-   ```json
-    {
-      "id": "/subscriptions/<guid>/resourceGroups/odm-group",
-      "location": "francecentral",
-      "managedBy": null,
-      "name": "odm-group",
-      "properties": {
-        "provisioningState": "Succeeded"
-      },
-      "tags": null
-    }
-   ```
+```json
+{
+  "id": "/subscriptions/<guid>/resourceGroups/odm-group",
+  "location": "francecentral",
+  "managedBy": null,
+  "name": "odm-group",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null
+}
+```
 
 ### Create an AKS cluster
 
 Use the `az aks create` command to create an AKS cluster. The following example creates a cluster named odm-cluster with two nodes. Azure Monitor for containers is also enabled using the `--enable-addons monitoring` parameter.  The operation takes several minutes to complete.
 
-> NOTE:
-During the creation of the AKS cluster, a second resource group is automatically created to store the AKS resources. For more information, see [Why are two resource groups created with AKS](https://docs.microsoft.com/en-us/answers/questions/25725/why-are-two-resource-groups-created-with-aks.html).
+> Note:  During the creation of the AKS cluster, a second resource group is automatically created to store the AKS resources. For more information, see [Why are two resource groups created with AKS](https://docs.microsoft.com/en-us/answers/questions/25725/why-are-two-resource-groups-created-with-aks.html).
 
 ```console
 az aks create --resource-group odm-group --name odm-cluster --node-count 2 \
@@ -118,7 +118,7 @@ az group update --name MC_odm-group_odm-cluster_francecentral \
     --tags Owner=pylochou@fr.ibm.com Team=DBA Usage=demo Usage_desc="Azure customers support" Delete_date=2021-02-15
 ```
 
-> NOTE: By default, a Kubernetes cluster version 1.16 or higher is created.
+> Note:  By default, a Kubernetes cluster version 1.16 or higher is created.
        
 ### Set up your environment to this cluster
 
@@ -166,7 +166,7 @@ az postgres server create --resource-group odm-group --name odmpsqlserver \
                           --sku-name GP_Gen5_2 --version 9.6 --location francecentral
 ```
 
-> **Note**: The PostgreSQL server name must be unique within Azure.
+> Note:  The PostgreSQL server name must be unique within Azure.
 
 Verify the database.
 To connect to your server, you need to provide host information and access credentials.
@@ -256,13 +256,9 @@ where:
 
 > Note:  The cp.icr.io value for the docker-server parameter is the only registry domain name that contains the images. You must set the docker-username to cp to use an entitlement key as docker-password.
 
-Make a note of the secret name so that you can set it for the image.pullSecrets parameter when you run a helm install of your containers.  The image.repository parameter must be set to cp.icr.io/cp/cp4a/odm:
+Make a note of the secret name so that you can set it for the image.pullSecrets parameter when you run a helm install of your containers.  The image.repository parameter will later be set to cp.icr.io/cp/cp4a/odm.
 
-```console
-export DOCKER_REGISTRY=cp.icr.io/cp/cp4a/odm
-```
-
-Add the public IBM Helm charts repository
+Add the public IBM Helm charts repository:
 
 ```console
 helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo/entitled
@@ -288,13 +284,17 @@ Refer to the [ODM download document](https://www.ibm.com/support/pages/node/3106
 Extract the file that contains both the Helm chart and the images.  The name of the file includes the chart version number:
 
 ```console
-tar xvzf PPA_NAME.tar.gz
-```
-
-Switch to the extracted folder:
-
-```console
-$ cd PPA_NAME
+$ mkdir ODM-PPA
+$ cd ODM-PPA
+$ tar zxvf PPA_NAME.tar.gz
+charts/ibm-odm-prod-20.3.0.tgz
+images/odm-decisionserverconsole_8.10.5.0-amd64.tar.gz
+images/odm-decisionserverruntime_8.10.5.0-amd64.tar.gz
+images/odm-decisionrunner_8.10.5.0-amd64.tar.gz
+images/odm-decisioncenter_8.10.5.0-amd64.tar.gz
+images/dbserver_8.10.5.0-amd64.tar.gz
+manifest.json
+manifest.yaml
 ```
 
 In order to load the container images from the extracted folder into your Docker registry, you must:
@@ -311,7 +311,7 @@ In order to load the container images from the extracted folder into your Docker
    export DOCKER_REGISTRY=<loginServer>
    ```
 
-   > **Note**: The registry name must be unique within Azure.
+   > Note: The registry name must be unique within Azure.
 
 2. Log in to the ACR registry
 
@@ -425,6 +425,7 @@ The certificate must be the same as the one you used to enable TLS connections i
 ## Install an ODM Helm release and expose it with the service type LoadBalancer (10 min)
 
 ### Allocate a public IP
+
 ```console
  az aks update \
     --resource-group odm-group \
@@ -434,32 +435,16 @@ The certificate must be the same as the one you used to enable TLS connections i
 
 ### Install the ODM release
 
-  - Download one or more packages (.tgz archives) from [IBM Passport Advantage (PPA)](https://www-01.ibm.com/software/passportadvantage/pao_customer.html).  To view the full list of eAssembly installation images, refer to the [8.10.4 download document](https://www.ibm.com/support/pages/ibm-operational-decision-manager-v8104-download-document).
+You can now install the product:
 
-  - Extract the .tgz archives to your local file system.
+```console
+helm install mycompany --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=registry-secret \
+                       --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.10.5.0} --set service.type=LoadBalancer \
+                       --set externalCustomDatabase.datasourceRef=customdatasource-secret \
+                       --set customization.securitySecretRef=mycompany-secret ibmcharts/ibm-odm-prod --version 20.3.0
+```
 
-     ```console
-     tar xzvf <PPA-ARCHIVE>.tar.gz
-
-     ```
-
-  - In the following exemple, the charts directory will contains the helm charts used to install the ODM product which can be used in the helm install steps.
-
-    ```console
-    % tar zxfv odm_on_icp_8.10.5.0-x86_64.tar.gz
-    charts/
-    charts/** ibm-odm-prod-20.3.0.tgz **
-    images/
-    images/odm-decisionserverconsole_8.10.5.0-amd64.tar.gz
-    images/odm-decisionserverruntime_8.10.5.0-amd64.tar.gz
-    images/odm-decisionrunner_8.10.5.0-amd64.tar.gz
-    images/odm-decisioncenter_8.10.5.0-amd64.tar.gz
-    images/dbserver_8.10.5.0-amd64.tar.gz
-    manifest.json
-    manifest.yaml
-    ```
-
-Then you can install the product:
+if you choose to use Entitled Registry for images and to download the Helm chart from IBM's public Helm charts repository [option A above](#option-a---using-the-ibm-entitled-registry-with-your-ibmid), or:
 
 ```console
 helm install mycompany --set image.repository=$DOCKER_REGISTRY --set image.pullSecrets=registry-secret \
@@ -467,6 +452,8 @@ helm install mycompany --set image.repository=$DOCKER_REGISTRY --set image.pullS
                        --set externalCustomDatabase.datasourceRef=customdatasource-secret \
                        --set customization.securitySecretRef=mycompany-secret charts/ibm-odm-prod-20.3.0.tgz
 ```
+
+if you downloaded the PPA archive and prefer to use the Helm chart archive from it [option B above](#option-b---using-the-download-archives-from-ibm-passport-advantage--ppa-).
 
 > Remember:  If you choose to use the IBM Entitled registry, the `image.repository` must be set to cp.icr.io/cp/cp4a/odm.  If you choose to push the ODM images to the Azure Container Registry, the `image.repository` should be set to your `loginServer` value.
 
