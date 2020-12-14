@@ -640,12 +640,10 @@ nginx-ingress-ingress-nginx-controller-admission   ClusterIP      10.0.214.250  
 
 ## Troubleshooting
 
-If your ODM instances are not running properly, check the logs by running the following command:
-```console
-kubectl logs <your-pod-name>
-```
+If your ODM instances are not running properly, please refer to [our dedicated troubleshooting page](https://www.ibm.com/support/knowledgecenter/en/SSQP76_8.10.x/com.ibm.odm.kube/topics/tsk_troubleshooting.html).
 
 ## References
+
 https://docs.microsoft.com/en-US/azure/aks/
 
 https://docs.microsoft.com/en-US/azure/aks/ingress-own-tls
@@ -653,4 +651,5 @@ https://docs.microsoft.com/en-US/azure/aks/ingress-own-tls
 https://docs.microsoft.com/en-US/azure/container-registry/container-registry-get-started-azure-cli
 
 # License
+
 [Apache 2.0](LICENSE)
