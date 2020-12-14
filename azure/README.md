@@ -231,31 +231,11 @@ az postgres server firewall-rule create -g odm-group -s odmpsqlserver \
 
 ## Prepare your environment for the ODM installation (20 min)
 
-### Download the PPA to get the Helm chart
+To get access to the ODM material, you must have an IBM entitlement registry key to pull the images from the IBM Entitled registry (option A) or download the ODM on Kubernetes package (.tgz file) from Passport Advantage® (PPA) and then push it to the Azure Container Registry (option B).
 
-Download the IBM Operational Decision Manager images from [IBM Passport Advantage (PPA)](https://www-01.ibm.com/software/passportadvantage/pao_customer.html).
+* To access image from IBM entitlement registry follow the instructions in the section [Create a pull secret to pull the ODM Docker images from the IBM Entitled Registry](#option-a--using-the-ibm-entitled-registry-with-your-ibmid)
 
-Refer to the [ODM download document](https://www.ibm.com/support/pages/node/310661) to view the list of Passport Advantage eAssembly installation images.
-
-Extract the file that contains both the Helm chart and the images.  The name of the file includes the chart version number:
-
-```console
-tar xvzf PPA_NAME.tar.gz
-```
-
-Switch to the extracted folder:
-
-```console
-$ cd PPA_NAME
-```
-
-### Access the container images
-
-To get access to the ODM container images, you must have an IBM entitlement registry key to pull the images from the IBM Entitled registry (option A) or download the ODM on Kubernetes package (.tgz file) from Passport Advantage® (PPA) and then push it to the Azure Container Registry (option B.)
-
-  * To access image from IBM entitlement registry follow the instructions in the section [Create a pull secret to pull the ODM Docker images from the IBM Entitled Registry](#option-a--using-the-ibm-entitled-registry-with-your-ibmid)
-
-  * To push image in the Azure Container Registry follow the instructions  in the section [Push the ODM images to the ACR (Azure Container Registry](#option-b--using-the-download-archives-from-ibm-passport-advantage-ppa)
+* To push image in the Azure Container Registry follow the instructions in the section [Push the ODM images to the ACR (Azure Container Registry](#option-b--using-the-download-archives-from-ibm-passport-advantage-ppa)
 
 #### Option A:  Using the IBM Entitled registry with your IBMid
 
@@ -284,9 +264,40 @@ Make a note of the secret name so that you can set it for the image.pullSecrets 
 export DOCKER_REGISTRY=cp.icr.io/cp/cp4a/odm
 ```
 
+Add the public IBM Helm charts repository
+
+```console
+helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo/entitled
+helm repo update
+```
+
+Check you can access ODM's chart
+
+```console
+helm search repo ibm-odm-prod
+NAME                  	CHART VERSION	APP VERSION	DESCRIPTION                     
+ibmcharts/ibm-odm-prod	20.3.0       	8.10.5.0   	IBM Operational Decision Manager
+```
+
 #### Option B:  Using the download archives from IBM Passport Advantage (PPA)
 
 Prerequisites:  You must install Docker.
+
+Download the IBM Operational Decision Manager chart and images from [IBM Passport Advantage (PPA)](https://www-01.ibm.com/software/passportadvantage/pao_customer.html).
+
+Refer to the [ODM download document](https://www.ibm.com/support/pages/node/310661) to view the list of Passport Advantage eAssembly installation images.
+
+Extract the file that contains both the Helm chart and the images.  The name of the file includes the chart version number:
+
+```console
+tar xvzf PPA_NAME.tar.gz
+```
+
+Switch to the extracted folder:
+
+```console
+$ cd PPA_NAME
+```
 
 In order to load the container images from the extracted folder into your Docker registry, you must:
 
@@ -467,34 +478,29 @@ Run the following command to check the status of the pods that have been created
 
 ```console
 kubectl get pods
+NAME                                                   READY   STATUS    RESTARTS   AGE
+mycompany-odm-decisioncenter-***                       1/1     Running   0          20m
+mycompany-odm-decisionrunner-***                       1/1     Running   0          20m
+mycompany-odm-decisionserverconsole-***                1/1     Running   0          20m
+mycompany-odm-decisionserverruntime-***                1/1     Running   0          20m
 ```
-
-| NAME | READY | STATUS | RESTARTS | AGE |
-|---|---|---|---|---|
-| mycompany-odm-decisioncenter-*** | 1/1 | Running | 0 | 44m |  
-| mycompany-odm-decisionrunner-*** | 1/1 | Running | 0 | 44m |
-| mycompany-odm-decisionserverconsole-*** | 1/1 | Running | 0 | 44m |
-| mycompany-odm-decisionserverruntime-*** | 1/1 | Running | 0 | 44m |
-
-Table 1. Status of pods
 
 ### Access ODM services
 
 By setting `service.type=LoadBalancer`, the services are exposed with a public IP to be accessed with the following command:
 
 ```console
-kubectl get svc
+kubectl get services
+NAME                                        TYPE           CLUSTER-IP     EXTERNAL-IP       PORT(S)          AGE
+kubernetes                                  ClusterIP      10.0.0.1       <none>            443/TCP          26h
+mycompany-odm-decisioncenter                LoadBalancer   10.0.141.125   xxx.xxx.xxx.xxx   9453:31130/TCP   22m
+mycompany-odm-decisionrunner                LoadBalancer   10.0.157.225   xxx.xxx.xxx.xxx   9443:31325/TCP   22m
+mycompany-odm-decisionserverconsole         LoadBalancer   10.0.215.192   xxx.xxx.xxx.xxx   9443:32448/TCP   22m
+mycompany-odm-decisionserverconsole-notif   ClusterIP      10.0.201.87    <none>            1883/TCP         22m
+mycompany-odm-decisionserverruntime         LoadBalancer   10.0.177.153   xxx.xxx.xxx.xxx   9443:31921/TCP   22m
 ```
 
-| NAME | TYPE | CLUSTER-IP | EXTERNAL-IP | PORT(S) | AGE |
-| --- | --- | --- | -- | --- | --- |
-| mycompany-odm-decisionserverruntime | LoadBalancer  |  10.0.118.182 |   xx.xx.xxx.xxx  |     9443:32483/TCP  | 9s |
-| mycompany-odm-decisioncenter | LoadBalancer  |  10.0.118.181 |   xx.xx.xxx.xxx  |     9453:32483/TCP  | 9s |
-| mycompany-odm-decisionrunner | LoadBalancer  |  10.0.166.199 |   xx.xx.xxx.xxx   |  9443:31367/TCP  | 2d17h |
-| mycompany-odm-decisionserverconsole | LoadBalancer |   10.0.224.220  |  xx.xx.xxx.xxx   |      9443:30874/TCP |   9s |
-| mycompany-odm-decisionserverconsole-notif | ClusterIP | 10.0.103.221 |  \<none\> | 1883/TCP |        9s |
-
-  You can then open a browser on https://xx.xx.xxx.xxx:9443 to access Decision Server console, Decision Server Runtime, and Decision Runner, and on https://xx.xx.xxx.xxx:9453 to access Decision Center.
+You can then open a browser on https://xxx.xxx.xxx.xxx:9443 to access Decision Server console, Decision Server Runtime, and Decision Runner, and on https://xxx.xxx.xxx.xxx:9453 to access Decision Center.
 
 ## Install an ODM Helm release and expose it with an Ingress controller (15 min)
 
@@ -547,7 +553,7 @@ kubectl create secret tls mycompany-tls --namespace ingress-basic --key mycompan
 ```console
 helm install mycompany --set image.repository=$DOCKER_REGISTRY --set image.pullSecrets=registry-secret \
                        --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.10.5.0} \
-                       --set externalCustomDatabase.datasourceRef=customdatasource-secret ibm-odm-prod
+                       --set externalCustomDatabase.datasourceRef=customdatasource-secret charts/ibm-odm-prod-20.3.0.tgz
 ```
 
 ### Create an Ingress route
@@ -607,19 +613,16 @@ vi /etc/hosts
 #### a. Check that ODM services are in NodePort type
 
 ```console
-kubectl get svc
+kubectl get services
+NAME                                               TYPE           CLUSTER-IP     EXTERNAL-IP    PORT(S)                      AGE
+mycompany-odm-decisioncenter                       NodePort       10.0.178.43    <none>         9453:32720/TCP               16m
+mycompany-odm-decisionrunner                       NodePort       10.0.171.46    <none>         9443:30223/TCP               16m
+mycompany-odm-decisionserverconsole                NodePort       10.0.106.222   <none>         9443:30280/TCP               16m
+mycompany-odm-decisionserverconsole-notif          ClusterIP      10.0.115.118   <none>         1883/TCP                     16m
+mycompany-odm-decisionserverruntime                NodePort       10.0.232.212   <none>         9443:30082/TCP               16m
+nginx-ingress-ingress-nginx-controller             LoadBalancer   10.0.191.246   51.103.3.254   80:30222/TCP,443:31103/TCP   3d
+nginx-ingress-ingress-nginx-controller-admission   ClusterIP      10.0.214.250   <none>         443/TCP                      3d
 ```
-
-| NAME | TYPE | CLUSTER-IP | EXTERNAL-IP | PORT(S) | AGE |
-| --- | --- | --- | -- | --- | --- |
-| mycompany-odm-decisioncenter | NodePort | 10.0.156.79 | <none> | 9453:31328/TCP | 56m |
-| mycompany-odm-decisionrunner | NodePort | 10.0.53.181 | <none> | 9443:31576/TCP | 56m |
-| mycompany-odm-decisionserverconsole | NodePort | 10.0.216.189 | <none> | 9443:30671/TCP | 56m |
-| mycompany-odm-decisionserverconsole-notif | ClusterIP | 10.0.242.117 | <none> | 1883/TCP | 56m |
-| mycompany-odm-decisionserverruntime | NodePort | 10.0.107.18 | <none> | 9443:32114/TCP | 56m |
-| nginx-nginx-ingress-controller | LoadBalancer | 10.0.5.199 | <EXTERNAL_IP> | 80:30157/TCP,443:30409/TCP | 5h6m |
-| nginx-nginx-ingress-default-backend | ClusterIP | 10.0.38.114 | <none> | 80/TCP | 5h6m |
-
 
 #### b. ODM services are available through the following URLs
 
@@ -636,7 +639,6 @@ If your ODM instances are not running properly, check the logs by running the fo
 ```console
 kubectl logs <your-pod-name>
 ```
-
 
 ## References
 https://docs.microsoft.com/en-US/azure/aks/
