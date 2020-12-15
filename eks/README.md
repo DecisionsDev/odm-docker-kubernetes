@@ -189,13 +189,6 @@ manifest.yaml
 
 - Load the images to your local registry.
 
-    a. Log in to Docker
-    ```bash
-    $ docker login REGISTRY_URL
-    ```
-    When prompted, enter your Docker user name and password.
-    
-    b. Load the container images into your internal Docker registry.
     ```bash
     $ for name in images/*.tar.gz; do echo $name && docker image load --input $name; done
     ```
@@ -203,6 +196,12 @@ manifest.yaml
    For more information, refer to the [ODM knowledge center](https://www.ibm.com/support/knowledgecenter/SSQP76_8.10.x/com.ibm.odm.kube/topics/tsk_config_odm_prod_kube.html).  
      
 #### d. Tag and push the images to the ECR registry
+
+- Login the ECR Registry. 
+    For more information take a look the [AWS ECR documentaton](https://docs.aws.amazon.com/AmazonECR/latest/userguide/registry_auth.html)
+    ```bash
+    $ aws ecr get-login-password --region region | docker login --username AWS --password-stdin <AWS-AccountId>.dkr.ecr.region.amazonaws.com
+    ```
 
 - Tag the images to the ECR registry previously created
 
@@ -215,6 +214,7 @@ Example:
     $ docker tag dbserver:8.10.5.0-amd64 <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/dbserver:8.10.5.0-amd64
 ```
 - Push the images to the ECR registry
+
 
 Example: 
 ```bash
