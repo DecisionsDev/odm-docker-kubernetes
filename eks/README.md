@@ -312,64 +312,20 @@ The certificate must be the same as the one you used to enable TLS connections i
 
 #### b. Install an ODM Helm release
 
-Install a Kubernetes release with the default configuration and a name of `my-odm-prod-release`.  
+Install a Kubernetes release with the default configuration and a name of `mycompany`.  
 
 - Generate the template file
 
 ```bash
-$ helm template <RELEASENAME> ibm-odm-prod --set image.repository=<IMAGE_REPOSITORY> --set image.tag=8.10.5.0 --set image.pullSecrets=ecrodm --set image.arch=amd64  --set externalDatabase.type=postgres --set externalDatabase.serverName=<RDS_POSTGRESQL_SERNAME>   --set externalDatabase.secretCredentials=<odm-db-secret> --set externalDatabase.port=5432  --set customization.securitySecretRef=mycompany-secret charts/ibm-odm-prod-2.3.0.tar.gz > postgresql.yaml 
+$ helm install <RELEASENAME> ibm-odm-prod --set image.repository=<IMAGE_REPOSITORY> --set image.tag=8.10.5.0 --set image.pullSecrets=ecrodm --set image.arch=amd64  --set externalDatabase.type=postgres --set externalDatabase.serverName=<RDS_POSTGRESQL_SERNAME>   --set externalDatabase.secretCredentials=<odm-db-secret> --set externalDatabase.port=5432  --set customization.securitySecretRef=mycompany-secret charts/ibm-odm-prod-2.3.0.tar.gz
 ```
 
 Example:
 ```bash
-helm template mycompany charts/ibm-odm-prod-2.3.0.tgz --set image.arch=amd64 --set image.repository=<AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com --set image.tag=8.10.5.0 --set image.pullSecrets=ecrodm --set image.arch=amd64  --set externalDatabase.type=postgres --set externalDatabase.serverName=database-1.cv8ecjiejtnt.eu-west-3.rds.amazonaws.com   --set externalDatabase.secretCredentials=odm-db-secret --set externalDatabase.port=5432 --set customization.securitySecretRef=mycompany1-secret --set externalDatabase.databaseName=postgres > postgresql.yaml
+helm install mycompany charts/ibm-odm-prod-2.3.0.tgz --set image.arch=amd64 --set image.repository=<AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com --set image.tag=8.10.5.0 --set image.pullSecrets=ecrodm --set image.arch=amd64  --set externalDatabase.type=postgres --set externalDatabase.serverName=database-1.cv8ecjiejtnt.eu-west-3.rds.amazonaws.com   --set externalDatabase.secretCredentials=odm-db-secret --set externalDatabase.port=5432 --set customization.securitySecretRef=mycompany1-secret --set externalDatabase.databaseName=postgres 
 ```
 
-> NOTES:
->  In ODM 8.10.5.0, a bug prevents the instanciation of the topology. To fix this problem:
-> - Edit the postgresql.yaml file
-> - Search "dc-jvm-options"
-> - Delete the block: 
->  resources: 
-> ```yaml
->   limits:
->       cpu: 2
->       memory: 4096Mi
->     requests:
->       cpu: 500m
->       memory: 1500Mi
-> ```
-> below
-> ```yaml 
->   - name: lib-workarea-volume
->        emptyDir: {}
-> ```
 
-> NOTES:
-> If you prefer using with helm V3 :
-> ```bash
-> $ helm install
-> ```
-> instead of
-> ```bash
-> $ helm template > mytemplate.yaml
-> $ kubectl apply -f mytemplate.yaml
-> ```
-> There is currently a defect in Helm V3 [https://github.com/helm/helm/issues/3810](https://github.com/helm/helm/issues/3810) generating an error like :
-> Error: INSTALL FAILED: Chart requires kubernetesVersion: >=X.X.X which is incompatible with Kubernetes vX.X.X-xxxxx
->
-> To workaround this issue :
-> - Uncompress the chart using : tar xvzf ibm-odm-prod-2.3.0.tgz
-> - Edit ibm-odm-prod/Chart.yaml changing the line :
->   kubeVersion: '>=1.11.0'
->   by
->   kubeVersion: '>=1.11.0-0'
-
-- Apply the template file
-
-```bash
- $ kubectl apply -f postgresql.yaml
-```
 
 #### c. Check the topology
 Run the following command to check the status of the pods that have been created: 
