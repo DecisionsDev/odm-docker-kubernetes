@@ -96,7 +96,7 @@ In the Container software library tile, verify your entitlement on the View libr
 Create a pull secret by running a kubectl create secret command.
 
 ```console
-$ kubectl create secret docker-registry <REGISTRY_SECRET> --docker-server=cp.icr.io --docker-username=cp \
+$ kubectl create secret docker-registry ecrodm --docker-server=cp.icr.io --docker-username=cp \
     --docker-password="<API_KEY_GENERATED>" --docker-email=<USER_EMAIL>
 ```
 
@@ -314,17 +314,51 @@ The certificate must be the same as the one you used to enable TLS connections i
 
 Install a Kubernetes release with the default configuration and a name of `mycompany`.  
 
-- Generate the template file
+You can now install the product.
 
+If you choose to use Entitled Registry for images and to download the Helm chart from IBM's public Helm charts repository [(option A above)](#option-a--using-the-ibm-entitled-registry-with-your-ibmid):
+
+```console
+helm install mycompany ibmcharts/ibm-odm-prod --version 20.3.0 \
+        --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=ecrodm \
+        --set image.arch=amd64  --set image.tag=8.10.5.0 \
+        --set externalDatabase.type=postgres --set externalDatabase.serverName=<RDS_POSTGRESQL_SERNAME>  \
+        --set externalDatabase.secretCredentials=<odm-db-secret> --set externalDatabase.port=5432  \
+        --set customization.securitySecretRef=mycompany-secret --set externalDatabase.databaseName=<RDS_DATABASE_NAME>```
+        
+Example:
 ```bash
-$ helm install <RELEASENAME> ibm-odm-prod --set image.repository=<IMAGE_REPOSITORY> --set image.tag=8.10.5.0 --set image.pullSecrets=ecrodm --set image.arch=amd64  --set externalDatabase.type=postgres --set externalDatabase.serverName=<RDS_POSTGRESQL_SERNAME>   --set externalDatabase.secretCredentials=<odm-db-secret> --set externalDatabase.port=5432  --set customization.securitySecretRef=mycompany-secret charts/ibm-odm-prod-2.3.0.tar.gz
+helm install mycompany ibmcharts/ibm-odm-prod --version 20.3.0 \
+        --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=ecrodm \
+        --set image.arch=amd64 --set image.tag=8.10.5.0 \
+        --set externalDatabase.type=postgres --set externalDatabase.serverName=database-1.cv8ecjiejtnt.eu-west-3.rds.amazonaws.com \
+        --set externalDatabase.secretCredentials=odm-db-secret --set externalDatabase.port=5432 \
+        --set customization.securitySecretRef=mycompany1-secret --set externalDatabase.databaseName=postgres 
+```
+
+> Remember:  If you choose to use the IBM Entitled registry, the `image.repository` must be set to cp.icr.io/cp/cp4a/odm.  If you choose to push the ODM images to the Azure Container Registry, the `image.repository` should be set to your `loginServer` value.
+
+
+If you downloaded the PPA archive and prefer to use the Helm chart archive from it [(option B above)](#option-b--using-the-download-archives-from-ibm-passport-advantage-ppa):
+
+```console
+helm install mycompany charts/ibm-odm-prod-20.3.0.tgz \
+        --set image.repository=<AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com --set image.pullSecrets=ecrodm \
+        --set image.arch=amd64 --set image.tag=8.10.5.0 \
+        --set externalDatabase.type=postgres --set externalDatabase.serverName=<RDS_POSTGRESQL_SERNAME>  \
+        --set externalDatabase.secretCredentials=<odm-db-secret> --set externalDatabase.port=5432  \
+        --set customization.securitySecretRef=mycompany-secret --set externalDatabase.databaseName=<RDS_DATABASE_NAME>```
 ```
 
 Example:
 ```bash
-helm install mycompany charts/ibm-odm-prod-2.3.0.tgz --set image.arch=amd64 --set image.repository=<AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com --set image.tag=8.10.5.0 --set image.pullSecrets=ecrodm --set image.arch=amd64  --set externalDatabase.type=postgres --set externalDatabase.serverName=database-1.cv8ecjiejtnt.eu-west-3.rds.amazonaws.com   --set externalDatabase.secretCredentials=odm-db-secret --set externalDatabase.port=5432 --set customization.securitySecretRef=mycompany1-secret --set externalDatabase.databaseName=postgres 
+helm install mycompany charts/ibm-odm-prod-20.3.0.tgz \
+        --set image.repository=<AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com --set image.pullSecrets=ecrodm \
+        --set image.arch=amd64 --set image.tag=8.10.5.0 \
+        --set externalDatabase.type=postgres --set externalDatabase.serverName=database-1.cv8ecjiejtnt.eu-west-3.rds.amazonaws.com \
+        --set externalDatabase.secretCredentials=odm-db-secret --set externalDatabase.port=5432 \
+        --set customization.securitySecretRef=mycompany1-secret --set externalDatabase.databaseName=postgres 
 ```
-
 
 
 #### c. Check the topology
