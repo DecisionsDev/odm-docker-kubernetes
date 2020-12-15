@@ -541,6 +541,12 @@ kubectl create secret tls mycompany-tls --namespace ingress-basic --key mycompan
 
 You can now install the product.
 
+Make sure you are using the same namespace as your Ingress resources above in order to get access to the ODM release:
+
+```console
+kubectl config set-context --current --namespace=ingress-basic
+```
+
 If you choose to use Entitled Registry for images and to download the Helm chart from IBM's public Helm charts repository [(option A above)](#option-a--using-the-ibm-entitled-registry-with-your-ibmid):
 
 ```console
