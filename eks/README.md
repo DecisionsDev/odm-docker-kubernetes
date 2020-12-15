@@ -82,7 +82,8 @@ kubectl cluster-info dump
 
 To get access to the ODM material, you must have an IBM entitlement registry key to pull the images from the IBM Entitled registry (option A) or download the ODM on Kubernetes package (.tgz file) from Passport Advantage® (PPA) and then push it to the AWS Container Registry (option B).
 
-* To access image from IBM entitlement registry follow the instructions in the section [Create a pull secret to pull the ODM Docker images from the IBM Entitled Registry](#option-a--using-the-ibm-entitled-registry-with-your-ibmid)
+* To access image from IBM entitlement registry follow the instructions in the section [Using the IBM Entitled registry with your IBMid
+](#option-a--using-the-ibm-entitled-registry-with-your-ibmid)
 
 * To push image in the Azure Container Registry follow the instructions in the section [Push the ODM images to the ACR (Azure Container Registry](#option-b--using-the-download-archives-from-ibm-passport-advantage-ppa)
 
