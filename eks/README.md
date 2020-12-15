@@ -334,7 +334,7 @@ helm install mycompany ibmcharts/ibm-odm-prod --version 20.3.0 \
         --set image.arch=amd64 --set image.tag=8.10.5.0 \
         --set externalDatabase.type=postgres --set externalDatabase.serverName=database-1.cv8ecjiejtnt.eu-west-3.rds.amazonaws.com \
         --set externalDatabase.secretCredentials=odm-db-secret --set externalDatabase.port=5432 \
-        --set customization.securitySecretRef=mycompany1-secret --set externalDatabase.databaseName=postgres 
+        --set customization.securitySecretRef=mycompany-secret --set externalDatabase.databaseName=postgres 
 ```
 
 > Remember:  If you choose to use the IBM Entitled registry, the `image.repository` must be set to cp.icr.io/cp/cp4a/odm.  If you choose to push the ODM images to the Azure Container Registry, the `image.repository` should be set to your `loginServer` value.
@@ -358,7 +358,7 @@ helm install mycompany charts/ibm-odm-prod-20.3.0.tgz \
         --set image.arch=amd64 --set image.tag=8.10.5.0 \
         --set externalDatabase.type=postgres --set externalDatabase.serverName=database-1.cv8ecjiejtnt.eu-west-3.rds.amazonaws.com \
         --set externalDatabase.secretCredentials=odm-db-secret --set externalDatabase.port=5432 \
-        --set customization.securitySecretRef=mycompany1-secret --set externalDatabase.databaseName=postgres 
+        --set customization.securitySecretRef=mycompany-secret --set externalDatabase.databaseName=postgres 
 ```
 
 
