@@ -145,7 +145,7 @@ If you use another public registry, skip this section and go to step 3.
  
 Example: 
 ```bash
-aws ecr get-login-password --region eu-west-3 | docker login --username AWS --password-stdin <aws_account_id>.ecr.eu-west-3.amazonaws.com
+   $ aws ecr get-login-password --region eu-west-3 | docker login --username AWS --password-stdin <aws_account_id>.ecr.eu-west-3.amazonaws.com
 ```
 
 #### b. Create the [ECR repository instances](https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-create.html)
@@ -196,12 +196,6 @@ manifest.yaml
    For more information, refer to the [ODM knowledge center](https://www.ibm.com/support/knowledgecenter/SSQP76_8.10.x/com.ibm.odm.kube/topics/tsk_config_odm_prod_kube.html).  
      
 #### d. Tag and push the images to the ECR registry
-
-- Login the ECR Registry. 
-    For more information take a look the [AWS ECR documentaton](https://docs.aws.amazon.com/AmazonECR/latest/userguide/registry_auth.html)
-    ```bash
-    $ aws ecr get-login-password --region region | docker login --username AWS --password-stdin <AWS-AccountId>.dkr.ecr.region.amazonaws.com
-    ```
 
 - Tag the images to the ECR registry previously created
 
