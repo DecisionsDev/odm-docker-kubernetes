@@ -318,13 +318,14 @@ You can now install the product.
 
 If you choose to use Entitled Registry for images and to download the Helm chart from IBM's public Helm charts repository [(option A above)](#option-a--using-the-ibm-entitled-registry-with-your-ibmid):
 
-```console
+```bash
 helm install mycompany ibmcharts/ibm-odm-prod --version 20.3.0 \
         --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=ecrodm \
         --set image.arch=amd64  --set image.tag=8.10.5.0 \
         --set externalDatabase.type=postgres --set externalDatabase.serverName=<RDS_POSTGRESQL_SERNAME>  \
         --set externalDatabase.secretCredentials=<odm-db-secret> --set externalDatabase.port=5432  \
-        --set customization.securitySecretRef=mycompany-secret --set externalDatabase.databaseName=<RDS_DATABASE_NAME>```
+        --set customization.securitySecretRef=mycompany-secret --set externalDatabase.databaseName=<RDS_DATABASE_NAME>
+ ```
         
 Example:
 ```bash
@@ -341,13 +342,13 @@ helm install mycompany ibmcharts/ibm-odm-prod --version 20.3.0 \
 
 If you downloaded the PPA archive and prefer to use the Helm chart archive from it [(option B above)](#option-b--using-the-download-archives-from-ibm-passport-advantage-ppa):
 
-```console
+```bash
 helm install mycompany charts/ibm-odm-prod-20.3.0.tgz \
         --set image.repository=<AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com --set image.pullSecrets=ecrodm \
         --set image.arch=amd64 --set image.tag=8.10.5.0 \
         --set externalDatabase.type=postgres --set externalDatabase.serverName=<RDS_POSTGRESQL_SERNAME>  \
         --set externalDatabase.secretCredentials=<odm-db-secret> --set externalDatabase.port=5432  \
-        --set customization.securitySecretRef=mycompany-secret --set externalDatabase.databaseName=<RDS_DATABASE_NAME>```
+        --set customization.securitySecretRef=mycompany-secret --set externalDatabase.databaseName=<RDS_DATABASE_NAME>
 ```
 
 Example:
