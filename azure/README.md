@@ -244,7 +244,7 @@ In the Container software library tile, verify your entitlement on the View libr
 Create a pull secret by running a kubectl create secret command.
 
 ```console
-$ kubectl create secret docker-registry <REGISTRY_SECRET> --docker-server=cp.icr.io --docker-username=cp \
+$ kubectl create secret docker-registry icregistry-secret --docker-server=cp.icr.io --docker-username=cp \
     --docker-password="<API_KEY_GENERATED>" --docker-email=<USER_EMAIL>
 ```
 
@@ -352,7 +352,7 @@ In order to load the container images from the extracted folder into your Docker
 6. Create a registry key to access the ACR registry.  Refer to the [documentation](https://docs.microsoft.com/en-US/azure/container-registry/container-registry-tutorial-prepare-registry#enable-admin-account) to enable the registry's admin account and get the credentials in the Container registry portal, then:
 
     ```console
-    kubectl create secret docker-registry registry-secret --docker-server="$DOCKER_REGISTRY" \
+    kubectl create secret docker-registry acregistry-secret --docker-server="$DOCKER_REGISTRY" \
             --docker-username="<adminUsername>" --docker-password="<adminPassword>" \
             --docker-email="mycompany@email.com"
     ```
@@ -443,7 +443,7 @@ If you choose to use Entitled Registry for images and to download the Helm chart
 
 ```console
 helm install mycompany ibmcharts/ibm-odm-prod --version 20.3.0 \
-        --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=registry-secret \
+        --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
         --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.10.5.0} --set service.type=LoadBalancer \
         --set externalCustomDatabase.datasourceRef=customdatasource-secret \
         --set customization.securitySecretRef=mycompany-secret
@@ -453,7 +453,7 @@ If you downloaded the PPA archive and prefer to use the Helm chart archive from 
 
 ```console
 helm install mycompany charts/ibm-odm-prod-20.3.0.tgz \
-        --set image.repository=$DOCKER_REGISTRY --set image.pullSecrets=registry-secret \
+        --set image.repository=$DOCKER_REGISTRY --set image.pullSecrets=acregistry-secret \
         --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.10.5.0} --set service.type=LoadBalancer \
         --set externalCustomDatabase.datasourceRef=customdatasource-secret \
         --set customization.securitySecretRef=mycompany-secret
@@ -545,7 +545,7 @@ If you choose to use Entitled Registry for images and to download the Helm chart
 
 ```console
 helm install mycompany ibmcharts/ibm-odm-prod --version 20.3.0 \
-        --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=registry-secret \
+        --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
         --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.10.5.0} \
         --set externalCustomDatabase.datasourceRef=customdatasource-secret
 ```
@@ -554,7 +554,7 @@ If you downloaded the PPA archive and prefer to use the Helm chart archive from 
 
 ```console
 helm install mycompany charts/ibm-odm-prod-20.3.0.tgz \
-        --set image.repository=$DOCKER_REGISTRY --set image.pullSecrets=registry-secret \
+        --set image.repository=$DOCKER_REGISTRY --set image.pullSecrets=acregistry-secret \
         --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.10.5.0} \
         --set externalCustomDatabase.datasourceRef=customdatasource-secret
 ```
