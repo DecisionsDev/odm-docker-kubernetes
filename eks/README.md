@@ -224,10 +224,10 @@ To set up the database, follow the procedure described here [RDS PostgreSQL data
 
 > NOTE:  Make sure to:
 > - Set up incoming trafic to allow connection from EKS (set vpc inboud rule to anywhere)
-> - Create a database instance
-> - Set the database password
+> - Create a database instance by setting an *Initial database name*
+> - Set the database *Master password*
 
-After the creation of the RDS PostgreSQL database, an endpoint gives access to this database instance. The enpoint is named  RDS_POSTGRESQL_SERVERNAME in the next sections.
+After the creation of the RDS PostgreSQL database, an endpoint gives access to this database instance. The enpoint is named `RDS_POSTGRESQL_SERVERNAME` in the next sections.
 
 
 ### 4. Manage a  digital certificate (10 min)
@@ -240,7 +240,7 @@ If you do not have a trusted certificate, you can use OpenSSL and other cryptogr
 $ openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mycompany.key -out mycompany.crt -subj "/CN=*.mycompany.com/OU=it/O=mycompany/L=Paris/C=FR"
 ```
 
-#### b. Upload the certificate to the cluster on Amazon 
+#### b. Upload the certificate to AWS IAM service
 
 Run the following command:
 ```bash
