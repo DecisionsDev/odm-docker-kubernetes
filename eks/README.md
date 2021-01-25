@@ -279,76 +279,57 @@ $ keytool -import -v -trustcacerts -alias mycompany -file mycompany.crt -keystor
 
 - Create a database secret
 
-To secure access to the database, you must create a secret that encrypts the database user and password before you install the Helm release.
+    To secure access to the database, you must create a secret that encrypts the database user and password before you install the Helm release.
 
-```bash
-$ kubectl create secret generic <odm-db-secret> --from-literal=db-user=<rds-postgresql-user-name> --from-literal=db-password=<rds-postgresql-password> 
-```
+    ```bash
+    $ kubectl create secret generic <odm-db-secret> --from-literal=db-user=<rds-postgresql-user-name> --from-literal=db-password=<rds-postgresql-password> 
+    ```
 
 
-Example:
-```
-$ kubectl create secret generic odm-db-secret --from-literal=db-user=postgres --from-literal=db-password=postgres
-```
+    Example:
+    ```
+    $ kubectl create secret generic odm-db-secret --from-literal=db-user=postgres --from-literal=db-password=postgres
+    ```
 
-- Create a Kubernetes secret from the certificate generated in step 4.
+- Create a Kubernetes secret from the certificate generated in [step 4](#4-manage-a-digital-certificate-10-min).
 
-```bash
-$ kubectl create secret generic mycompany-secret --from-file=keystore.jks=mycompany.jks --from-file=truststore.jks=truststore.jks --from-literal=keystore_password=password --from-literal=truststore_password=password
-```
+    ```bash
+    $ kubectl create secret generic <mycompany-secret> --from-file=keystore.jks=mycompany.jks --from-file=truststore.jks=truststore.jks --from-literal=keystore_password=password --from-literal=truststore_password=password
+    ```
 
-The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Defining the security certificate](https://www.ibm.com/support/knowledgecenter/SSQP76_8.10.x/com.ibm.odm.icp/topics/tsk_replace_security_certificate.html?view=kc) and [Working with certificates and SSL](https://www.ibm.com/links?url=https%3A%2F%2Fdocs.oracle.com%2Fcd%2FE19830-01%2F819-4712%2Fablqw%2Findex.html).
+    The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Defining the security certificate](https://www.ibm.com/support/knowledgecenter/SSQP76_8.10.x/com.ibm.odm.icp/topics/tsk_replace_security_certificate.html?view=kc) and [Working with certificates and SSL](https://www.ibm.com/links?url=https%3A%2F%2Fdocs.oracle.com%2Fcd%2FE19830-01%2F819-4712%2Fablqw%2Findex.html).
 
 #### b. Install an ODM Helm release
 
 Install a Kubernetes release with the default configuration and a name of `mycompany`.  
 
-You can now install the product.
+- If you choose to use Entitled Registry for images and to download the Helm chart from IBM's public Helm charts repository [(option A above)](#option-a--using-the-ibm-entitled-registry-with-your-ibmid):
 
-If you choose to use Entitled Registry for images and to download the Helm chart from IBM's public Helm charts repository [(option A above)](#option-a--using-the-ibm-entitled-registry-with-your-ibmid):
+    ```bash
+    helm install mycompany ibmcharts/ibm-odm-prod --version 20.3.0 \
+            --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=ecrodm \
+            --set image.arch=amd64 --set image.tag=8.10.5.0 \
+            --set externalDatabase.type=postgres --set externalDatabase.serverName=<RDS_DB_ENDPOINT> \
+            --set externalDatabase.secretCredentials=odm-db-secret --set externalDatabase.port=5432 \
+            --set externalDatabase.databaseName=<RDS_DATABASE_NAME> \
+            --set customization.securitySecretRef=mycompany-secret
+    ```
 
-```bash
-helm install mycompany ibmcharts/ibm-odm-prod --version 20.3.0 \
-        --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=ecrodm \
-        --set image.arch=amd64  --set image.tag=8.10.5.0 \
-        --set externalDatabase.type=postgres --set externalDatabase.serverName=<RDS_POSTGRESQL_SERNAME>  \
-        --set externalDatabase.secretCredentials=<odm-db-secret> --set externalDatabase.port=5432  \
-        --set customization.securitySecretRef=mycompany-secret --set externalDatabase.databaseName=<RDS_DATABASE_NAME>
- ```
+- If you downloaded the PPA archive and prefer to use the Helm chart archive from it [(option B above)](#option-b--using-the-download-archives-from-ibm-passport-advantage-ppa):
 
-Example:
-```bash
-helm install mycompany ibmcharts/ibm-odm-prod --version 20.3.0 \
-        --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=ecrodm \
-        --set image.arch=amd64 --set image.tag=8.10.5.0 \
-        --set externalDatabase.type=postgres --set externalDatabase.serverName=database-1.cv8ecjiejtnt.eu-west-3.rds.amazonaws.com \
-        --set externalDatabase.secretCredentials=odm-db-secret --set externalDatabase.port=5432 \
-        --set customization.securitySecretRef=mycompany-secret --set externalDatabase.databaseName=postgres
-```
+    ```bash
+    helm install mycompany charts/ibm-odm-prod-20.3.0.tgz \
+            --set image.repository=<AWS-AccountId>.dkr.ecr.<region>.amazonaws.com --set image.pullSecrets=ecrodm \
+            --set image.arch=amd64 --set image.tag=8.10.5.0 \
+            --set externalDatabase.type=postgres --set externalDatabase.serverName=<RDS_DB_ENDPOINT> \
+            --set externalDatabase.secretCredentials=<odm-db-secret> --set externalDatabase.port=5432 \
+            --set externalDatabase.databaseName=<RDS_DATABASE_NAME> \
+            --set customization.securitySecretRef=<mycompany-secret>
+    ```
 
-> Remember:  If you choose to use the IBM Entitled registry, the `image.repository` must be set to cp.icr.io/cp/cp4a/odm.  If you choose to push the ODM images to the Azure Container Registry, the `image.repository` should be set to your `loginServer` value.
-
-
-If you downloaded the PPA archive and prefer to use the Helm chart archive from it [(option B above)](#option-b--using-the-download-archives-from-ibm-passport-advantage-ppa):
-
-```bash
-helm install mycompany charts/ibm-odm-prod-20.3.0.tgz \
-        --set image.repository=<AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com --set image.pullSecrets=ecrodm \
-        --set image.arch=amd64 --set image.tag=8.10.5.0 \
-        --set externalDatabase.type=postgres --set externalDatabase.serverName=<RDS_POSTGRESQL_SERNAME>  \
-        --set externalDatabase.secretCredentials=<odm-db-secret> --set externalDatabase.port=5432  \
-        --set customization.securitySecretRef=mycompany-secret --set externalDatabase.databaseName=<RDS_DATABASE_NAME>
-```
-
-Example:
-```bash
-helm install mycompany charts/ibm-odm-prod-20.3.0.tgz \
-        --set image.repository=<AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com --set image.pullSecrets=ecrodm \
-        --set image.arch=amd64 --set image.tag=8.10.5.0 \
-        --set externalDatabase.type=postgres --set externalDatabase.serverName=database-1.cv8ecjiejtnt.eu-west-3.rds.amazonaws.com \
-        --set externalDatabase.secretCredentials=odm-db-secret --set externalDatabase.port=5432 \
-        --set customization.securitySecretRef=mycompany-secret --set externalDatabase.databaseName=postgres
-```
+where:
+- `<RDS_DB_ENDPOINT>` is your database server endpoint (of the form: db-server-name-1.********.<region>.rds.amazonaws.com)
+- `<RDS_DATABASE_NAME>` is the database name defined when creating the RDS database
 
 
 #### c. Check the topology
@@ -356,7 +337,6 @@ Run the following command to check the status of the pods that have been created
 ```bash
 $ kubectl get pods
 ```
-
 
 | *NAME* | *READY* | *STATUS* | *RESTARTS* | *AGE* |
 |---|---|---|---|---|
