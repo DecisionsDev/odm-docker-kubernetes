@@ -1,13 +1,13 @@
 # Deploying IBM Operational Decision Manager on Amazon EKS
 
-This project demonstrates how to deploy an IBM® Operational Decision Manager (ODM) clustered topology on the Amazon Elastic Kubernetes Service (EKS) cloud service. This deployment implements Kubernetes and Docker technologies. 
+This project demonstrates how to deploy an IBM® Operational Decision Manager (ODM) clustered topology on the Amazon Elastic Kubernetes Service (EKS) cloud service. This deployment implements Kubernetes and Docker technologies.
 
 ![Flow](./images/eks-schema.jpg)
 
-The ODM Docker material is available in Passport Advantage. It includes Docker container images and Helm chart descriptors. 
+The ODM Docker material is available in Passport Advantage. It includes Docker container images and Helm chart descriptors.
 
 ## Included components
-The project comes with the following components:
+The project uses the following components:
 - [IBM Operational Decision Manager](https://www.ibm.com/support/knowledgecenter/en/SSQP76_8.10.x/com.ibm.odm.kube/kc_welcome_odm_kube.html)
 - [Amazon Elastic Kubernetes Service (Amazon EKS)](https://aws.amazon.com/eks/)
 - [Amazon Elastic Container Registry (Amazon ECR) ](https://aws.amazon.com/ecr/)
@@ -15,7 +15,7 @@ The project comes with the following components:
 - [Amazon Application Load Balancer(ALB)](https://aws.amazon.com/elasticloadbalancing/?nc=sn&loc=0)
 
 ## Tested environment
-The commands and tools have been tested on MacOS.
+The commands and tools have been tested on MacOS and linux.
 
 ## Prerequisites
 First, install the following software on your machine:
@@ -27,49 +27,49 @@ Then, create an  [AWS Account](https://aws.amazon.com/getting-started/?sc_iconte
 
 ## Steps to deploy ODM on Kubernetes from Amazon EKS
 
-1. [Prepare your environment (40 min)](#1-preparing-yourenvironment-40-min)
+1. [Prepare your environment (40 min)](#1-prepare-your-environment-40-min)
 2. [Prepare your environment for the ODM installation (25 min)](#2-prepare-your-environment-for-the-odm-installation-25-min)
 3. [Create an RDS database (20 min)](#3-create-an-rds-database-20-min)
 4. [Manage a  digital certificate (10 min)](#4-manage-a-digital-certificate-10-min)
 5. [Install an ODM release (10 min)](#5-install-an-ibm-operational-decision-manager-release-10-min)
-6. [Access the ODM services](#6-accessing-services)
+6. [Access the ODM services](#6-access-the-odm-services)
 
-For more information, see [Getting started with Amazon EKS](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html) 
+For more information, see [Getting started with Amazon EKS](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html)
 
 
 ### 1. Prepare your environment (40 min)
 #### a. Create an EKS cluster (30 min)
     Follow the documentation [here](https://docs.aws.amazon.com/eks/latest/userguide/create-cluster.html)
-     
+
 > NOTE: Use Kubernetes version 1.15 or higher.
        
  
 #### b. Set up your environment (10 min)
  - [Configure the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html)
-    
-   Example: 
+
+   Example:
    ```bash
    $ aws configure 
    ```
 
  - [Create a kubeconfig for Amazon EKS](https://docs.aws.amazon.com/eks/latest/userguide/create-kubeconfig.html)
-   
+
    Example:
    ```bash
    $  aws eks --region eu-west-3 update-kubeconfig --name odm
    ```
 
  - Check your environment
- 
+
    If your environment is set up correctly, get the cluster information by running the following command:
    ```bash
    $ kubectl cluster-info
    ```
-   
+
    Kubernetes master is running at https://xxxxxx.yl4.eu-west-3.eks.amazonaws.com
-   
+
    CoreDNS is running at https://xxxxx.yl4.eu-west-3.eks.amazonaws.com/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
-   
+
    Metrics-server is running at https://xxxxx.yl4.eu-west-3.eks.amazonaws.com/api/v1/namespaces/kube-system/services/https:metrics-server:/proxy
 
 To further debug and diagnose cluster problems, run the command:
@@ -140,10 +140,10 @@ Now we are ready to push the ODM images to a private registry that the EKS clust
 
 Here we use the [ECR registry](https://docs.aws.amazon.com/AmazonECR/latest/userguide/what-is-ecr.html).
 If you use another public registry, skip this section and go to step 3.
- 
+
 #### a. Log in to the [ECR registry](https://docs.aws.amazon.com/AmazonECR/latest/userguide/Registries.html)
- 
-Example: 
+
+Example:
 ```bash
    $ aws ecr get-login-password --region eu-west-3 | docker login --username AWS --password-stdin <aws_account_id>.ecr.eu-west-3.amazonaws.com
 ```
@@ -153,7 +153,7 @@ Example:
 > NOTE: You must create one repository per image.
 
 Example:
-```bash 
+```bash
     $ aws ecr create-repository --repository-name odm-decisioncenter --image-scanning-configuration scanOnPush=true --region eu-west-3
     $ aws ecr create-repository --repository-name odm-decisionrunner --image-scanning-configuration scanOnPush=true --region eu-west-3
     $ aws ecr create-repository --repository-name odm-decisionserverruntime --image-scanning-configuration scanOnPush=true --region eu-west-3
@@ -164,7 +164,7 @@ Example:
 #### c. Load the ODM images locally
 
  - Download one or more packages (.tgz archives) from [IBM Passport Advantage (PPA)](https://www-01.ibm.com/software/passportadvantage/pao_customer.html).  To view the full list of eAssembly installation images, refer to the [8.10.5 download document](https://www.ibm.com/support/pages/ibm-operational-decision-manager-v8105-download-document).
- 
+
  - Extract the .tgz archives to your local file system.
 Extract the file that contains both the Helm chart and the images.  The name of the file includes the chart version number:
 
@@ -192,7 +192,7 @@ manifest.yaml
     ```bash
     $ for name in images/*.tar.gz; do echo $name && docker image load --input $name; done
     ```
-  
+
    For more information, refer to the [ODM knowledge center](https://www.ibm.com/support/knowledgecenter/SSQP76_8.10.x/com.ibm.odm.kube/topics/tsk_config_odm_prod_kube.html).  
      
 #### d. Tag and push the images to the ECR registry
@@ -236,14 +236,14 @@ To set up the database, follow the procedure described here [RDS PostgreSQL data
 > NOTE:  Make sure to:
 > - Set up incoming trafic to allow connection from EKS (set vpc inboud rule to anywhere)
 > - Create a database instance
-> - Set the database password 
+> - Set the database password
 
 After the creation of the RDS PostgreSQL database, an endpoint gives access to this database instance. The enpoint is named  RDS_POSTGRESQL_SERVERNAME in the next sections.
 
 
 ### 4. Manage a  digital certificate (10 min)
 
-#### a. (Optional) Generate a self-signed certificate 
+#### a. (Optional) Generate a self-signed certificate
 
 If you do not have a trusted certificate, you can use OpenSSL and other cryptography and certificate management libraries to generate a .crt certificate file and a private key, to define the domain name, and to set the expiration date. The following command creates a self-signed certificate (.crt file) and a private key (.key file) that accept the domain name *.mycompany.com*. The expiration is set to 1000 days:
 
@@ -326,7 +326,7 @@ helm install mycompany ibmcharts/ibm-odm-prod --version 20.3.0 \
         --set externalDatabase.secretCredentials=<odm-db-secret> --set externalDatabase.port=5432  \
         --set customization.securitySecretRef=mycompany-secret --set externalDatabase.databaseName=<RDS_DATABASE_NAME>
  ```
-        
+
 Example:
 ```bash
 helm install mycompany ibmcharts/ibm-odm-prod --version 20.3.0 \
@@ -334,7 +334,7 @@ helm install mycompany ibmcharts/ibm-odm-prod --version 20.3.0 \
         --set image.arch=amd64 --set image.tag=8.10.5.0 \
         --set externalDatabase.type=postgres --set externalDatabase.serverName=database-1.cv8ecjiejtnt.eu-west-3.rds.amazonaws.com \
         --set externalDatabase.secretCredentials=odm-db-secret --set externalDatabase.port=5432 \
-        --set customization.securitySecretRef=mycompany-secret --set externalDatabase.databaseName=postgres 
+        --set customization.securitySecretRef=mycompany-secret --set externalDatabase.databaseName=postgres
 ```
 
 > Remember:  If you choose to use the IBM Entitled registry, the `image.repository` must be set to cp.icr.io/cp/cp4a/odm.  If you choose to push the ODM images to the Azure Container Registry, the `image.repository` should be set to your `loginServer` value.
@@ -358,7 +358,7 @@ helm install mycompany charts/ibm-odm-prod-20.3.0.tgz \
         --set image.arch=amd64 --set image.tag=8.10.5.0 \
         --set externalDatabase.type=postgres --set externalDatabase.serverName=database-1.cv8ecjiejtnt.eu-west-3.rds.amazonaws.com \
         --set externalDatabase.secretCredentials=odm-db-secret --set externalDatabase.port=5432 \
-        --set customization.securitySecretRef=mycompany-secret --set externalDatabase.databaseName=postgres 
+        --set customization.securitySecretRef=mycompany-secret --set externalDatabase.databaseName=postgres
 ```
 
 
@@ -372,9 +372,9 @@ $ kubectl get pods
 | *NAME* | *READY* | *STATUS* | *RESTARTS* | *AGE* |
 |---|---|---|---|---|
 | mycompany-odm-decisioncenter-*** | 1/1 | Running | 0 | 44m |  
-| mycompany-odm-decisionrunner-*** | 1/1 | Running | 0 | 44m | 
-| mycompany-odm-decisionserverconsole-*** | 1/1 | Running | 0 | 44m | 
-| mycompany-odm-decisionserverruntime-*** | 1/1 | Running | 0 | 44m | 
+| mycompany-odm-decisionrunner-*** | 1/1 | Running | 0 | 44m |
+| mycompany-odm-decisionserverconsole-*** | 1/1 | Running | 0 | 44m |
+| mycompany-odm-decisionserverruntime-*** | 1/1 | Running | 0 | 44m |
 
 Table 1. Status of pods
 
@@ -439,7 +439,7 @@ spec:
 ```
 Source file [ingress-mycompany.yaml](ingress-mycompany.yaml)
 
-- Deploy the ingress controller 
+- Deploy the ingress controller
 ```bash
 kubectl apply -f ingress-mycompany.yaml 
 ```
@@ -457,9 +457,9 @@ The services are accessible from the following URLs:
 
 | *Component* | *URL* | *Username/Password* |
 |---|---|---|
-| Decision Center | https://$ROOTURL/decisioncenter/ | odmAdmin/odmAdmin | 
+| Decision Center | https://$ROOTURL/decisioncenter/ | odmAdmin/odmAdmin |
 | Decision Server Console |https://$ROOTURL/res/| odmAdmin/odmAdmin |
-| Decision Server Runtime | https://$ROOTURL/DecisionService/ | odmAdmin/odmAdmin | 
+| Decision Server Runtime | https://$ROOTURL/DecisionService/ | odmAdmin/odmAdmin |
 
 
 
