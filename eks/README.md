@@ -75,52 +75,51 @@ kubectl cluster-info dump
 ```
 
 
-## Prepare your environment for the ODM installation (25 min)
+### 2. Prepare your environment for the ODM installation (25 min)
 
-To get access to the ODM material, you must have an IBM entitlement registry key to pull the images from the IBM Entitled registry (option A) or download the ODM on Kubernetes package (.tgz file) from Passport Advantage® (PPA) and then push it to the AWS Container Registry (option B).
+To get access to the ODM material, you must have an IBM entitlement registry key to pull the images from the IBM Entitled registry (option A) or you can download the ODM on Kubernetes package (.tgz file) from Passport Advantage® (PPA) and then push the contained images to the EKS Container Registry (option B).
 
-* To access image from IBM entitlement registry follow the instructions in the section [Using the IBM Entitled registry with your IBMid
-](#option-a--using-the-ibm-entitled-registry-with-your-ibmid)
+* To access the images from IBM entitlement registry, follow the instructions in the section [Using the IBM Entitled registry with your IBMid](#option-a--using-the-ibm-entitled-registry-with-your-ibmid)
 
-* To push image in the Azure Container Registry follow the instructions in the section [Push the ODM images to the ACR (Azure Container Registry](#option-b--using-the-download-archives-from-ibm-passport-advantage-ppa)
+* To download the PPA and push the images in the AWS Container Registry, follow the instructions in the section [Push the ODM images to the ECR (EKS Container Registry](#option-b--using-the-download-archives-from-ibm-passport-advantage-ppa)
 
 #### Option A:  Using the IBM Entitled registry with your IBMid
 
-Log in to [MyIBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary) with the IBMid and password that are associated with the entitled software.
+#### a. Retrieve your entitled registry key
+  - Log in to [MyIBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary) with the IBMid and password that are associated with the entitled software.
 
-In the Container software library tile, verify your entitlement on the View library page, and then go to Get entitlement key to retrieve the key.
+  - In the Container software library tile, verify your entitlement on the View library page, and then go to *Get entitlement key* to retrieve the key.
 
-Create a pull secret by running a kubectl create secret command.
+#### b. Create a pull secret by running a kubectl create secret command.
 
-```console
-$ kubectl create secret docker-registry ecrodm --docker-server=cp.icr.io --docker-username=cp \
-    --docker-password="<API_KEY_GENERATED>" --docker-email=<USER_EMAIL>
-```
+  ```console
+  $ kubectl create secret docker-registry <REGISTRY_SECRET> --docker-server=cp.icr.io \
+      --docker-username=cp --docker-password="<API_KEY_GENERATED>" --docker-email=<USER_EMAIL>
+  ```
 
-where:
+  where:
+  * <REGISTRY_SECRET> is the secret name
+  * <API_KEY_GENERATED> is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
+  * <USER_EMAIL> is the email address associated with your IBMid.
 
-* <REGISTRY_SECRET> is the secret name
-* <API_KEY_GENERATED> is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
-* <USER_EMAIL> is the email address associated with your IBMid.
+  > Note: The `cp.icr.io` value for the docker-server parameter is the only registry domain name that contains the images. You must set the docker-username to `cp` to use an entitlement key as docker-password.
 
-> Note:  The cp.icr.io value for the docker-server parameter is the only registry domain name that contains the images. You must set the docker-username to cp to use an entitlement key as docker-password.
+  Make a note of the secret name so that you can set it for the `image.pullSecrets` parameter when you run a helm install of your containers. The `image.repository` parameter will later be set to `cp.icr.io/cp/cp4a/odm`.
 
-Make a note of the secret name so that you can set it for the image.pullSecrets parameter when you run a helm install of your containers.  The image.repository parameter will later be set to cp.icr.io/cp/cp4a/odm.
+#### c. Add the public IBM Helm charts repository:
 
-Add the public IBM Helm charts repository:
+  ```console
+  helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo/entitled
+  helm repo update
+  ```
 
-```console
-helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo/entitled
-helm repo update
-```
+#### d. Check you can access ODM's chart
 
-Check you can access ODM's chart
-
-```console
-helm search repo ibm-odm-prod
-NAME                  	CHART VERSION	APP VERSION	DESCRIPTION                     
-ibmcharts/ibm-odm-prod	20.3.0       	8.10.5.0   	IBM Operational Decision Manager
-```
+  ```console
+  helm search repo ibm-odm-prod
+  NAME                  	CHART VERSION	APP VERSION	DESCRIPTION                     
+  ibmcharts/ibm-odm-prod	20.3.0       	8.10.5.0   	IBM Operational Decision Manager
+  ```
 
 You can now proceed to the [Create an RDS database (20 min)](#3-create-an-rds-database-20-min).
 
