@@ -261,7 +261,7 @@ The output of the command is:
 }
 ```
 
-> NOTE: "Arn": "arn:aws:iam::<AWS-AccountId>:server-certificate/mycompany" is used later to configure the Application Load Balancer (ALB).
+> NOTE: "Arn": "arn:aws:iam::\<AWS-AccountId>:server-certificate/mycompany" is used later to configure the Application Load Balancer (ALB).
 
 #### c. Generate a JKS version of the certificate to be used in the ODM container 
 
@@ -370,7 +370,6 @@ The AWS Load Balancer Controller creates Application Load Balancers (ALBs) and t
 
     Here is a sample descriptor to implement the ingress:
 
-    Ingress descriptor:
     ```yaml
     apiVersion: extensions/v1beta1
     kind: Ingress
