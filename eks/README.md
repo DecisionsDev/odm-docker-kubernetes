@@ -37,7 +37,7 @@ Then, create an  [AWS Account](https://aws.amazon.com/getting-started/?sc_iconte
 For more information, see [Getting started with Amazon EKS](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html)
 
 
-### 1. Prepare your environment (40 min)
+### 1. Prepare your environment (40 min)
 #### a. Create an EKS cluster (30 min)
     Follow the documentation [here](https://docs.aws.amazon.com/eks/latest/userguide/create-cluster.html)
 
@@ -92,34 +92,34 @@ To get access to the ODM material, you must have an IBM entitlement registry key
 
 #### b. Create a pull secret by running a kubectl create secret command.
 
-  ```console
-  $ kubectl create secret docker-registry <REGISTRY_SECRET> --docker-server=cp.icr.io \
-      --docker-username=cp --docker-password="<API_KEY_GENERATED>" --docker-email=<USER_EMAIL>
-  ```
+    ```console
+    $ kubectl create secret docker-registry <REGISTRY_SECRET> --docker-server=cp.icr.io \
+        --docker-username=cp --docker-password="<API_KEY_GENERATED>" --docker-email=<USER_EMAIL>
+    ```
 
-  where:
-  * <REGISTRY_SECRET> is the secret name
-  * <API_KEY_GENERATED> is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
-  * <USER_EMAIL> is the email address associated with your IBMid.
+    where:
+    * <REGISTRY_SECRET> is the secret name
+    * <API_KEY_GENERATED> is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
+    * <USER_EMAIL> is the email address associated with your IBMid.
 
-  > Note: The `cp.icr.io` value for the docker-server parameter is the only registry domain name that contains the images. You must set the docker-username to `cp` to use an entitlement key as docker-password.
+    > Note: The `cp.icr.io` value for the docker-server parameter is the only registry domain name that contains the images. You must set the docker-username to `cp` to use an entitlement key as docker-password.
 
-  Make a note of the secret name so that you can set it for the `image.pullSecrets` parameter when you run a helm install of your containers. The `image.repository` parameter will later be set to `cp.icr.io/cp/cp4a/odm`.
+    Make a note of the secret name so that you can set it for the `image.pullSecrets` parameter when you run a helm install of your containers. The `image.repository` parameter will later be set to `cp.icr.io/cp/cp4a/odm`.
 
 #### c. Add the public IBM Helm charts repository:
 
-  ```console
-  helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo/entitled
-  helm repo update
-  ```
+    ```console
+    helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo/entitled
+    helm repo update
+    ```
 
 #### d. Check you can access ODM's chart
 
-  ```console
-  helm search repo ibm-odm-prod
-  NAME                  	CHART VERSION	APP VERSION	DESCRIPTION                     
-  ibmcharts/ibm-odm-prod	20.3.0       	8.10.5.0   	IBM Operational Decision Manager
-  ```
+    ```console
+    helm search repo ibm-odm-prod
+    NAME                  	CHART VERSION	APP VERSION	DESCRIPTION                     
+    ibmcharts/ibm-odm-prod	20.3.0       	8.10.5.0   	IBM Operational Decision Manager
+    ```
 
 You can now proceed to the [Create an RDS database (20 min)](#3-create-an-rds-database-20-min).
 
