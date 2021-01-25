@@ -47,30 +47,27 @@ For more information, see [Getting started with Amazon EKS](https://docs.aws.ama
 #### b. Set up your environment (10 min)
  - [Configure the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html)
 
-   Example:
    ```bash
    $ aws configure 
    ```
 
  - [Create a kubeconfig for Amazon EKS](https://docs.aws.amazon.com/eks/latest/userguide/create-kubeconfig.html)
 
-   Example:
    ```bash
-   $  aws eks --region eu-west-3 update-kubeconfig --name odm
+   $  aws eks --region <region> update-kubeconfig --name odm
    ```
 
  - Check your environment
 
-   If your environment is set up correctly, get the cluster information by running the following command:
+   If your environment is set up correctly, you should be able to get the cluster information by running the following command:
+
    ```bash
-   $ kubectl cluster-info
+   $ kubectl cluster-info
+     Kubernetes master is running at https://xxxxxx.yl4.<region>.eks.amazonaws.com
+     CoreDNS is running at https://xxxxx.yl4.<region>.eks.amazonaws.com/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+
+     Metrics-server is running at https://xxxxx.yl4.<region>.eks.amazonaws.com/api/v1/namespaces/kube-system/services/https:metrics-server:/proxy
    ```
-
-   Kubernetes master is running at https://xxxxxx.yl4.eu-west-3.eks.amazonaws.com
-
-   CoreDNS is running at https://xxxxx.yl4.eu-west-3.eks.amazonaws.com/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
-
-   Metrics-server is running at https://xxxxx.yl4.eu-west-3.eks.amazonaws.com/api/v1/namespaces/kube-system/services/https:metrics-server:/proxy
 
 To further debug and diagnose cluster problems, run the command:
 ```
