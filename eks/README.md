@@ -123,60 +123,57 @@ ibmcharts/ibm-odm-prod	20.3.0       	8.10.5.0   	IBM Operational Decision Manage
 
 You can now proceed to the [Create an RDS database (20 min)](#3-create-an-rds-database-20-min).
 
-#### Option B:  Using the download archives from IBM Passport Advantage (PPA)
+#### Option B: Using the download archives from IBM Passport Advantage (PPA)
 
-Prerequisites:  You must install Docker.
-
-Download the IBM Operational Decision Manager chart and images from [IBM Passport Advantage (PPA)](https://www-01.ibm.com/software/passportadvantage/pao_customer.html).
-
-Refer to the [ODM download document](https://www.ibm.com/support/pages/node/310661) to view the list of Passport Advantage eAssembly installation images.
-
+Prerequisites:
+- Install Docker
 
 Now we are ready to push the ODM images to a private registry that the EKS cluster can access. 
 
-Here we use the [ECR registry](https://docs.aws.amazon.com/AmazonECR/latest/userguide/what-is-ecr.html).
-If you use another public registry, skip this section and go to step 3.
+Here we are using the [ECR registry](https://docs.aws.amazon.com/AmazonECR/latest/userguide/what-is-ecr.html).
+If you use another public registry, skip this section and go to [step c](#c-load-the-odm-images-locally).
 
 #### a. Log in to the [ECR registry](https://docs.aws.amazon.com/AmazonECR/latest/userguide/Registries.html)
 
-Example:
 ```bash
-   $ aws ecr get-login-password --region eu-west-3 | docker login --username AWS --password-stdin <aws_account_id>.ecr.eu-west-3.amazonaws.com
+$ aws ecr get-login-password --region <region> | docker login --username AWS --password-stdin <aws_account_id>..dkr.ecr.<region>.amazonaws.com
 ```
 
 #### b. Create the [ECR repository instances](https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-create.html)
  
 > NOTE: You must create one repository per image.
 
-Example:
 ```bash
-    $ aws ecr create-repository --repository-name odm-decisioncenter --image-scanning-configuration scanOnPush=true --region eu-west-3
-    $ aws ecr create-repository --repository-name odm-decisionrunner --image-scanning-configuration scanOnPush=true --region eu-west-3
-    $ aws ecr create-repository --repository-name odm-decisionserverruntime --image-scanning-configuration scanOnPush=true --region eu-west-3
-    $ aws ecr create-repository --repository-name odm-decisionserverconsole --image-scanning-configuration scanOnPush=true --region eu-west-3
-    $ aws ecr create-repository --repository-name dbserver --image-scanning-configuration scanOnPush=true --region eu-west-3
+$ aws ecr create-repository --repository-name odm-decisioncenter --image-scanning-configuration scanOnPush=true --region <region>
+$ aws ecr create-repository --repository-name odm-decisionrunner --image-scanning-configuration scanOnPush=true --region <region>
+$ aws ecr create-repository --repository-name odm-decisionserverruntime --image-scanning-configuration scanOnPush=true --region <region>
+$ aws ecr create-repository --repository-name odm-decisionserverconsole --image-scanning-configuration scanOnPush=true --region <region>
+$ aws ecr create-repository --repository-name dbserver --image-scanning-configuration scanOnPush=true --region <region>
 ```
 
 #### c. Load the ODM images locally
 
- - Download one or more packages (.tgz archives) from [IBM Passport Advantage (PPA)](https://www-01.ibm.com/software/passportadvantage/pao_customer.html).  To view the full list of eAssembly installation images, refer to the [8.10.5 download document](https://www.ibm.com/support/pages/ibm-operational-decision-manager-v8105-download-document).
+ - Download the latest IBM Operational Decision Manager chart and images from [IBM Passport Advantage (PPA)](https://www-01.ibm.com/software/passportadvantage/pao_customer.html).
+
+   Refer to the [ODM download document](https://www.ibm.com/support/pages/node/310661) to view the list of Passport Advantage eAssembly installation images.
 
  - Extract the .tgz archives to your local file system.
-Extract the file that contains both the Helm chart and the images.  The name of the file includes the chart version number:
 
-```console
-$ mkdir ODM-PPA
-$ cd ODM-PPA
-$ tar zxvf PPA_NAME.tar.gz
-charts/ibm-odm-prod-20.3.0.tgz
-images/odm-decisionserverconsole_8.10.5.0-amd64.tar.gz
-images/odm-decisionserverruntime_8.10.5.0-amd64.tar.gz
-images/odm-decisionrunner_8.10.5.0-amd64.tar.gz
-images/odm-decisioncenter_8.10.5.0-amd64.tar.gz
-images/dbserver_8.10.5.0-amd64.tar.gz
-manifest.json
-manifest.yaml
-```
+    Extract the file that contains both the Helm chart and the images.  The name of the file includes the chart version number:
+
+    ```console
+    $ mkdir ODM-PPA
+    $ cd ODM-PPA
+    $ tar zxvf PPA_NAME.tar.gz
+    charts/ibm-odm-prod-20.3.0.tgz
+    images/odm-decisionserverconsole_8.10.5.0-amd64.tar.gz
+    images/odm-decisionserverruntime_8.10.5.0-amd64.tar.gz
+    images/odm-decisionrunner_8.10.5.0-amd64.tar.gz
+    images/odm-decisioncenter_8.10.5.0-amd64.tar.gz
+    images/dbserver_8.10.5.0-amd64.tar.gz
+    manifest.json
+    manifest.yaml
+    ```
 
 - Check that you can run a docker command.
     ```bash
@@ -195,32 +192,30 @@ manifest.yaml
 
 - Tag the images to the ECR registry previously created
 
-Example:
-```bash
-    $ docker tag odm-decisioncenter:8.10.5.0-amd64 <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/odm-decisioncenter:8.10.5.0-amd64
-    $ docker tag odm-decisionserverruntime:8.10.5.0-amd64 <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/odm-decisionserverruntime:8.10.5.0-amd64
-    $ docker tag odm-decisionserverconsole:8.10.5.0-amd64 <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/odm-decisionserverconsole:8.10.5.0-amd64
-    $ docker tag odm-decisionrunner:8.10.5.0-amd64 <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/odm-decisionrunner:8.10.5.0-amd64
-    $ docker tag dbserver:8.10.5.0-amd64 <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/dbserver:8.10.5.0-amd64
-```
+    ```bash
+    $ docker tag odm-decisioncenter:8.10.5.0-amd64 <AWS-AccountId>.dkr.ecr.<region>.amazonaws.com/odm-decisioncenter:8.10.5.0-amd64
+    $ docker tag odm-decisionserverruntime:8.10.5.0-amd64 <AWS-AccountId>.dkr.ecr.<region>.amazonaws.com/odm-decisionserverruntime:8.10.5.0-amd64
+    $ docker tag odm-decisionserverconsole:8.10.5.0-amd64 <AWS-AccountId>.dkr.ecr.<region>.amazonaws.com/odm-decisionserverconsole:8.10.5.0-amd64
+    $ docker tag odm-decisionrunner:8.10.5.0-amd64 <AWS-AccountId>.dkr.ecr.<region>.amazonaws.com/odm-decisionrunner:8.10.5.0-amd64
+    $ docker tag dbserver:8.10.5.0-amd64 <AWS-AccountId>.dkr.ecr.<region>.amazonaws.com/dbserver:8.10.5.0-amd64
+    ```
+
 - Push the images to the ECR registry
-
-
-Example: 
-```bash
-    $ docker push <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/odm-decisioncenter:8.10.5.0-amd64
-    $ docker push <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/odm-decisionserverconsole:8.10.5.0-amd64
-    $ docker push <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/odm-decisionserverruntime:8.10.5.0-amd64
-    $ docker push <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/odm-decisionrunner:8.10.5.0-amd64
-    $ docker push <AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com/dbserver:8.10.5.0-amd64
-```
+ 
+    ```bash
+    $ docker push <AWS-AccountId>.dkr.ecr.<region>.amazonaws.com/odm-decisioncenter:8.10.5.0-amd64
+    $ docker push <AWS-AccountId>.dkr.ecr.<region>.amazonaws.com/odm-decisionserverconsole:8.10.5.0-amd64
+    $ docker push <AWS-AccountId>.dkr.ecr.<region>.amazonaws.com/odm-decisionserverruntime:8.10.5.0-amd64
+    $ docker push <AWS-AccountId>.dkr.ecr.<region>.amazonaws.com/odm-decisionrunner:8.10.5.0-amd64
+    $ docker push <AWS-AccountId>.dkr.ecr.<region>.amazonaws.com/dbserver:8.10.5.0-amd64
+    ```
 
 #### e. Create a pull secret for the ECR registry  
 
 ```bash
-$ kubectl create secret docker-registry ecrodm --docker-server=<AWS-AccountId>.dkr.ecr.eu-west-3.amazonaws.com --docker-username=AWS --docker-password=$(aws ecr get-login-password --region eu-west-3)
+$ kubectl create secret docker-registry ecrodm --docker-server=<AWS-AccountId>.dkr.ecr.<region>.amazonaws.com --docker-username=AWS --docker-password=$(aws ecr get-login-password --region <region>)
 ```
-> NOTE: `ecrodm` is the name of the secret that is used to pull the images from EKS.
+> NOTE: `ecrodm` is the name of the secret that will be used to pull the images in EKS.
 
 
 ### 3. Create an RDS database (20 min)
