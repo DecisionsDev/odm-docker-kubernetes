@@ -123,12 +123,10 @@ ibmcharts/ibm-odm-prod	20.3.0       	8.10.5.0   	IBM Operational Decision Manage
 
 You can now proceed to the [Create an RDS database (20 min)](#3-create-an-rds-database-20-min).
 
-#### Option B: Using the download archives from IBM Passport Advantage (PPA)
+#### Option B: Using the downloaded archives from IBM Passport Advantage (PPA)
 
 Prerequisites:
 - Install Docker
-
-Now we are ready to push the ODM images to a private registry that the EKS cluster can access. 
 
 Here we are using the [ECR registry](https://docs.aws.amazon.com/AmazonECR/latest/userguide/what-is-ecr.html).
 If you use another public registry, skip this section and go to [step c](#c-load-the-odm-images-locally).
@@ -159,7 +157,7 @@ $ aws ecr create-repository --repository-name dbserver --image-scanning-configur
 
  - Extract the .tgz archives to your local file system.
 
-    Extract the file that contains both the Helm chart and the images.  The name of the file includes the chart version number:
+    Extract the file that contains both the Helm chart and the images. The name of the file includes the chart version number:
 
     ```console
     $ mkdir ODM-PPA
