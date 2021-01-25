@@ -350,77 +350,79 @@ Table 1. Status of pods
 
 ### 6. Access the ODM services  
 
-This section explains how to implement an  Application Load Balancer (ALB) to expose the ODM services to Internet connectivity.
+This section explains how to implement an Application Load Balancer (ALB) to expose the ODM services to Internet connectivity.
 
-* Create an Application Load Balancer
-* Implement an ingress for ODM services
+#### a. Provision an AWS Load Balancer
 
-#### a. Create an Application Load Balancer
-Create an appropriate Load Balancer following this [documentation](https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/load-balancer-getting-started.html)
+Provision an AWS Load Balancer Controller to your EKS cluster following this [documentation](https://docs.aws.amazon.com/eks/latest/userguide/aws-load-balancer-controller.html).
 
-And then follow step by step this [documentation](https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html#w243aac23b7c17c10b3b1) to create an ALB Ingress Controller on Amazon EKS.
+The AWS Load Balancer Controller creates Application Load Balancers (ALBs) and the necessary supporting AWS resources whenever a Kubernetes Ingress resource is created on the cluster with the `kubernetes.io/ingress.class: alb` annotation.
 
-#### b. Deploy the ingress service for ODM
+#### b. Deploy a Kubernetes Ingress resource for ODM services
+
+- Check that your cluster meets the specific requirements
+
+    Review prerequisites from this [documentation](https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html).
 
 - Write the ingress descriptor
 
-You must define an ingress to route your request to the ODM services.
+    You must define an ingress to route your request to the ODM services.
 
-Here is a sample descriptor to implement the ingress:
+    Here is a sample descriptor to implement the ingress:
 
-Ingress descriptor:
-```yaml
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  name: mycompany
-  annotations:
-    kubernetes.io/ingress.class: alb
-    alb.ingress.kubernetes.io/scheme: internet-facing
-    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
-    alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_301"}}'
-    alb.ingress.kubernetes.io/backend-protocol: "HTTPS"
-    alb.ingress.kubernetes.io/certificate-arn: "arn:aws:iam::<AWS-AccountId>:server-certificate/mycompany"
-spec:
-  rules:
-  - http:
-      paths:
-      - path: /*
-        backend:
-          serviceName: ssl-redirect
-          servicePort: use-annotation
-      - path: /res/*
-        backend:
-          serviceName: mycompany-odm-decisionserverconsole
-          servicePort: 9443
-      - path: /decisioncenter*/*
-        backend:
-          serviceName: mycompany-odm-decisioncenter
-          servicePort: 9453
-      - path: /DecisionService/*
-        backend:
-          serviceName: mycompany-odm-decisionserverruntime
-          servicePort: 9443
-      - path: /DecisionRunner/*
-        backend:
-          serviceName: mycompany-odm-decisionrunner
-          servicePort: 9443
-```
-Source file [ingress-mycompany.yaml](ingress-mycompany.yaml)
+    Ingress descriptor:
+    ```yaml
+    apiVersion: extensions/v1beta1
+    kind: Ingress
+    metadata:
+      name: mycompany
+      annotations:
+        kubernetes.io/ingress.class: alb
+        alb.ingress.kubernetes.io/scheme: internet-facing
+        alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
+        alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_301"}}'
+        alb.ingress.kubernetes.io/backend-protocol: "HTTPS"
+        alb.ingress.kubernetes.io/certificate-arn: "arn:aws:iam::<AWS-AccountId>:server-certificate/mycompany"
+    spec:
+      rules:
+      - http:
+          paths:
+          - path: /*
+            backend:
+              serviceName: ssl-redirect
+              servicePort: use-annotation
+          - path: /res/*
+            backend:
+              serviceName: mycompany-odm-decisionserverconsole
+              servicePort: 9443
+          - path: /decisioncenter*/*
+            backend:
+              serviceName: mycompany-odm-decisioncenter
+              servicePort: 9453
+          - path: /DecisionService/*
+            backend:
+              serviceName: mycompany-odm-decisionserverruntime
+              servicePort: 9443
+          - path: /DecisionRunner/*
+            backend:
+              serviceName: mycompany-odm-decisionrunner
+              servicePort: 9443
+    ```
+    Source file [ingress-mycompany.yaml](ingress-mycompany.yaml)
 
 - Deploy the ingress controller
-```bash
-kubectl apply -f ingress-mycompany.yaml 
-```
 
-After a couple of minutes, the  ALB reflects the ingress configuration. Then you can access the ODM services by retrieving the URL with this command:
+    ```bash
+    kubectl apply -f ingress-mycompany.yaml 
+    ```
 
-```bash
-export ROOTURL=$(kubectl get ingress mycompany| awk '{print $3}' | tail -1)
-```
+    After a couple of minutes, the  ALB reflects the ingress configuration. Then you can access the ODM services by retrieving the URL with this command:
+
+    ```bash
+    export ROOTURL=$(kubectl get ingress mycompany| awk '{print $4}' | tail -1)
+    ```
 
 With this ODM topology in place, you can access web applications to author, deploy, and test your rule-based decision services.
-
 
 The services are accessible from the following URLs:
 
