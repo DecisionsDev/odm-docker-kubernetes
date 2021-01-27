@@ -134,7 +134,7 @@ If you use another public registry, skip this section and go to [step c](#c-load
 #### a. Log in to the [ECR registry](https://docs.aws.amazon.com/AmazonECR/latest/userguide/Registries.html)
 
 ```bash
-$ aws ecr get-login-password --region <region> | docker login --username AWS --password-stdin <aws_account_id>..dkr.ecr.<region>.amazonaws.com
+$ aws ecr get-login-password --region <region> | docker login --username AWS --password-stdin <aws_account_id>.dkr.ecr.<region>.amazonaws.com
 ```
 
 #### b. Create the [ECR repository instances](https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-create.html)
@@ -142,11 +142,12 @@ $ aws ecr get-login-password --region <region> | docker login --username AWS --p
 > NOTE: You must create one repository per image.
 
 ```bash
-$ aws ecr create-repository --repository-name odm-decisioncenter --image-scanning-configuration scanOnPush=true --region <region>
-$ aws ecr create-repository --repository-name odm-decisionrunner --image-scanning-configuration scanOnPush=true --region <region>
-$ aws ecr create-repository --repository-name odm-decisionserverruntime --image-scanning-configuration scanOnPush=true --region <region>
-$ aws ecr create-repository --repository-name odm-decisionserverconsole --image-scanning-configuration scanOnPush=true --region <region>
-$ aws ecr create-repository --repository-name dbserver --image-scanning-configuration scanOnPush=true --region <region>
+export REGION=<region>
+aws ecr create-repository --repository-name odm-decisioncenter --image-scanning-configuration scanOnPush=true --region $REGION
+aws ecr create-repository --repository-name odm-decisionrunner --image-scanning-configuration scanOnPush=true --region $REGION
+aws ecr create-repository --repository-name odm-decisionserverruntime --image-scanning-configuration scanOnPush=true --region $REGION
+aws ecr create-repository --repository-name odm-decisionserverconsole --image-scanning-configuration scanOnPush=true --region $REGION
+aws ecr create-repository --repository-name dbserver --image-scanning-configuration scanOnPush=true --region $REGION
 ```
 
 #### c. Load the ODM images locally
@@ -191,21 +192,23 @@ $ aws ecr create-repository --repository-name dbserver --image-scanning-configur
 - Tag the images to the ECR registry previously created
 
     ```bash
-    $ docker tag odm-decisioncenter:8.10.5.0-amd64 <AWS-AccountId>.dkr.ecr.<region>.amazonaws.com/odm-decisioncenter:8.10.5.0-amd64
-    $ docker tag odm-decisionserverruntime:8.10.5.0-amd64 <AWS-AccountId>.dkr.ecr.<region>.amazonaws.com/odm-decisionserverruntime:8.10.5.0-amd64
-    $ docker tag odm-decisionserverconsole:8.10.5.0-amd64 <AWS-AccountId>.dkr.ecr.<region>.amazonaws.com/odm-decisionserverconsole:8.10.5.0-amd64
-    $ docker tag odm-decisionrunner:8.10.5.0-amd64 <AWS-AccountId>.dkr.ecr.<region>.amazonaws.com/odm-decisionrunner:8.10.5.0-amd64
-    $ docker tag dbserver:8.10.5.0-amd64 <AWS-AccountId>.dkr.ecr.<region>.amazonaws.com/dbserver:8.10.5.0-amd64
+    export REGION=<region>
+    export AWSACCOUNTID=<AWS-AccountId>
+    docker tag odm-decisioncenter:8.10.5.0-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisioncenter:8.10.5.0-amd64
+    docker tag odm-decisionserverruntime:8.10.5.0-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionserverruntime:8.10.5.0-amd64
+    docker tag odm-decisionserverconsole:8.10.5.0-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionserverconsole:8.10.5.0-amd64
+    docker tag odm-decisionrunner:8.10.5.0-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionrunner:8.10.5.0-amd64
+    docker tag dbserver:8.10.5.0-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/dbserver:8.10.5.0-amd64
     ```
 
 - Push the images to the ECR registry
  
     ```bash
-    $ docker push <AWS-AccountId>.dkr.ecr.<region>.amazonaws.com/odm-decisioncenter:8.10.5.0-amd64
-    $ docker push <AWS-AccountId>.dkr.ecr.<region>.amazonaws.com/odm-decisionserverconsole:8.10.5.0-amd64
-    $ docker push <AWS-AccountId>.dkr.ecr.<region>.amazonaws.com/odm-decisionserverruntime:8.10.5.0-amd64
-    $ docker push <AWS-AccountId>.dkr.ecr.<region>.amazonaws.com/odm-decisionrunner:8.10.5.0-amd64
-    $ docker push <AWS-AccountId>.dkr.ecr.<region>.amazonaws.com/dbserver:8.10.5.0-amd64
+    docker push $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisioncenter:8.10.5.0-amd64
+    docker push $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionserverconsole:8.10.5.0-amd64
+    docker push $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionserverruntime:8.10.5.0-amd64
+    docker push $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionrunner:8.10.5.0-amd64
+    docker push $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/dbserver:8.10.5.0-amd64
     ```
 
 #### e. Create a pull secret for the ECR registry  
@@ -352,7 +355,7 @@ Table 1. Status of pods
 
 This section explains how to implement an Application Load Balancer (ALB) to expose the ODM services to Internet connectivity.
 
-#### a. Provision an AWS Load Balancer
+#### a. Provision an AWS Load Balancer Controller
 
 Provision an AWS Load Balancer Controller to your EKS cluster following this [documentation](https://docs.aws.amazon.com/eks/latest/userguide/aws-load-balancer-controller.html).
 
