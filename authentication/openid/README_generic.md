@@ -6,7 +6,7 @@ In the context of the IBM Cloud Pak for Business Automation, Operational Decisio
 
 ## Before you begin
 
-You must configure a basic or LDAP authentication registry for your ODM services before you can configure ODM with an OIDC provider. To understand better ODM roles, see [Understanding user roles and user groups](con_default_users.dita).
+You must configure a basic or LDAP authentication registry for your ODM services before you can configure ODM with an OIDC provider. To understand better ODM roles, see [Understanding user roles and user groups](https://www.ibm.com/docs/cloud-paks/cp-biz-automation/21.0.x?topic=access-understanding-user-roles-user-groups).
 
 ODM uses hardcoded roles with three users and three groups for each role. All authenticated users have by default the `rtsUser` role.
 
@@ -76,7 +76,7 @@ The following procedure describes how to manually configure ODM with an external
 
 3.  Provide the certificate of the OpenID server.
 
-    For more information, see [Importing the certificate of an external service](../../com.ibm.dba.managing/op_topics/tsk_secprep_cert_import.html).
+    For more information, see [Importing the certificate of an external service](https://www.ibm.com/docs/cloud-paks/cp-biz-automation/21.0.x?topic=services-importing-certificate-external-service).
 
 4.  Provide the URL of the external OpenID server.
 
@@ -339,14 +339,12 @@ The mapping itself is done with variable definitions and key-value pairs. A cert
 
 **Related information**  
 
+[Configuring user access with UMS](https://www.ibm.com/docs/cloud-paks/cp-biz-automation/21.0.x?topic=access-configuring-user-ums)
 
-[Configuring user access with UMS](../topics/tsk_config_odm_ums.dita)
+[Configuring user access](https://www.ibm.com/docs/cloud-paks/cp-biz-automation/21.0.x?topic=manager-configuring-user-access)
 
-[Configuring user access](../topics/tsk_config_user_access.dita)
+[ODM configuration parameters](https://www.ibm.com/docs/cloud-paks/cp-biz-automation/21.0.x?topic=parameters-operational-decision-manager)
 
-[ODM configuration parameters](../../com.ibm.dba.ref/k8s_topics/ref_parameters_prod.html)
+[Preparing to install ODM](https://www.ibm.com/docs/cloud-paks/cp-biz-automation/21.0.x?topic=capabilities-preparing-install-operational-decision-manager)
 
-[Preparing to install ODM](../../com.ibm.dba.install/op_topics/tsk_preparing_odmk8s.html)
-
-[User Management Services](../topics/con_ums.dita)
-
+[User Management Services](https://www.ibm.com/docs/en/cloud-paks/cp-biz-automation/21.0.x?topic=services-ums-single-sign)
