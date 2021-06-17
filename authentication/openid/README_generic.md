@@ -1,7 +1,7 @@
 # Configuring user access with external OIDC providers
 
 <shortdesc>
-Operational Decision Manager for production can be configured with an external OpenID Connect (OIDC). You must set `oidc.external_server` to true, in your custom resource file.
+In the context of the IBM Cloud Pak for Business Automation, Operational Decision Manager for production can be configured with an external OpenID Connect server (OIDC Provider). You must set `oidc.external_server` to true, in your custom resource file.
 </shortdesc>
 
 ## Before you begin
@@ -29,7 +29,7 @@ Similar users and groups exist for the other roles `rtsConfigManagers`, `resAdmi
 
 You need to create a number of secrets before you can install an ODM instance with an external OIDC provider and use web application single sign-on (SSO). The following diagram shows the ODM services with an external OIDC provider after a successful installation.
 
-![ODM web application SSO](../images/diag_oidc_interaction.jpg)
+![ODM web application SSO](../../images/diag_oidc_interaction.jpg)
 
 The following procedure describes how to manually configure ODM with an external OpenID Connect server. You must define the mapping between the liberty roles and the LDAP groups by creating a secret and reference it in the customization.authSecretRef parameter.
 
