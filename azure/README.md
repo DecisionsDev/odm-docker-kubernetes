@@ -572,7 +572,7 @@ helm install mycompany charts/ibm-odm-prod-20.3.0.tgz \
 Create a YAML file named `ingress-odm.yml`, as follows:
 
 ```yaml
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: mycompany
