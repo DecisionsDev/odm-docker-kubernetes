@@ -49,7 +49,7 @@ This section allows you augment the token by the useridentifier and group proper
       * Click Create Button
       ![Add Claim Result](ResultAddClaims.png)
 
-## Verify Token content
+## Verify Token content 
 You can verify the content of the token with the Token Preview pannel. 
 You have to check that the login name and groups are available in the id token using the authorization flow which the flow used by ODM.
 * Menu Security -> api
@@ -67,7 +67,9 @@ You have to check that the login name and groups are available in the id token u
     "odm-admin"
   ]``
   ![Token Preview](TokenPreview.png)
-  
+
+Note that the discovery endpoint can be found in the settings tag Metadata URI. Menu Security -> api -> default (link) -> Metadata URI (link)
+
 ## Setup an Application 
 
    * Menu Applications -> Applications 
