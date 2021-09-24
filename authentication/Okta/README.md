@@ -49,7 +49,25 @@ This section allows you augment the token by the useridentifier and group proper
       * Click Create Button
       ![Add Claim Result](ResultAddClaims.png)
 
-## Verify Claims 
+## Verify Token content
+You can verify the content of the token with the Token Preview pannel. 
+You have to check that the login name and groups are available in the id token using the authorization flow which the flow used by ODM.
+* Menu Security -> api
+   *  Click default link of Authorization server
+   *  Click the Token Preview
+     *  OAuth/OIDC client : ODM Application
+     *  Grant type : Authorization Code
+     *  User: ``<YourEmailAddress>``
+     *  Scopes : openid
+   *  Clikc the Preview Token button
+   * As result the id_token tab as well as in the token tab should contains  
+   ``...
+   "loginName": "<YourEmailAddress>",
+  "groups": [
+    "odm-admin"
+  ]``
+  ![Token Preview](TokenPreview.png)
+  
 ## Setup an Application 
 
    * Menu Applications -> Applications 
