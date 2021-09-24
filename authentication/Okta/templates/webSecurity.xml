@@ -1,0 +1,21 @@
+<server>
+<variable name="group1" value="group:OKTA_SERVER_URL/oauth2/default/OKTA_ODM_GROUP"/>
+
+<variable name="odm.rtsAdministrators.group1" value="${group1}"/>
+<variable name="odm.rtsInstallers.group1" value="${group1}"/>
+<variable name="odm.rtsConfigManagers.group1" value="${group1}"/>
+<variable name="odm.resAdministrators.group1" value="${group1}"/>
+<variable name="odm.resDeployers.group1" value="${group1}"/>
+<variable name="odm.resMonitors.group1" value="${group1}"/>
+<variable name="odm.resExecutors.group1" value="${group1}"/>
+
+<variable name="user1" value="user:OKTA_SERVER_URL/oauth2/default/OKTA_CLIENT_ID"/>
+
+<variable name="odm.rtsAdministrators.user1" value="${user1}"/>
+<variable name="odm.rtsInstallers.user1" value="${user1}"/>
+<variable name="odm.rtsConfigManagers.user1" value="${user1}"/>
+<variable name="odm.resAdministrators.user1" value="${user1}"/>
+<variable name="odm.resDeployers.user1" value="${user1}"/>
+<variable name="odm.resMonitors.user1" value="${user1}"/>
+<variable name="odm.resExecutors.user1" value="${user1}"/>
+</server>
