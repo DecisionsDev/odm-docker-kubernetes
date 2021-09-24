@@ -1,6 +1,31 @@
 
+## Manage group and user
+   * Menu Directory -> Groups
+      * Click Add Group button
+         * Name : odm-admin
+         * Group Description : ODM Admin group
+        ![Add Group](AddGroup.png)
+   * Menu Directory -> People
+      * Click 'Add Person' button
+         * User type : User
+         * First name : ``<YourFirstName>``
+         * Last name : ``<YourLastName>``
+         * Username : ``<YourFirstName>.<YourLastName>``
+         * Primary email : ``<YourFirstName>.<YourLastName>@mycompany.com``
+         * Groups (optional) : **odm-admin**
+      * Click Save button 
+      * Repeat for each user you want to add.
 
----+++ Setup an Application 
+## Configure Claims
+This section allows you augment the token by the useridentifier and group properties that will be used for the ODM authentication and authorization mechanism.
+   * Menu Security -> api
+      * Click default link of Authorization server
+      ![Api Claim](ApiClaim.png)
+      
+      * Select claims tab
+      * Click 'Add claim' button
+      * 
+## Setup an Application 
 
    * Menu Applications -> Applications 
    * Click Create an App Integration
@@ -8,4 +33,17 @@
      * Select WebApplication
      * Next
     ![Add Application](AddApplication.png)
-    * 
+    
+   
+   * Edit Application
+     * App integration name : ODM Application
+     * Grant type:
+        * Check Client Credentials
+        * Check Refresh Token
+        * Implicit (hybrid) 
+     * Assignments:
+        * Controlled access:
+           * Limit access to selected groups:
+              * Selected group(s) : **odm-admin**    
+     * Click Save button 
+![New Web Application](NewWebAppIntegration.png)
