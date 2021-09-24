@@ -4,7 +4,9 @@
       * Click Add Group button
          * Name : odm-admin
          * Group Description : ODM Admin group
-        ![Add Group](AddGroup.png)
+
+![Add Group](AddGroup.png)
+        
    * Menu Directory -> People
       * Click 'Add Person' button
          * User type : User
@@ -24,7 +26,30 @@ This section allows you augment the token by the useridentifier and group proper
       
       * Select claims tab
       * Click 'Add claim' button
-      * 
+        * Name : loginName
+        * Include in token type : **Access Token**
+        * Value : (appuser != null) ? appuser.userName : app.clientId
+      * Click Create Button  
+      * Click 'Add claim' button
+        * Name : loginName
+        * Include in token type : **Id Token**
+        * Value : (appuser != null) ? appuser.userName : app.clientId
+      * Click Create Button
+      * Click 'Add claim' button
+      * Name : groups
+        * Include in token type : **Access Token**
+        * Value type : Groups
+        * Start with : odm-admin
+      * Click Create Button
+      * Click 'Add claim' button
+      * Name : groups
+        * Include in token type : **Access Token**
+        * Value type : Groups
+        * Start with : odm-admin
+      * Click Create Button
+      ![Add Claim Result](ResultAddClaims.png)
+
+## Verify Claims 
 ## Setup an Application 
 
    * Menu Applications -> Applications 
