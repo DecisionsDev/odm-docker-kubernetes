@@ -171,15 +171,17 @@ To configure ODM with OKTA, we need to provide 3 files :
 * openIdWebSecurity.xml to configure the liberty OpenId connect client relying party
 * webSecurity.xml to provide a mapping between liberty roles and OKTA groups/users to manage authorization
 
-We provide a generateTemplate.sh script allowing to generate these 3 files according to your OKTA_SERVER_URL, OKTA_CLIENT_ID, OKTA_CLIENT_SECRET and OKTA_ODM_GROUP parameters.
+We provide a (generateTemplate.sh) script allowing to generate these 3 files according to your OKTA_SERVER_URL, OKTA_CLIENT_ID, OKTA_CLIENT_SECRET and OKTA_ODM_GROUP parameters.
 You will get the generation in the output directory.
 The, create the following secret :
 
 ```
 kubectl create secret generic okta-auth-secret --from-file=openIdParameters.properties=./output/openIdParameters.properties \
                                        --from-file=openIdWebSecurity.xml=./output/openIdWebSecurity.xml \
-                                       --from-file=webSecurity.xml=./output/webSecurity.xml
+                                       --from-file=webSecurity.xml=./output/webSecurity.xml \
 ```
+
+
 
 ## Install your ODM Helm release
 
@@ -224,3 +226,18 @@ The redirect are built this way :
 ## Install Using the CP4BA Operator
 
 
+## Post installation steps
+
+### Define server configuration
+
+   * Open the decision center URL
+   * Login
+   * Go to the Admin Tab -> Servers Tab 
+   * Click "Upload OpenID connect provider configuration file"
+ ![Decison Center OpenID Provider](OpenIDProvider.png)
+   -> Select the OdmOpenIdProviders.json file generated in the OUTPUTDIR
+   * Edit the 'Decision Service Execution'
+   * In the Configuration select box choose 'okta_clientcredentials'
+   * EditServer.png![image](https://user-images.githubusercontent.com/24404215/134931335-b4c5040e-7125-4a3c-ae63-bc94d308aa75.png)
+
+   
