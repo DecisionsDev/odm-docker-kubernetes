@@ -193,11 +193,33 @@ helm install myodmrelease ibmcharts/ibm-odm-prod --version 21.2.0 \
         --set internalDatabase.persistence.enabled=false \
         --set customization.trustedCertificateList={"okta-secret"} \
         --set customization.authSecretRef=okta-auth-secret \
-        --set service.enableRoute=true \
-        --set service.hostname="<CLUSTER-HOSTNAME>"
+        --set service.enableRoute=true
 ```
 
 Note: On OpenShift, you have to set the following parameters due to security context constraint :  --set internalDatabase.runAsUser='' --set customization.runAsUser=''. See https://www.ibm.com/support/knowledgecenter/SSQP76_8.10.x/com.ibm.odm.kube/topics/tsk_preparing_odmk8s.html
+
+## Register the ODM redirect URL
+
+Get the endpoints.
+On OpenShift, you can get the routes with :
+```
+oc get routes
+```
+
+You should get something like :
+```
+NAME                                HOST/PORT                                                                       PATH   SERVICES                                 PORT                          TERMINATION   WILDCARD
+myodmrelease-odm-dc-route           myodmrelease-odm-dc-route-okta-article.apps.odm-dev48.cp.fyre.ibm.com                  myodmrelease-odm-decisioncenter          decisioncenter-https          passthrough   None
+myodmrelease-odm-dr-route           myodmrelease-odm-dr-route-okta-article.apps.odm-dev48.cp.fyre.ibm.com                  myodmrelease-odm-decisionrunner          decisionrunner-https          passthrough   None
+myodmrelease-odm-ds-console-route   myodmrelease-odm-ds-console-route-okta-article.apps.odm-dev48.cp.fyre.ibm.com          myodmrelease-odm-decisionserverconsole   decisionserverconsole-https   passthrough   None
+myodmrelease-odm-ds-runtime-route   myodmrelease-odm-ds-runtime-route-okta-article.apps.odm-dev48.cp.fyre.ibm.com          myodmrelease-odm-decisionserverruntime   decisionserverruntime-https   passthrough   None
+```
+
+The redirect are built this way :
+* DC-REDIRECT_URL=https://DC-HOST/decisioncenter/openid/redirect/odm 
+* DR-REDIRECT_URL=https://DR-HOST/DecisionRunner/openid/redirect/odm
+* DSC-REDIRECT_URL=https://DSC-HOST/res/openid/redirect/odm
+* DSR-REDIRECT_URL=https://DSR-HOST/DecisionService/openid/redirect/odm
 
 ## Install Using the CP4BA Operator
 
