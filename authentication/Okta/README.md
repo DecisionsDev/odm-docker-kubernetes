@@ -105,8 +105,51 @@ You have to check that the login name and groups are available in the id token u
   ]
 ```
 
-# Configuring ODM for OKTA Server
   ![Token Preview](TokenPreview.png)
 
 Note that the discovery endpoint can be found in the settings tag Metadata URI. Menu Security -> api -> default (link) -> Metadata URI (link)
+
+# Configuring ODM for OKTA Server
+
+## Prerequisites
+First, install the following software on your machine:
+* [Helm v3](https://github.com/helm/helm/releases)
+* [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl)
+* Access to an Operational Decision Manager Product
+
+## Prepare your environment for the ODM installation
+Log in to [MyIBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary) with the IBMid and password that are associated with the entitled software.
+
+In the Container software library tile, verify your entitlement on the View library page, and then go to Get entitlement key to retrieve the key.
+
+Create a pull secret by running a kubectl create secret command.
+
+```
+$ kubectl create secret docker-registry icregistry-secret --docker-server=cp.icr.io --docker-username=cp \
+    --docker-password="<API_KEY_GENERATED>" --docker-email=<USER_EMAIL>
+```
+
+where:
+* API_KEY_GENERATED is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
+* USER_EMAIL is the email address associated with your IBMid.
+
+Note: The cp.icr.io value for the docker-server parameter is the only registry domain name that contains the images. You must set the docker-username to cp to use an entitlement key as docker-password.
+
+Make a note of the secret name so that you can set it for the image.pullSecrets parameter when you run a helm install of your containers. The image.repository parameter will later be set to cp.icr.io/cp/cp4a/odm.
+
+Add the public IBM Helm charts repository:
+
+```
+helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo/entitled
+helm repo update
+```
+
+Check you can access ODM's chart
+
+```
+helm search repo ibm-odm-prod
+NAME                  	CHART VERSION	APP VERSION	DESCRIPTION                     
+ibmcharts/ibm-odm-prod	20.3.0       	8.10.5.0   	IBM Operational Decision Manager
+```
+
 
