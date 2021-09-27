@@ -1,4 +1,6 @@
+# Introduction
 
+# Configuring OKTA instance for ODM
 ## Manage group and user
    * Menu Directory -> Groups
       * Click Add Group button
@@ -102,6 +104,8 @@ You have to check that the login name and groups are available in the id token u
     "odm-admin"
   ]
 ```
+
+# Configuring ODM for OKTA Server
   ![Token Preview](TokenPreview.png)
 
 Note that the discovery endpoint can be found in the settings tag Metadata URI. Menu Security -> api -> default (link) -> Metadata URI (link)
