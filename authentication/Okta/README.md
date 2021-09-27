@@ -226,9 +226,9 @@ The redirect are built this way :
 ## Install Using the CP4BA Operator
 
 
-## Post installation steps
+# Post installation steps
 
-### Define server configuration
+## Define server configuration
 
    * Open the decision center URL
    * Login
