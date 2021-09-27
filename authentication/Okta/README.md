@@ -176,7 +176,7 @@ You will get the generation in the output directory.
 The, create the following secret :
 
 ```
-create secret generic okta-auth-secret --from-file=openIdParameters.properties=./output/openIdParameters.properties \
+kubectl create secret generic okta-auth-secret --from-file=openIdParameters.properties=./output/openIdParameters.properties \
                                        --from-file=openIdWebSecurity.xml=./output/openIdWebSecurity.xml \
                                        --from-file=webSecurity.xml=./output/webSecurity.xml
 ```
@@ -189,9 +189,12 @@ You can now install the product. We will use the postgresql internal database by
 helm install myodmrelease ibmcharts/ibm-odm-prod --version 21.2.0 \
         --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
         --set image.tag=8.10.5.1 \
+        --set oidc.enabled=true \
         --set internalDatabase.persistence.enabled=false \
         --set customization.trustedCertificateList={"okta-secret"} \
-        --set customization.authSecretRef=okta-auth-secret
+        --set customization.authSecretRef=okta-auth-secret \
+        --set service.enableRoute=true \
+        --set service.hostname="<CLUSTER-HOSTNAME>"
 ```
 
 Note: On OpenShift, you have to set the following parameters due to security context constraint :  --set internalDatabase.runAsUser='' --set customization.runAsUser=''. See https://www.ibm.com/support/knowledgecenter/SSQP76_8.10.x/com.ibm.odm.kube/topics/tsk_preparing_odmk8s.html
