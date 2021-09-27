@@ -125,8 +125,10 @@ In the Container software library tile, verify your entitlement on the View libr
 Create a pull secret by running a kubectl create secret command.
 
 ```
-$ kubectl create secret docker-registry icregistry-secret --docker-server=cp.icr.io --docker-username=cp \
-    --docker-password="<API_KEY_GENERATED>" --docker-email=<USER_EMAIL>
+$ kubectl create secret docker-registry icregistry-secret --docker-server=cp.icr.io \
+							  --docker-username=cp \
+    							  --docker-password="<API_KEY_GENERATED>" \
+							  --docker-email=<USER_EMAIL>
 ```
 
 where:
@@ -174,7 +176,9 @@ You will get the generation in the output directory.
 The, create the following secret :
 
 ```
-create secret generic okta-auth-secret --from-file=openIdParameters.properties=./output/openIdParameters.properties --from-file=openIdWebSecurity.xml=./output/openIdWebSecurity.xml --from-file=webSecurity.xml=./output/webSecurity.xml
+create secret generic okta-auth-secret --from-file=openIdParameters.properties=./output/openIdParameters.properties \
+                                       --from-file=openIdWebSecurity.xml=./output/openIdWebSecurity.xml \
+                                       --from-file=webSecurity.xml=./output/webSecurity.xml
 ```
 
 ## Install your ODM Helm release
@@ -191,4 +195,7 @@ helm install myodmrelease ibmcharts/ibm-odm-prod --version 21.2.0 \
 ```
 
 Note: On OpenShift, you have to set the following parameters due to security context constraint :  --set internalDatabase.runAsUser='' --set customization.runAsUser=''. See https://www.ibm.com/support/knowledgecenter/SSQP76_8.10.x/com.ibm.odm.kube/topics/tsk_preparing_odmk8s.html
+
+## Install Using the CP4BA Operator
+
 
