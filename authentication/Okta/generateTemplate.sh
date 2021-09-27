@@ -11,7 +11,7 @@ function usage {
     print " -s : Okta Server URL"
     print " -g : Okta ODM Group"
     print " "
-    print "Usage example : $0 -i qqdfqg -x qsdfqsdfqf -s https://fr-ibmodmdev.okta.com -g odm-user"
+    print "Usage example : $0 -i OktaclientId -x OktaclientSecret -s https://fr-ibmodmdev.okta.com -g odm-admin"
 }
 while getopts "x:i:s:g:h" option 
 do
