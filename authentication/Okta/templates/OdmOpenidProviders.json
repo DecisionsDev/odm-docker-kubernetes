@@ -8,8 +8,7 @@
           "introspectionURL": "OKTA_SERVER_URL/oauth2/default/v1/introspect",
           "scope": "odmapiusers",
           "clientId": "OKTA_CLIENT_ID",
-          "clientSecret": "OKTA_CLIENT_SECRET",
-          "logoutURL": "OKTA_SERVER_URL/oauth2/default/v1/logout"
+          "clientSecret": "OKTA_CLIENT_SECRET"
       }
     ]
   }
