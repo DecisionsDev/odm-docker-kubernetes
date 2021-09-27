@@ -149,7 +149,46 @@ Check you can access ODM's chart
 ```
 helm search repo ibm-odm-prod
 NAME                  	CHART VERSION	APP VERSION	DESCRIPTION                     
-ibmcharts/ibm-odm-prod	20.3.0       	8.10.5.0   	IBM Operational Decision Manager
+ibmcharts/ibm-odm-prod	21.2.0       	8.10.5.1   	IBM Operational Decision Manager
 ```
 
+## Create a secret with the Okta Server certificate
+
+To allow ODM services to access Okta Server, it is compulsory to provide the Okta Server Certificate.
+You can create the secret as follow :
+
+```
+keytool -printcert -sslserver <OKTA_SERVER_URL> -rfc > okta.crt
+kubectl create secret generic okta-secret --from-file=tls.crt=okta.crt
+```
+
+## Create a secret to configure ODM with OKTA
+
+To configure ODM with OKTA, we need to provide 3 files :
+* openIdParameters.properties to configure ODM REST-API and web application (logout and allowed domains in web.xml)
+* openIdWebSecurity.xml to configure the liberty OpenId connect client relying party
+* webSecurity.xml to provide a mapping between liberty roles and OKTA groups/users to manage authorization
+
+We provide a generateTemplate.sh script allowing to generate these 3 files according to your OKTA_SERVER_URL, OKTA_CLIENT_ID, OKTA_CLIENT_SECRET and OKTA_ODM_GROUP parameters.
+You will get the generation in the output directory.
+The, create the following secret :
+
+```
+create secret generic okta-auth-secret --from-file=openIdParameters.properties=./output/openIdParameters.properties --from-file=openIdWebSecurity.xml=./output/openIdWebSecurity.xml --from-file=webSecurity.xml=./output/webSecurity.xml
+```
+
+## Install your ODM Helm release
+
+You can now install the product. We will use the postgresql internal database by disabling the persistence (internalDatabase.persistence.enabled=false) to avoid any platform complexity concerning persistent volume allocation.
+
+```
+helm install myodmrelease ibmcharts/ibm-odm-prod --version 21.2.0 \
+        --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
+        --set image.tag=8.10.5.1 \
+        --set internalDatabase.persistence.enabled=false \
+        --set customization.trustedCertificateList={"okta-secret"} \
+        --set customization.authSecretRef=okta-auth-secret
+```
+
+Note: On OpenShift, you have to set the following parameters due to security context constraint :  --set internalDatabase.runAsUser='' --set customization.runAsUser=''. See https://www.ibm.com/support/knowledgecenter/SSQP76_8.10.x/com.ibm.odm.kube/topics/tsk_preparing_odmk8s.html
 
