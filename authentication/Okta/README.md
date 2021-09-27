@@ -237,14 +237,15 @@ The redirect are built this way :
  ![Decison Center OpenID Provider](OpenIDProvider.png)
    -> Select the OdmOpenIdProviders.json file generated in the OUTPUTDIR
    * Edit the 'Decision Service Execution'
+
+![image](EditServer.png) 
+
    * In the Configuration select box choose 'okta_clientcredentials'
-   * EditServer.png![image](EditServer.png)
    * Click Test button 
    * Check should be OK
    * Click Done button
    * Edit the 'Test and Simulation Execution'
    * In the Configuration select box choose 'okta_clientcredentials'
-   * EditServer.png![image](EditServer.png)
    * Click Test button 
    * Check should be OK
    * Click Done button
