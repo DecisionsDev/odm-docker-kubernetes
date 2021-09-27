@@ -241,10 +241,14 @@ The redirect are built this way :
 ![image](EditServer.png) 
 
    * In the Configuration select box choose 'okta_clientcredentials'
+   * Unselect 'Use OpenID Connect' selector
+   * Select 'Use OpenID Connect' selector
    * Click Test button 
    * Check should be OK
    * Click Done button
    * Edit the 'Test and Simulation Execution'
+   * Unselect 'Use OpenID Connect' selector
+   * Select 'Use OpenID Connect' selector
    * In the Configuration select box choose 'okta_clientcredentials'
    * Click Test button 
    * Check should be OK
