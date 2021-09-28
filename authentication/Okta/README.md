@@ -1,3 +1,24 @@
+# Table of contents
+
+- [Introduction](#introduction)
+  - [About this task](#about-this-task)
+  - [ODM OpenID flows](#odm-openid-flows)
+- [Configuring OKTA instance for ODM (Part 1)](#configuring-okta-instance-for-odm-part-1)
+  - [Manage group and user](#manage-group-and-user)
+  - [Setup an Application](#setup-an-application)
+  - [Configure the default Authorization Server](#configure-the-default-authorization-server)
+- [Configuring ODM for OKTA Server (Part 2)](#configuring-odm-for-okta-server-part-2)
+  - [Prerequisites](#prerequisites)
+  - [Prepare your environment for the ODM installation](#prepare-your-environment-for-the-odm-installation)
+  - [Create a secret with the Okta Server certificate](#create-a-secret-with-the-okta-server-certificate)
+  - [Create a secret to configure ODM with OKTA](#create-a-secret-to-configure-odm-with-okta)
+  - [Install your ODM Helm release](#install-your-odm-helm-release)
+  - [Register the ODM redirect URL](#register-the-odm-redirect-url)
+  - [Install Using the CP4BA Operator](#install-using-the-cp4ba-operator)
+- [Post installation steps](#post-installation-steps)
+  - [Define server configuration](#define-server-configuration)
+
+
 # Introduction
 In the context of the IBM Cloud Pak for Business Automation or ODM on Certified Kubernetes offering, Operational Decision Manager for production can be configured with an external OpenID Connect server (OIDC Provider) such as OKTA Server. 
 
