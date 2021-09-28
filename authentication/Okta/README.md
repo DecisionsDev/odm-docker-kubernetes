@@ -47,6 +47,12 @@ The Client Credentials flow is intended for server-side (AKA "confidential") cli
 
 ![OKTA Client Credential Flow](../../images/oauth_client_creds_flow.png)
 
+The Authorization Code flow is best used by server-side apps where the source code isn't publicly exposed. The apps should be server-side because the request that exchanges the authorization code for a token requires a client secret, which has to be stored in your client. The server-side app requires an end user, however, because it relies on interaction with the end user's web browser, which redirects the user and then receives the authorization code.
+
+Auth Code flow width:
+
+![image](https://user-images.githubusercontent.com/24404215/135082320-6c8d3506-5d93-4c87-83b5-728eebbcd321.png)
+
 # Configuring OKTA instance for ODM (Part 1)
 ## Manage group and user
    * Menu Directory -> Groups
