@@ -192,20 +192,7 @@ Note: The cp.icr.io value for the docker-server parameter is the only registry d
 
 Make a note of the secret name so that you can set it for the image.pullSecrets parameter when you run a helm install of your containers. The image.repository parameter will later be set to cp.icr.io/cp/cp4a/odm.
 
-Add the public IBM Helm charts repository:
 
-```
-helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo/entitled
-helm repo update
-```
-
-Check you can access ODM's chart
-
-```
-helm search repo ibm-odm-prod
-NAME                  	CHART VERSION	APP VERSION	DESCRIPTION                     
-ibmcharts/ibm-odm-prod	21.2.0       	8.10.5.1   	IBM Operational Decision Manager
-```
 
 ## Create a secret with the Okta Server certificate
 
@@ -237,6 +224,23 @@ kubectl create secret generic okta-auth-secret --from-file=openIdParameters.prop
 
 
 ## Install your ODM Helm release
+
+
+Add the public IBM Helm charts repository:
+
+```
+helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo/entitled
+helm repo update
+```
+
+Check you can access ODM's chart
+
+```
+helm search repo ibm-odm-prod
+NAME                  	CHART VERSION	APP VERSION	DESCRIPTION                     
+ibmcharts/ibm-odm-prod	21.2.0       	8.10.5.1   	IBM Operational Decision Manager
+```
+
 
 You can now install the product. We will use the postgresql internal database by disabling the persistence (internalDatabase.persistence.enabled=false) to avoid any platform complexity concerning persistent volume allocation.
 
