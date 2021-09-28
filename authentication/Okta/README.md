@@ -3,12 +3,18 @@ In the context of the IBM Cloud Pak for Business Automation or ODM on Certified 
 
 ## About this task
 
+In this 
 You need to create a number of secrets before you can install an ODM instance with an external OIDC provider and use web application single sign-on (SSO). The following diagram shows the ODM services with an external OIDC provider after a successful installation.
 
 ![ODM web application SSO](../../images/diag_oidc_interaction.jpg)
 
 The following procedure describes how to manually configure ODM with an external OpenID Connect server. You must define the mapping between the liberty roles and the LDAP groups by creating a secret and reference it in the customization.authSecretRef parameter.
 
+## OKTA 
+The Client Credentials flow is intended for server-side (AKA "confidential") client applications with no end user, which normally describes machine-to-machine communication. The application must be server-side because it must be trusted with the client secret, and since the credentials are hard-coded, it can't be used by an actual end user. It involves a single, authenticated request to the /token endpoint, which returns an access token.
+
+
+![OKTA Client Credential Flow](../../images/oauth_client_creds_flow.png)
 
 # Configuring OKTA instance for ODM
 ## Manage group and user
