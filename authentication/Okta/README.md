@@ -1,4 +1,14 @@
 # Introduction
+In the context of the IBM Cloud Pak for Business Automation or ODM on Certified Kubernetes offering, Operational Decision Manager for production can be configured with an external OpenID Connect server (OIDC Provider) such as OKTA Server. 
+
+## About this task
+
+You need to create a number of secrets before you can install an ODM instance with an external OIDC provider and use web application single sign-on (SSO). The following diagram shows the ODM services with an external OIDC provider after a successful installation.
+
+![ODM web application SSO](../../images/diag_oidc_interaction.jpg)
+
+The following procedure describes how to manually configure ODM with an external OpenID Connect server. You must define the mapping between the liberty roles and the LDAP groups by creating a secret and reference it in the customization.authSecretRef parameter.
+
 
 # Configuring OKTA instance for ODM
 ## Manage group and user
