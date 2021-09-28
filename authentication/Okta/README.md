@@ -4,19 +4,29 @@ In the context of the IBM Cloud Pak for Business Automation or ODM on Certified 
 ## About this task
 
 In this 
-You need to create a number of secrets before you can install an ODM instance with an external OIDC provider and use web application single sign-on (SSO). The following diagram shows the ODM services with an external OIDC provider after a successful installation.
+You need to create a number of secrets before you can install an ODM instance with an external OIDC provider such as OKTA server and use web application single sign-on (SSO). The following diagram shows the ODM services with an external OIDC provider after a successful installation.
 
 ![ODM web application SSO](../../images/diag_oidc_interaction.jpg)
 
-The following procedure describes how to manually configure ODM with an external OpenID Connect server. You must define the mapping between the liberty roles and the LDAP groups by creating a secret and reference it in the customization.authSecretRef parameter.
+The following procedure describes how to manually configure ODM with an OKTA Connect server. 
 
-## OKTA 
+## ODM OpenID flows
+OpenID Connect is an authentication standard built on top of OAuth 2.0. It adds an additional token called an ID token. 
+
+Terminology:
+   * The "OpenID provider" — The authorization server that issues the ID token. In this case Okta is the OpenID provider.
+   * The "end user" — Whose information is contained in the ID token
+   * The "relying party" — The client application that requests the ID token from Okta
+   * The "ID token" is issued by the OpenID Provider and contains information about the end user in the form of claims.
+   * A "claim" is a piece of information about the end user.
+   
+
 The Client Credentials flow is intended for server-side (AKA "confidential") client applications with no end user, which normally describes machine-to-machine communication. The application must be server-side because it must be trusted with the client secret, and since the credentials are hard-coded, it can't be used by an actual end user. It involves a single, authenticated request to the /token endpoint, which returns an access token.
 
 
 ![OKTA Client Credential Flow](../../images/oauth_client_creds_flow.png)
 
-# Configuring OKTA instance for ODM
+# Configuring OKTA instance for ODM (Part 1)
 ## Manage group and user
    * Menu Directory -> Groups
       * Click Add Group button
@@ -125,7 +135,7 @@ You have to check that the login name and groups are available in the id token u
 
 Note that the discovery endpoint can be found in the settings tag Metadata URI. Menu Security -> api -> default (link) -> Metadata URI (link)
 
-# Configuring ODM for OKTA Server
+# Configuring ODM for OKTA Server (Part 2)
 
 ## Prerequisites
 First, install the following software on your machine:
@@ -242,7 +252,7 @@ The redirect are built this way :
 ## Install Using the CP4BA Operator
 
 
-# Post installation steps
+# Post installation steps 
 
 ## Define server configuration
 
