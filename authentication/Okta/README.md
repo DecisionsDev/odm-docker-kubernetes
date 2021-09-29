@@ -193,7 +193,11 @@ Note: The cp.icr.io value for the docker-server parameter is the only registry d
 Make a note of the secret name so that you can set it for the image.pullSecrets parameter when you run a helm install of your containers. The image.repository parameter will later be set to cp.icr.io/cp/cp4a/odm.
 
 
-
+## Retrieve OKTA Server informations
+The following steps require to retrieve this informations from OKTA console.
+   * Login OKTA Console
+   * Go to Security->API
+   * Note the OKTA_SERVER_URL 
 ## Create a secret with the Okta Server certificate
 
 To allow ODM services to access Okta Server, it is compulsory to provide the Okta Server Certificate.
