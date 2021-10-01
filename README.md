@@ -24,13 +24,19 @@ The ODM Docker material is used here, which is available in the [odm-ondocker](h
 
 ![Flow](images/ODMinKubernetes-DeploymentOverview.png)
 
+
 ## Deploying ODM Rules in the following environments
 - [Amazon EKS](eks/README.md)
 - [Azure AKS](azure/README.md)
 - [MiniKube](MiniKube/README.md)
 
+# Issues and contributions
+
+For issues relating specifically to the Dockerfiles and scripts, please use the [GitHub issue tracker](https://github.com/ODMDev/odm-docker-kubernetes/issues). For more general issue relating to IBM Operational Decision Manager you can [get help](https://developer.ibm.com/odm/home/connect/) through the ODMDev community or, if you have production licenses for Operational Decision Manager, via the usual support channels. We welcome contributions following [our guidelines](https://github.com/ODMDev/odm-docker-kubernetes/blob/master/CONTRIBUTING.md).
+
+
 # Notice
-© Copyright IBM Corporation 2020.
+© Copyright IBM Corporation 2021.
 
 # License
 ```text
