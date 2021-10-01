@@ -144,10 +144,11 @@ The following procedure describes how to manually configure ODM with an external
          adminRef: my_openid_admin_secret
     ```
 
-9.  **Advanced configuration**
-10. If you need to modify the OIDC endpoints or the token format, because the template is not compatible, you can create your own openIdParameters.properties file and provide it to the ODM instance.
+## Advanced configuration
+### [Optional] Configure OIDC endpoints
+If you need to modify the OIDC endpoints or the token format, because the template is not compatible, you can create your own openIdParameters.properties file and provide it to the ODM instance.
 
-    1.  Create the properties file with the following formatting.
+   *  Create the properties file with the following formatting.
 
         ```
         OPENID_SERVER_URL=<oidc.serverUrl>
@@ -164,7 +165,7 @@ The following procedure describes how to manually configure ODM with an external
 
         <note><p>If OPENID_CLIENT_ID and OPENID_CLIENT_SECRET are left blank, the values are replaced by the oidc.clientRef secret values.</p></note>
 
-    2.  Re-create the secret <my-websecurity-secret\> with the openIdParameters.properties file, and apply the change.
+    *  Re-create the secret <my-websecurity-secret\> with the openIdParameters.properties file, and apply the change.
 
         ```
         kubectl create secret generic <my-websecurity-secret\>
@@ -176,7 +177,8 @@ The following procedure describes how to manually configure ODM with an external
         kubectl apply -f custom_resource.yaml
         ```
 
-11. If you need to add or modify a parameter to the `openidConnectClient` tag in the openIdWebSecurity.xml file, you can write your own file and provide it to the ODM instance.
+### [Optional] Changing Liberty Openid configuration
+if you need to add or modify a parameter to the `openidConnectClient` tag in the openIdWebSecurity.xml file, you can write your own file and provide it to the ODM instance.
 
     1.  Create the XML file with the following formatting.
 
