@@ -147,7 +147,6 @@ aws ecr create-repository --repository-name odm-decisioncenter --image-scanning-
 aws ecr create-repository --repository-name odm-decisionrunner --image-scanning-configuration scanOnPush=true --region $REGION
 aws ecr create-repository --repository-name odm-decisionserverruntime --image-scanning-configuration scanOnPush=true --region $REGION
 aws ecr create-repository --repository-name odm-decisionserverconsole --image-scanning-configuration scanOnPush=true --region $REGION
-aws ecr create-repository --repository-name dbserver --image-scanning-configuration scanOnPush=true --region $REGION
 ```
 
 #### c. Load the ODM images locally
@@ -174,6 +173,8 @@ aws ecr create-repository --repository-name dbserver --image-scanning-configurat
     manifest.yaml
     ```
 
+    > NOTE: This example will set up an external database so the dbserver image won't be needed.
+
 - Check that you can run a docker command.
     ```bash
     $ docker ps
@@ -198,7 +199,6 @@ aws ecr create-repository --repository-name dbserver --image-scanning-configurat
     docker tag odm-decisionserverruntime:8.10.5.0-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionserverruntime:8.10.5.0-amd64
     docker tag odm-decisionserverconsole:8.10.5.0-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionserverconsole:8.10.5.0-amd64
     docker tag odm-decisionrunner:8.10.5.0-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionrunner:8.10.5.0-amd64
-    docker tag dbserver:8.10.5.0-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/dbserver:8.10.5.0-amd64
     ```
 
 - Push the images to the ECR registry
@@ -208,7 +208,6 @@ aws ecr create-repository --repository-name dbserver --image-scanning-configurat
     docker push $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionserverconsole:8.10.5.0-amd64
     docker push $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionserverruntime:8.10.5.0-amd64
     docker push $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionrunner:8.10.5.0-amd64
-    docker push $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/dbserver:8.10.5.0-amd64
     ```
 
 #### e. Create a pull secret for the ECR registry  
