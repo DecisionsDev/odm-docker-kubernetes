@@ -48,13 +48,13 @@ For more information, see [Getting started with Amazon EKS](https://docs.aws.ama
  - [Configure the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html)
 
    ```bash
-   $ aws configure 
+   aws configure 
    ```
 
  - [Create a kubeconfig for Amazon EKS](https://docs.aws.amazon.com/eks/latest/userguide/create-kubeconfig.html)
 
    ```bash
-   $  aws eks --region <region> update-kubeconfig --name odm
+   aws eks --region <region> update-kubeconfig --name odm
    ```
 
  - Check your environment
@@ -62,11 +62,11 @@ For more information, see [Getting started with Amazon EKS](https://docs.aws.ama
    If your environment is set up correctly, you should be able to get the cluster information by running the following command:
 
    ```bash
-   $ kubectl cluster-info
-     Kubernetes master is running at https://xxxxxx.yl4.<region>.eks.amazonaws.com
-     CoreDNS is running at https://xxxxx.yl4.<region>.eks.amazonaws.com/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+   kubectl cluster-info
+   Kubernetes master is running at https://xxxxxx.yl4.<region>.eks.amazonaws.com
+   CoreDNS is running at https://xxxxx.yl4.<region>.eks.amazonaws.com/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
 
-     Metrics-server is running at https://xxxxx.yl4.<region>.eks.amazonaws.com/api/v1/namespaces/kube-system/services/https:metrics-server:/proxy
+   Metrics-server is running at https://xxxxx.yl4.<region>.eks.amazonaws.com/api/v1/namespaces/kube-system/services/https:metrics-server:/proxy
    ```
 
 To further debug and diagnose cluster problems, run the command:
@@ -93,7 +93,7 @@ To get access to the ODM material, you must have an IBM entitlement registry key
 #### b. Create a pull secret by running a kubectl create secret command.
 
 ```console
-$ kubectl create secret docker-registry <REGISTRY_SECRET> --docker-server=cp.icr.io \
+kubectl create secret docker-registry <REGISTRY_SECRET> --docker-server=cp.icr.io \
     --docker-username=cp --docker-password="<API_KEY_GENERATED>" --docker-email=<USER_EMAIL>
 ```
 
@@ -118,7 +118,7 @@ helm repo update
 ```console
 helm search repo ibm-odm-prod
 NAME                  	CHART VERSION	APP VERSION	DESCRIPTION                     
-ibmcharts/ibm-odm-prod	20.3.0       	8.10.5.0   	IBM Operational Decision Manager
+ibmcharts/ibm-odm-prod	21.2.0       	8.10.5.1   	IBM Operational Decision Manager
 ```
 
 You can now proceed to the [Create an RDS database (20 min)](#3-create-an-rds-database-20-min).
@@ -134,7 +134,7 @@ If you use another public registry, skip this section and go to [step c](#c-load
 #### a. Log in to the [ECR registry](https://docs.aws.amazon.com/AmazonECR/latest/userguide/Registries.html)
 
 ```bash
-$ aws ecr get-login-password --region <region> | docker login --username AWS --password-stdin <aws_account_id>.dkr.ecr.<region>.amazonaws.com
+aws ecr get-login-password --region <region> | docker login --username AWS --password-stdin <aws_account_id>.dkr.ecr.<region>.amazonaws.com
 ```
 
 #### b. Create the [ECR repository instances](https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-create.html)
@@ -160,15 +160,15 @@ aws ecr create-repository --repository-name odm-decisionserverconsole --image-sc
     Extract the file that contains both the Helm chart and the images. The name of the file includes the chart version number:
 
     ```console
-    $ mkdir ODM-PPA
-    $ cd ODM-PPA
-    $ tar zxvf PPA_NAME.tar.gz
-    charts/ibm-odm-prod-20.3.0.tgz
-    images/odm-decisionserverconsole_8.10.5.0-amd64.tar.gz
-    images/odm-decisionserverruntime_8.10.5.0-amd64.tar.gz
-    images/odm-decisionrunner_8.10.5.0-amd64.tar.gz
-    images/odm-decisioncenter_8.10.5.0-amd64.tar.gz
-    images/dbserver_8.10.5.0-amd64.tar.gz
+    mkdir ODM-PPA
+    cd ODM-PPA
+    tar zxvf PPA_NAME.tar.gz
+    charts/ibm-odm-prod-21.2.0.tgz
+    images/odm-decisionserverconsole_8.10.5.1-amd64.tar.gz
+    images/odm-decisionserverruntime_8.10.5.1-amd64.tar.gz
+    images/odm-decisionrunner_8.10.5.1-amd64.tar.gz
+    images/odm-decisioncenter_8.10.5.1-amd64.tar.gz
+    images/dbserver_8.10.5.1-amd64.tar.gz
     manifest.json
     manifest.yaml
     ```
@@ -177,13 +177,13 @@ aws ecr create-repository --repository-name odm-decisionserverconsole --image-sc
 
 - Check that you can run a docker command.
     ```bash
-    $ docker ps
+    docker ps
     ```
 
 - Load the images to your local registry.
 
     ```bash
-    $ for name in images/*.tar.gz; do echo $name && docker image load --input $name; done
+    for name in images/*.tar.gz; do echo $name && docker image load --input $name; done
     ```
 
    For more information, refer to the [ODM knowledge center](https://www.ibm.com/support/knowledgecenter/SSQP76_8.10.x/com.ibm.odm.kube/topics/tsk_config_odm_prod_kube.html).  
@@ -195,25 +195,25 @@ aws ecr create-repository --repository-name odm-decisionserverconsole --image-sc
     ```bash
     export REGION=<region>
     export AWSACCOUNTID=<AWS-AccountId>
-    docker tag odm-decisioncenter:8.10.5.0-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisioncenter:8.10.5.0-amd64
-    docker tag odm-decisionserverruntime:8.10.5.0-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionserverruntime:8.10.5.0-amd64
-    docker tag odm-decisionserverconsole:8.10.5.0-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionserverconsole:8.10.5.0-amd64
-    docker tag odm-decisionrunner:8.10.5.0-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionrunner:8.10.5.0-amd64
+    docker tag odm-decisioncenter:8.10.5.1-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisioncenter:8.10.5.1-amd64
+    docker tag odm-decisionserverruntime:8.10.5.1-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionserverruntime:8.10.5.1-amd64
+    docker tag odm-decisionserverconsole:8.10.5.1-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionserverconsole:8.10.5.1-amd64
+    docker tag odm-decisionrunner:8.10.5.1-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionrunner:8.10.5.1-amd64
     ```
 
 - Push the images to the ECR registry
  
     ```bash
-    docker push $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisioncenter:8.10.5.0-amd64
-    docker push $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionserverconsole:8.10.5.0-amd64
-    docker push $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionserverruntime:8.10.5.0-amd64
-    docker push $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionrunner:8.10.5.0-amd64
+    docker push $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisioncenter:8.10.5.1-amd64
+    docker push $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionserverconsole:8.10.5.1-amd64
+    docker push $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionserverruntime:8.10.5.1-amd64
+    docker push $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionrunner:8.10.5.1-amd64
     ```
 
 #### e. Create a pull secret for the ECR registry  
 
 ```bash
-$ kubectl create secret docker-registry ecrodm --docker-server=<AWS-AccountId>.dkr.ecr.<region>.amazonaws.com --docker-username=AWS --docker-password=$(aws ecr get-login-password --region <region>)
+kubectl create secret docker-registry ecrodm --docker-server=<AWS-AccountId>.dkr.ecr.<region>.amazonaws.com --docker-username=AWS --docker-password=$(aws ecr get-login-password --region <region>)
 ```
 > NOTE: `ecrodm` is the name of the secret that will be used to pull the images in EKS.
 
@@ -239,14 +239,14 @@ After the creation of the RDS PostgreSQL database, an endpoint gives access to t
 If you do not have a trusted certificate, you can use OpenSSL and other cryptography and certificate management libraries to generate a .crt certificate file and a private key, to define the domain name, and to set the expiration date. The following command creates a self-signed certificate (.crt file) and a private key (.key file) that accept the domain name *.mycompany.com*. The expiration is set to 1000 days:
 
 ```bash
-$ openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mycompany.key -out mycompany.crt -subj "/CN=*.mycompany.com/OU=it/O=mycompany/L=Paris/C=FR"
+openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mycompany.key -out mycompany.crt -subj "/CN=*.mycompany.com/OU=it/O=mycompany/L=Paris/C=FR"
 ```
 
 #### b. Upload the certificate to AWS IAM service
 
 Run the following command:
 ```bash
-$ aws iam upload-server-certificate --server-certificate-name mycompany --certificate-body file://mycompany.crt --private-key file://mycompany.key
+aws iam upload-server-certificate --server-certificate-name mycompany --certificate-body file://mycompany.crt --private-key file://mycompany.key
 ```
 
 The output of the command is:
@@ -265,15 +265,6 @@ The output of the command is:
 
 > NOTE: "Arn": "arn:aws:iam::\<AWS-AccountId>:server-certificate/mycompany" is used later to configure the Application Load Balancer (ALB).
 
-#### c. Generate a JKS version of the certificate to be used in the ODM container 
-
-```bash
-$ openssl pkcs12 -export -passout pass:password -passin pass:password -inkey mycompany.key -in mycompany.crt -name mycompany -out mycompany.p12
-$ keytool -importkeystore -srckeystore mycompany.p12 -srcstoretype PKCS12 -srcstorepass password -destkeystore mycompany.jks -deststoretype JKS -deststorepass password
-$ keytool -import -v -trustcacerts -alias mycompany -file mycompany.crt -keystore truststore.jks -storepass password -noprompt
-```
-
-
 ### 5. Install an IBM Operational Decision Manager release (10 min)
 
 
@@ -284,23 +275,14 @@ $ keytool -import -v -trustcacerts -alias mycompany -file mycompany.crt -keystor
     To secure access to the database, you must create a secret that encrypts the database user and password before you install the Helm release.
 
     ```bash
-    $ kubectl create secret generic <odm-db-secret> --from-literal=db-user=<rds-postgresql-user-name> --from-literal=db-password=<rds-postgresql-password> 
+    kubectl create secret generic <odm-db-secret> --from-literal=db-user=<rds-postgresql-user-name> --from-literal=db-password=<rds-postgresql-password> 
     ```
 
 
     Example:
     ```
-    $ kubectl create secret generic odm-db-secret --from-literal=db-user=postgres --from-literal=db-password=postgres
+    kubectl create secret generic odm-db-secret --from-literal=db-user=postgres --from-literal=db-password=postgres
     ```
-
-- Create a Kubernetes secret from the certificate generated in [step 4](#4-manage-a-digital-certificate-10-min).
-
-    ```bash
-    $ kubectl create secret generic <mycompany-secret> --from-file=keystore.jks=mycompany.jks --from-file=truststore.jks=truststore.jks --from-literal=keystore_password=password --from-literal=truststore_password=password
-    ```
-
-    The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Defining the security certificate](https://www.ibm.com/support/knowledgecenter/SSQP76_8.10.x/com.ibm.odm.icp/topics/tsk_replace_security_certificate.html?view=kc) and [Working with certificates and SSL](https://www.ibm.com/links?url=https%3A%2F%2Fdocs.oracle.com%2Fcd%2FE19830-01%2F819-4712%2Fablqw%2Findex.html).
-
 #### b. Install an ODM Helm release
 
 Install a Kubernetes release with the default configuration and a name of `mycompany`.  
@@ -308,25 +290,23 @@ Install a Kubernetes release with the default configuration and a name of `mycom
 - If you choose to use Entitled Registry for images and to download the Helm chart from IBM's public Helm charts repository [(option A above)](#option-a--using-the-ibm-entitled-registry-with-your-ibmid):
 
     ```bash
-    helm install mycompany ibmcharts/ibm-odm-prod --version 20.3.0 \
+    helm install mycompany ibmcharts/ibm-odm-prod --version 21.2.0 \
             --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=ecrodm \
-            --set image.arch=amd64 --set image.tag=8.10.5.0 \
+            --set image.arch=amd64 \
             --set externalDatabase.type=postgres --set externalDatabase.serverName=<RDS_DB_ENDPOINT> \
             --set externalDatabase.secretCredentials=odm-db-secret --set externalDatabase.port=5432 \
-            --set externalDatabase.databaseName=<RDS_DATABASE_NAME> \
-            --set customization.securitySecretRef=mycompany-secret
+            --set externalDatabase.databaseName=<RDS_DATABASE_NAME>
     ```
 
 - If you downloaded the PPA archive and prefer to use the Helm chart archive from it [(option B above)](#option-b--using-the-download-archives-from-ibm-passport-advantage-ppa):
 
     ```bash
-    helm install mycompany charts/ibm-odm-prod-20.3.0.tgz \
+    helm install mycompany charts/ibm-odm-prod-21.2.0.tgz \
             --set image.repository=<AWS-AccountId>.dkr.ecr.<region>.amazonaws.com --set image.pullSecrets=ecrodm \
-            --set image.arch=amd64 --set image.tag=8.10.5.0 \
+            --set image.arch=amd64 \
             --set externalDatabase.type=postgres --set externalDatabase.serverName=<RDS_DB_ENDPOINT> \
             --set externalDatabase.secretCredentials=<odm-db-secret> --set externalDatabase.port=5432 \
-            --set externalDatabase.databaseName=<RDS_DATABASE_NAME> \
-            --set customization.securitySecretRef=<mycompany-secret>
+            --set externalDatabase.databaseName=<RDS_DATABASE_NAME>
     ```
 
 where:
@@ -373,7 +353,7 @@ The AWS Load Balancer Controller creates Application Load Balancers (ALBs) and t
     Here is a sample descriptor to implement the ingress:
 
     ```yaml
-    apiVersion: extensions/v1beta1
+    apiVersion: networking.k8s.io/v1
     kind: Ingress
     metadata:
       name: mycompany
@@ -388,26 +368,34 @@ The AWS Load Balancer Controller creates Application Load Balancers (ALBs) and t
       rules:
       - http:
           paths:
-          - path: /*
-            backend:
-              serviceName: ssl-redirect
-              servicePort: use-annotation
-          - path: /res/*
-            backend:
-              serviceName: mycompany-odm-decisionserverconsole
-              servicePort: 9443
-          - path: /decisioncenter*/*
-            backend:
-              serviceName: mycompany-odm-decisioncenter
-              servicePort: 9453
-          - path: /DecisionService/*
-            backend:
-              serviceName: mycompany-odm-decisionserverruntime
-              servicePort: 9443
-          - path: /DecisionRunner/*
-            backend:
-              serviceName: mycompany-odm-decisionrunner
-              servicePort: 9443
+          - path: /decisioncenter
+            pathType: Prefix
+            backend:
+              service:
+                name: mycompany-odm-decisioncenter
+                port:
+                  number: 9453
+          - path: /res
+            pathType: Prefix
+            backend:
+              service:
+                name: mycompany-odm-decisionserverconsole
+                port:
+                  number: 9443
+          - path: /DecisionService
+            pathType: Prefix
+            backend:
+              service:
+                name: mycompany-odm-decisionserverruntime
+                port:
+                  number: 9443
+          - path: /DecisionRunner
+            pathType: Prefix
+            backend:
+              service:
+                name: mycompany-odm-decisionrunner
+                port:
+                  number: 9443
     ```
     Source file [ingress-mycompany.yaml](ingress-mycompany.yaml)
 

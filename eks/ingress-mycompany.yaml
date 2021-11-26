@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: mycompany
@@ -13,23 +13,31 @@ spec:
   rules:
   - http:
       paths:
-      - path: /*
+      - path: /decisioncenter
+        pathType: Prefix
         backend:
-          serviceName: ssl-redirect
-          servicePort: use-annotation
-      - path: /res/*
+          service:
+            name: mycompany-odm-decisioncenter
+            port:
+              number: 9453
+      - path: /res
+        pathType: Prefix
         backend:
-          serviceName: mycompany-odm-decisionserverconsole
-          servicePort: 9443
-      - path: /decisioncenter/*
+          service:
+            name: mycompany-odm-decisionserverconsole
+            port:
+              number: 9443
+      - path: /DecisionService
+        pathType: Prefix
         backend:
-          serviceName: mycompany-odm-decisioncenter
-          servicePort: 9453
-      - path: /DecisionService/*
+          service:
+            name: mycompany-odm-decisionserverruntime
+            port:
+              number: 9443
+      - path: /DecisionRunner
+        pathType: Prefix
         backend:
-          serviceName: mycompany-odm-decisionserverruntime
-          servicePort: 9443
-      - path: /DecisionRunner/*
-        backend:
-          serviceName: mycompany-odm-decisionrunner
-          servicePort: 9443
+          service:
+            name: mycompany-odm-decisionrunner
+            port:
+              number: 9443
