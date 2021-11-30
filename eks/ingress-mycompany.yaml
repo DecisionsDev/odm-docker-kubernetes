@@ -20,6 +20,20 @@ spec:
             name: mycompany-odm-decisioncenter
             port:
               number: 9453
+      - path: /decisioncenter-api
+        pathType: Prefix
+        backend:
+          service:
+            name: mycompany-odm-decisioncenter
+            port:
+              number: 9453
+      - path: /decisioncenter-dbdump
+        pathType: Prefix
+        backend:
+          service:
+            name: mycompany-odm-decisioncenter
+            port:
+              number: 9453
       - path: /res
         pathType: Prefix
         backend:

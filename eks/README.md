@@ -39,10 +39,15 @@ For more information, see [Getting started with Amazon EKS](https://docs.aws.ama
 
 ### 1. Prepare your environment (40 min)
 #### a. Create an EKS cluster (30 min)
-    Follow the documentation [here](https://docs.aws.amazon.com/eks/latest/userguide/create-cluster.html)
+    Create an EKS cluster [here](https://docs.aws.amazon.com/eks/latest/userguide/create-cluster.html)
 
 > NOTE: Use Kubernetes version 1.15 or higher.
-       
+
+    Follow the configuration steps by taking into account the following points :
+    - As explained in [Application load balancing on Amazon EKS](https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html)
+    Configure your subnets as public as the AWS service will be available from internet :
+    key : kubernetes.io/cluster/<cluster-name> | Value : shared
+    key : kubernetes.io/role/elb | Value : 1    
  
 #### b. Set up your environment (10 min)
  - [Configure the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html)
@@ -73,7 +78,11 @@ To further debug and diagnose cluster problems, run the command:
 ```
 kubectl cluster-info dump
 ```
+#### c. Provision an AWS Load Balancer Controller
 
+Provision an AWS Load Balancer Controller to your EKS cluster following this [documentation](https://docs.aws.amazon.com/eks/latest/userguide/aws-load-balancer-controller.html).
+
+The AWS Load Balancer Controller creates Application Load Balancers (ALBs) and the necessary supporting AWS resources whenever a Kubernetes Ingress resource is created on the cluster with the `kubernetes.io/ingress.class: alb` annotation.
 
 ### 2. Prepare your environment for the ODM installation (25 min)
 
@@ -118,7 +127,7 @@ helm repo update
 ```console
 helm search repo ibm-odm-prod
 NAME                  	CHART VERSION	APP VERSION	DESCRIPTION                     
-ibmcharts/ibm-odm-prod	21.2.0       	8.10.5.1   	IBM Operational Decision Manager
+ibmcharts/ibm-odm-prod	21.3.0       	8.11.0.0   	IBM Operational Decision Manager
 ```
 
 You can now proceed to the [Create an RDS database (20 min)](#3-create-an-rds-database-20-min).
@@ -163,12 +172,12 @@ aws ecr create-repository --repository-name odm-decisionserverconsole --image-sc
     mkdir ODM-PPA
     cd ODM-PPA
     tar zxvf PPA_NAME.tar.gz
-    charts/ibm-odm-prod-21.2.0.tgz
-    images/odm-decisionserverconsole_8.10.5.1-amd64.tar.gz
-    images/odm-decisionserverruntime_8.10.5.1-amd64.tar.gz
-    images/odm-decisionrunner_8.10.5.1-amd64.tar.gz
-    images/odm-decisioncenter_8.10.5.1-amd64.tar.gz
-    images/dbserver_8.10.5.1-amd64.tar.gz
+    charts/ibm-odm-prod-21.3.0.tgz
+    images/odm-decisionserverconsole_8.11.0.0-amd64.tar.gz
+    images/odm-decisionserverruntime_8.11.0.0-amd64.tar.gz
+    images/odm-decisionrunner_8.11.0.0-amd64.tar.gz
+    images/odm-decisioncenter_8.11.0.0-amd64.tar.gz
+    images/dbserver_8.11.0.0-amd64.tar.gz
     manifest.json
     manifest.yaml
     ```
@@ -195,19 +204,19 @@ aws ecr create-repository --repository-name odm-decisionserverconsole --image-sc
     ```bash
     export REGION=<region>
     export AWSACCOUNTID=<AWS-AccountId>
-    docker tag odm-decisioncenter:8.10.5.1-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisioncenter:8.10.5.1-amd64
-    docker tag odm-decisionserverruntime:8.10.5.1-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionserverruntime:8.10.5.1-amd64
-    docker tag odm-decisionserverconsole:8.10.5.1-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionserverconsole:8.10.5.1-amd64
-    docker tag odm-decisionrunner:8.10.5.1-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionrunner:8.10.5.1-amd64
+    docker tag odm-decisioncenter:8.11.0.0-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisioncenter:8.11.0.0-amd64
+    docker tag odm-decisionserverruntime:8.11.0.0-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionserverruntime:8.11.0.0-amd64
+    docker tag odm-decisionserverconsole:8.11.0.0-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionserverconsole:8.11.0.0-amd64
+    docker tag odm-decisionrunner:8.11.0.0-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionrunner:8.11.0.0-amd64
     ```
 
 - Push the images to the ECR registry
  
     ```bash
-    docker push $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisioncenter:8.10.5.1-amd64
-    docker push $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionserverconsole:8.10.5.1-amd64
-    docker push $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionserverruntime:8.10.5.1-amd64
-    docker push $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionrunner:8.10.5.1-amd64
+    docker push $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisioncenter:8.11.0.0-amd64
+    docker push $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionserverconsole:8.11.0.0-amd64
+    docker push $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionserverruntime:8.11.0.0-amd64
+    docker push $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionrunner:8.11.0.0-amd64
     ```
 
 #### e. Create a pull secret for the ECR registry  
@@ -263,7 +272,7 @@ The output of the command is:
 }
 ```
 
-> NOTE: "Arn": "arn:aws:iam::\<AWS-AccountId>:server-certificate/mycompany" is used later to configure the Application Load Balancer (ALB).
+> NOTE: "Arn": "arn:aws:iam::\<AWS-AccountId>:server-certificate/mycompany" is used later to configure the Ingress ALB certificate annotation.
 
 ### 5. Install an IBM Operational Decision Manager release (10 min)
 
@@ -278,7 +287,6 @@ The output of the command is:
     kubectl create secret generic <odm-db-secret> --from-literal=db-user=<rds-postgresql-user-name> --from-literal=db-password=<rds-postgresql-password> 
     ```
 
-
     Example:
     ```
     kubectl create secret generic odm-db-secret --from-literal=db-user=postgres --from-literal=db-password=postgres
@@ -290,26 +298,17 @@ Install a Kubernetes release with the default configuration and a name of `mycom
 - If you choose to use Entitled Registry for images and to download the Helm chart from IBM's public Helm charts repository [(option A above)](#option-a--using-the-ibm-entitled-registry-with-your-ibmid):
 
     ```bash
-    helm install mycompany ibmcharts/ibm-odm-prod --version 21.2.0 \
-            --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=ecrodm \
-            --set image.arch=amd64 \
-            --set externalDatabase.type=postgres --set externalDatabase.serverName=<RDS_DB_ENDPOINT> \
-            --set externalDatabase.secretCredentials=odm-db-secret --set externalDatabase.port=5432 \
-            --set externalDatabase.databaseName=<RDS_DATABASE_NAME>
+    helm install mycompany ibmcharts/ibm-odm-prod --version 21.3.0 -f eks-values.yaml
     ```
 
 - If you downloaded the PPA archive and prefer to use the Helm chart archive from it [(option B above)](#option-b--using-the-download-archives-from-ibm-passport-advantage-ppa):
 
     ```bash
-    helm install mycompany charts/ibm-odm-prod-21.2.0.tgz \
-            --set image.repository=<AWS-AccountId>.dkr.ecr.<region>.amazonaws.com --set image.pullSecrets=ecrodm \
-            --set image.arch=amd64 \
-            --set externalDatabase.type=postgres --set externalDatabase.serverName=<RDS_DB_ENDPOINT> \
-            --set externalDatabase.secretCredentials=<odm-db-secret> --set externalDatabase.port=5432 \
-            --set externalDatabase.databaseName=<RDS_DATABASE_NAME>
+    helm install mycompany charts/ibm-odm-prod-21.3.0.tgz -f eks-values.yaml
     ```
 
 where:
+- ` <AWS-AccountId>` is your AWS Account Id 
 - `<RDS_DB_ENDPOINT>` is your database server endpoint (of the form: db-server-name-1.********.<region>.rds.amazonaws.com)
 - `<RDS_DATABASE_NAME>` is the database name defined when creating the RDS database
 
@@ -333,83 +332,11 @@ Table 1. Status of pods
 ### 6. Access the ODM services  
 
 This section explains how to implement an Application Load Balancer (ALB) to expose the ODM services to Internet connectivity.
+After a couple of minutes, the  ALB reflects the ingress configuration. Then you can access the ODM services by retrieving the URL with this command:
 
-#### a. Provision an AWS Load Balancer Controller
-
-Provision an AWS Load Balancer Controller to your EKS cluster following this [documentation](https://docs.aws.amazon.com/eks/latest/userguide/aws-load-balancer-controller.html).
-
-The AWS Load Balancer Controller creates Application Load Balancers (ALBs) and the necessary supporting AWS resources whenever a Kubernetes Ingress resource is created on the cluster with the `kubernetes.io/ingress.class: alb` annotation.
-
-#### b. Deploy a Kubernetes Ingress resource for ODM services
-
-- Check that your cluster meets the specific requirements
-
-    Review prerequisites from this [documentation](https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html).
-
-- Write the ingress descriptor
-
-    You must define an ingress to route your request to the ODM services.
-
-    Here is a sample descriptor to implement the ingress:
-
-    ```yaml
-    apiVersion: networking.k8s.io/v1
-    kind: Ingress
-    metadata:
-      name: mycompany
-      annotations:
-        kubernetes.io/ingress.class: alb
-        alb.ingress.kubernetes.io/scheme: internet-facing
-        alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
-        alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_301"}}'
-        alb.ingress.kubernetes.io/backend-protocol: "HTTPS"
-        alb.ingress.kubernetes.io/certificate-arn: "arn:aws:iam::<AWS-AccountId>:server-certificate/mycompany"
-    spec:
-      rules:
-      - http:
-          paths:
-          - path: /decisioncenter
-            pathType: Prefix
-            backend:
-              service:
-                name: mycompany-odm-decisioncenter
-                port:
-                  number: 9453
-          - path: /res
-            pathType: Prefix
-            backend:
-              service:
-                name: mycompany-odm-decisionserverconsole
-                port:
-                  number: 9443
-          - path: /DecisionService
-            pathType: Prefix
-            backend:
-              service:
-                name: mycompany-odm-decisionserverruntime
-                port:
-                  number: 9443
-          - path: /DecisionRunner
-            pathType: Prefix
-            backend:
-              service:
-                name: mycompany-odm-decisionrunner
-                port:
-                  number: 9443
-    ```
-    Source file [ingress-mycompany.yaml](ingress-mycompany.yaml)
-
-- Deploy the ingress controller
-
-    ```bash
-    kubectl apply -f ingress-mycompany.yaml 
-    ```
-
-    After a couple of minutes, the  ALB reflects the ingress configuration. Then you can access the ODM services by retrieving the URL with this command:
-
-    ```bash
-    export ROOTURL=$(kubectl get ingress mycompany| awk '{print $4}' | tail -1)
-    ```
+```bash
+export ROOTURL=$(kubectl get ingress mycompany| awk '{print $4}' | tail -1)
+```
 
 With this ODM topology in place, you can access web applications to author, deploy, and test your rule-based decision services.
 
@@ -417,11 +344,9 @@ The services are accessible from the following URLs:
 
 | *Component* | *URL* | *Username/Password* |
 |---|---|---|
-| Decision Center | https://$ROOTURL/decisioncenter/ | odmAdmin/odmAdmin |
-| Decision Server Console |https://$ROOTURL/res/| odmAdmin/odmAdmin |
-| Decision Server Runtime | https://$ROOTURL/DecisionService/ | odmAdmin/odmAdmin |
-
-
+| Decision Center | https://$ROOTURL/decisioncenter | odmAdmin/odmAdmin |
+| Decision Server Console |https://$ROOTURL/res| odmAdmin/odmAdmin |
+| Decision Server Runtime | https://$ROOTURL/DecisionService | odmAdmin/odmAdmin |
 
 ## Troubleshooting
 
