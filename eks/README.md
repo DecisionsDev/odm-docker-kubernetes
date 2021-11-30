@@ -33,7 +33,7 @@ Then, create an  [AWS Account](https://aws.amazon.com/getting-started/?sc_iconte
 4. [Manage a  digital certificate (10 min)](#4-manage-a-digital-certificate-10-min)
 5. [Install an ODM release (10 min)](#5-install-an-ibm-operational-decision-manager-release-10-min)
 6. [Access the ODM services](#6-access-the-odm-services)
-
+7. [Install the IBM License Service](#7-install-the-ibm-license-service)
 For more information, see [Getting started with Amazon EKS](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html)
 
 
@@ -347,6 +347,10 @@ The services are accessible from the following URLs:
 | Decision Center | https://$ROOTURL/decisioncenter | odmAdmin/odmAdmin |
 | Decision Server Console |https://$ROOTURL/res| odmAdmin/odmAdmin |
 | Decision Server Runtime | https://$ROOTURL/DecisionService | odmAdmin/odmAdmin |
+
+### 7. Install the IBM License Service
+
+If you deploy ODM in production, you have to install the IBM License Service following the [Manual installation without the Operator Lifecycle Manager (OLM)](https://github.com/IBM/ibm-licensing-operator/blob/latest/docs/Content/Install_without_OLM.md)
 
 ## Troubleshooting
 
