@@ -367,11 +367,22 @@ The services are accessible from the following URLs:
 
 You should install the IBM License Service following the [Manual installation without the Operator Lifecycle Manager (OLM)](https://github.com/IBM/ibm-licensing-operator/blob/latest/docs/Content/Install_without_OLM.md)
  
-As  IBM License Service is configured by default for nginx you should modified the ingress annotations for alb. 
+After you followed all the IBM License Service installation, as the IBM License Service is configured by default for nginx you should modified the ingress annotations to manage it with ALB. 
 
- Todo that run this command line:
+To do that get the [alb-ibmlicensing.yaml](./alb-ibmlicensing.yaml) file and execute the command :
 ```bash
- kubectl edit ingress ibm-licensing-service-instance -n ibm-common-services
+kubectl apply -f alb-ibmlicensing.yaml
+```
+After a couple of minutes,the  ALB reflects the ingress configuration. Then you can access the IBM License Service by retrieving the URL with this command:
+```bash
+export LICENSING_URL=$(kubectl get ingress ibm-licensing-service-instance -n ibm-common-services | awk '{print $4}' | tail -1) 
+```
+If LICENSING_URL is empty take a look the [troubleshooting](#troubleshooting) section.
+
+Then, you can retrieve the zipped report file by doing :
+```bash
+TOKEN=$(oc get secret ibm-licensing-token -o jsonpath={.data.token} -n ibm-common-services | base64 -d)
+curl -v http://$LICENSING_URL/snapshot?token=$TOKEN --output report.zip
 ```
 
  ## Troubleshooting
