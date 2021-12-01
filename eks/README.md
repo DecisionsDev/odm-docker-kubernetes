@@ -366,8 +366,15 @@ The services are accessible from the following URLs:
 ### 7. Install the IBM License Service
 
 You should install the IBM License Service following the [Manual installation without the Operator Lifecycle Manager (OLM)](https://github.com/IBM/ibm-licensing-operator/blob/latest/docs/Content/Install_without_OLM.md)
+ 
+As  IBM License Service is configured by default for nginx you should modified the ingress annotations for alb. 
 
-## Troubleshooting
+ Todo that run this command line:
+```bash
+ kubectl edit ingress ibm-licensing-service-instance -n ibm-common-services
+```
+
+ ## Troubleshooting
 
 If your microservice instances are not running properly, check the logs by running the following command:
 ```
