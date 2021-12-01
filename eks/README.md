@@ -360,8 +360,10 @@ The services are accessible from the following URLs:
 | *Component* | *URL* | *Username/Password* |
 |---|---|---|
 | Decision Center | https://$ROOTURL/decisioncenter | odmAdmin/odmAdmin |
+| Decision Center Swagger | https://$ROOTURL/decisioncenter-api | odmAdmin/odmAdmin |
 | Decision Server Console |https://$ROOTURL/res| odmAdmin/odmAdmin |
 | Decision Server Runtime | https://$ROOTURL/DecisionService | odmAdmin/odmAdmin |
+| Decision Runner | https://$ROOTURL/DecisionRunner | odmAdmin/odmAdmin |
 
 ### 7. Install the IBM License Service
 
