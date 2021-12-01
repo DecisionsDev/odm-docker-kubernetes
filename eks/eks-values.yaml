@@ -1,6 +1,4 @@
 image:
-  repository: "<AWS-AccountId>.dkr.ecr.<region>.amazonaws.com"
-  pullPolicy: IfNotPresent
   pullSecrets:
   - ecrodm
 

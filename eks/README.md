@@ -34,6 +34,7 @@ Then, create an  [AWS Account](https://aws.amazon.com/getting-started/?sc_iconte
 5. [Install an ODM release (10 min)](#5-install-an-ibm-operational-decision-manager-release-10-min)
 6. [Access the ODM services](#6-access-the-odm-services)
 7. [Install the IBM License Service](#7-install-the-ibm-license-service)
+
 For more information, see [Getting started with Amazon EKS](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html)
 
 
@@ -41,13 +42,20 @@ For more information, see [Getting started with Amazon EKS](https://docs.aws.ama
 #### a. Create an EKS cluster (30 min)
     Create an EKS cluster [here](https://docs.aws.amazon.com/eks/latest/userguide/create-cluster.html)
 
-> NOTE: Use Kubernetes version 1.15 or higher.
-
     Follow the configuration steps by taking into account the following points :
-    - As explained in [Application load balancing on Amazon EKS](https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html)
-    Configure your subnets as public as the AWS service will be available from internet :
+    - Choose Public as Cluster endpoint access as we need an internet access to at least the Decision Center and RES consoles 
+    - as explained in [Application load balancing on Amazon EKS](https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html),
+    the selected subnets must also enable a public access as the AWS service will be available from internet.
+    To do this, set the 2 following tags on at least 1 subnet :
     key : kubernetes.io/cluster/<cluster-name> | Value : shared
-    key : kubernetes.io/role/elb | Value : 1    
+    key : kubernetes.io/role/elb | Value : 1
+
+    When the EKS cluster is created and active, add a Node Group :
+    - From the EKS dashboard, select the cluster and click on the "Add Node Group" button from the Configuration>Compute tab
+    - For this demo, we selected as Instance types a t3.xlarge (vCPU: Up to 4 vCPUs / Memory: 16.0 GiB / Network: Moderate / MaxENI:4 / Max IPs: 60)
+    obviously, the capacity must be adapted to your usage
+
+> NOTE: Use Kubernetes version 1.15 or higher.
  
 #### b. Set up your environment (10 min)
  - [Configure the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html)
@@ -295,20 +303,27 @@ The output of the command is:
 
 Install a Kubernetes release with the default configuration and a name of `mycompany`.  
 
+- Get the [eks-values.yaml]() file and replace the 
+
+
 - If you choose to use Entitled Registry for images and to download the Helm chart from IBM's public Helm charts repository [(option A above)](#option-a--using-the-ibm-entitled-registry-with-your-ibmid):
 
     ```bash
-    helm install mycompany ibmcharts/ibm-odm-prod --version 21.3.0 -f eks-values.yaml
+    helm install mycompany ibmcharts/ibm-odm-prod --version 21.3.0 \
+                 --set image.repository=cp.icr.io/cp/cp4a/odm \
+                 -f eks-values.yaml
     ```
 
 - If you downloaded the PPA archive and prefer to use the Helm chart archive from it [(option B above)](#option-b--using-the-download-archives-from-ibm-passport-advantage-ppa):
 
     ```bash
-    helm install mycompany charts/ibm-odm-prod-21.3.0.tgz -f eks-values.yaml
+    helm install mycompany charts/ibm-odm-prod-21.3.0.tgz \
+                 --set image.repository=<AWS-AccountId>.dkr.ecr.<region>.amazonaws.com \
+                 -f eks-values.yaml
     ```
 
 where:
-- ` <AWS-AccountId>` is your AWS Account Id 
+- `<AWS-AccountId>` is your AWS Account Id 
 - `<RDS_DB_ENDPOINT>` is your database server endpoint (of the form: db-server-name-1.********.<region>.rds.amazonaws.com)
 - `<RDS_DATABASE_NAME>` is the database name defined when creating the RDS database
 
@@ -335,7 +350,7 @@ This section explains how to implement an Application Load Balancer (ALB) to ex
 After a couple of minutes, the  ALB reflects the ingress configuration. Then you can access the ODM services by retrieving the URL with this command:
 
 ```bash
-export ROOTURL=$(kubectl get ingress mycompany| awk '{print $4}' | tail -1)
+export ROOTURL=$(kubectl get ingress mycompany-odm-ingress | awk '{print $4}' | tail -1)
 ```
 
 With this ODM topology in place, you can access web applications to author, deploy, and test your rule-based decision services.
@@ -359,6 +374,14 @@ If your microservice instances are not running properly, check the logs by runni
 kubectl logs <your-pod-name>
 ```
 
+If the ROOTURL is empty, it means there is no address delivered to the ODM ingress instance (mycompany-odm-ingress) by the ALB controller.
+So, you can check the ALB controller logs with :
+```
+kubectl logs -n kube-system deployment.apps/aws-load-balancer-controller
+```
+
+Normally, you should get a message like :
+"msg"="Reconciler error" "error"="failed to reconcile ...
 
 ## References
 https://aws.amazon.com/blogs/opensource/network-load-balancer-nginx-ingress-controller-eks/
