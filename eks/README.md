@@ -47,9 +47,10 @@ Follow the configuration steps by taking into account the following points :
 - as explained in [Application load balancing on Amazon EKS](https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html),
 the selected subnets must also enable a public access as the AWS service will be available from internet.
 To do this, set the 2 following tags on at least 1 subnet :
+```bash
 key : kubernetes.io/cluster/<cluster-name> | Value : shared
 key : kubernetes.io/role/elb | Value : 1
-
+```
 When the EKS cluster is created and active, add a Node Group :
 - From the EKS dashboard, select the cluster and click on the "Add Node Group" button from the Configuration>Compute tab
 - For this demo, we selected as Instance types a t3.xlarge (vCPU: Up to 4 vCPUs / Memory: 16.0 GiB / Network: Moderate / MaxENI:4 / Max IPs: 60)
@@ -303,7 +304,10 @@ The output of the command is:
 
 Install a Kubernetes release with the default configuration and a name of `mycompany`.  
 
-- Get the [eks-values.yaml]() file and replace the 
+- Get the [eks-values.yaml](./eks-values.yaml) file and replace the following keys:
+  - `<AWS-AccountId>` is your AWS Account Id 
+  - `<RDS_DB_ENDPOINT>` is your database server endpoint (of the form: db-server-name-1.********.<region>.rds.amazonaws.com)
+  - `<RDS_DATABASE_NAME>` is the database name defined when creating the RDS database
 
 
 - If you choose to use Entitled Registry for images and to download the Helm chart from IBM's public Helm charts repository [(option A above)](#option-a--using-the-ibm-entitled-registry-with-your-ibmid):
@@ -321,11 +325,6 @@ Install a Kubernetes release with the default configuration and a name of `mycom
                  --set image.repository=<AWS-AccountId>.dkr.ecr.<region>.amazonaws.com \
                  -f eks-values.yaml
     ```
-
-where:
-- `<AWS-AccountId>` is your AWS Account Id 
-- `<RDS_DB_ENDPOINT>` is your database server endpoint (of the form: db-server-name-1.********.<region>.rds.amazonaws.com)
-- `<RDS_DATABASE_NAME>` is the database name defined when creating the RDS database
 
 
 #### c. Check the topology
@@ -352,7 +351,8 @@ After a couple of minutes, the  ALB reflects the ingress configuration. Then yo
 ```bash
 export ROOTURL=$(kubectl get ingress mycompany-odm-ingress | awk '{print $4}' | tail -1)
 ```
-
+If ROOTURL is empty take a look the [troubleshooting](#troubleshooting) section.
+ 
 With this ODM topology in place, you can access web applications to author, deploy, and test your rule-based decision services.
 
 The services are accessible from the following URLs:
@@ -365,7 +365,7 @@ The services are accessible from the following URLs:
 
 ### 7. Install the IBM License Service
 
-If you deploy ODM in production, you have to install the IBM License Service following the [Manual installation without the Operator Lifecycle Manager (OLM)](https://github.com/IBM/ibm-licensing-operator/blob/latest/docs/Content/Install_without_OLM.md)
+You should install the IBM License Service following the [Manual installation without the Operator Lifecycle Manager (OLM)](https://github.com/IBM/ibm-licensing-operator/blob/latest/docs/Content/Install_without_OLM.md)
 
 ## Troubleshooting
 
