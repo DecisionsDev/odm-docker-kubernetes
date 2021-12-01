@@ -55,7 +55,7 @@ When the EKS cluster is created and active, add a Node Group :
 - For this demo, we selected as Instance types a t3.xlarge (vCPU: Up to 4 vCPUs / Memory: 16.0 GiB / Network: Moderate / MaxENI:4 / Max IPs: 60)
 obviously, the capacity must be adapted to your usage
 
-> NOTE: Use Kubernetes version 1.15 or higher.
+> NOTE: Use Kubernetes version 1.21 or higher.
  
 #### b. Set up your environment (10 min)
  - [Configure the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html)
