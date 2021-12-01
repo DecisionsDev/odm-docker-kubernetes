@@ -39,20 +39,21 @@ For more information, see [Getting started with Amazon EKS](https://docs.aws.ama
 
 ### 1. Prepare your environment (40 min)
 #### a. Create an EKS cluster (30 min)
-    Create an EKS cluster [here](https://docs.aws.amazon.com/eks/latest/userguide/create-cluster.html)
 
-    Follow the configuration steps by taking into account the following points :
-    - Choose Public as Cluster endpoint access as we need an internet access to at least the Decision Center and RES consoles 
-    - as explained in [Application load balancing on Amazon EKS](https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html),
-    the selected subnets must also enable a public access as the AWS service will be available from internet.
-    To do this, set the 2 following tags on at least 1 subnet :
-    key : kubernetes.io/cluster/<cluster-name> | Value : shared
-    key : kubernetes.io/role/elb | Value : 1
+Create an EKS cluster [here](https://docs.aws.amazon.com/eks/latest/userguide/create-cluster.html)
 
-    When the EKS cluster is created and active, add a Node Group :
-    - From the EKS dashboard, select the cluster and click on the "Add Node Group" button from the Configuration>Compute tab
-    - For this demo, we selected as Instance types a t3.xlarge (vCPU: Up to 4 vCPUs / Memory: 16.0 GiB / Network: Moderate / MaxENI:4 / Max IPs: 60)
-    obviously, the capacity must be adapted to your usage
+Follow the configuration steps by taking into account the following points :
+- Choose Public as Cluster endpoint access as we need an internet access to at least the Decision Center and RES consoles 
+- as explained in [Application load balancing on Amazon EKS](https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html),
+the selected subnets must also enable a public access as the AWS service will be available from internet.
+To do this, set the 2 following tags on at least 1 subnet :
+key : kubernetes.io/cluster/<cluster-name> | Value : shared
+key : kubernetes.io/role/elb | Value : 1
+
+When the EKS cluster is created and active, add a Node Group :
+- From the EKS dashboard, select the cluster and click on the "Add Node Group" button from the Configuration>Compute tab
+- For this demo, we selected as Instance types a t3.xlarge (vCPU: Up to 4 vCPUs / Memory: 16.0 GiB / Network: Moderate / MaxENI:4 / Max IPs: 60)
+obviously, the capacity must be adapted to your usage
 
 > NOTE: Use Kubernetes version 1.15 or higher.
  
