@@ -177,9 +177,9 @@ aws ecr create-repository --repository-name odm-decisionserverconsole --image-sc
     Extract the file that contains both the Helm chart and the images. The name of the file includes the chart version number:
 
     ```console
-    mkdir ODM-PPA
-    cd ODM-PPA
-    tar zxvf PPA_NAME.tar.gz
+    $ mkdir ODM-PPA
+    $ cd ODM-PPA
+    $ tar zxvf PPA_NAME.tar.gz
     charts/ibm-odm-prod-21.3.0.tgz
     images/odm-decisionserverconsole_8.11.0.0-amd64.tar.gz
     images/odm-decisionserverruntime_8.11.0.0-amd64.tar.gz
@@ -310,6 +310,7 @@ The output of the command is:
 Install a Kubernetes release with the default configuration and a name of `mycompany`.  
 
 - Get the [eks-values.yaml](./eks-values.yaml) file and replace the following keys:
+  - `<REGISTRY_SECRET>` is the name of the secret containing the IBM Entitled registry key
   - `<AWS-AccountId>` is your AWS Account Id
   - `<RDS_DB_ENDPOINT>` is your database server endpoint (of the form: `db-server-name-1.********.<region>.rds.amazonaws.com`)
   - `<RDS_DATABASE_NAME>` is the initial database name defined when creating the RDS database
@@ -319,7 +320,6 @@ Install a Kubernetes release with the default configuration and a name of `mycom
     ```bash
     helm install mycompany ibmcharts/ibm-odm-prod --version 21.3.0 \
                  --set image.repository=cp.icr.io/cp/cp4a/odm \
-                 --set image.pullSecrets=docker-registry <REGISTRY_SECRET> \
                  -f eks-values.yaml
     ```
 
