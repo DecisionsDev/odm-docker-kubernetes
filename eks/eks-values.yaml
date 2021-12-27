@@ -1,6 +1,6 @@
 image:
   pullSecrets:
-  - ecrodm
+  - <REGISTRY_SECRET>
 
 service:
   ingress:
@@ -15,4 +15,4 @@ externalDatabase:
   secretCredentials: odm-db-secret
   port: 5432
   serverName: <RDS_DB_ENDPOINT>
-  databaseName: <RDS_DATABASE_NAME>  
+  databaseName: <RDS_DATABASE_NAME>
