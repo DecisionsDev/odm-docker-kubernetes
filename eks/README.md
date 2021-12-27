@@ -335,7 +335,7 @@ Install a Kubernetes release with the default configuration and a name of `mycom
 #### c. Check the topology
 Run the following command to check the status of the pods that have been created: 
 ```bash
-$ kubectl get pods
+kubectl get pods
 ```
 
 | *NAME* | *READY* | *STATUS* | *RESTARTS* | *AGE* |
