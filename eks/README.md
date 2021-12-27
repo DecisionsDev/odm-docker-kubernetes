@@ -22,7 +22,7 @@ First, install the following software on your machine:
 * [Helm](https://github.com/helm/helm/releases)
 * [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 
-Then, create an  [AWS Account](https://aws.amazon.com/getting-started/?sc_icontent=awssm-evergreen-getting_started&sc_iplace=2up&trk=ha_awssm-evergreen-getting_started&sc_ichannel=ha&sc_icampaign=evergreen-getting_started)
+Then, create an [AWS Account](https://aws.amazon.com/getting-started/?sc_icontent=awssm-evergreen-getting_started&sc_iplace=2up&trk=ha_awssm-evergreen-getting_started&sc_ichannel=ha&sc_icampaign=evergreen-getting_started)
 
 ## Steps to deploy ODM on Kubernetes from Amazon EKS
 
@@ -40,21 +40,20 @@ For more information, see [Getting started with Amazon EKS](https://docs.aws.ama
 ### 1. Prepare your environment (40 min)
 #### a. Create an EKS cluster (30 min)
 
-Create an EKS cluster [here](https://docs.aws.amazon.com/eks/latest/userguide/create-cluster.html)
+Create an EKS cluster following [this documentation](https://docs.aws.amazon.com/eks/latest/userguide/create-cluster.html)
 
 Follow the configuration steps by taking into account the following points :
-- Choose Public as Cluster endpoint access as we need an internet access to at least the Decision Center and RES consoles 
-- as explained in [Application load balancing on Amazon EKS](https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html),
-the selected subnets must also enable a public access as the AWS service will be available from internet.
-To do this, set the 2 following tags on at least 1 subnet :
-```bash
-key : kubernetes.io/cluster/<cluster-name> | Value : shared
-key : kubernetes.io/role/elb | Value : 1
-```
-When the EKS cluster is created and active, add a Node Group :
-- From the EKS dashboard, select the cluster and click on the "Add Node Group" button from the Configuration>Compute tab
-- For this demo, we selected as Instance types a t3.xlarge (vCPU: Up to 4 vCPUs / Memory: 16.0 GiB / Network: Moderate / MaxENI:4 / Max IPs: 60)
-obviously, the capacity must be adapted to your usage
+- Choose *Public* as **Cluster endpoint access** as we need an internet access to at least the Decision Center and RES consoles
+- As explained in [Application load balancing on Amazon EKS](https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html), the selected subnets must also enable a public access as the AWS service will be available from internet.
+  At least 1 subnet should be tagged with the following tags:
+  ```bash
+  key: kubernetes.io/cluster/<cluster-name> | Value: shared
+  key: kubernetes.io/role/elb | Value: 1
+  ```
+
+When the EKS cluster is created and active, add a *Node Group*:
+- From the EKS dashboard, select the cluster and click on the **Add Node Group** button from the **Configuration** > **Compute** tab
+- For this demo, we selected as **Instance types** a `t3.xlarge` instance (vCPU: Up to 4 vCPUs / Memory: 16.0 GiB / Network: Moderate / MaxENI:4 / Max IPs: 60) obviously, the capacity must be adapted to your usage
 
 > NOTE: Use Kubernetes version 1.21 or higher.
  
@@ -95,13 +94,13 @@ The AWS Load Balancer Controller creates Application Load Balancers (ALBs) and t
 
 ### 2. Prepare your environment for the ODM installation (25 min)
 
-To get access to the ODM material, you must have an IBM entitlement registry key to pull the images from the IBM Entitled registry (option A) or you can download the ODM on Kubernetes package (.tgz file) from Passport Advantage® (PPA) and then push the contained images to the EKS Container Registry (option B).
+To get access to the ODM material, you must have an IBM entitlement registry key to pull the images from the IBM Entitled registry (option A) or you can download the ODM on Kubernetes package (.tgz file) from Passport Advantage® (PPA) and then push the contained images to the EKS Container Registry (ECR) (option B).
 
-* To access the images from IBM entitlement registry, follow the instructions in the section [Using the IBM Entitled registry with your IBMid](#option-a--using-the-ibm-entitled-registry-with-your-ibmid)
+* To access the images from IBM entitlement registry, follow the instructions in the section [Using the IBM Entitled registry with your IBMid](#option-a-using-the-ibm-entitled-registry-with-your-ibmid)
 
-* To download the PPA and push the images in the AWS Container Registry, follow the instructions in the section [Push the ODM images to the ECR (EKS Container Registry](#option-b--using-the-download-archives-from-ibm-passport-advantage-ppa)
+* To download the PPA and push the images in the EKS Container Registry, follow the instructions in the section [Push the ODM images from the PPA to the ECR](#option-b-push-the-odm-images-from-the-ppa-to-the-ecr)
 
-#### Option A:  Using the IBM Entitled registry with your IBMid
+#### Option A: Using the IBM Entitled registry with your IBMid
 
 #### a. Retrieve your entitled registry key
   - Log in to [MyIBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary) with the IBMid and password that are associated with the entitled software.
@@ -122,7 +121,7 @@ where:
 
 > Note: The `cp.icr.io` value for the docker-server parameter is the only registry domain name that contains the images. You must set the docker-username to `cp` to use an entitlement key as docker-password.
 
-Make a note of the secret name so that you can set it for the `image.pullSecrets` parameter when you run a helm install of your containers. The `image.repository` parameter will later be set to `cp.icr.io/cp/cp4a/odm`.
+Take a note of the secret name so that you can set it for the `image.pullSecrets` parameter when you run a helm install of your containers. The `image.repository` parameter will later be set to `cp.icr.io/cp/cp4a/odm`.
 
 #### c. Add the public IBM Helm charts repository:
 
@@ -141,7 +140,7 @@ ibmcharts/ibm-odm-prod	21.3.0       	8.11.0.0   	IBM Operational Decision Manage
 
 You can now proceed to the [Create an RDS database (20 min)](#3-create-an-rds-database-20-min).
 
-#### Option B: Using the downloaded archives from IBM Passport Advantage (PPA)
+#### Option B: Push the ODM images from the PPA to the ECR
 
 Prerequisites:
 - Install Docker
@@ -156,7 +155,7 @@ aws ecr get-login-password --region <region> | docker login --username AWS --pas
 ```
 
 #### b. Create the [ECR repository instances](https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-create.html)
- 
+
 > NOTE: You must create one repository per image.
 
 ```bash
@@ -204,7 +203,7 @@ aws ecr create-repository --repository-name odm-decisionserverconsole --image-sc
     for name in images/*.tar.gz; do echo $name && docker image load --input $name; done
     ```
 
-   For more information, refer to the [ODM knowledge center](https://www.ibm.com/support/knowledgecenter/SSQP76_8.10.x/com.ibm.odm.kube/topics/tsk_config_odm_prod_kube.html).  
+   For more information, refer to the [ODM knowledge center](hhttps://www.ibm.com/docs/en/odm/8.11.0?topic=production-installing-helm-release-odm).  
      
 #### d. Tag and push the images to the ECR registry
 
@@ -239,32 +238,34 @@ kubectl create secret docker-registry ecrodm --docker-server=<AWS-AccountId>.dkr
 ### 3. Create an RDS database (20 min)
 
 This project uses PostgreSQL but the procedure is valid for any database supported by ODM.
- 
+
 To set up the database, follow the procedure described here [RDS PostgreSQL database](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_CreateDBInstance.html).
 
 > NOTE:  Make sure to:
-> - Set up incoming trafic to allow connection from EKS (set vpc inboud rule to anywhere)
+> - Set up incoming traffic to allow connection from EKS (set vpc inboud rule to anywhere)
 > - Create a database instance by setting an *Initial database name*
-> - Set the database *Master password*
+> - Set a database *Master password*
 
-After the creation of the RDS PostgreSQL database, an endpoint gives access to this database instance. The enpoint is named `RDS_POSTGRESQL_SERVERNAME` in the next sections.
-
+Once the RDS PostgreSQL database is available, take a note of the database endpoint. It will be referred as `RDS_POSTGRESQL_SERVERNAME` in the next sections.
 
 ### 4. Manage a  digital certificate (10 min)
 
 #### a. (Optional) Generate a self-signed certificate
 
-If you do not have a trusted certificate, you can use OpenSSL and other cryptography and certificate management libraries to generate a .crt certificate file and a private key, to define the domain name, and to set the expiration date. The following command creates a self-signed certificate (.crt file) and a private key (.key file) that accept the domain name *.mycompany.com*. The expiration is set to 1000 days:
+If you do not have a trusted certificate, you can use OpenSSL and other cryptography and certificate management libraries to generate a `.crt` certificate file and a private key, to define the domain name, and to set the expiration date.
+The following command creates a self-signed certificate (.crt file) and a private key (.key file) that accept the domain name *.mycompany.com*. The expiration is set to 1000 days:
 
 ```bash
-openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mycompany.key -out mycompany.crt -subj "/CN=*.mycompany.com/OU=it/O=mycompany/L=Paris/C=FR"
+openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mycompany.key \
+  -out mycompany.crt -subj "/CN=*.mycompany.com/OU=it/O=mycompany/L=Paris/C=FR"
 ```
 
 #### b. Upload the certificate to AWS IAM service
 
 Run the following command:
 ```bash
-aws iam upload-server-certificate --server-certificate-name mycompany --certificate-body file://mycompany.crt --private-key file://mycompany.key
+aws iam upload-server-certificate --server-certificate-name mycompany \
+  --certificate-body file://mycompany.crt --private-key file://mycompany.key
 ```
 
 The output of the command is:
@@ -285,7 +286,6 @@ The output of the command is:
 
 ### 5. Install an IBM Operational Decision Manager release (10 min)
 
-
 #### a. Prerequisites
 
 - Create a database secret
@@ -293,32 +293,37 @@ The output of the command is:
     To secure access to the database, you must create a secret that encrypts the database user and password before you install the Helm release.
 
     ```bash
-    kubectl create secret generic <odm-db-secret> --from-literal=db-user=<rds-postgresql-user-name> --from-literal=db-password=<rds-postgresql-password> 
+    kubectl create secret generic <odm-db-secret> \
+      --from-literal=db-user=<rds-postgresql-user-name> \
+      --from-literal=db-password=<rds-postgresql-password> 
     ```
 
     Example:
     ```
-    kubectl create secret generic odm-db-secret --from-literal=db-user=postgres --from-literal=db-password=postgres
+    kubectl create secret generic odm-db-secret \
+      --from-literal=db-user=postgres \
+      --from-literal=db-password=postgres
     ```
+
 #### b. Install an ODM Helm release
 
 Install a Kubernetes release with the default configuration and a name of `mycompany`.  
 
 - Get the [eks-values.yaml](./eks-values.yaml) file and replace the following keys:
-  - `<AWS-AccountId>` is your AWS Account Id 
-  - `<RDS_DB_ENDPOINT>` is your database server endpoint (of the form: db-server-name-1.********.<region>.rds.amazonaws.com)
-  - `<RDS_DATABASE_NAME>` is the database name defined when creating the RDS database
+  - `<AWS-AccountId>` is your AWS Account Id
+  - `<RDS_DB_ENDPOINT>` is your database server endpoint (of the form: `db-server-name-1.********.<region>.rds.amazonaws.com`)
+  - `<RDS_DATABASE_NAME>` is the initial database name defined when creating the RDS database
 
-
-- If you choose to use Entitled Registry for images and to download the Helm chart from IBM's public Helm charts repository [(option A above)](#option-a--using-the-ibm-entitled-registry-with-your-ibmid):
+- If you choose to use Entitled Registry for images and to download the Helm chart from IBM's public Helm charts repository [(option A above)](#option-a-using-the-ibm-entitled-registry-with-your-ibmid):
 
     ```bash
     helm install mycompany ibmcharts/ibm-odm-prod --version 21.3.0 \
                  --set image.repository=cp.icr.io/cp/cp4a/odm \
+                 --set image.pullSecrets=docker-registry <REGISTRY_SECRET> \
                  -f eks-values.yaml
     ```
 
-- If you downloaded the PPA archive and prefer to use the Helm chart archive from it [(option B above)](#option-b--using-the-download-archives-from-ibm-passport-advantage-ppa):
+- If you downloaded the PPA archive and prefer to use the Helm chart archive from it [(option B above)](#option-b-push-the-odm-images-from-the-ppa-to-the-ecr):
 
     ```bash
     helm install mycompany charts/ibm-odm-prod-21.3.0.tgz \
@@ -352,7 +357,7 @@ After a couple of minutes, the  ALB reflects the ingress configuration. Then yo
 export ROOTURL=$(kubectl get ingress mycompany-odm-ingress | awk '{print $4}' | tail -1)
 ```
 If ROOTURL is empty take a look the [troubleshooting](#troubleshooting) section.
- 
+
 With this ODM topology in place, you can access web applications to author, deploy, and test your rule-based decision services.
 
 The services are accessible from the following URLs:
@@ -365,31 +370,38 @@ The services are accessible from the following URLs:
 | Decision Server Runtime | https://$ROOTURL/DecisionService | odmAdmin/odmAdmin |
 | Decision Runner | https://$ROOTURL/DecisionRunner | odmAdmin/odmAdmin |
 
-### 7. Install the IBM License Service
+### 7. Track ODM usage with the IBM License Service
 
-You should install the IBM License Service following the [Manual installation without the Operator Lifecycle Manager (OLM)](https://github.com/IBM/ibm-licensing-operator/blob/latest/docs/Content/Install_without_OLM.md)
- 
-After you followed all the IBM License Service installation, as the IBM License Service is configured by default for nginx you should modified the ingress annotations to manage it with ALB. 
+#### a. Install the IBM License Service
 
-To do that get the [alb-ibmlicensing.yaml](./alb-ibmlicensing.yaml) file and execute the command :
+Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://github.com/IBM/ibm-licensing-operator/blob/latest/docs/Content/Install_without_OLM.md)
+
+> NOTE: The instance created in the documentation is configured to use ngnix and **will not work** in this example using ALB.
+
+#### b. Create an IBM Licensing instance using ALB
+
+Get the [alb-ibmlicensing-instance.yaml](./alb-ibmlicensing-instance.yaml) file and execute the command :
 ```bash
-kubectl apply -f alb-ibmlicensing.yaml
+kubectl apply -f alb-ibmlicensing-instance.yaml
 ```
-After a couple of minutes,the  ALB reflects the ingress configuration. Then you can access the IBM License Service by retrieving the URL with this command:
+
+#### c. Retrieving license usage
+
+After a couple of minutes, the ALB reflects the ingress configuration and you will be able to access the IBM License Service by retrieving the URL with this command:
 ```bash
-export LICENSING_URL=$(kubectl get ingress ibm-licensing-service-instance -n ibm-common-services | awk '{print $4}' | tail -1) 
+export LICENSING_URL=$(kubectl get ingress ibm-licensing-service-instance -n ibm-common-services | awk '{print $4}' | tail -1)
+export TOKEN=$(oc get secret ibm-licensing-token -o jsonpath={.data.token} -n ibm-common-services | base64 -d)
 ```
 If LICENSING_URL is empty take a look the [troubleshooting](#troubleshooting) section.
 
-Then, you can retrieve the zipped report file by doing :
+You can access the `http://$LICENSING_URL/status?token=$TOKEN` url to view the licensing usage or retrieve the licensing report zip file by running:
 ```bash
-TOKEN=$(oc get secret ibm-licensing-token -o jsonpath={.data.token} -n ibm-common-services | base64 -d)
 curl -v http://$LICENSING_URL/snapshot?token=$TOKEN --output report.zip
 ```
 
- ## Troubleshooting
+## Troubleshooting
 
-If your microservice instances are not running properly, check the logs by running the following command:
+If your ODM instances are not running properly, check the logs by running the following command:
 ```
 kubectl logs <your-pod-name>
 ```
@@ -400,12 +412,11 @@ So, you can check the ALB controller logs with :
 kubectl logs -n kube-system deployment.apps/aws-load-balancer-controller
 ```
 
-Normally, you should get a message like :
+Check the ALB configuration if you get a message like :
 "msg"="Reconciler error" "error"="failed to reconcile ...
 
 ## References
 https://aws.amazon.com/blogs/opensource/network-load-balancer-nginx-ingress-controller-eks/
-
 
 # License
 [Apache 2.0](LICENSE)
