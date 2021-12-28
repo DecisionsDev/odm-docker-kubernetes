@@ -92,6 +92,8 @@ Provision an AWS Load Balancer Controller to your EKS cluster following this [do
 
 The AWS Load Balancer Controller creates Application Load Balancers (ALBs) and the necessary supporting AWS resources whenever a Kubernetes Ingress resource is created on the cluster with the `kubernetes.io/ingress.class: alb` annotation.
 
+> NOTE: If you prefer to use the NGINX Ingress Controller instead of the AWS Load Balancer Controller, have a look at [Deploying IBM Operational Decision Manager with NGINX Ingress Controller on Amazon EKS](Deploying IBM Operational Decision Manager with NGINX Ingress Controller on Amazon EK)
+
 ### 2. Prepare your environment for the ODM installation (25 min)
 
 To get access to the ODM material, you must have an IBM entitlement registry key to pull the images from the IBM Entitled registry (option A) or you can download the ODM on Kubernetes package (.tgz file) from Passport Advantage® (PPA) and then push the contained images to the EKS Container Registry (ECR) (option B).
@@ -99,7 +101,7 @@ To get access to the ODM material, you must have an IBM entitlement registry key
 * To access the images from IBM entitlement registry, follow the instructions in the section [Using the IBM Entitled registry with your IBMid](#option-a-using-the-ibm-entitled-registry-with-your-ibmid)
 
 * To download the PPA and push the images in the EKS Container Registry, follow the instructions in the section [Push the ODM images from the PPA to the ECR](#option-b-push-the-odm-images-from-the-ppa-to-the-ecr)
-
+kubectl create secret docker-registry--docker-server=cp.icr.io
 #### Option A: Using the IBM Entitled registry with your IBMid
 
 #### a. Retrieve your entitled registry key
