@@ -92,7 +92,7 @@ Provision an AWS Load Balancer Controller to your EKS cluster following this [do
 
 The AWS Load Balancer Controller creates Application Load Balancers (ALBs) and the necessary supporting AWS resources whenever a Kubernetes Ingress resource is created on the cluster with the `kubernetes.io/ingress.class: alb` annotation.
 
-> NOTE: If you prefer to use the NGINX Ingress Controller instead of the AWS Load Balancer Controller, have a look at [Deploying IBM Operational Decision Manager with NGINX Ingress Controller on Amazon EKS](README-NGINX.md)
+> NOTE: If you prefer to use the NGINX Ingress Controller instead of the AWS Load Balancer Controller, refer to [Deploying IBM Operational Decision Manager with NGINX Ingress Controller on Amazon EKS](README-NGINX.md)
 
 ### 2. Prepare your environment for the ODM installation (25 min)
 
@@ -332,6 +332,8 @@ Install a Kubernetes release with the default configuration and a name of `mycom
                  --set image.repository=<AWS-AccountId>.dkr.ecr.<region>.amazonaws.com \
                  -f eks-values.yaml
     ```
+
+> NOTE: If you choose to use the NGINX Ingress Controller, refer to [Install an ODM release with NGINX Ingress Controller](README-NGINX.md#install-an-odm-release-with-nginx-ingress-controller).
 
 
 #### c. Check the topology
