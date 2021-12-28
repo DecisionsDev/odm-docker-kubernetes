@@ -1,7 +1,7 @@
 # Deploying IBM Operational Decision Manager with NGINX Ingress Controller on Amazon EKS
 
 The aim of this complementary documentation is to explain how to replace the AWS Load Balancer Controller usage by an NGINX Ingress Conroller.
-Assuming you realize the step 1 of [Deploying IBM Operational Decision Manager on Amazon EKS](Deploying IBM Operational Decision Manager on Amazon EKS) , you can replace the "Provision an AWS Load Balancer Controller" step by following the Nginx Ingress Controller installation with the chart explained in the [ingress-nginx readme](https://github.com/kubernetes/ingress-nginx/tree/main/charts/ingress-nginx#install-chart)
+Assuming you realize the step 1 of [Deploying IBM Operational Decision Manager on Amazon EKS](README.md#1-prepare-your-environment-40-min) , you can replace the "Provision an AWS Load Balancer Controller" step by following the Nginx Ingress Controller installation with the chart explained in the [ingress-nginx readme](https://github.com/kubernetes/ingress-nginx/tree/main/charts/ingress-nginx#install-chart)
 
 ```console
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
