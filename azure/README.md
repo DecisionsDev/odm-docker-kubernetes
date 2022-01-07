@@ -9,7 +9,7 @@ The ODM Docker material is available in Passport Advantage. It includes Docker c
 
 ## Included components
 The project comes with the following components:
-- [IBM Operational Decision Manager](https://www.ibm.com/support/knowledgecenter/en/SSQP76_8.10.x/welcome/kc_welcome_odmV.html)
+- [IBM Operational Decision Manager](https://www.ibm.com/docs/en/odm/8.11.0)
 - [Azure Database for PostgreSQL](https://docs.microsoft.com/en-us/azure/postgresql/)
 - [Azure Kubernetes Service (AKS)](https://docs.microsoft.com/en-us/azure/aks/)
 - [Network concepts for applications in AKS](https://docs.microsoft.com/en-us/azure/aks/concepts-network)
@@ -82,17 +82,17 @@ A Web browser opens where you can connect with your Azure credentials.
 An Azure resource group is a logical group in which Azure resources are deployed and managed. When you create a resource group, you are asked to specify a location. This location is where resource group metadata is stored. It is also where your resources run in Azure, if you don't specify another region during resource creation. Create a resource group by running the `az group create` command.
 
 ```console
-az group create --name odm-group --location francecentral [--tags Owner=pylochou@fr.ibm.com Team=DBA Usage=demo Usage_desc="Azure customers support" Delete_date=2021-02-15]
+az group create --name <resourcegroup> --location <azurelocation> [--tags Owner=<email> Team=DBA Usage=demo Usage_desc="Azure customers support" Delete_date=2022-02-15]
 ```
 
 The following example output shows that the resource group has been created successfully:
 
 ```json
 {
-  "id": "/subscriptions/<guid>/resourceGroups/odm-group",
-  "location": "francecentral",
+  "id": "/subscriptions/<guid>/resourceGroups/<resourcegroup>",
+  "location": "<azurelocation>",
   "managedBy": null,
-  "name": "odm-group",
+  "name": "<resourcegroup>",
   "properties": {
     "provisioningState": "Succeeded"
   },
@@ -107,18 +107,16 @@ Use the `az aks create` command to create an AKS cluster. The following example 
 > Note:  During the creation of the AKS cluster, a second resource group is automatically created to store the AKS resources. For more information, see [Why are two resource groups created with AKS](https://docs.microsoft.com/en-us/answers/questions/25725/why-are-two-resource-groups-created-with-aks.html).
 
 ```console
-az aks create --resource-group odm-group --name odm-cluster --node-count 2 \
-          --location francecentral --enable-addons monitoring --generate-ssh-keys
+az aks create --resource-group <resourcegroup> --name <clustername> --node-count 2 \
+          --location <azurelocation> --enable-addons monitoring --generate-ssh-keys
 ```
 
-After a few minutes, the command completes and returns JSON-formatted information about the cluster.  Make a note of the newly-created Resource Group that is displayed in the JSON output (e.g.: "nodeResourceGroup": "MC_odm-group_odm-cluster_francecentral") if you have to tag it, for instance:
+After a few minutes, the command completes and returns JSON-formatted information about the cluster.  Make a note of the newly-created Resource Group that is displayed in the JSON output (e.g.: "nodeResourceGroup": "<noderesourcegroup>") if you have to tag it, for instance:
 
 ```console
-az group update --name MC_odm-group_odm-cluster_francecentral \
-    --tags Owner=pylochou@fr.ibm.com Team=DBA Usage=demo Usage_desc="Azure customers support" Delete_date=2021-02-15
+az group update --name <noderesourcegroup> \
+    --tags Owner=<email> Team=DBA Usage=demo Usage_desc="Azure customers support" Delete_date=2022-02-15
 ```
-
-> Note:  By default, a Kubernetes cluster version 1.16 or higher is created.
        
 ### Set up your environment to this cluster
 
@@ -131,7 +129,7 @@ az aks install-cli
 To configure kubectl to connect to your Kubernetes cluster, use the `az aks get-credentials` command. This command downloads credentials and configures the Kubernetes CLI to use them.
 
 ```console
-az aks get-credentials --resource-group odm-group --name odm-cluster
+az aks get-credentials --resource-group <resourcegroup> --name <clustername>
 ```
 
 To verify the connection to your cluster, use the `kubectl get` command to return the list of cluster nodes.
@@ -144,8 +142,8 @@ The following example output shows the single node created in the previous steps
 
 ```console
 NAME                                STATUS   ROLES   AGE   VERSION
-aks-nodepool1-21196610-vmss000000   Ready    agent   97m   v1.17.13
-aks-nodepool1-21196610-vmss000001   Ready    agent   97m   v1.17.13
+aks-nodepool1-32774531-vmss000000   Ready    agent   33m   v1.21.7
+aks-nodepool1-32774531-vmss000001   Ready    agent   33m   v1.21.7
 ```
 
 To further debug and diagnose cluster problems, run the following command:
@@ -161,18 +159,20 @@ kubectl cluster-info dump
 Create an Azure Database for PostgreSQL server by running the `az postgres server create` command. A server can contain multiple databases.
 
 ```console
-az postgres server create --resource-group odm-group --name odmpsqlserver \
+az postgres server create --resource-group <resourcegroup> --name <postgresqlserver> \
                           --admin-user myadmin --admin-password 'passw0rd!' \
-                          --sku-name GP_Gen5_2 --version 9.6 --location francecentral
+                          --sku-name GP_Gen5_2 --version 11 --location <azurelocation>
 ```
 
-> Note:  The PostgreSQL server name must be unique within Azure.
+> Note 1:  The PostgreSQL server name must be unique within Azure.
+
+> Note 2:  ODM 8.11 supports officially PostgreSQL 13 but this version is still not available in Azure (at the time of writing, 2022-01-06).
 
 Verify the database.
 To connect to your server, you need to provide host information and access credentials.
 
 ```console
-az postgres server show --resource-group odm-group --name odmpsqlserver
+az postgres server show --resource-group <resourcegroup> --name <postgresqlserver>
 ```
 
 Result:
@@ -181,20 +181,20 @@ Result:
 {
   "administratorLogin": "myadmin",
   "byokEnforcement": "Disabled",
-  "earliestRestoreDate": "2020-07-13T06:59:05.050000+00:00",
-  "fullyQualifiedDomainName": "odmpsqlserver.postgres.database.azure.com",
-  "id": "/subscriptions/xxxx-xx-xxxx-beba-1a633f94cdaa/resourceGroups/odm-group/providers/Microsoft.DBforPostgreSQL/servers/odmpsqlserver",
+  "earliestRestoreDate": "2022-01-06T09:15:54.563000+00:00",
+  "fullyQualifiedDomainName": "<postgresqlserver>.postgres.database.azure.com",
+  "id": "/subscriptions/0e0a4287-8719-4849-bb0b-5242e4507709/resourceGroups/<resourcegroup>/providers/Microsoft.DBforPostgreSQL/servers/<postgresqlserver>",
   "identity": null,
   "infrastructureEncryption": "Disabled",
-  "location": "francecentral",
+  "location": "<azurelocation>",
   "masterServerId": "",
   "minimalTlsVersion": "TLSEnforcementDisabled",
-  "name": "odmpsqlserver",
+  "name": "pyl-pg",
   "privateEndpointConnections": [],
   "publicNetworkAccess": "Enabled",
   "replicaCapacity": 5,
   "replicationRole": "None",
-  "resourceGroup": "odm-group",
+  "resourceGroup": "<resourcegroup>",
   "sku": {
     "capacity": 2,
     "family": "Gen5",
@@ -207,24 +207,24 @@ Result:
     "backupRetentionDays": 7,
     "geoRedundantBackup": "Disabled",
     "storageAutogrow": "Enabled",
-    "storageMb": 5120
+    "storageMb": 51200
   },
   "tags": null,
   "type": "Microsoft.DBforPostgreSQL/servers",
   "userVisibleState": "Ready",
-  "version": "9.6"
+  "version": "11"
 }
 ```
 
-Make a note of the server name that is displayed in the JSON output (e.g.: "fullyQualifiedDomainName": "odmpsqlserver.postgres.database.azure.com") as it will be used [later](#create-the-datasource-secrets-for-azure-postgresql).
+Make a note of the server name that is displayed in the JSON output (e.g.: "fullyQualifiedDomainName": "<postgresqlserver>.postgres.database.azure.com") as it will be used [later](#create-the-datasource-secrets-for-azure-postgresql).
 
 ###  Create a firewall rule that allows access from Azure services
 
 To make sure your database and your AKS cluster can communicate, put in place firewall rules with the following command:
 
 ```console
-az postgres server firewall-rule create -g odm-group -s odmpsqlserver \
-            -n myrule --start-ip-address 0.0.0.0 --end-ip-address 255.255.255.255
+az postgres server firewall-rule create --resource-group <resourcegroup> --server-name <postgresqlserver> \
+            --name <rulename> --start-ip-address 0.0.0.0 --end-ip-address 255.255.255.255
 ```
 
 ## Prepare your environment for the ODM installation (20 min)
@@ -244,19 +244,23 @@ In the Container software library tile, verify your entitlement on the View libr
 Create a pull secret by running a kubectl create secret command.
 
 ```console
-$ kubectl create secret docker-registry icregistry-secret --docker-server=cp.icr.io --docker-username=cp \
-    --docker-password="<API_KEY_GENERATED>" --docker-email=<USER_EMAIL>
+$ kubectl create secret docker-registry <registrysecret> --docker-server=cp.icr.io --docker-username=cp \
+    --docker-password="<entitlementkey>" --docker-email=<email>
 ```
 
 where:
 
-* <REGISTRY_SECRET> is the secret name
-* <API_KEY_GENERATED> is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
-* <USER_EMAIL> is the email address associated with your IBMid.
+* <registrysecret> is the secret name
+* <entitlementkey> is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
+* <email> is the email address associated with your IBMid.
 
 > Note:  The cp.icr.io value for the docker-server parameter is the only registry domain name that contains the images. You must set the docker-username to cp to use an entitlement key as docker-password.
 
-Make a note of the secret name so that you can set it for the image.pullSecrets parameter when you run a helm install of your containers.  The image.repository parameter will later be set to cp.icr.io/cp/cp4a/odm.
+Make a note of the secret name so that you can set it for the image.pullSecrets parameter when you run a helm install of your containers.  The image.repository parameter will later be set to cp.icr.io/cp/cp4a/odm:
+
+```console
+export DOCKER_REGISTRY=cp.icr.io/cp/cp4a/odm
+```
 
 Add the public IBM Helm charts repository:
 
@@ -270,7 +274,7 @@ Check you can access ODM's chart
 ```console
 helm search repo ibm-odm-prod
 NAME                  	CHART VERSION	APP VERSION	DESCRIPTION                     
-ibmcharts/ibm-odm-prod	20.3.0       	8.10.5.0   	IBM Operational Decision Manager
+ibmcharts/ibm-odm-prod	21.3.0       	8.11.0.0   	IBM Operational Decision Manager
 ```
 
 You can now proceed to the [datasource secret's creation](#create-the-datasource-secrets-for-azure-postgresql).
@@ -279,7 +283,7 @@ You can now proceed to the [datasource secret's creation](#create-the-datasource
 
 Prerequisites:  You must install Docker.
 
-Download the IBM Operational Decision Manager chart and images from [IBM Passport Advantage (PPA)](https://www-01.ibm.com/software/passportadvantage/pao_customer.html).
+Download the IBM Operational Decision Manager chart and images from [IBM Passport Advantage (PPA)](https://www.ibm.com/software/passportadvantage/pao_customer.html).
 
 Refer to the [ODM download document](https://www.ibm.com/support/pages/node/310661) to view the list of Passport Advantage eAssembly installation images.
 
@@ -289,12 +293,14 @@ Extract the file that contains both the Helm chart and the images.  The name of 
 $ mkdir ODM-PPA
 $ cd ODM-PPA
 $ tar zxvf PPA_NAME.tar.gz
-charts/ibm-odm-prod-20.3.0.tgz
-images/odm-decisionserverconsole_8.10.5.0-amd64.tar.gz
-images/odm-decisionserverruntime_8.10.5.0-amd64.tar.gz
-images/odm-decisionrunner_8.10.5.0-amd64.tar.gz
-images/odm-decisioncenter_8.10.5.0-amd64.tar.gz
-images/dbserver_8.10.5.0-amd64.tar.gz
+charts/
+charts/ibm-odm-prod-21.3.0.tgz
+images/
+images/odm-decisionserverconsole_8.11.0.0-amd64.tar.gz
+images/odm-decisionserverruntime_8.11.0.0-amd64.tar.gz
+images/odm-decisionrunner_8.11.0.0-amd64.tar.gz
+images/odm-decisioncenter_8.11.0.0-amd64.tar.gz
+images/dbserver_8.11.0.0-amd64.tar.gz
 manifest.json
 manifest.yaml
 ```
@@ -304,13 +310,13 @@ In order to load the container images from the extracted folder into your Docker
 1. Create an [ACR registry](https://docs.microsoft.com/en-US/azure/container-registry/container-registry-get-started-azure-cli):
 
    ```console
-   az acr create --resource-group odm-group --name <registryname> --sku Basic
+   az acr create --resource-group <resourcegroup> --name <registryname> --sku Basic
    ```
 
-   Make a note of the `loginServer` that will be displayed in the JSON output (e.g.: "loginServer": "registryodm.azurecr.io"):
+   Make a note of the `loginServer` that will be displayed in the JSON output (e.g.: "loginServer": "<registryname>.azurecr.io"):
 
    ```console
-   export DOCKER_REGISTRY=<loginServer>
+   export DOCKER_REGISTRY=<registryname>.azurecr.io
    ```
 
    > Note: The registry name must be unique within Azure.
@@ -324,40 +330,40 @@ In order to load the container images from the extracted folder into your Docker
 3. Load the container images into your internal Docker registry.
 
     ```console
-    $ for name in images/*.tar.gz; do echo $name && docker image load --input $name ; done
+    $ for name in images/*.tar.gz; do echo $name; docker image load --input $name; done
     ```
 
 4. Tag the images loaded locally with your registry name.
 
     ```console
     export ODM_VERSION=<ODM_VERSION>
-    export IMAGE_TAG_NAME=${ODM_VERSION:-8.10.5.0}-amd64
-    docker tag odm-decisionserverconsole:$IMAGE_TAG_NAME $DOCKER_REGISTRY/odm-decisionserverconsole:$IMAGE_TAG_NAME
-    docker tag dbserver:$IMAGE_TAG_NAME $DOCKER_REGISTRY/dbserver:$IMAGE_TAG_NAME
-    docker tag odm-decisioncenter:$IMAGE_TAG_NAME $DOCKER_REGISTRY/odm-decisioncenter:$IMAGE_TAG_NAME
-    docker tag odm-decisionserverruntime:$IMAGE_TAG_NAME $DOCKER_REGISTRY/odm-decisionserverruntime:$IMAGE_TAG_NAME
-    docker tag odm-decisionrunner:$IMAGE_TAG_NAME $DOCKER_REGISTRY/odm-decisionrunner:$IMAGE_TAG_NAME
+    export IMAGE_TAG_NAME=${ODM_VERSION:-8.11.0.0}-amd64
+    docker tag odm-decisionserverconsole:${IMAGE_TAG_NAME} ${DOCKER_REGISTRY}/odm-decisionserverconsole:${IMAGE_TAG_NAME}
+    docker tag dbserver:${IMAGE_TAG_NAME} ${DOCKER_REGISTRY}/dbserver:${IMAGE_TAG_NAME}
+    docker tag odm-decisioncenter:${IMAGE_TAG_NAME} ${DOCKER_REGISTRY}/odm-decisioncenter:${IMAGE_TAG_NAME}
+    docker tag odm-decisionserverruntime:${IMAGE_TAG_NAME} ${DOCKER_REGISTRY}/odm-decisionserverruntime:${IMAGE_TAG_NAME}
+    docker tag odm-decisionrunner:${IMAGE_TAG_NAME} ${DOCKER_REGISTRY}/odm-decisionrunner:${IMAGE_TAG_NAME}
     ```
 
 5. Push the images to your registry.
 
     ```console
-    docker push $DOCKER_REGISTRY/odm-decisioncenter:$IMAGE_TAG_NAME
-    docker push $DOCKER_REGISTRY/odm-decisionserverconsole:$IMAGE_TAG_NAME
-    docker push $DOCKER_REGISTRY/odm-decisionserverruntime:$IMAGE_TAG_NAME
-    docker push $DOCKER_REGISTRY/odm-decisionrunner:$IMAGE_TAG_NAME
-    docker push $DOCKER_REGISTRY/dbserver:$IMAGE_TAG_NAME
+    docker push ${DOCKER_REGISTRY}/odm-decisioncenter:${IMAGE_TAG_NAME}
+    docker push ${DOCKER_REGISTRY}/odm-decisionserverconsole:${IMAGE_TAG_NAME}
+    docker push ${DOCKER_REGISTRY}/odm-decisionserverruntime:${IMAGE_TAG_NAME}
+    docker push ${DOCKER_REGISTRY}/odm-decisionrunner:${IMAGE_TAG_NAME}
+    docker push ${DOCKER_REGISTRY}/dbserver:${IMAGE_TAG_NAME}
     ```
 
 6. Create a registry key to access the ACR registry.  Refer to the [documentation](https://docs.microsoft.com/en-US/azure/container-registry/container-registry-tutorial-prepare-registry#enable-admin-account) to enable the registry's admin account and get the credentials in the Container registry portal, then:
 
     ```console
-    kubectl create secret docker-registry acregistry-secret --docker-server="$DOCKER_REGISTRY" \
+    kubectl create secret docker-registry <registrysecret> --docker-server="${DOCKER_REGISTRY}" \
             --docker-username="<adminUsername>" --docker-password="<adminPassword>" \
             --docker-email="mycompany@email.com"
     ```
 
-  Make a note of the secret name so that you can set it for the image.pullSecrets parameter when you run a helm install of your containers. The image.repository parameter must be set to \<loginServer\> (ie $DOCKER_REGISTRY).
+  Make a note of the secret name so that you can set it for the image.pullSecrets parameter when you run a helm install of your containers. The image.repository parameter must be set to \<loginServer\> (ie ${DOCKER_REGISTRY}).
 
 You can now proceed to the [datasource secret's creation](#create-the-datasource-secrets-for-azure-postgresql).
 
@@ -371,22 +377,22 @@ Copy the files [ds-bc.xml.template](ds-bc.xml.template) and [ds-res.xml.template
 - PASSWORD : The database password
 - SERVERNAME : The name of the database server
 
-It should be something like in the following extract.
+It should be something like in the following extract:
 
 ```xml
  <properties
   databaseName="postgres"
-  user="myadmin@odmpsqlserver"
+  user="myadmin@<postgresqlserver>"
   password="passw0rd!"
   portNumber="5432"
   sslMode="require"
-  serverName="odmpsqlserver.postgres.database.azure.com" />
+  serverName="<postgresqlserver>.postgres.database.azure.com" />
 ```
 
 Create a secret with this two modified files
 
 ```console
-kubectl create secret generic customdatasource-secret \
+kubectl create secret generic <customdatasourcesecret> \
         --from-file datasource-ds.xml=ds-res.xml --from-file datasource-dc.xml=ds-bc.xml
 ```
 
@@ -416,23 +422,20 @@ $ keytool -import -v -trustcacerts -alias mycompany -file mycompany.crt \
 3. Create a Kubernetes secret with the certificate
 
 ```console
-kubectl create secret generic mycompany-secret --from-file=keystore.jks=mycompany.jks \
-                                               --from-file=truststore.jks=truststore.jks \
-                                               --from-literal=keystore_password=password \
-                                               --from-literal=truststore_password=password
+kubectl create secret generic <mycompanysecret> --from-file=keystore.jks=mycompany.jks \
+                                                --from-file=truststore.jks=truststore.jks \
+                                                --from-literal=keystore_password=password \
+                                                --from-literal=truststore_password=password
 ```
 
-The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Defining the security certificate](https://www.ibm.com/support/knowledgecenter/SSQP76_8.10.x/com.ibm.odm.icp/topics/tsk_replace_security_certificate.html?view=kc) and [Working with certificates and SSL](https://www.ibm.com/links?url=https%3A%2F%2Fdocs.oracle.com%2Fcd%2FE19830-01%2F819-4712%2Fablqw%2Findex.html).
+The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://www.ibm.com/docs/en/odm/8.11.0?topic=servers-server-certificates) and [Working with certificates and SSL](https://docs.oracle.com/cd/E19830-01/819-4712/ablqw/index.html).
 
 ## Install an ODM Helm release and expose it with the service type LoadBalancer (10 min)
 
 ### Allocate a public IP
 
 ```console
- az aks update \
-    --resource-group odm-group \
-    --name odm-cluster \
-    --load-balancer-managed-outbound-ip-count 4
+az aks update --resource-group <resourcegroup> --name <clustername> --load-balancer-managed-outbound-ip-count 4
 ```
 
 ### Install the ODM release
@@ -442,21 +445,21 @@ You can now install the product.
 If you choose to use Entitled Registry for images and to download the Helm chart from IBM's public Helm charts repository [(option A above)](#option-a--using-the-ibm-entitled-registry-with-your-ibmid):
 
 ```console
-helm install mycompany ibmcharts/ibm-odm-prod --version 20.3.0 \
-        --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
-        --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.10.5.0} --set service.type=LoadBalancer \
-        --set externalCustomDatabase.datasourceRef=customdatasource-secret \
-        --set customization.securitySecretRef=mycompany-secret
+helm install <release> ibmcharts/ibm-odm-prod --version 20.3.0 \
+        --set image.repository=${DOCKER_REGISTRY} --set image.pullSecrets=<registrysecret> \
+        --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.11.0.0} --set service.type=LoadBalancer \
+        --set externalCustomDatabase.datasourceRef=<customdatasourcesecret> \
+        --set customization.securitySecretRef=<mycompanysecret>
 ```
 
 If you downloaded the PPA archive and prefer to use the Helm chart archive from it [(option B above)](#option-b--using-the-download-archives-from-ibm-passport-advantage-ppa):
 
 ```console
-helm install mycompany charts/ibm-odm-prod-20.3.0.tgz \
-        --set image.repository=$DOCKER_REGISTRY --set image.pullSecrets=acregistry-secret \
-        --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.10.5.0} --set service.type=LoadBalancer \
-        --set externalCustomDatabase.datasourceRef=customdatasource-secret \
-        --set customization.securitySecretRef=mycompany-secret
+helm install <release> charts/ibm-odm-prod-20.3.0.tgz \
+        --set image.repository=${DOCKER_REGISTRY} --set image.pullSecrets=<registrysecret> \
+        --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.11.0.0} --set service.type=LoadBalancer \
+        --set externalCustomDatabase.datasourceRef=<customdatasourcesecret> \
+        --set customization.securitySecretRef=<mycompanysecret>
 ```
 
 > Remember:  If you choose to use the IBM Entitled registry, the `image.repository` must be set to cp.icr.io/cp/cp4a/odm.  If you choose to push the ODM images to the Azure Container Registry, the `image.repository` should be set to your `loginServer` value.
@@ -468,10 +471,10 @@ Run the following command to check the status of the pods that have been created
 ```console
 kubectl get pods
 NAME                                                   READY   STATUS    RESTARTS   AGE
-mycompany-odm-decisioncenter-***                       1/1     Running   0          20m
-mycompany-odm-decisionrunner-***                       1/1     Running   0          20m
-mycompany-odm-decisionserverconsole-***                1/1     Running   0          20m
-mycompany-odm-decisionserverruntime-***                1/1     Running   0          20m
+<release>-odm-decisioncenter-***                       1/1     Running   0          20m
+<release>-odm-decisionrunner-***                       1/1     Running   0          20m
+<release>-odm-decisionserverconsole-***                1/1     Running   0          20m
+<release>-odm-decisionserverruntime-***                1/1     Running   0          20m
 ```
 
 ### Access ODM services
