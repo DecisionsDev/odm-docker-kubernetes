@@ -60,7 +60,6 @@ Then [create an Azure account and pay as you go](https://azure.microsoft.com/en-
       - [a. Check that ODM services are in NodePort type](#a-check-that-odm-services-are-in-nodeport-type)
       - [b. ODM services are available through the following URLs](#b-odm-services-are-available-through-the-following-urls)
   * [Troubleshooting](#troubleshooting)
-  * [References](#references)
 - [License](#license)
 
 ## Prepare your AKS instance (30 min)
@@ -666,4 +665,4 @@ If your ODM instances are not running properly, please refer to [our dedicated t
 
 # License
 
-[Apache 2.0](LICENSE)
+[Apache 2.0](../LICENSE)
