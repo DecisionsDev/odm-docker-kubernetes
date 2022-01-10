@@ -102,13 +102,13 @@ The following example output shows that the resource group has been created succ
 
 ### Create an AKS cluster
 
-Use the `az aks create` command to create an AKS cluster. The following example creates a cluster named odm-cluster with two nodes. Azure Monitor for containers is also enabled using the `--enable-addons monitoring` parameter.  The operation takes several minutes to complete.
+Use the `az aks create` command to create an AKS cluster. The following example creates a cluster named <clustername> with two nodes. Azure Monitor for containers is also enabled using the `--enable-addons monitoring` parameter.  The operation takes several minutes to complete.
 
 > Note:  During the creation of the AKS cluster, a second resource group is automatically created to store the AKS resources. For more information, see [Why are two resource groups created with AKS](https://docs.microsoft.com/en-us/answers/questions/25725/why-are-two-resource-groups-created-with-aks.html).
 
 ```console
 az aks create --resource-group <resourcegroup> --name <clustername> --node-count 2 \
-          --location <azurelocation> --enable-addons monitoring --generate-ssh-keys
+          --enable-addons monitoring --generate-ssh-keys [--location <azurelocation>]
 ```
 
 After a few minutes, the command completes and returns JSON-formatted information about the cluster.  Make a note of the newly-created Resource Group that is displayed in the JSON output (e.g.: "nodeResourceGroup": "<noderesourcegroup>") if you have to tag it, for instance:
@@ -269,7 +269,7 @@ helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo
 helm repo update
 ```
 
-Check you can access ODM's chart
+Check you can access ODM's chart:
 
 ```console
 helm search repo ibm-odm-prod
@@ -371,11 +371,11 @@ You can now proceed to the [datasource secret's creation](#create-the-datasource
 
 Copy the files [ds-bc.xml.template](ds-bc.xml.template) and [ds-res.xml.template](ds-res.xml.template) on your local machine and rename them to `ds-bc.xml` and `ds-res.xml`.
 
- Replace the following placeholers:
-- DBNAME : The database name
-- USERNAME : The database username 
-- PASSWORD : The database password
-- SERVERNAME : The name of the database server
+Replace the following placeholers:
+- DBNAME: The database name
+- USERNAME: The database username 
+- PASSWORD: The database password
+- SERVERNAME: The name of the database server
 
 It should be something like in the following extract:
 
@@ -410,22 +410,22 @@ openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mycompany.key \
 2. Generate a JKS version of the certificate to be used in the ODM container 
 
 ```console
-$ openssl pkcs12 -export -passout pass:password -passin pass:password \
-          -inkey mycompany.key -in mycompany.crt -name mycompany -out mycompany.p12
-$ keytool -importkeystore -srckeystore mycompany.p12 -srcstoretype PKCS12 \
-                          -srcstorepass password -destkeystore mycompany.jks \
-                          -deststoretype JKS -deststorepass password
-$ keytool -import -v -trustcacerts -alias mycompany -file mycompany.crt \
-                  -keystore truststore.jks -storepass password -storetype jks -noprompt
+openssl pkcs12 -export -passout pass:password -passin pass:password \
+      -inkey mycompany.key -in mycompany.crt -name mycompany -out mycompany.p12
+keytool -importkeystore -srckeystore mycompany.p12 -srcstoretype PKCS12 \
+      -srcstorepass password -destkeystore mycompany.jks \
+      -deststoretype JKS -deststorepass password
+keytool -import -v -trustcacerts -alias mycompany -file mycompany.crt \
+      -keystore truststore.jks -storepass password -storetype jks -noprompt
 ```
 
 3. Create a Kubernetes secret with the certificate
 
 ```console
-kubectl create secret generic <mycompanysecret> --from-file=keystore.jks=mycompany.jks \
-                                                --from-file=truststore.jks=truststore.jks \
-                                                --from-literal=keystore_password=password \
-                                                --from-literal=truststore_password=password
+kubectl create secret generic <mycompanystore> --from-file=keystore.jks=mycompany.jks \
+                                               --from-file=truststore.jks=truststore.jks \
+                                               --from-literal=keystore_password=password \
+                                               --from-literal=truststore_password=password
 ```
 
 The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://www.ibm.com/docs/en/odm/8.11.0?topic=servers-server-certificates) and [Working with certificates and SSL](https://docs.oracle.com/cd/E19830-01/819-4712/ablqw/index.html).
@@ -445,21 +445,21 @@ You can now install the product.
 If you choose to use Entitled Registry for images and to download the Helm chart from IBM's public Helm charts repository [(option A above)](#option-a--using-the-ibm-entitled-registry-with-your-ibmid):
 
 ```console
-helm install <release> ibmcharts/ibm-odm-prod --version 20.3.0 \
+helm install <release> ibmcharts/ibm-odm-prod --version 21.3.0 \
         --set image.repository=${DOCKER_REGISTRY} --set image.pullSecrets=<registrysecret> \
         --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.11.0.0} --set service.type=LoadBalancer \
         --set externalCustomDatabase.datasourceRef=<customdatasourcesecret> \
-        --set customization.securitySecretRef=<mycompanysecret>
+        --set customization.securitySecretRef=<mycompanystore>
 ```
 
 If you downloaded the PPA archive and prefer to use the Helm chart archive from it [(option B above)](#option-b--using-the-download-archives-from-ibm-passport-advantage-ppa):
 
 ```console
-helm install <release> charts/ibm-odm-prod-20.3.0.tgz \
+helm install <release> charts/ibm-odm-prod-21.3.0.tgz \
         --set image.repository=${DOCKER_REGISTRY} --set image.pullSecrets=<registrysecret> \
         --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.11.0.0} --set service.type=LoadBalancer \
         --set externalCustomDatabase.datasourceRef=<customdatasourcesecret> \
-        --set customization.securitySecretRef=<mycompanysecret>
+        --set customization.securitySecretRef=<mycompanystore>
 ```
 
 > Remember:  If you choose to use the IBM Entitled registry, the `image.repository` must be set to cp.icr.io/cp/cp4a/odm.  If you choose to push the ODM images to the Azure Container Registry, the `image.repository` should be set to your `loginServer` value.
@@ -485,11 +485,11 @@ By setting `service.type=LoadBalancer`, the services are exposed with a public I
 kubectl get services
 NAME                                        TYPE           CLUSTER-IP     EXTERNAL-IP       PORT(S)          AGE
 kubernetes                                  ClusterIP      10.0.0.1       <none>            443/TCP          26h
-mycompany-odm-decisioncenter                LoadBalancer   10.0.141.125   xxx.xxx.xxx.xxx   9453:31130/TCP   22m
-mycompany-odm-decisionrunner                LoadBalancer   10.0.157.225   xxx.xxx.xxx.xxx   9443:31325/TCP   22m
-mycompany-odm-decisionserverconsole         LoadBalancer   10.0.215.192   xxx.xxx.xxx.xxx   9443:32448/TCP   22m
-mycompany-odm-decisionserverconsole-notif   ClusterIP      10.0.201.87    <none>            1883/TCP         22m
-mycompany-odm-decisionserverruntime         LoadBalancer   10.0.177.153   xxx.xxx.xxx.xxx   9443:31921/TCP   22m
+<release>-odm-decisioncenter                LoadBalancer   10.0.141.125   xxx.xxx.xxx.xxx   9453:31130/TCP   22m
+<release>-odm-decisionrunner                LoadBalancer   10.0.157.225   xxx.xxx.xxx.xxx   9443:31325/TCP   22m
+<release>-odm-decisionserverconsole         LoadBalancer   10.0.215.192   xxx.xxx.xxx.xxx   9443:32448/TCP   22m
+<release>-odm-decisionserverconsole-notif   ClusterIP      10.0.201.87    <none>            1883/TCP         22m
+<release>-odm-decisionserverruntime         LoadBalancer   10.0.177.153   xxx.xxx.xxx.xxx   9443:31921/TCP   22m
 ```
 
 You can then open a browser on https://xxx.xxx.xxx.xxx:9443 to access Decision Server console, Decision Server Runtime, and Decision Runner, and on https://xxx.xxx.xxx.xxx:9453 to access Decision Center.
@@ -500,34 +500,28 @@ This section explains how to expose the ODM services to Internet connectivity wi
 
 ### Create an Ingress controller
 
-1. Create a namespace for your Ingress resources
-
-    ```console
-    kubectl create namespace ingress-basic
-    ```
-
-2. Add the official stable repository
+1. Add the official stable repository
 
     ```console
     helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
     ```
 
-3. Use Helm to deploy an NGINX Ingress controller
+2. Use Helm to deploy an NGINX Ingress controller
 
     ```console
     helm install nginx-ingress ingress-nginx/ingress-nginx \
-      --namespace ingress-basic \
+      --namespace ingress-basic --create-namespace \
       --set controller.replicaCount=2 \
       --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux \
       --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux
     ```
 
-4. Get the Ingress controller external IP address
+3. Get the Ingress controller external IP address
 
     ```console
     kubectl get service -l app.kubernetes.io/name=ingress-nginx --namespace ingress-basic
     NAME                                               TYPE           CLUSTER-IP     EXTERNAL-IP    PORT(S)                      AGE
-    nginx-ingress-ingress-nginx-controller             LoadBalancer   10.0.191.246   EXTERNAL-IP   80:30222/TCP,443:31103/TCP   3m8s
+    nginx-ingress-ingress-nginx-controller             LoadBalancer   10.0.191.246   <externalip>   80:30222/TCP,443:31103/TCP   3m8s
     nginx-ingress-ingress-nginx-controller-admission   ClusterIP      10.0.214.250   <none>         443/TCP                      3m8s
     ```
 
@@ -537,7 +531,7 @@ For more informations see https://docs.microsoft.com/en-US/azure/aks/ingress-own
 
 You must create the appropriate certificate files: `mycompany.key` and `mycompany.crt`, as defined in [a. (Optional) Generate a self-signed certificate](#a-optional-generate-a-self-signed-certificate).
 ```console
-kubectl create secret tls mycompany-tls --namespace ingress-basic --key mycompany.key --cert mycompany.crt
+kubectl create secret tls <mycompanytlssecret> --namespace ingress-basic --key mycompany.key --cert mycompany.crt
 ```
 
 ### Install the ODM release
@@ -550,22 +544,29 @@ Make sure you are using the same namespace as your Ingress resources above in or
 kubectl config set-context --current --namespace=ingress-basic
 ```
 
+Also, recreate or copy your image pull secret and your custom datasource secret to the current namespace:
+
+```console
+kubectl get secret <registrysecret> --namespace=default --output yaml |grep -v '^\s*namespace:\s' |kubectl create -f -
+kubectl get secret <customdatasourcesecret> --namespace=default --output yaml |grep -v '^\s*namespace:\s' |kubectl create -f -
+```
+
 If you choose to use Entitled Registry for images and to download the Helm chart from IBM's public Helm charts repository [(option A above)](#option-a--using-the-ibm-entitled-registry-with-your-ibmid):
 
 ```console
-helm install mycompany ibmcharts/ibm-odm-prod --version 20.3.0 \
-        --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
-        --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.10.5.0} \
-        --set externalCustomDatabase.datasourceRef=customdatasource-secret
+helm install <release> ibmcharts/ibm-odm-prod --version 21.3.0 \
+        --set image.repository=${DOCKER_REGISTRY} --set image.pullSecrets=<registrysecret> \
+        --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.11.0.0} \
+        --set externalCustomDatabase.datasourceRef=<customdatasourcesecret>
 ```
 
 If you downloaded the PPA archive and prefer to use the Helm chart archive from it [(option B above)](#option-b--using-the-download-archives-from-ibm-passport-advantage-ppa):
 
 ```console
-helm install mycompany charts/ibm-odm-prod-20.3.0.tgz \
-        --set image.repository=$DOCKER_REGISTRY --set image.pullSecrets=acregistry-secret \
-        --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.10.5.0} \
-        --set externalCustomDatabase.datasourceRef=customdatasource-secret
+helm install <release> charts/ibm-odm-prod-21.3.0.tgz \
+        --set image.repository=${DOCKER_REGISTRY} --set image.pullSecrets=<registrysecret> \
+        --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.11.0.0} \
+        --set externalCustomDatabase.datasourceRef=<customdatasourcesecret>
 ```
 
 > Remember:  If you choose to use the IBM Entitled registry, the `image.repository` must be set to cp.icr.io/cp/cp4a/odm.  If you choose to push the ODM images to the Azure Container Registry, the `image.repository` should be set to your `loginServer` value.
@@ -578,7 +579,7 @@ Create a YAML file named `ingress-odm.yml`, as follows:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: mycompany
+  name: <ingressname>
   namespace: ingress-basic
   annotations:
     kubernetes.io/ingress.class: nginx
@@ -589,38 +590,50 @@ spec:
   tls:
   - hosts:
     - mycompany.com
-    secretName: mycompany-tls
+    secretName: <mycompanytlssecret>
   rules:
   - host: mycompany.com
     http:
       paths:
       - path: /res
+        pathType: Prefix
         backend:
-          serviceName: mycompany-odm-decisionserverconsole
-          servicePort: 9443
+          service:
+            name: <release>-odm-decisionserverconsole
+            port:
+              number: 9443
       - path: /DecisionService
+        pathType: Prefix
         backend:
-          serviceName: mycompany-odm-decisionserverruntime
-          servicePort: 9443
+          service:
+            name: <release>-odm-decisionserverruntime
+            port:
+              number: 9443
       - path: /DecisionRunner
+        pathType: Prefix
         backend:
-          serviceName: mycompany-odm-decisionrunner
-          servicePort: 9443
+          service:
+            name: <release>-odm-decisionrunner
+            port:
+              number: 9443
       - path: /decisioncenter
+        pathType: Prefix
         backend:
-          serviceName: mycompany-odm-decisioncenter
-          servicePort: 9453
+          service:
+            name: <release>-odm-decisioncenter
+            port:
+              number: 9453
 ```
 
 Apply an Ingress route:
 ```console
-kubectl apply -f ingress-odm.yml
+kubectl create -f ingress-odm.yml
 ```
 
 ### Edit your /etc/hosts
 ```console
-vi /etc/hosts
-<EXTERNAL_IP> mycompany.com
+# vi /etc/hosts
+<externalip> mycompany.com
 ```
 ### Access the ODM services
 
@@ -640,24 +653,16 @@ nginx-ingress-ingress-nginx-controller-admission   ClusterIP      10.0.214.250  
 
 #### b. ODM services are available through the following URLs
 
-| SERVICE NAME | URL | USERNAME/PASSWORD |
-| --- | --- | --- |
-| Decision Server Console | https://mycompany.com/res | odmAdmin/odmAdmin |
-| Decision Center | https://mycompany.com/decisioncenter | odmAdmin/odmAdmin |
-| Decision Server Runtime | https://mycompany.com/DecisionService | odmAdmin/odmAdmin |
-| Decision Runner | https://mycompany.com/DecisionRunner | odmAdmin/odmAdmin |
+| SERVICE NAME | URL | USERNAME/PASSWORD
+| --- | --- | ---
+| Decision Server Console | https://mycompany.com/res | odmAdmin/odmAdmin
+| Decision Center | https://mycompany.com/decisioncenter | odmAdmin/odmAdmin
+| Decision Server Runtime | https://mycompany.com/DecisionService | odmAdmin/odmAdmin
+| Decision Runner | https://mycompany.com/DecisionRunner | odmAdmin/odmAdmin
 
 ## Troubleshooting
 
-If your ODM instances are not running properly, please refer to [our dedicated troubleshooting page](https://www.ibm.com/support/knowledgecenter/en/SSQP76_8.10.x/com.ibm.odm.kube/topics/tsk_troubleshooting.html).
-
-## References
-
-https://docs.microsoft.com/en-US/azure/aks/
-
-https://docs.microsoft.com/en-US/azure/aks/ingress-own-tls
-
-https://docs.microsoft.com/en-US/azure/container-registry/container-registry-get-started-azure-cli
+If your ODM instances are not running properly, please refer to [our dedicated troubleshooting page](https://www.ibm.com/docs/en/odm/8.11.0?topic=8110-troubleshooting-support).
 
 # License
 
