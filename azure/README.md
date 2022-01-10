@@ -182,13 +182,13 @@ Result:
   "byokEnforcement": "Disabled",
   "earliestRestoreDate": "2022-01-06T09:15:54.563000+00:00",
   "fullyQualifiedDomainName": "<postgresqlserver>.postgres.database.azure.com",
-  "id": "/subscriptions/0e0a4287-8719-4849-bb0b-5242e4507709/resourceGroups/<resourcegroup>/providers/Microsoft.DBforPostgreSQL/servers/<postgresqlserver>",
+  "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-5242e4507709/resourceGroups/<resourcegroup>/providers/Microsoft.DBforPostgreSQL/servers/<postgresqlserver>",
   "identity": null,
   "infrastructureEncryption": "Disabled",
   "location": "<azurelocation>",
   "masterServerId": "",
   "minimalTlsVersion": "TLSEnforcementDisabled",
-  "name": "pyl-pg",
+  "name": "<postgresqlserver>",
   "privateEndpointConnections": [],
   "publicNetworkAccess": "Enabled",
   "replicaCapacity": 5,
@@ -292,9 +292,7 @@ Extract the file that contains both the Helm chart and the images.  The name of 
 $ mkdir ODM-PPA
 $ cd ODM-PPA
 $ tar zxvf PPA_NAME.tar.gz
-charts/
 charts/ibm-odm-prod-21.3.0.tgz
-images/
 images/odm-decisionserverconsole_8.11.0.0-amd64.tar.gz
 images/odm-decisionserverruntime_8.11.0.0-amd64.tar.gz
 images/odm-decisionrunner_8.11.0.0-amd64.tar.gz
