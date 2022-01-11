@@ -243,8 +243,10 @@ In the Container software library tile, verify your entitlement on the View libr
 Create a pull secret by running a kubectl create secret command.
 
 ```console
-$ kubectl create secret docker-registry <registrysecret> --docker-server=cp.icr.io --docker-username=cp \
-    --docker-password="<entitlementkey>" --docker-email=<email>
+$ kubectl create secret docker-registry <registrysecret> --docker-server=cp.icr.io \
+                                                         --docker-username=cp \
+                                                         --docker-password="<entitlementkey>" \
+                                                         --docker-email=<email>
 ```
 
 where:
@@ -356,8 +358,9 @@ In order to load the container images from the extracted folder into your Docker
 
     ```console
     kubectl create secret docker-registry <registrysecret> --docker-server="${DOCKER_REGISTRY}" \
-            --docker-username="<adminUsername>" --docker-password="<adminPassword>" \
-            --docker-email="mycompany@email.com"
+                                                           --docker-username="<adminUsername>" \
+                                                           --docker-password="<adminPassword>" \
+                                                           --docker-email=<email>
     ```
 
   Make a note of the secret name so that you can set it for the image.pullSecrets parameter when you run a helm install of your containers. The image.repository parameter must be set to \<loginServer\> (ie ${DOCKER_REGISTRY}).
@@ -401,7 +404,7 @@ If you do not have a trusted certificate, you can use OpenSSL and other cryptogr
 
 ```console
 openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mycompany.key \
-        -out mycompany.crt -subj "/CN=*.mycompany.com/OU=it/O=mycompany/L=Paris/C=FR"
+        -out mycompany.crt -subj "/CN=mycompany.com/OU=it/O=mycompany/L=Paris/C=FR"
 ```
 
 2. Generate a JKS version of the certificate to be used in the ODM container 
