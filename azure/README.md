@@ -400,7 +400,7 @@ kubectl create secret generic <customdatasourcesecret> \
 
 1. (Optional) Generate a self-signed certificate
 
-If you do not have a trusted certificate, you can use OpenSSL and other cryptography and certificate management libraries to generate a certificate file and a private key, to define the domain name, and to set the expiration date. The following command creates a self-signed certificate (.crt file) and a private key (.key file) that accept the domain name *.mycompany.com*. The expiration is set to 1000 days:
+If you do not have a trusted certificate, you can use OpenSSL and other cryptography and certificate management libraries to generate a certificate file and a private key, to define the domain name, and to set the expiration date. The following command creates a self-signed certificate (.crt file) and a private key (.key file) that accept the domain name *mycompany.com*. The expiration is set to 1000 days:
 
 ```console
 openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mycompany.key \
@@ -432,7 +432,7 @@ The certificate must be the same as the one you used to enable TLS connections i
 
 ## Install an ODM Helm release and expose it with the service type LoadBalancer (10 min)
 
-### Allocate a public IP
+### Allocate public IP addresses
 
 ```console
 az aks update --resource-group <resourcegroup> --name <clustername> --load-balancer-managed-outbound-ip-count 4
