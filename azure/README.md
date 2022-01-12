@@ -249,9 +249,9 @@ $ kubectl create secret docker-registry <registrysecret> --docker-server=cp.icr.
 
 where:
 
-* <registrysecret> is the secret name
-* <entitlementkey> is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
-* <email> is the email address associated with your IBMid.
+* \<registrysecret\> is the secret name
+* \<entitlementkey\> is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
+* \<email\> is the email address associated with your IBMid.
 
 > Note:  The cp.icr.io value for the docker-server parameter is the only registry domain name that contains the images. You must set the docker-username to cp to use an entitlement key as docker-password.
 
