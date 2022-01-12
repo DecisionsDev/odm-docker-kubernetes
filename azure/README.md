@@ -29,40 +29,40 @@ Then [create an Azure account and pay as you go](https://azure.microsoft.com/en-
 
 ## Steps to deploy ODM on Kubernetes from Azure AKS
 
-- [Deploying IBM Operational Decision Manager on Azure AKS](#deploying-ibm-operational-decision-manager-on-azure-aks)
+<!-- TOC titleSize:2 tabSpaces:2 depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 skip:0 title:1 charForUnorderedList:* -->
+## Table of Contents
+* [Deploying IBM Operational Decision Manager on Azure AKS](#deploying-ibm-operational-decision-manager-on-azure-aks)
   * [Included components](#included-components)
   * [Tested environment](#tested-environment)
   * [Prerequisites](#prerequisites)
   * [Steps to deploy ODM on Kubernetes from Azure AKS](#steps-to-deploy-odm-on-kubernetes-from-azure-aks)
-  * [Prepare your AKS instance (30 min)](#prepare-your-aks-instance--30-min-)
-    + [Log in to Azure](#log-in-to-azure)
-    + [Create a resource group](#create-a-resource-group)
-    + [Create an AKS cluster](#create-an-aks-cluster)
-    + [Set up your environment to this cluster](#set-up-your-environment-to-this-cluster)
-  * [Create the PostgreSQL Azure instance (10 min)](#create-the-postgresql-azure-instance--10-min-)
-    + [Create an Azure Database for PostgreSQL](#create-an-azure-database-for-postgresql)
-    + [Create a firewall rule that allows access from Azure services](#create-a-firewall-rule-that-allows-access-from-azure-services)
-  * [Prepare your environment for the ODM installation (20 min)](#prepare-your-environment-for-the-odm-installation--20-min-)
-      - [Option A:  Using the IBM Entitled registry with your IBMid](#option-a--using-the-ibm-entitled-registry-with-your-ibmid)
-      - [Option B:  Using the download archives from IBM Passport Advantage (PPA)](#option-b--using-the-download-archives-from-ibm-passport-advantage-ppa)
-    + [Create the datasource secrets for Azure PostgreSQL](#create-the-datasource-secrets-for-azure-postgresql)
-    + [Manage a digital certificate (10 min)](#manage-a-digital-certificate--10-min-)
-  * [Install an ODM Helm release and expose it with the service type LoadBalancer (10 min)](#install-an-odm-helm-release-and-expose-it-with-the-service-type-loadbalancer--10-min-)
-    + [Allocate a public IP](#allocate-a-public-ip)
-    + [Install the ODM release](#install-the-odm-release)
-    + [Check the topology](#check-the-topology)
-    + [Access ODM services](#access-odm-services)
-  * [Install an ODM Helm release and expose it with an Ingress controller (15 min)](#install-an-odm-helm-release-and-expose-it-with-an-ingress-controller--15-min-)
-    + [Create an Ingress controller](#create-an-ingress-controller)
-    + [Create a Kubernetes secret for the TLS certificate](#create-a-kubernetes-secret-for-the-tls-certificate)
-    + [Install the ODM release](#install-the-odm-release-1)
-    + [Create an Ingress route](#create-an-ingress-route)
-    + [Edit your /etc/hosts](#edit-your--etc-hosts)
-    + [Access the ODM services](#access-the-odm-services)
-      - [a. Check that ODM services are in NodePort type](#a-check-that-odm-services-are-in-nodeport-type)
-      - [b. ODM services are available through the following URLs](#b-odm-services-are-available-through-the-following-urls)
+  * [Prepare your AKS instance (30 min)](#prepare-your-aks-instance-30-min)
+    * [Log in to Azure](#log-in-to-azure)
+    * [Create a resource group](#create-a-resource-group)
+    * [Create an AKS cluster](#create-an-aks-cluster)
+    * [Set up your environment to this cluster](#set-up-your-environment-to-this-cluster)
+  * [Create the PostgreSQL Azure instance (10 min)](#create-the-postgresql-azure-instance-10-min)
+    * [Create an Azure Database for PostgreSQL](#create-an-azure-database-for-postgresql)
+    * [Create a firewall rule that allows access from Azure services](#create-a-firewall-rule-that-allows-access-from-azure-services)
+  * [Prepare your environment for the ODM installation](#prepare-your-environment-for-the-odm-installation)
+    * [Using the IBM Entitled registry with your IBMid (10 min)](#using-the-ibm-entitled-registry-with-your-ibmid-10-min)
+    * [Create the datasource secrets for Azure PostgreSQL](#create-the-datasource-secrets-for-azure-postgresql)
+    * [Manage a digital certificate (10 min)](#manage-a-digital-certificate-10-min)
+  * [Install an ODM Helm release and expose it with the service type LoadBalancer (10 min)](#install-an-odm-helm-release-and-expose-it-with-the-service-type-loadbalancer-10-min)
+    * [Allocate public IP addresses](#allocate-public-ip-addresses)
+    * [Install the ODM release](#install-the-odm-release)
+    * [Check the topology](#check-the-topology)
+    * [Access ODM services](#access-odm-services)
+  * [Install an ODM Helm release and expose it with an Ingress controller (15 min)](#install-an-odm-helm-release-and-expose-it-with-an-ingress-controller-15-min)
+    * [Create an Ingress controller](#create-an-ingress-controller)
+    * [Create a Kubernetes secret for the TLS certificate](#create-a-kubernetes-secret-for-the-tls-certificate)
+    * [Install the ODM release](#install-the-odm-release)
+    * [Create an Ingress route](#create-an-ingress-route)
+    * [Edit your /etc/hosts](#edit-your-etchosts)
+    * [Access the ODM services](#access-the-odm-services)
   * [Troubleshooting](#troubleshooting)
-- [License](#license)
+* [License](#license)
+<!-- /TOC -->
 
 ## Prepare your AKS instance (30 min)
 
@@ -226,13 +226,13 @@ az postgres server firewall-rule create --resource-group <resourcegroup> --serve
             --name <rulename> --start-ip-address 0.0.0.0 --end-ip-address 255.255.255.255
 ```
 
-## Prepare your environment for the ODM installation (20 min)
+## Prepare your environment for the ODM installation
 
 To get access to the ODM material, you must have an IBM entitlement registry key to pull the images from the IBM Entitled registry.
 
 (If you prefer to install ODM from Azure Container Registry instead, you can a look at [this dedicated page](README_PPA.md).)
 
-#### Using the IBM Entitled registry with your IBMid
+### Using the IBM Entitled registry with your IBMid (10 min)
 
 Log in to [MyIBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary) with the IBMid and password that are associated with the entitled software.
 
@@ -521,7 +521,7 @@ kubectl create -f ingress-odm.yml
 ```
 ### Access the ODM services
 
-#### a. Check that ODM services are in NodePort type
+Check that ODM services are in NodePort type:
 
 ```console
 kubectl get services
@@ -535,7 +535,7 @@ nginx-ingress-ingress-nginx-controller             LoadBalancer   10.0.191.246  
 nginx-ingress-ingress-nginx-controller-admission   ClusterIP      10.0.214.250   <none>         443/TCP                      3d
 ```
 
-#### b. ODM services are available through the following URLs
+ODM services are available through the following URLs:
 
 | SERVICE NAME | URL | USERNAME/PASSWORD
 | --- | --- | ---
