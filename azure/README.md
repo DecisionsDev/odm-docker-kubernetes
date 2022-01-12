@@ -25,6 +25,8 @@ First, install the following software on your machine:
 
 Then [create an Azure account and pay as you go](https://azure.microsoft.com/en-us/pricing/purchase-options/pay-as-you-go/).
 
+> Note:  Prerequisites and software supported by ODM 8.11 are listed on [the Detailed System Requirements page](https://www.ibm.com/software/reports/compatibility/clarity-reports/report/html/softwareReqsForProduct?deliverableId=2D28A510507B11EBBBEA1195F7E6DF31&osPlatforms=AIX%7CLinux%7CMac%20OS%7CWindows&duComponentIds=D002%7CS003%7CS006%7CS005%7CC006&mandatoryCapIds=30%7C1%7C13%7C25%7C26&optionalCapIds=341%7C47%7C9%7C1%7C15).
+
 ## Steps to deploy ODM on Kubernetes from Azure AKS
 
 - [Deploying IBM Operational Decision Manager on Azure AKS](#deploying-ibm-operational-decision-manager-on-azure-aks)
@@ -163,9 +165,7 @@ az postgres server create --resource-group <resourcegroup> --name <postgresqlser
                           --sku-name GP_Gen5_2 --version 11 --location <azurelocation>
 ```
 
-> Note 1:  The PostgreSQL server name must be unique within Azure.
-
-> Note 2:  ODM 8.11 supports officially PostgreSQL 13 but this version is still not available in Azure (at the time of writing, 2022-01-06).
+> Note:  The PostgreSQL server name must be unique within Azure.
 
 Verify the database.
 To connect to your server, you need to provide host information and access credentials.
@@ -228,13 +228,11 @@ az postgres server firewall-rule create --resource-group <resourcegroup> --serve
 
 ## Prepare your environment for the ODM installation (20 min)
 
-To get access to the ODM material, you must have an IBM entitlement registry key to pull the images from the IBM Entitled registry (option A) or download the ODM on Kubernetes package (.tgz file) from Passport Advantage® (PPA) and then push it to the Azure Container Registry (option B).
+To get access to the ODM material, you must have an IBM entitlement registry key to pull the images from the IBM Entitled registry.
 
-* To access image from IBM entitlement registry follow the instructions in the section [Create a pull secret to pull the ODM Docker images from the IBM Entitled Registry](#option-a--using-the-ibm-entitled-registry-with-your-ibmid)
+(If you prefer to install ODM from Azure Container Registry instead, you can a look at [this dedicated page](README_PPA.md).)
 
-* To push image in the Azure Container Registry follow the instructions in the section [Push the ODM images to the ACR (Azure Container Registry](#option-b--using-the-download-archives-from-ibm-passport-advantage-ppa)
-
-#### Option A:  Using the IBM Entitled registry with your IBMid
+#### Using the IBM Entitled registry with your IBMid
 
 Log in to [MyIBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary) with the IBMid and password that are associated with the entitled software.
 
@@ -257,11 +255,7 @@ where:
 
 > Note:  The cp.icr.io value for the docker-server parameter is the only registry domain name that contains the images. You must set the docker-username to cp to use an entitlement key as docker-password.
 
-Make a note of the secret name so that you can set it for the image.pullSecrets parameter when you run a helm install of your containers.  The image.repository parameter will later be set to cp.icr.io/cp/cp4a/odm:
-
-```console
-export DOCKER_REGISTRY=cp.icr.io/cp/cp4a/odm
-```
+Make a note of the secret name so that you can set it for the image.pullSecrets parameter when you run a helm install of your containers.  The image.repository parameter will later be set to cp.icr.io/cp/cp4a/odm.
 
 Add the public IBM Helm charts repository:
 
@@ -270,100 +264,16 @@ helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo
 helm repo update
 ```
 
-Check you can access ODM's chart:
+Check you can access ODM's charts:
 
 ```console
-helm search repo ibm-odm-prod
+helm search repo ibm-odm-prod --versions                  
 NAME                  	CHART VERSION	APP VERSION	DESCRIPTION                     
 ibmcharts/ibm-odm-prod	21.3.0       	8.11.0.0   	IBM Operational Decision Manager
+ibmcharts/ibm-odm-prod	21.2.0       	8.10.5.1   	IBM Operational Decision Manager
+ibmcharts/ibm-odm-prod	21.1.0       	8.10.5.0   	IBM Operational Decision Manager
+ibmcharts/ibm-odm-prod	20.3.0       	8.10.5.0   	IBM Operational Decision Manager
 ```
-
-You can now proceed to the [datasource secret's creation](#create-the-datasource-secrets-for-azure-postgresql).
-
-#### Option B:  Using the download archives from IBM Passport Advantage (PPA)
-
-Prerequisites:  You must install Docker.
-
-Download the IBM Operational Decision Manager chart and images from [IBM Passport Advantage (PPA)](https://www.ibm.com/software/passportadvantage/pao_customer.html).
-
-Refer to the [ODM download document](https://www.ibm.com/support/pages/node/310661) to view the list of Passport Advantage eAssembly installation images.
-
-Extract the file that contains both the Helm chart and the images.  The name of the file includes the chart version number:
-
-```console
-$ mkdir ODM-PPA
-$ cd ODM-PPA
-$ tar zxvf PPA_NAME.tar.gz
-charts/ibm-odm-prod-21.3.0.tgz
-images/odm-decisionserverconsole_8.11.0.0-amd64.tar.gz
-images/odm-decisionserverruntime_8.11.0.0-amd64.tar.gz
-images/odm-decisionrunner_8.11.0.0-amd64.tar.gz
-images/odm-decisioncenter_8.11.0.0-amd64.tar.gz
-images/dbserver_8.11.0.0-amd64.tar.gz
-manifest.json
-manifest.yaml
-```
-
-In order to load the container images from the extracted folder into your Docker registry, you must:
-
-1. Create an [ACR registry](https://docs.microsoft.com/en-US/azure/container-registry/container-registry-get-started-azure-cli):
-
-   ```console
-   az acr create --resource-group <resourcegroup> --name <registryname> --sku Basic
-   ```
-
-   Make a note of the `loginServer` that will be displayed in the JSON output (e.g.: "loginServer": "<registryname>.azurecr.io"):
-
-   ```console
-   export DOCKER_REGISTRY=<registryname>.azurecr.io
-   ```
-
-   > Note: The registry name must be unique within Azure.
-
-2. Log in to the ACR registry
-
-   ```console
-   az acr login --name <registryname>
-   ```
-
-3. Load the container images into your internal Docker registry.
-
-    ```console
-    $ for name in images/*.tar.gz; do echo $name; docker image load --input $name; done
-    ```
-
-4. Tag the images loaded locally with your registry name.
-
-    ```console
-    export ODM_VERSION=<ODM_VERSION>
-    export IMAGE_TAG_NAME=${ODM_VERSION:-8.11.0.0}-amd64
-    docker tag odm-decisionserverconsole:${IMAGE_TAG_NAME} ${DOCKER_REGISTRY}/odm-decisionserverconsole:${IMAGE_TAG_NAME}
-    docker tag dbserver:${IMAGE_TAG_NAME} ${DOCKER_REGISTRY}/dbserver:${IMAGE_TAG_NAME}
-    docker tag odm-decisioncenter:${IMAGE_TAG_NAME} ${DOCKER_REGISTRY}/odm-decisioncenter:${IMAGE_TAG_NAME}
-    docker tag odm-decisionserverruntime:${IMAGE_TAG_NAME} ${DOCKER_REGISTRY}/odm-decisionserverruntime:${IMAGE_TAG_NAME}
-    docker tag odm-decisionrunner:${IMAGE_TAG_NAME} ${DOCKER_REGISTRY}/odm-decisionrunner:${IMAGE_TAG_NAME}
-    ```
-
-5. Push the images to your registry.
-
-    ```console
-    docker push ${DOCKER_REGISTRY}/odm-decisioncenter:${IMAGE_TAG_NAME}
-    docker push ${DOCKER_REGISTRY}/odm-decisionserverconsole:${IMAGE_TAG_NAME}
-    docker push ${DOCKER_REGISTRY}/odm-decisionserverruntime:${IMAGE_TAG_NAME}
-    docker push ${DOCKER_REGISTRY}/odm-decisionrunner:${IMAGE_TAG_NAME}
-    docker push ${DOCKER_REGISTRY}/dbserver:${IMAGE_TAG_NAME}
-    ```
-
-6. Create a registry key to access the ACR registry.  Refer to the [documentation](https://docs.microsoft.com/en-US/azure/container-registry/container-registry-tutorial-prepare-registry#enable-admin-account) to enable the registry's admin account and get the credentials in the Container registry portal, then:
-
-    ```console
-    kubectl create secret docker-registry <registrysecret> --docker-server="${DOCKER_REGISTRY}" \
-                                                           --docker-username="<adminUsername>" \
-                                                           --docker-password="<adminPassword>" \
-                                                           --docker-email=<email>
-    ```
-
-  Make a note of the secret name so that you can set it for the image.pullSecrets parameter when you run a helm install of your containers. The image.repository parameter must be set to \<loginServer\> (ie ${DOCKER_REGISTRY}).
 
 You can now proceed to the [datasource secret's creation](#create-the-datasource-secrets-for-azure-postgresql).
 
@@ -440,29 +350,15 @@ az aks update --resource-group <resourcegroup> --name <clustername> --load-balan
 
 ### Install the ODM release
 
-You can now install the product.
-
-If you choose to use Entitled Registry for images and to download the Helm chart from IBM's public Helm charts repository [(option A above)](#option-a--using-the-ibm-entitled-registry-with-your-ibmid):
+You can now install the product:
 
 ```console
 helm install <release> ibmcharts/ibm-odm-prod --version 21.3.0 \
-        --set image.repository=${DOCKER_REGISTRY} --set image.pullSecrets=<registrysecret> \
+        --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=<registrysecret> \
         --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.11.0.0} --set service.type=LoadBalancer \
         --set externalCustomDatabase.datasourceRef=<customdatasourcesecret> \
         --set customization.securitySecretRef=<mycompanystore>
 ```
-
-If you downloaded the PPA archive and prefer to use the Helm chart archive from it [(option B above)](#option-b--using-the-download-archives-from-ibm-passport-advantage-ppa):
-
-```console
-helm install <release> charts/ibm-odm-prod-21.3.0.tgz \
-        --set image.repository=${DOCKER_REGISTRY} --set image.pullSecrets=<registrysecret> \
-        --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.11.0.0} --set service.type=LoadBalancer \
-        --set externalCustomDatabase.datasourceRef=<customdatasourcesecret> \
-        --set customization.securitySecretRef=<mycompanystore>
-```
-
-> Remember:  If you choose to use the IBM Entitled registry, the `image.repository` must be set to cp.icr.io/cp/cp4a/odm.  If you choose to push the ODM images to the Azure Container Registry, the `image.repository` should be set to your `loginServer` value.
 
 ### Check the topology
 
@@ -536,8 +432,6 @@ kubectl create secret tls <mycompanytlssecret> --namespace ingress-basic --key m
 
 ### Install the ODM release
 
-You can now install the product.
-
 Make sure you are using the same namespace as your Ingress resources above in order to get access to the ODM release:
 
 ```console
@@ -551,25 +445,15 @@ kubectl get secret <registrysecret> --namespace=default --output yaml |grep -v '
 kubectl get secret <customdatasourcesecret> --namespace=default --output yaml |grep -v '^\s*namespace:\s' |kubectl create -f -
 ```
 
-If you choose to use Entitled Registry for images and to download the Helm chart from IBM's public Helm charts repository [(option A above)](#option-a--using-the-ibm-entitled-registry-with-your-ibmid):
+You can now install the product:
 
 ```console
 helm install <release> ibmcharts/ibm-odm-prod --version 21.3.0 \
-        --set image.repository=${DOCKER_REGISTRY} --set image.pullSecrets=<registrysecret> \
+        --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=<registrysecret> \
         --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.11.0.0} \
-        --set externalCustomDatabase.datasourceRef=<customdatasourcesecret>
+        --set externalCustomDatabase.datasourceRef=<customdatasourcesecret> \
+        --set service.ingress.enabled=true
 ```
-
-If you downloaded the PPA archive and prefer to use the Helm chart archive from it [(option B above)](#option-b--using-the-download-archives-from-ibm-passport-advantage-ppa):
-
-```console
-helm install <release> charts/ibm-odm-prod-21.3.0.tgz \
-        --set image.repository=${DOCKER_REGISTRY} --set image.pullSecrets=<registrysecret> \
-        --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.11.0.0} \
-        --set externalCustomDatabase.datasourceRef=<customdatasourcesecret>
-```
-
-> Remember:  If you choose to use the IBM Entitled registry, the `image.repository` must be set to cp.icr.io/cp/cp4a/odm.  If you choose to push the ODM images to the Azure Container Registry, the `image.repository` should be set to your `loginServer` value.
 
 ### Create an Ingress route
 
