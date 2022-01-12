@@ -71,7 +71,7 @@ Source: https://docs.microsoft.com/en-us/azure/aks/kubernetes-walkthrough
 
 After installing the Azure CLI, use the following command line:
 
-```console
+```
 az login [--tenant <name>.onmicrosoft.com]
 ```
 
@@ -81,7 +81,7 @@ A Web browser opens where you can connect with your Azure credentials.
 
 An Azure resource group is a logical group in which Azure resources are deployed and managed. When you create a resource group, you are asked to specify a location. This location is where resource group metadata is stored. It is also where your resources run in Azure, if you don't specify another region during resource creation. Create a resource group by running the `az group create` command.
 
-```console
+```
 az group create --name <resourcegroup> --location <azurelocation> [--tags Owner=<email> Team=DBA Usage=demo Usage_desc="Azure customers support" Delete_date=2022-02-15]
 ```
 
@@ -106,14 +106,14 @@ Use the `az aks create` command to create an AKS cluster. The following example 
 
 > Note:  During the creation of the AKS cluster, a second resource group is automatically created to store the AKS resources. For more information, see [Why are two resource groups created with AKS](https://docs.microsoft.com/en-us/answers/questions/25725/why-are-two-resource-groups-created-with-aks.html).
 
-```console
+```
 az aks create --resource-group <resourcegroup> --name <clustername> --node-count 2 \
           --enable-addons monitoring --generate-ssh-keys [--location <azurelocation>]
 ```
 
 After a few minutes, the command completes and returns JSON-formatted information about the cluster.  Make a note of the newly-created Resource Group that is displayed in the JSON output (e.g.: "nodeResourceGroup": "<noderesourcegroup>") if you have to tag it, for instance:
 
-```console
+```
 az group update --name <noderesourcegroup> \
     --tags Owner=<email> Team=DBA Usage=demo Usage_desc="Azure customers support" Delete_date=2022-02-15
 ```
@@ -122,25 +122,25 @@ az group update --name <noderesourcegroup> \
 
 To manage a Kubernetes cluster, use kubectl, the Kubernetes command-line client. If you use Azure Cloud Shell, kubectl is already installed. To install kubectl locally, use the `az aks install-cli` command:
 
-```console
+```
 az aks install-cli
 ```
 
 To configure kubectl to connect to your Kubernetes cluster, use the `az aks get-credentials` command. This command downloads credentials and configures the Kubernetes CLI to use them.
 
-```console
+```
 az aks get-credentials --resource-group <resourcegroup> --name <clustername>
 ```
 
 To verify the connection to your cluster, use the `kubectl get` command to return the list of cluster nodes.
 
-```console
+```
 kubectl get nodes
 ```
 
 The following example output shows the single node created in the previous steps. Make sure that the status of the node is Ready.
 
-```console
+```
 NAME                                STATUS   ROLES   AGE   VERSION
 aks-nodepool1-32774531-vmss000000   Ready    agent   33m   v1.21.7
 aks-nodepool1-32774531-vmss000001   Ready    agent   33m   v1.21.7
@@ -148,7 +148,7 @@ aks-nodepool1-32774531-vmss000001   Ready    agent   33m   v1.21.7
 
 To further debug and diagnose cluster problems, run the following command:
 
-```console
+```
 kubectl cluster-info dump
 ```
 
@@ -158,7 +158,7 @@ kubectl cluster-info dump
 
 Create an Azure Database for PostgreSQL server by running the `az postgres server create` command. A server can contain multiple databases.
 
-```console
+```
 az postgres server create --resource-group <resourcegroup> --name <postgresqlserver> \
                           --admin-user myadmin --admin-password 'passw0rd!' \
                           --sku-name GP_Gen5_2 --version 11 --location <azurelocation>
@@ -169,7 +169,7 @@ az postgres server create --resource-group <resourcegroup> --name <postgresqlser
 Verify the database.
 To connect to your server, you need to provide host information and access credentials.
 
-```console
+```
 az postgres server show --resource-group <resourcegroup> --name <postgresqlserver>
 ```
 
@@ -220,7 +220,7 @@ Make a note of the server name that is displayed in the JSON output (e.g.: "full
 
 To make sure your database and your AKS cluster can communicate, put in place firewall rules with the following command:
 
-```console
+```
 az postgres server firewall-rule create --resource-group <resourcegroup> --server-name <postgresqlserver> \
             --name <rulename> --start-ip-address 0.0.0.0 --end-ip-address 255.255.255.255
 ```
@@ -239,7 +239,7 @@ In the Container software library tile, verify your entitlement on the View libr
 
 Create a pull secret by running a kubectl create secret command.
 
-```console
+```
 $ kubectl create secret docker-registry <registrysecret> --docker-server=cp.icr.io \
                                                          --docker-username=cp \
                                                          --docker-password="<entitlementkey>" \
@@ -258,14 +258,14 @@ Make a note of the secret name so that you can set it for the image.pullSecrets 
 
 Add the public IBM Helm charts repository:
 
-```console
+```
 helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo/entitled
 helm repo update
 ```
 
 Check you can access ODM's charts:
 
-```console
+```
 helm search repo ibm-odm-prod --versions                  
 NAME                  	CHART VERSION	APP VERSION	DESCRIPTION                     
 ibmcharts/ibm-odm-prod	21.3.0       	8.11.0.0   	IBM Operational Decision Manager
@@ -300,7 +300,7 @@ It should be something like in the following extract:
 
 Create a secret with this two modified files
 
-```console
+```
 kubectl create secret generic <customdatasourcesecret> \
         --from-file datasource-ds.xml=ds-res.xml --from-file datasource-dc.xml=ds-bc.xml
 ```
@@ -311,14 +311,14 @@ kubectl create secret generic <customdatasourcesecret> \
 
 If you do not have a trusted certificate, you can use OpenSSL and other cryptography and certificate management libraries to generate a certificate file and a private key, to define the domain name, and to set the expiration date. The following command creates a self-signed certificate (.crt file) and a private key (.key file) that accept the domain name *mycompany.com*. The expiration is set to 1000 days:
 
-```console
+```
 openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mycompany.key \
         -out mycompany.crt -subj "/CN=mycompany.com/OU=it/O=mycompany/L=Paris/C=FR"
 ```
 
 2. Generate a JKS version of the certificate to be used in the ODM container 
 
-```console
+```
 openssl pkcs12 -export -passout pass:password -passin pass:password \
       -inkey mycompany.key -in mycompany.crt -name mycompany -out mycompany.p12
 keytool -importkeystore -srckeystore mycompany.p12 -srcstoretype PKCS12 \
@@ -330,7 +330,7 @@ keytool -import -v -trustcacerts -alias mycompany -file mycompany.crt \
 
 3. Create a Kubernetes secret with the certificate
 
-```console
+```
 kubectl create secret generic <mycompanystore> --from-file=keystore.jks=mycompany.jks \
                                                --from-file=truststore.jks=truststore.jks \
                                                --from-literal=keystore_password=password \
@@ -343,7 +343,7 @@ The certificate must be the same as the one you used to enable TLS connections i
 
 ### Allocate public IP addresses
 
-```console
+```
 az aks update --resource-group <resourcegroup> --name <clustername> --load-balancer-managed-outbound-ip-count 4
 ```
 
@@ -351,7 +351,7 @@ az aks update --resource-group <resourcegroup> --name <clustername> --load-balan
 
 You can now install the product:
 
-```console
+```
 helm install <release> ibmcharts/ibm-odm-prod --version 21.3.0 \
         --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=<registrysecret> \
         --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.11.0.0} --set service.type=LoadBalancer \
@@ -363,7 +363,7 @@ helm install <release> ibmcharts/ibm-odm-prod --version 21.3.0 \
 
 Run the following command to check the status of the pods that have been created:
 
-```console
+```
 kubectl get pods
 NAME                                                   READY   STATUS    RESTARTS   AGE
 <release>-odm-decisioncenter-***                       1/1     Running   0          20m
@@ -376,7 +376,7 @@ NAME                                                   READY   STATUS    RESTART
 
 By setting `service.type=LoadBalancer`, the services are exposed with a public IP to be accessed with the following command:
 
-```console
+```
 kubectl get services
 NAME                                        TYPE           CLUSTER-IP     EXTERNAL-IP       PORT(S)          AGE
 kubernetes                                  ClusterIP      10.0.0.1       <none>            443/TCP          26h
@@ -397,13 +397,13 @@ This section explains how to expose the ODM services to Internet connectivity wi
 
 1. Add the official stable repository
 
-    ```console
+    ```
     helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
     ```
 
 2. Use Helm to deploy an NGINX Ingress controller
 
-    ```console
+    ```
     helm install nginx-ingress ingress-nginx/ingress-nginx \
       --namespace ingress-basic --create-namespace \
       --set controller.replicaCount=2 \
@@ -413,7 +413,7 @@ This section explains how to expose the ODM services to Internet connectivity wi
 
 3. Get the Ingress controller external IP address
 
-    ```console
+    ```
     kubectl get service -l app.kubernetes.io/name=ingress-nginx --namespace ingress-basic
     NAME                                               TYPE           CLUSTER-IP     EXTERNAL-IP    PORT(S)                      AGE
     nginx-ingress-ingress-nginx-controller             LoadBalancer   10.0.191.246   <externalip>   80:30222/TCP,443:31103/TCP   3m8s
@@ -424,8 +424,9 @@ This section explains how to expose the ODM services to Internet connectivity wi
 
 For more informations see https://docs.microsoft.com/en-US/azure/aks/ingress-own-tls#create-kubernetes-secret-for-the-tls-certificate
 
-You must create the appropriate certificate files: `mycompany.key` and `mycompany.crt`, as defined in [a. (Optional) Generate a self-signed certificate](#a-optional-generate-a-self-signed-certificate).
-```console
+You must create the appropriate certificate files: `mycompany.key` and `mycompany.crt`, as defined in [a. (Optional) Generate a self-signed certificate](#a-optional-generate-a-self-signed-certificate):
+
+```
 kubectl create secret tls <mycompanytlssecret> --namespace ingress-basic --key mycompany.key --cert mycompany.crt
 ```
 
@@ -433,20 +434,20 @@ kubectl create secret tls <mycompanytlssecret> --namespace ingress-basic --key m
 
 Make sure you are using the same namespace as your Ingress resources above in order to get access to the ODM release:
 
-```console
+```
 kubectl config set-context --current --namespace=ingress-basic
 ```
 
 Also, recreate or copy your image pull secret and your custom datasource secret to the current namespace:
 
-```console
+```
 kubectl get secret <registrysecret> --namespace=default --output yaml |grep -v '^\s*namespace:\s' |kubectl create -f -
 kubectl get secret <customdatasourcesecret> --namespace=default --output yaml |grep -v '^\s*namespace:\s' |kubectl create -f -
 ```
 
 You can now install the product:
 
-```console
+```
 helm install <release> ibmcharts/ibm-odm-prod --version 21.3.0 \
         --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=<registrysecret> \
         --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.11.0.0} \
@@ -509,20 +510,23 @@ spec:
 ```
 
 Apply an Ingress route:
-```console
+
+```
 kubectl create -f ingress-odm.yml
 ```
 
 ### Edit your /etc/hosts
-```console
+
+```
 # vi /etc/hosts
 <externalip> mycompany.com
 ```
+
 ### Access the ODM services
 
 Check that ODM services are in NodePort type:
 
-```console
+```
 kubectl get services
 NAME                                               TYPE           CLUSTER-IP     EXTERNAL-IP    PORT(S)                      AGE
 mycompany-odm-decisioncenter                       NodePort       10.0.178.43    <none>         9453:32720/TCP               16m
