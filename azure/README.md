@@ -52,13 +52,6 @@ Then [create an Azure account and pay as you go](https://azure.microsoft.com/en-
     * [Install the ODM release](#install-the-odm-release)
     * [Check the topology](#check-the-topology)
     * [Access ODM services](#access-odm-services)
-  * [Install an ODM Helm release and expose it with an Ingress controller (15 min)](#install-an-odm-helm-release-and-expose-it-with-an-ingress-controller-15-min)
-    * [Create an Ingress controller](#create-an-ingress-controller)
-    * [Create a Kubernetes secret for the TLS certificate](#create-a-kubernetes-secret-for-the-tls-certificate)
-    * [Install the ODM release](#install-the-odm-release)
-    * [Create an Ingress route](#create-an-ingress-route)
-    * [Edit your /etc/hosts](#edit-your-etchosts)
-    * [Access the ODM services](#access-the-odm-services)
   * [Troubleshooting](#troubleshooting)
 * [License](#license)
 <!-- /TOC -->
@@ -102,12 +95,12 @@ The following example output shows that the resource group has been created succ
 
 ### Create an AKS cluster
 
-Use the `az aks create` command to create an AKS cluster. The following example creates a cluster named <clustername> with two nodes. Azure Monitor for containers is also enabled using the `--enable-addons monitoring` parameter.  The operation takes several minutes to complete.
+Use the `az aks create` command to create an AKS cluster. The following example creates a cluster named <cluster> with two nodes. Azure Monitor for containers is also enabled using the `--enable-addons monitoring` parameter.  The operation takes several minutes to complete.
 
 > Note:  During the creation of the AKS cluster, a second resource group is automatically created to store the AKS resources. For more information, see [Why are two resource groups created with AKS](https://docs.microsoft.com/en-us/answers/questions/25725/why-are-two-resource-groups-created-with-aks.html).
 
 ```
-az aks create --resource-group <resourcegroup> --name <clustername> --node-count 2 \
+az aks create --name <cluster> --resource-group <resourcegroup> --node-count 2 \
           --enable-addons monitoring --generate-ssh-keys [--location <azurelocation>]
 ```
 
@@ -129,7 +122,7 @@ az aks install-cli
 To configure kubectl to connect to your Kubernetes cluster, use the `az aks get-credentials` command. This command downloads credentials and configures the Kubernetes CLI to use them.
 
 ```
-az aks get-credentials --resource-group <resourcegroup> --name <clustername>
+az aks get-credentials --name <cluster> --resource-group <resourcegroup>
 ```
 
 To verify the connection to your cluster, use the `kubectl get` command to return the list of cluster nodes.
@@ -159,9 +152,9 @@ kubectl cluster-info dump
 Create an Azure Database for PostgreSQL server by running the `az postgres server create` command. A server can contain multiple databases.
 
 ```
-az postgres server create --resource-group <resourcegroup> --name <postgresqlserver> \
+az postgres server create --name <postgresqlserver> --resource-group <resourcegroup> \
                           --admin-user myadmin --admin-password 'passw0rd!' \
-                          --sku-name GP_Gen5_2 --version 11 --location <azurelocation>
+                          --sku-name GP_Gen5_2 --version 11 [--location <azurelocation>]
 ```
 
 > Note:  The PostgreSQL server name must be unique within Azure.
@@ -170,7 +163,7 @@ Verify the database.
 To connect to your server, you need to provide host information and access credentials.
 
 ```
-az postgres server show --resource-group <resourcegroup> --name <postgresqlserver>
+az postgres server show --name <postgresqlserver> --resource-group <resourcegroup>
 ```
 
 Result:
@@ -344,7 +337,7 @@ The certificate must be the same as the one you used to enable TLS connections i
 ### Allocate public IP addresses
 
 ```
-az aks update --resource-group <resourcegroup> --name <clustername> --load-balancer-managed-outbound-ip-count 4
+az aks update --name <cluster> --resource-group <resourcegroup> --load-balancer-managed-outbound-ip-count 4
 ```
 
 ### Install the ODM release
@@ -389,163 +382,7 @@ kubernetes                                  ClusterIP      10.0.0.1       <none>
 
 You can then open a browser on https://xxx.xxx.xxx.xxx:9443 to access Decision Server console, Decision Server Runtime, and Decision Runner, and on https://xxx.xxx.xxx.xxx:9453 to access Decision Center.
 
-## Install an ODM Helm release and expose it with an Ingress controller (15 min)
-
-This section explains how to expose the ODM services to Internet connectivity with Ingress. For reference, see the Microsoft Azure documentation https://docs.microsoft.com/en-US/azure/aks/ingress-own-tls.
-
-### Create an Ingress controller
-
-1. Add the official stable repository
-
-    ```
-    helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-    ```
-
-2. Use Helm to deploy an NGINX Ingress controller
-
-    ```
-    helm install nginx-ingress ingress-nginx/ingress-nginx \
-      --namespace ingress-basic --create-namespace \
-      --set controller.replicaCount=2 \
-      --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux \
-      --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux
-    ```
-
-3. Get the Ingress controller external IP address
-
-    ```
-    kubectl get service -l app.kubernetes.io/name=ingress-nginx --namespace ingress-basic
-    NAME                                               TYPE           CLUSTER-IP     EXTERNAL-IP    PORT(S)                      AGE
-    nginx-ingress-ingress-nginx-controller             LoadBalancer   10.0.191.246   <externalip>   80:30222/TCP,443:31103/TCP   3m8s
-    nginx-ingress-ingress-nginx-controller-admission   ClusterIP      10.0.214.250   <none>         443/TCP                      3m8s
-    ```
-
-### Create a Kubernetes secret for the TLS certificate
-
-For more informations see https://docs.microsoft.com/en-US/azure/aks/ingress-own-tls#create-kubernetes-secret-for-the-tls-certificate
-
-You must create the appropriate certificate files: `mycompany.key` and `mycompany.crt`, as defined in [a. (Optional) Generate a self-signed certificate](#a-optional-generate-a-self-signed-certificate):
-
-```
-kubectl create secret tls <mycompanytlssecret> --namespace ingress-basic --key mycompany.key --cert mycompany.crt
-```
-
-### Install the ODM release
-
-Make sure you are using the same namespace as your Ingress resources above in order to get access to the ODM release:
-
-```
-kubectl config set-context --current --namespace=ingress-basic
-```
-
-Also, recreate or copy your image pull secret and your custom datasource secret to the current namespace:
-
-```
-kubectl get secret <registrysecret> --namespace=default --output yaml |grep -v '^\s*namespace:\s' |kubectl create -f -
-kubectl get secret <customdatasourcesecret> --namespace=default --output yaml |grep -v '^\s*namespace:\s' |kubectl create -f -
-```
-
-You can now install the product:
-
-```
-helm install <release> ibmcharts/ibm-odm-prod --version 21.3.0 \
-        --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=<registrysecret> \
-        --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.11.0.0} \
-        --set externalCustomDatabase.datasourceRef=<customdatasourcesecret> \
-        --set service.ingress.enabled=true
-```
-
-### Create an Ingress route
-
-Create a YAML file named `ingress-odm.yml`, as follows:
-
-```yaml
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: <ingressname>
-  namespace: ingress-basic
-  annotations:
-    kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-    # Sticky session parameter needed for DecisionCenter see https://github.com/kubernetes/ingress-nginx/tree/master/docs/examples/affinity/cookie
-    nginx.ingress.kubernetes.io/affinity: "cookie"
-spec:
-  tls:
-  - hosts:
-    - mycompany.com
-    secretName: <mycompanytlssecret>
-  rules:
-  - host: mycompany.com
-    http:
-      paths:
-      - path: /res
-        pathType: Prefix
-        backend:
-          service:
-            name: <release>-odm-decisionserverconsole
-            port:
-              number: 9443
-      - path: /DecisionService
-        pathType: Prefix
-        backend:
-          service:
-            name: <release>-odm-decisionserverruntime
-            port:
-              number: 9443
-      - path: /DecisionRunner
-        pathType: Prefix
-        backend:
-          service:
-            name: <release>-odm-decisionrunner
-            port:
-              number: 9443
-      - path: /decisioncenter
-        pathType: Prefix
-        backend:
-          service:
-            name: <release>-odm-decisioncenter
-            port:
-              number: 9453
-```
-
-Apply an Ingress route:
-
-```
-kubectl create -f ingress-odm.yml
-```
-
-### Edit your /etc/hosts
-
-```
-# vi /etc/hosts
-<externalip> mycompany.com
-```
-
-### Access the ODM services
-
-Check that ODM services are in NodePort type:
-
-```
-kubectl get services
-NAME                                               TYPE           CLUSTER-IP     EXTERNAL-IP    PORT(S)                      AGE
-mycompany-odm-decisioncenter                       NodePort       10.0.178.43    <none>         9453:32720/TCP               16m
-mycompany-odm-decisionrunner                       NodePort       10.0.171.46    <none>         9443:30223/TCP               16m
-mycompany-odm-decisionserverconsole                NodePort       10.0.106.222   <none>         9443:30280/TCP               16m
-mycompany-odm-decisionserverconsole-notif          ClusterIP      10.0.115.118   <none>         1883/TCP                     16m
-mycompany-odm-decisionserverruntime                NodePort       10.0.232.212   <none>         9443:30082/TCP               16m
-nginx-ingress-ingress-nginx-controller             LoadBalancer   10.0.191.246   51.103.3.254   80:30222/TCP,443:31103/TCP   3d
-nginx-ingress-ingress-nginx-controller-admission   ClusterIP      10.0.214.250   <none>         443/TCP                      3d
-```
-
-ODM services are available through the following URLs:
-
-| SERVICE NAME | URL | USERNAME/PASSWORD
-| --- | --- | ---
-| Decision Server Console | https://mycompany.com/res | odmAdmin/odmAdmin
-| Decision Center | https://mycompany.com/decisioncenter | odmAdmin/odmAdmin
-| Decision Server Runtime | https://mycompany.com/DecisionService | odmAdmin/odmAdmin
-| Decision Runner | https://mycompany.com/DecisionRunner | odmAdmin/odmAdmin
+You may want to access ODM components through a NGINX Ingress controller instead of directly from these different IP addresses.  If so, please follow [these instructions](README_NGINX.md).
 
 ## Troubleshooting
 
