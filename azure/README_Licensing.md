@@ -1,10 +1,10 @@
-# Install an ODM Helm release and expose it with a NGINX Ingress controller (15 min)
+# Install the IBM License Service and retrieve license usage
 
 This section explains how to track ODM usage with the IBM License Service.
 
 <!-- TOC titleSize:2 tabSpaces:2 depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 skip:0 title:1 charForUnorderedList:* -->
 ## Table of Contents
-* [Install an ODM Helm release and expose it with a NGINX Ingress controller (15 min)](#install-an-odm-helm-release-and-expose-it-with-a-nginx-ingress-controller-15-min)
+* [Install the IBM License Service and retrieve license usage](#install-the-ibm-license-service-and-retrieve-license-usage)
   * [Install the IBM License Service](#install-the-ibm-license-service)
   * [Retrieving license usage](#retrieving-license-usage)
   * [Troubleshooting](#troubleshooting)
@@ -33,7 +33,7 @@ curl -v http://${LICENSING_URL}/snapshot?token=${TOKEN} --output report.zip
 
 ## Troubleshooting
 
-If your ODM instances are not running properly, please refer to [our dedicated troubleshooting page](https://www.ibm.com/docs/en/odm/8.11.0?topic=8110-troubleshooting-support).
+If your IBM License Service instance is not running properly, please refer to [our dedicated troubleshooting page](https://github.com/IBM/ibm-licensing-operator/blob/latest/docs/Content/Troubleshooting.md).
 
 # License
 
