@@ -52,6 +52,7 @@ Then [create an Azure account and pay as you go](https://azure.microsoft.com/en-
     * [Install the ODM release](#install-the-odm-release)
     * [Check the topology](#check-the-topology)
     * [Access ODM services](#access-odm-services)
+  * [Next steps](#next-steps)
   * [Troubleshooting](#troubleshooting)
 * [License](#license)
 <!-- /TOC -->
@@ -381,6 +382,8 @@ kubernetes                                  ClusterIP      10.0.0.1       <none>
 ```
 
 You can then open a browser on https://xxx.xxx.xxx.xxx:9443 to access Decision Server console, Decision Server Runtime, and Decision Runner, and on https://xxx.xxx.xxx.xxx:9453 to access Decision Center.
+
+## Next steps
 
 You may want to access ODM components through a NGINX Ingress controller instead of directly from these different IP addresses.  If so, please follow [these instructions](README_NGINX.md).
 

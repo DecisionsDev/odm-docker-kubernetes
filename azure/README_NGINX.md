@@ -10,6 +10,7 @@ This section explains how to expose the ODM services to Internet connectivity wi
   * [Install the ODM release](#install-the-odm-release)
   * [Edit your /etc/hosts](#edit-your-etchosts)
   * [Access the ODM services](#access-the-odm-services)
+  * [Next steps](#next-steps)
   * [Troubleshooting](#troubleshooting)
 * [License](#license)
 <!-- /TOC -->
@@ -104,6 +105,10 @@ ODM services are available through the following URLs:
 | Decision Center | https://mycompany.com/decisioncenter | odmAdmin/odmAdmin
 | Decision Server Runtime | https://mycompany.com/DecisionService | odmAdmin/odmAdmin
 | Decision Runner | https://mycompany.com/DecisionRunner | odmAdmin/odmAdmin
+
+## Next steps
+
+You may want to track ODM usage with the IBM License Service.  If so, please follow [these instructions](README_Licensing.md).
 
 ## Troubleshooting
 
