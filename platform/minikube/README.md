@@ -5,7 +5,7 @@ This tutorial explains the deployment of an IBM® Operational Decision Manager (
 The ODM Docker material is used here, which is available in the [odm-ondocker](https://github.com/lgrateau/odm-ondocker) repository. It includes Docker files and Docker compose descriptors. ODM containers are based on IBM WebSphere® Application Server Liberty. In this tutorial, only the Docker files are used to build the ODM runtime images that will be instantiated in the Kubernetes cluster.
 
 
-![Flow](../images/ODMinKubernetes-Flow.png)
+![Flow](images/ODMinKubernetes-Flow.png)
 
 ## Included Components
 - [IBM ODM](https://www.ibm.com/support/knowledgecenter/SSQP76_8.9.0/welcome/kc_welcome_odmV.html)
@@ -85,7 +85,7 @@ This context is also set as default automatically. If you want to change it to a
 kubectl config use-context minikube
 ```
 
-The following command is another way to set the context: 
+The following command is another way to set the context:
 ```
 kubectl get pods --context=minikube
 ```
