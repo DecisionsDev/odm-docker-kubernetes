@@ -15,7 +15,7 @@ The project comes with the following components:
 - [Azure Database for PostgreSQL](https://docs.microsoft.com/en-us/azure/postgresql/)
 - [Azure Kubernetes Service (AKS)](https://docs.microsoft.com/en-us/azure/aks/)
 - [Network concepts for applications in AKS](https://docs.microsoft.com/en-us/azure/aks/concepts-network)
-- [IBM License Manager](https://github.com/IBM/ibm-licensing-operator)
+- [IBM License Service](https://github.com/IBM/ibm-licensing-operator)
 
 ## Tested environment
 The commands and tools have been tested on macOS and Linux.
@@ -39,7 +39,7 @@ Then [create an Azure account and pay as you go](https://azure.microsoft.com/en-
   * [Prerequisites](#prerequisites)
   * [Steps to deploy ODM on Kubernetes from Azure AKS](#steps-to-deploy-odm-on-kubernetes-from-azure-aks)
   * [Prepare your AKS instance (30 min)](#prepare-your-aks-instance-30-min)
-    * [Log in to Azure](#log-in-to-azure)
+    * [Log into Azure](#log-into-azure)
     * [Create a resource group](#create-a-resource-group)
     * [Create an AKS cluster](#create-an-aks-cluster)
     * [Set up your environment to this cluster](#set-up-your-environment-to-this-cluster)
@@ -70,7 +70,7 @@ Then [create an Azure account and pay as you go](https://azure.microsoft.com/en-
 
 Source: https://docs.microsoft.com/en-us/azure/aks/kubernetes-walkthrough
 
-### Log in to Azure
+### Log into Azure
 
 After installing the Azure CLI, use the following command line:
 
