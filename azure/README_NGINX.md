@@ -5,41 +5,15 @@ This section explains how to expose the ODM services to Internet connectivity wi
 <!-- TOC titleSize:2 tabSpaces:2 depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 skip:0 title:1 charForUnorderedList:* -->
 ## Table of Contents
 * [Install an ODM Helm release and expose it with a NGINX Ingress controller (15 min)](#install-an-odm-helm-release-and-expose-it-with-a-nginx-ingress-controller-15-min)
-  * [Create a NGINX Ingress controller](#create-a-nginx-ingress-controller)
   * [Create a Kubernetes secret for the TLS certificate](#create-a-kubernetes-secret-for-the-tls-certificate)
   * [Install the ODM release](#install-the-odm-release)
   * [Edit your /etc/hosts](#edit-your-etchosts)
   * [Access the ODM services](#access-the-odm-services)
-  * [Next steps](#next-steps)
   * [Troubleshooting](#troubleshooting)
 * [License](#license)
 <!-- /TOC -->
 
-## Create a NGINX Ingress controller
-
-1. Add the official stable repository
-
-    ```
-    helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-    ```
-
-2. Use Helm to deploy an NGINX Ingress controller
-
-    ```
-    helm install nginx-ingress ingress-nginx/ingress-nginx \
-      --set controller.replicaCount=2 \
-      --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux \
-      --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux
-    ```
-
-3. Get the Ingress controller external IP address
-
-    ```
-    kubectl get service -l app.kubernetes.io/name=ingress-nginx
-    NAME                                               TYPE           CLUSTER-IP     EXTERNAL-IP    PORT(S)                      AGE
-    nginx-ingress-ingress-nginx-controller             LoadBalancer   10.0.191.246   <externalip>   80:30222/TCP,443:31103/TCP   3m8s
-    nginx-ingress-ingress-nginx-controller-admission   ClusterIP      10.0.214.250   <none>         443/TCP                      3m8s
-    ```
+NGINX has been installed while deploying IBM License Manager, see [README.md](README.md#create-a-nginx-ingress-controller).
 
 ## Create a Kubernetes secret for the TLS certificate
 
@@ -105,10 +79,6 @@ ODM services are available through the following URLs:
 | Decision Center | https://mycompany.com/decisioncenter | odmAdmin/odmAdmin
 | Decision Server Runtime | https://mycompany.com/DecisionService | odmAdmin/odmAdmin
 | Decision Runner | https://mycompany.com/DecisionRunner | odmAdmin/odmAdmin
-
-## Next steps
-
-You may want to track ODM usage with the IBM License Service.  If so, please follow [these instructions](README_Licensing.md).
 
 ## Troubleshooting
 

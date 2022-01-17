@@ -8,11 +8,14 @@ Here is the home page of Microsoft Azure: https://portal.azure.com/#home
 The ODM Docker material is available in Passport Advantage. It includes Docker container images and Helm chart descriptors.
 
 ## Included components
+
 The project comes with the following components:
+
 - [IBM Operational Decision Manager](https://www.ibm.com/docs/en/odm/8.11.0)
 - [Azure Database for PostgreSQL](https://docs.microsoft.com/en-us/azure/postgresql/)
 - [Azure Kubernetes Service (AKS)](https://docs.microsoft.com/en-us/azure/aks/)
 - [Network concepts for applications in AKS](https://docs.microsoft.com/en-us/azure/aks/concepts-network)
+- [IBM License Manager](https://github.com/IBM/ibm-licensing-operator)
 
 ## Tested environment
 The commands and tools have been tested on macOS and Linux.
@@ -52,8 +55,14 @@ Then [create an Azure account and pay as you go](https://azure.microsoft.com/en-
     * [Install the ODM release](#install-the-odm-release)
     * [Check the topology](#check-the-topology)
     * [Access ODM services](#access-odm-services)
-  * [Next steps](#next-steps)
-  * [Troubleshooting](#troubleshooting)
+  * [Install the IBM License Service and retrieve license usage](#install-the-ibm-license-service-and-retrieve-license-usage)
+    * [Create a NGINX Ingress controller](#create-a-nginx-ingress-controller)
+    * [Install the IBM License Service](#install-the-ibm-license-service)
+    * [Create the Licensing instance](#create-the-licensing-instance)
+    * [Retrieving license usage](#retrieving-license-usage)
+    * [Troubleshooting IBM License Service](#troubleshooting-ibm-license-service)
+  * [Optional steps](#optional-steps)
+  * [Troubleshooting ODM](#troubleshooting-odm)
 * [License](#license)
 <!-- /TOC -->
 
@@ -383,11 +392,73 @@ kubernetes                                  ClusterIP      10.0.0.1       <none>
 
 You can then open a browser on https://xxx.xxx.xxx.xxx:9443 to access Decision Server console, Decision Server Runtime, and Decision Runner, and on https://xxx.xxx.xxx.xxx:9453 to access Decision Center.
 
-## Next steps
+## Install the IBM License Service and retrieve license usage
 
-You may want to access ODM components through a NGINX Ingress controller instead of directly from these different IP addresses.  If so, please follow [these instructions](README_NGINX.md).
+This section explains how to track ODM usage with the IBM License Service.
 
-## Troubleshooting
+### Create a NGINX Ingress controller
+
+1. Add the official stable repository
+
+    ```
+    helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+    ```
+
+2. Use Helm to deploy an NGINX Ingress controller
+
+    ```
+    helm install nginx-ingress ingress-nginx/ingress-nginx \
+      --set controller.replicaCount=2 \
+      --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux \
+      --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux
+    ```
+
+3. Get the Ingress controller external IP address
+
+    ```
+    kubectl get service -l app.kubernetes.io/name=ingress-nginx
+    NAME                                               TYPE           CLUSTER-IP     EXTERNAL-IP    PORT(S)                      AGE
+    nginx-ingress-ingress-nginx-controller             LoadBalancer   10.0.191.246   <externalip>   80:30222/TCP,443:31103/TCP   3m8s
+    nginx-ingress-ingress-nginx-controller-admission   ClusterIP      10.0.214.250   <none>         443/TCP                      3m8s
+    ```
+
+### Install the IBM License Service
+
+Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://github.com/IBM/ibm-licensing-operator/blob/latest/docs/Content/Install_without_OLM.md), make sure you don't follow the instantiation part!
+
+### Create the Licensing instance
+
+Just run:
+
+```
+kubectl create -f licensing-instance.yml
+```
+
+(More information and use cases on [this page](https://github.com/IBM/ibm-licensing-operator/blob/latest/docs/Content/Configuration.md#configuring-ingress).)
+
+### Retrieving license usage
+
+After a couple of minutes, the NGINX load balancer reflects the Ingress configuration and you will be able to access the IBM License Service by retrieving the URL with this command:
+
+```
+export LICENSING_URL=$(kubectl get ingress ibm-licensing-service-instance -n ibm-common-services |awk '{print $4}' |tail -1)/ibm-licensing-service-instance
+export TOKEN=$(oc get secret ibm-licensing-token -o jsonpath={.data.token} -n ibm-common-services |base64 -d)
+```
+
+You can access the `http://${LICENSING_URL}/status?token=${TOKEN}` URL to view the licensing usage or retrieve the licensing report zip file by running:
+```
+curl -v "http://${LICENSING_URL}/snapshot?token=${TOKEN}" --output report.zip
+```
+
+### Troubleshooting IBM License Service
+
+If your IBM License Service instance is not running properly, please refer to [our dedicated troubleshooting page](https://github.com/IBM/ibm-licensing-operator/blob/latest/docs/Content/Troubleshooting.md).
+
+## Optional steps
+
+You may want to access ODM components through NGINX Ingress controller instead of directly from these different IP addresses.  If so, please follow [these instructions](README_NGINX.md).
+
+## Troubleshooting ODM
 
 If your ODM instances are not running properly, please refer to [our dedicated troubleshooting page](https://www.ibm.com/docs/en/odm/8.11.0?topic=8110-troubleshooting-support).
 
