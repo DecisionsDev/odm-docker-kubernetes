@@ -1,4 +1,4 @@
-# odm-k8s-kustomize
+# Scope the Decision Server Console to a dedicated node
 
 Use `kustomize` to scope the Decision Server Console to a dedicated node defined by a specific label.
 

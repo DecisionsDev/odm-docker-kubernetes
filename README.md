@@ -29,12 +29,12 @@ The ODM Docker material is used here, which is available in the [odm-ondocker](h
 
 - [Amazon EKS](platform/eks/README.md)
 - [Azure AKS](platform/azure/README.md)
-- [MiniKube](platform/minikube/README.md)
+- [Minikube](platform/minikube/README.md)
 
 ### Contributions to customize the deployment
 
-- [Scope the Decision Server Console to a dedicated node with `kustomize`](contrib/kustomize/ds-console-dedicated-node/README.md)
 - [Configure user access with external OIDC providers](contrib/authentication/openid/README.md)
+- [Scope the Decision Server Console to a dedicated node with `kustomize`](contrib/kustomize/ds-console-dedicated-node/README.md)
 
 ## Issues and contributions
 

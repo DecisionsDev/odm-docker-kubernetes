@@ -20,7 +20,7 @@ rtsAdministrators:
 <group name="rtsAdmGroup3" access-id="${odm.rtsAdministrators.group3}"/>
 ```
 
-Similar users and groups exist for the other roles `rtsConfigManagers`, `resAdministrators`, `resExecutors`, `resMonitors`, and `resDeployers`. You can find an example in the [configuration](configuration/security) folder.
+Similar users and groups exist for the other roles `rtsConfigManagers`, `resAdministrators`, `resExecutors`, `resMonitors`, and `resDeployers`. You can find an example in the [configuration](../../../configuration/security) folder.
 
 ## About this task
 
@@ -38,7 +38,7 @@ The following procedure describes how to manually configure ODM with an external
 
     - Create a webSecurity.xml file to define the mapping to the OIDC groups.
 
-      See the [configuration](configuration/security) folder on how to put all of the definitions that your environment needs into the webSecurity.xml file.
+      See the [configuration](../../../configuration/security) folder on how to put all of the definitions that your environment needs into the webSecurity.xml file.
 
     - Create a secret for the webSecurity.xml file.
 
