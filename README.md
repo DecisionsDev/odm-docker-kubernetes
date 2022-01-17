@@ -5,16 +5,16 @@ IBM Operational Decision Manager on Kubernetes
 [![GitHub release](https://img.shields.io/github/release/ODMDev/odm-docker-kubernetes.svg)](https://github.com/ODMDev/odm-docker-kubernetes/releases)
 ![GitHub last commit](https://img.shields.io/github/last-commit/ODMDev/odm-docker-kubernetes)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
- 
+
 <p align="center">
-  <a href="https://join.slack.com/t/odmdev/shared_invite/enQtMjU0NzIwMjM1MTg0LTQyYTMzNGQ4NzJkMDYxMDU5MDRmYTM4MjcxN2RiMzNmZWZmY2UzYzRhMjk0N2FmZjU2YzJlMTRmN2FhZDY4NmQ">
+  <a href="https://join.slack.com/t/odmdev/shared_invite/zt-390luncg-V2TuIrNP4cpWsCgaBgEduA">
         Follow us on slack
         <br>
         <img src="https://a.slack-edge.com/436da/marketing/img/meta/favicon-32.png">
   </a>
 </p>
- 
-#  Deploying IBM Operational Decision Manager Standard on a Kubernetes Cluster
+
+##  Deploying IBM Operational Decision Manager Standard on a Kubernetes Cluster
 
 This repository centralizes materials to deploy [IBM® Operational Decision Manager](https://www.ibm.com/support/knowledgecenter/SSQP76_8.9.0/welcome/kc_welcome_odmV.html) (ODM) Standard in Kubernetes. It is deployed in a clustered topology that uses WebSphere® Application Server Liberty on a Kubernetes cluster.
 
@@ -25,20 +25,26 @@ The ODM Docker material is used here, which is available in the [odm-ondocker](h
 ![Flow](images/ODMinKubernetes-DeploymentOverview.png)
 
 
-## Deploying ODM Rules in the following environments
-- [Amazon EKS](eks/README.md)
-- [Azure AKS](azure/README.md)
-- [MiniKube](MiniKube/README.md)
+### Deploying ODM Rules on a specific platform
 
-# Issues and contributions
+- [Amazon EKS](platform/eks/README.md)
+- [Azure AKS](platform/azure/README.md)
+- [MiniKube](platform/minikube/README.md)
+
+### Contributions to customize the deployment
+
+- [Scope the Decision Server Console to a dedicated node with `kustomize`](contrib/kustomize/ds-console-dedicated-node/README.md)
+- [Configure user access with external OIDC providers](contrib/authentication/openid/README.md)
+
+## Issues and contributions
 
 For issues relating specifically to the Dockerfiles and scripts, please use the [GitHub issue tracker](https://github.com/ODMDev/odm-docker-kubernetes/issues). For more general issue relating to IBM Operational Decision Manager you can [get help](https://developer.ibm.com/odm/home/connect/) through the ODMDev community or, if you have production licenses for Operational Decision Manager, via the usual support channels. We welcome contributions following [our guidelines](https://github.com/ODMDev/odm-docker-kubernetes/blob/master/CONTRIBUTING.md).
 
 
-# Notice
+## Notice
 © Copyright IBM Corporation 2021.
 
-# License
+## License
 ```text
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
