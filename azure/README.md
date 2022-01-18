@@ -60,9 +60,8 @@ Then [create an Azure account and pay as you go](https://azure.microsoft.com/en-
     * [Install the IBM License Service](#install-the-ibm-license-service)
     * [Create the Licensing instance](#create-the-licensing-instance)
     * [Retrieving license usage](#retrieving-license-usage)
-    * [Troubleshooting IBM License Service](#troubleshooting-ibm-license-service)
   * [Optional steps](#optional-steps)
-  * [Troubleshooting ODM](#troubleshooting-odm)
+  * [Troubleshooting](#troubleshooting)
 * [License](#license)
 <!-- /TOC -->
 
@@ -450,15 +449,13 @@ You can access the `http://${LICENSING_URL}/status?token=${TOKEN}` URL to view t
 curl -v "http://${LICENSING_URL}/snapshot?token=${TOKEN}" --output report.zip
 ```
 
-### Troubleshooting IBM License Service
-
-If your IBM License Service instance is not running properly, please refer to [our dedicated troubleshooting page](https://github.com/IBM/ibm-licensing-operator/blob/latest/docs/Content/Troubleshooting.md).
+If your IBM License Service instance is not running properly, please refer to this [troubleshooting page](https://github.com/IBM/ibm-licensing-operator/blob/latest/docs/Content/Troubleshooting.md).
 
 ## Optional steps
 
-You may want to access ODM components through NGINX Ingress controller instead of directly from these different IP addresses.  If so, please follow [these instructions](README_NGINX.md).
+You may prefer to access ODM components through NGINX Ingress controller instead of directly from these different IP addresses.  If so, please follow [these instructions](README_NGINX.md).
 
-## Troubleshooting ODM
+## Troubleshooting
 
 If your ODM instances are not running properly, please refer to [our dedicated troubleshooting page](https://www.ibm.com/docs/en/odm/8.11.0?topic=8110-troubleshooting-support).
 
