@@ -242,16 +242,15 @@ Check you can access ODM's chart
 ```
 helm search repo ibm-odm-prod
 NAME                  	CHART VERSION	APP VERSION	DESCRIPTION                     
-ibmcharts/ibm-odm-prod	21.2.0       	8.10.5.1   	IBM Operational Decision Manager
+ibmcharts/ibm-odm-prod	21.3.0       	8.11.0.0   	IBM Operational Decision Manager
 ```
 
 
 You can now install the product. We will use the postgresql internal database by disabling the persistence (internalDatabase.persistence.enabled=false) to avoid any platform complexity concerning persistent volume allocation.
 
 ```
-helm install myodmrelease ibmcharts/ibm-odm-prod --version 21.2.0 \
+helm install myodmrelease ibmcharts/ibm-odm-prod --version 21.3.0 \
         --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
-        --set image.tag=8.10.5.1 \
         --set oidc.enabled=true \
         --set internalDatabase.persistence.enabled=false \
         --set customization.trustedCertificateList={"okta-secret"} \
@@ -285,34 +284,5 @@ The redirect are built this way :
 * DSR-REDIRECT_URL=https://DSR-HOST/DecisionService/openid/redirect/odm
 
 ## Install Using the CP4BA Operator
-
-
-# Post installation steps 
-
-## Define server configuration
-
-   * Open the decision center URL
-   * Login
-   * Go to the Admin Tab -> Servers Tab 
-   * Click "Upload OpenID connect provider configuration file"
- ![Decison Center OpenID Provider](OpenIDProvider.png)
-   -> Select the OdmOpenIdProviders.json file generated in the OUTPUTDIR
-   * Edit the 'Decision Service Execution'
-
-![image](EditServer.png) 
-
-   * In the Configuration select box choose 'okta_clientcredentials'
-   * Unselect 'Use OpenID Connect' selector
-   * Select 'Use OpenID Connect' selector
-   * Click Test button 
-   * Check should be OK
-   * Click Done button
-   * Edit the 'Test and Simulation Execution'
-   * Unselect 'Use OpenID Connect' selector
-   * Select 'Use OpenID Connect' selector
-   * In the Configuration select box choose 'okta_clientcredentials'
-   * Click Test button 
-   * Check should be OK
-   * Click Done button
 
    
