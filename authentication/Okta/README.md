@@ -8,7 +8,7 @@
     * [Create an Okta account](#create-an-okta-account)
 * [Configuring Okta instance for ODM (Part 1)](#configuring-okta-instance-for-odm-part-1)
   * [Manage group and user](#manage-group-and-user)
-  * [Setup an Application](#setup-an-application)
+  * [Setup an application](#setup-an-application)
   * [Configure the default Authorization Server](#configure-the-default-authorization-server)
 * [Deploy ODM on container configured with Okta Server (Part 2)](#deploy-odm-on-container-configured-with-okta-server-part-2)
   * [Prepare your environment for the ODM installation](#prepare-your-environment-for-the-odm-installation)
@@ -98,18 +98,18 @@ In this section we will explain how to:
          * Click Save button
       * Repeat for each user you want to add.
 
-## Setup an Application
+## Setup an application
 
    * Menu Applications -> Applications
    * Click Create an App Integration
      * Select OIDC - OpenID Connect
-     * Select WebApplication
+     * Select Web Application
      * Next
 
 ![Add Application](AddApplication.png)
 
    * Edit Application
-     * App integration name : ODM Application
+     * App integration name: ODM Application
      * Grant type:
         * Check Client Credentials
         * Check Refresh Token
@@ -297,8 +297,8 @@ See https://www.ibm.com/support/knowledgecenter/SSQP76_8.10.x/com.ibm.odm.kube/t
 
 ## Register the ODM redirect URL
 
-Get the endpoints.
-On OpenShift, you can get the routes with :
+Get the endpoints. On OpenShift, you can get the routes with:
+
 ```
 oc get routes
 ```
@@ -318,4 +318,4 @@ The redirect are built this way :
 * DSC-REDIRECT_URL=https://DSC-HOST/res/openid/redirect/odm
 * DSR-REDIRECT_URL=https://DSR-HOST/DecisionService/openid/redirect/odm
 
-You must add these endpoints to your Okta application.
+You must register these endpoints into your Okta application.
