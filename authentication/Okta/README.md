@@ -1,30 +1,34 @@
 # Table of contents
 
+- [Table of contents](#table-of-contents)
 - [Introduction](#introduction)
+  - [What is OKA ?](#what-is-oka-)
   - [About this task](#about-this-task)
   - [ODM OpenID flows](#odm-openid-flows)
+  - [Prerequisites](#prerequisites)
+    - [Create an Okta account](#create-an-okta-account)
 - [Configuring OKTA instance for ODM (Part 1)](#configuring-okta-instance-for-odm-part-1)
   - [Manage group and user](#manage-group-and-user)
   - [Setup an Application](#setup-an-application)
   - [Configure the default Authorization Server](#configure-the-default-authorization-server)
-- [Configuring ODM for OKTA Server (Part 2)](#configuring-odm-for-okta-server-part-2)
-  - [Prerequisites](#prerequisites)
+- [Deploy ODM on container configured with OKTA Server (Part 2)](#deploy-odm-on-container-configured-with-okta-server-part-2)
   - [Prepare your environment for the ODM installation](#prepare-your-environment-for-the-odm-installation)
+  - [Retrieve OKTA Server informations](#retrieve-okta-server-informations)
   - [Create a secret with the Okta Server certificate](#create-a-secret-with-the-okta-server-certificate)
   - [Create a secret to configure ODM with OKTA](#create-a-secret-to-configure-odm-with-okta)
   - [Install your ODM Helm release](#install-your-odm-helm-release)
   - [Register the ODM redirect URL](#register-the-odm-redirect-url)
   - [Install Using the CP4BA Operator](#install-using-the-cp4ba-operator)
-- [Post installation steps](#post-installation-steps)
-  - [Define server configuration](#define-server-configuration)
 
 
 # Introduction
 In the context of the IBM Cloud Pak for Business Automation or ODM on Certified Kubernetes offering, Operational Decision Manager for production can be configured with an external OpenID Connect server (OIDC Provider) such as OKTA Server. 
 
+## What is OKA ?
+Okta is a secure identity cloud that links all your apps, logins and devices into a unified digital fabric. With Okta, you’re up and running on day one, with every app and program you use to work, instantly available. Whether you’re at your desktop or on the go, Okta seamlessly connects you to everything you need.
+
 ## About this task
 
-In this 
 You need to create a number of secrets before you can install an ODM instance with an external OIDC provider such as OKTA server and use web application single sign-on (SSO). The following diagram shows the ODM services with an external OIDC provider after a successful installation.
 
 ![ODM web application SSO](../../images/diag_oidc_interaction.jpg)
@@ -53,7 +57,27 @@ Auth Code flow width:
 
 ![image](https://user-images.githubusercontent.com/24404215/135082320-6c8d3506-5d93-4c87-83b5-728eebbcd321.png)
 
+
+## Prerequisites
+First, install the following software on your machine:
+* [Helm v3](https://github.com/helm/helm/releases)
+* [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl)
+* Access to an Operational Decision Manager Product
+* A CNCF Kubernetes cluster
+
+Then, Configuring OKTA instance for ODM
+
+### Create an Okta account
+First, we'll sign up for [a free Okta developer account](https://www.okta.com/fr/free-trial/customer-identity/) that provides access for up to 1k monthly active users. However, we can skip this section if we already have one.
+
+To be able to configure Okta to connect to ODM you need to have an Okta admin account.
+
 # Configuring OKTA instance for ODM (Part 1)
+
+In this section we will explained how to :
+- Manage Group and user
+- Setup an application
+- Configure the default Authorization Server
 ## Manage group and user
    * Menu Directory -> Groups
       * Click Add Group button
@@ -162,13 +186,8 @@ You have to check that the login name and groups are available in the id token u
 
 Note that the discovery endpoint can be found in the settings tag Metadata URI. Menu Security -> api -> default (link) -> Metadata URI (link)
 
-# Configuring ODM for OKTA Server (Part 2)
+# Deploy ODM on container configured with OKTA Server (Part 2)
 
-## Prerequisites
-First, install the following software on your machine:
-* [Helm v3](https://github.com/helm/helm/releases)
-* [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl)
-* Access to an Operational Decision Manager Product
 
 ## Prepare your environment for the ODM installation
 Log in to [MyIBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary) with the IBMid and password that are associated with the entitled software.
