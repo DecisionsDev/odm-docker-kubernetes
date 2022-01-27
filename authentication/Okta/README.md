@@ -95,7 +95,7 @@ Auth Code flow width:
               * Selected group(s) : **odm-admin**    
      * Click Save button 
 ![New Web Application](NewWebAppIntegration.png)
-
+![New Web Application Access](NewWebAppIntegration1.png)
 
 ## Configure the default Authorization Server
 
