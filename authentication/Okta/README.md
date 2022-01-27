@@ -88,14 +88,14 @@ Auth Code flow width:
      * Grant type:
         * Check Client Credentials
         * Check Refresh Token
-        * Implicit (hybrid) 
+        * Check Implicit (hybrid) 
      * Assignments:
         * Controlled access:
            * Limit access to selected groups:
               * Selected group(s) : **odm-admin**    
      * Click Save button 
 ![New Web Application](NewWebAppIntegration.png)
-
+![New Web Application Access](NewWebAppIntegration1.png)
 
 ## Configure the default Authorization Server
 
