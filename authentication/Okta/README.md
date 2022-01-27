@@ -106,7 +106,7 @@ In this section we will explain how to:
      * Select WebApplication
      * Next
 
-    ![Add Application](AddApplication.png)
+![Add Application](AddApplication.png)
 
    * Edit Application
      * App integration name : ODM Application
