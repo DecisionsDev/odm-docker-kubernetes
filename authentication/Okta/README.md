@@ -140,47 +140,47 @@ To be more secured we will use the client credential flow for the ODM Rest API c
 
 We need to augment the token by the useridentifier and group properties that will be used for the ODM authentication and authorization mechanism.
 
-   * Select Claims tab
+* Select Claims tab
 
-   * Click 'Add claim' button
-     * Name: loginName
-     * Include in token type: **Access Token**
-     * Value: (appuser != null) ? appuser.userName : app.clientId
-     * Click Create Button  
+  * Click 'Add claim' button
+    * Name: loginName
+    * Include in token type: **Access Token**
+    * Value: (appuser != null) ? appuser.userName : app.clientId
+    * Click Create Button  
 
-   * Click 'Add claim' button
-     * Name: loginName
-     * Include in token type: **Id Token**
-     * Value: (appuser != null) ? appuser.userName : app.clientId
-     * Click Create Button
+  * Click 'Add claim' button
+    * Name: loginName
+    * Include in token type: **Id Token**
+    * Value: (appuser != null) ? appuser.userName : app.clientId
+    * Click Create Button
 
-   * Click 'Add claim' button
-   * Name: groups
-     * Include in token type: **Access Token**
-     * Value type: Groups
-     * Equals: odm-admin
-     * Click Create Button
+  * Click 'Add claim' button
+    * Name: groups
+    * Include in token type: **Access Token**
+    * Value type: Groups
+    * Equals: odm-admin
+    * Click Create Button
 
-   * Click 'Add claim' button
-   * Name: groups
-     * Include in token type: **Id Token**
-     * Value type: Groups
-     * Equals: odm-admin
-     * Click Create Button
+  * Click 'Add claim' button
+    * Name: groups
+    * Include in token type: **Id Token**
+    * Value type: Groups
+    * Equals: odm-admin
+    * Click Create Button
 
-   ![Add Claim Result](ResultAddClaims.png)
+![Add Claim Result](ResultAddClaims.png)
 
 You can verify the content of the token with the Token Preview panel.
 You have to check that the login name and groups are available in the id token using the authorization flow which the flow used by ODM.
 
    *  Click the Token Preview
-      *  OAuth/OIDC client : ODM Application
-      *  Grant type : Authorization Code
+      *  OAuth/OIDC client: ODM Application
+      *  Grant type: Authorization Code
       *  User: ``<YourEmailAddress>``
-      *  Scopes : openid
-   *  Click the Preview Token button
+      *  Scopes: openid
+      * Click the Preview Token button
 
-   * As result the id_token tab as well as in the token tab should contains  
+As result the id_token tab as well as in the token tab should contains:
 
 ```...
     "loginName": "<YourEmailAddress>",
