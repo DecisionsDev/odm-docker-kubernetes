@@ -223,6 +223,7 @@ The, create the following secret :
 kubectl create secret generic okta-auth-secret --from-file=openIdParameters.properties=./output/openIdParameters.properties \
                                        --from-file=openIdWebSecurity.xml=./output/openIdWebSecurity.xml \
                                        --from-file=webSecurity.xml=./output/webSecurity.xml \
+				       --from-file=OdmOidcProviders.json=./output/OdmOidcProviders.json
 ```
 
 
