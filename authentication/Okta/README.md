@@ -88,7 +88,7 @@ Auth Code flow width:
      * Grant type:
         * Check Client Credentials
         * Check Refresh Token
-        * Implicit (hybrid) 
+        * Check Implicit (hybrid) 
      * Assignments:
         * Controlled access:
            * Limit access to selected groups:
