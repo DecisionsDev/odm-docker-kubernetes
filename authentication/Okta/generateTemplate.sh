@@ -24,7 +24,7 @@ while getopts "x:i:s:g:h" option; do
     case "${option}" in
         g) OKTA_ODM_GROUP=${OPTARG};;
         i) OKTA_CLIENT_ID=${OPTARG};;
-        s) OKTA_SERVER_URL=${OPTARG};;
+        s) OKTA_SERVER_NAME=${OPTARG};;
         x) OKTA_CLIENT_SECRET=${OPTARG};;
         h) usage; exit 0;;
         *) usage; exit 1;;
@@ -39,16 +39,18 @@ if [[ -z ${OKTA_CLIENT_ID} ]]; then
   echo "OKTA_CLIENT_ID has to be provided, either as in environment or with -i."
   exit 1
 fi
-if [[ -z ${OKTA_SERVER_URL} ]]; then
-  echo "OKTA_SERVER_URL has to be provided, either as in environment or with -s."
+if [[ -z ${OKTA_SERVER_NAME} ]]; then
+  echo "OKTA_SERVER_NAME has to be provided, either as in environment or with -s."
   exit 1
 fi
 if [[ -z ${OKTA_CLIENT_SECRET} ]]; then
   echo "OKTA_CLIENT_SECRET has to be provided, either as in environment or with -x."
   exit 1
 fi
-if [[ ${OKTA_SERVER_URL} != "https://.*" ]]; then
-  OKTA_SERVER_URL=https://${OKTA_SERVER_URL}
+if [[ ${OKTA_SERVER_NAME} != "https://.*" ]]; then
+  OKTA_SERVER_URL=https://${OKTA_SERVER_NAME}
+else
+  OKTA_SERVER_URL=${OKTA_SERVER_NAME}
 fi
 
 mkdir -p $OUTPUT_DIR && cp $TEMPLATE_DIR/* $OUTPUT_DIR
