@@ -6,7 +6,7 @@
   * [ODM OpenID flows](#odm-openid-flows)
   * [Prerequisites](#prerequisites)
     * [Create an Okta account](#create-an-okta-account)
-* [Configuring Okta instance for ODM (Part 1)](#configuring-okta-instance-for-odm-part-1)
+* [Configure Okta instance for ODM (Part 1)](#configure-okta-instance-for-odm-part-1)
   * [Manage group and user](#manage-group-and-user)
   * [Setup an application](#setup-an-application)
   * [Configure the default Authorization Server](#configure-the-default-authorization-server)
@@ -40,13 +40,14 @@ The following procedure describes how to manually configure ODM with an Okta Con
 OpenID Connect is an authentication standard built on top of OAuth 2.0. It adds an additional token called an ID token.
 
 Terminology:
-   * The "OpenID provider" — The authorization server that issues the ID token. In this case Okta is the OpenID provider.
-   * The "end user" — Whose information is contained in the ID token
-   * The "relying party" — The client application that requests the ID token from Okta
-   * The "ID token" is issued by the OpenID Provider and contains information about the end user in the form of claims.
-   * A "claim" is a piece of information about the end user.
 
-The Client Credentials flow is intended for server-side (AKA "confidential") client applications with no end user, which normally describes machine-to-machine communication. The application must be server-side because it must be trusted with the client secret, and since the credentials are hard-coded, it can't be used by an actual end user. It involves a single, authenticated request to the /token endpoint, which returns an access token.
+- The "OpenID provider" — The authorization server that issues the ID token. In this case Okta is the OpenID provider.
+- The "end user" — Whose information is contained in the ID token
+- The "relying party" — The client application that requests the ID token from Okta
+- The "ID token" is issued by the OpenID Provider and contains information about the end user in the form of claims.
+- A "claim" is a piece of information about the end user.
+
+The Client Credentials flow is intended for server-side (AKA "confidential") client applications with no end user, which normally describes machine-to-machine communication. The application must be server-side because it must be trusted with the client secret, and since the credentials are hard-coded, it can't be used by an actual end user. It involves a single, authenticated request to the token endpoint, which returns an access token.
 
 ![Okta Client Credential Flow](../../images/oauth_client_creds_flow.png) (© Okta)
 
@@ -70,7 +71,7 @@ First, install the following software on your machine:
 
 First, sign up for [a free Okta developer account](https://www.okta.com/free-trial/customer-identity/) that provides access for up to 1k monthly active users. However, you can skip this section if you already have one.
 
-# Configuring Okta instance for ODM (Part 1)
+# Configure Okta instance for ODM (Part 1)
 
 In this section we will explain how to:
 
@@ -80,45 +81,49 @@ In this section we will explain how to:
 
 ## Manage group and user
 
-   * Menu Directory -> Groups
-      * Click Add Group button
-         * Name : odm-admin
-         * Group Description : ODM Admin group
+First create an group which will contain ODM administrators. It will be referenced as OKTA_ODM_GROUP later in this article:
+
+* Menu Directory / Groups
+  * Click Add Group button
+    * Name: odm-admin
+    * Group Description: ODM Admin group
 
 ![Add Group](AddGroup.png)
 
-   * Menu Directory -> People
-      * Click 'Add Person' button
-         * User type: User
-         * First name: ``<YourFirstName>``
-         * Last name: ``<YourLastName>``
-         * Username: ``<YourEmailAddress>``
-         * Primary email: ``<YourEmailAddress>``
-         * Groups (optional): **odm-admin**
-         * Click Save button
-      * Repeat for each user you want to add.
+Then create at least one user belonging to this new group:
+
+* Menu Directory / People
+  * Click 'Add Person' button
+    * User type: User
+    * First name: ``<YourFirstName>``
+    * Last name: ``<YourLastName>``
+    * Username: ``<YourEmailAddress>``
+    * Primary email: ``<YourEmailAddress>``
+    * Groups (optional): **odm-admin**
+    * Click Save button
+
+Repeat for each user you want to add.
 
 ## Setup an application
 
-   * Menu Applications -> Applications
-   * Click Create an App Integration
-     * Select OIDC - OpenID Connect
-     * Select Web Application
-     * Next
+* Menu Applications -> Applications
+  * Click Create an App Integration
+    * Select OIDC - OpenID Connect
+    * Select Web Application
+    * Next
 
 ![Add Application](AddApplication.png)
 
-   * Edit Application
-     * App integration name: ODM Application
-     * Grant type:
-        * Check Client Credentials
-        * Check Refresh Token
-        * Check Implicit (hybrid)
-     * Assignments:
-        * Controlled access:
-           * Limit access to selected groups:
-              * Selected group(s) : **odm-admin**    
-     * Click Save button
+* App integration name: ODM Application
+  * Grant type:
+    * Check Client Credentials
+    * Check Refresh Token
+    * Check Implicit (hybrid)
+  * Assignments:
+    * Controlled access:
+      * Limit access to selected groups:
+      * Selected group(s) : **odm-admin**    
+  * Click Save button
 
 ![New Web Application](NewWebAppIntegration.png)
 ![New Web Application Access](NewWebAppIntegration1.png)
@@ -172,6 +177,7 @@ We need to augment the token by the user identifier and group properties that wi
 ![Add Claim Result](ResultAddClaims.png)
 
 You can verify the content of the token with the Token Preview panel.
+
 You have to check that the login name and groups are available in the ID token using the authorization flow which the flow used by ODM.
 
    *  Click the Token Preview
