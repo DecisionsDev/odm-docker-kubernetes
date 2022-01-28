@@ -25,7 +25,7 @@ In the context of the IBM Cloud Pak for Business Automation or ODM on Certified 
 
 ## What is Okta?
 
-Okta is a secure identity cloud that links all your apps, logins and devices into a unified digital fabric. With Okta, you’re up and running on day one, with every app and program you use to work, instantly available. Whether you’re at your desktop or on the go, Okta seamlessly connects you to everything you need.
+Okta is a secure identity cloud that links all your apps, logins and devices into a unified digital fabric. Okta sells centralized services, including a single sign-on service that allows users to log into a variety of systems. This is the service we'll use in this article.
 
 ## About this task
 
