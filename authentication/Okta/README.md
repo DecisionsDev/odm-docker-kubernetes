@@ -55,7 +55,7 @@ The Authorization Code flow is best used by server-side apps where the source co
 
 Auth Code flow width:
 
-![image](https://user-images.githubusercontent.com/24404215/135082320-6c8d3506-5d93-4c87-83b5-728eebbcd321.png) (© Okta)
+![Authentication flow](/images/Okta/Authentication_flow.png) (© Okta)
 
 ## Prerequisites
 
@@ -88,7 +88,7 @@ First create an group which will contain ODM administrators. It will be referenc
     * Name: odm-admin
     * Group Description: ODM Admin group
 
-![Add Group](AddGroup.png)
+![Add Group](/images/Okta/AddGroup.png)
 
 Then create at least one user belonging to this new group:
 
@@ -112,7 +112,7 @@ Repeat for each user you want to add.
     * Select Web Application
     * Next
 
-![Add Application](AddApplication.png)
+![Add Application](/images/Okta/AddApplication.png)
 
 * App integration name: ODM Application
   * Grant type:
@@ -125,8 +125,8 @@ Repeat for each user you want to add.
       * Selected group(s) : **odm-admin**    
   * Click Save button
 
-![New Web Application](NewWebAppIntegration.png)
-![New Web Application Access](NewWebAppIntegration1.png)
+![New Web Application](/images/Okta/NewWebAppIntegration.png)
+![New Web Application Access](/images/Okta/NewWebAppIntegration1.png)
 
 ## Configure the default Authorization Server
 
@@ -174,7 +174,7 @@ We need to augment the token by the user identifier and group properties that wi
     * Equals: odm-admin
     * Click Create Button
 
-![Add Claim Result](ResultAddClaims.png)
+![Add Claim Result](/images/Okta/ResultAddClaims.png)
 
 You can verify the content of the token with the Token Preview panel.
 
@@ -196,7 +196,7 @@ As result the id_token tab as well as in the token tab should contains:
     ]
 ```
 
-![Token Preview](TokenPreview.png)
+![Token Preview](/images/Okta/TokenPreview.png)
 
 # Deploy ODM on container configured with Okta Server (Part 2)
 
@@ -231,7 +231,7 @@ The following steps require to retrieve this informations from Okta console:
 
 - Log into Okta console
 - Go to Application / Application / ODM Application
-- Note the OKTA_SERVER_NAME which is the Okta domain in the General Settings of the application (it will be something like "<shortname>.okta.com").
+- Note the OKTA_SERVER_NAME which is the Okta domain in the General Settings of the application (it will be something like "\<shortname\>.okta.com").
 
 ## Create a secret with the Okta Server certificate
 
@@ -340,4 +340,4 @@ You must register these endpoints into your Okta application:
   - Repeat the previous step for all other three redirect URIs.
   - Click Save at the bottom of the LOGIN section.
 
-![Sign-in redirect URIs](Sign-in_redirect_URIs.png)
+![Sign-in redirect URIs](/images/Okta/Sign-in_redirect_URIs.png)
