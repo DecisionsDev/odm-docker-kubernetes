@@ -31,7 +31,7 @@ Okta is a secure identity cloud that links all your apps, logins and devices int
 
 You need to create a number of secrets before you can install an ODM instance with an external OIDC provider such as Okta server and use web application single sign-on (SSO). The following diagram shows the ODM services with an external OIDC provider after a successful installation.
 
-![ODM web application SSO](../../images/diag_oidc_interaction.jpg)
+![ODM web application SSO](/images/Okta/diag_oidc_interaction.jpg)
 
 The following procedure describes how to manually configure ODM with an Okta Connect server.
 
@@ -49,7 +49,7 @@ Terminology:
 
 The Client Credentials flow is intended for server-side (AKA "confidential") client applications with no end user, which normally describes machine-to-machine communication. The application must be server-side because it must be trusted with the client secret, and since the credentials are hard-coded, it can't be used by an actual end user. It involves a single, authenticated request to the token endpoint, which returns an access token.
 
-![Okta Client Credential Flow](../../images/oauth_client_creds_flow.png) (© Okta)
+![Okta Client Credential Flow](/images/Okta/oauth_client_creds_flow.png) (© Okta)
 
 The Authorization Code flow is best used by server-side apps where the source code isn't publicly exposed. The apps should be server-side because the request that exchanges the authorization code for a token requires a client secret, which has to be stored in your client. The server-side app requires an end user, however, because it relies on interaction with the end user's web browser, which redirects the user and then receives the authorization code.
 
@@ -63,25 +63,25 @@ First, install the following software on your machine:
 
 - [Helm v3](https://helm.sh/docs/intro/install/)
 - [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl)
-- Access to an Operational Decision Manager Product
+- Access to an Operational Decision Manager product
 - A CNCF Kubernetes cluster
 - An admin Okta account
 
 ### Create an Okta account
 
-First, sign up for [a free Okta developer account](https://www.okta.com/free-trial/customer-identity/) that provides access for up to 1k monthly active users. However, you can skip this section if you already have one.
+First, sign up for [a free Okta developer account](https://www.okta.com/free-trial/customer-identity/) that provides access for up to 1k monthly active users. You can skip this section of course if you already have one.
 
 # Configure Okta instance for ODM (Part 1)
 
 In this section we will explain how to:
 
-- Manage group and user
+- Manage group and users
 - Setup an application
-- Configure the default Authorization Server
+- Configure the default Authorization server
 
 ## Manage group and user
 
-First create an group which will contain ODM administrators. It will be referenced as OKTA_ODM_GROUP later in this article:
+First create a group which will contain ODM administrators. It will be referenced as OKTA_ODM_GROUP later in this article:
 
 * Menu Directory / Groups
   * Click Add Group button
