@@ -293,7 +293,7 @@ Note: On OpenShift, you have to add the following parameters due to security con
 --set internalDatabase.runAsUser='' --set customization.runAsUser=''
 ```
 
-See https://www.ibm.com/support/knowledgecenter/SSQP76_8.10.x/com.ibm.odm.kube/topics/tsk_preparing_odmk8s.html.
+(See https://www.ibm.com/docs/en/odm/8.11.0?topic=production-preparing-install-operational-decision-manager for additional information.)
 
 ## Register the ODM redirect URL
 
