@@ -222,9 +222,9 @@ Make a note of the secret name so that you can set it for the image.pullSecrets 
 
 The following steps require to retrieve this informations from Okta console:
 
-- Login Okta Console
+- Log into Okta console
 - Go to Security->API
-- Note the OKTA_SERVER_URL
+- Note the OKTA_SERVER_NAME which is the server part of the default Issuer URI (it will be something like "<shortname>.okta.com").
 
 ## Create a secret with the Okta Server certificate
 
@@ -232,7 +232,7 @@ To allow ODM services to access Okta Server, it is mandatory to provide the Okta
 You can create the secret as follow:
 
 ```
-keytool -printcert -sslserver <OKTA_SERVER_URL> -rfc > okta.crt
+keytool -printcert -sslserver <OKTA_SERVER_NAME> -rfc > okta.crt
 kubectl create secret generic okta-secret --from-file=tls.crt=okta.crt
 ```
 
@@ -240,15 +240,20 @@ kubectl create secret generic okta-secret --from-file=tls.crt=okta.crt
 
 To configure ODM with Okta, we need to provide 4 files:
 
-- OdmOidcProviders.json BLABLA
+- OdmOidcProviders.json to configure the Okta OpenId provider using the client_credentials flow (it’s used by the DC servers to connect to the Decision Server Console and the Decision Runner)
 - openIdParameters.properties to configure ODM REST-API and web application (logout and allowed domains in web.xml)
 - openIdWebSecurity.xml to configure the liberty OpenId connect client relying party
 - webSecurity.xml to provide a mapping between liberty roles and Okta groups/users to manage authorization
 
-We provide a [script](generateTemplate.sh) allowing to generate these 4 files according to your OKTA_SERVER_URL, Okta_CLIENT_ID, Okta_CLIENT_SECRET and Okta_ODM_GROUP parameters.
+We provide a [script](generateTemplate.sh) allowing to generate these 4 files according to your OKTA_SERVER_NAME, OKTA_CLIENT_ID, OKTA_CLIENT_SECRET and OKTA_ODM_GROUP parameters:
+
+- OKTA_SERVER_NAME has been obtained from [previous step](#retrieve-okta-server-information)
+- Both OKTA_CLIENT_ID and OKTA_CLIENT_SECRET are listed in your ODM Application, section General / Client Credentials
+- OKTA_ODM_GROUP is the ODM Admin group we created in a [previous step](#manage-group-and-user) (odm-admin)
 
 You will get the generation in the output directory.
-The, create the following secret :
+
+Then create the following secret:
 
 ```
 kubectl create secret generic okta-auth-secret \
@@ -275,7 +280,7 @@ NAME                  	CHART VERSION	APP VERSION	DESCRIPTION
 ibmcharts/ibm-odm-prod	21.3.0       	8.11.0.0   	IBM Operational Decision Manager
 ```
 
-You can now install the product. We will use the PostgreSQL internal database and disable the persistence (internalDatabase.persistence.enabled=false) to avoid any platform complexity concerning persistent volume allocation.
+You can now install the product. We will use the PostgreSQL internal database and disable the data persistence (internalDatabase.persistence.enabled=false) to avoid any platform complexity concerning persistent volume allocation.
 
 ```
 helm install release ibmcharts/ibm-odm-prod --version 21.3.0 \
