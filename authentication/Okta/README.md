@@ -127,16 +127,16 @@ In this section we will explain how to:
 
 TODO BLABLA
 
-   * Menu Security -> API
-   * Click default link of Authorization server
+- Menu Security -> API
+  - Click default link of Authorization server
 
 Note that the discovery endpoint can be found in the settings tag as Metadata URI. Menu Security -> API -> default (link) -> Metadata URI (link).
 To be more secured we will use the client credential flow for the ODM Rest API call. This require to create a specific restricted scope.
 
-   * Click Scopes tab
-   * Click 'Add Scope' Button
-      * Name : odmapiusers
-   * Click 'Create' Button
+- Click Scopes tab
+- Click 'Add Scope' Button
+  - Name : odmapiusers
+  - Click 'Create' Button
 
 We need to augment the token by the useridentifier and group properties that will be used for the ODM authentication and authorization mechanism.
 
@@ -278,7 +278,7 @@ ibmcharts/ibm-odm-prod	21.3.0       	8.11.0.0   	IBM Operational Decision Manage
 You can now install the product. We will use the PostgreSQL internal database and disable the persistence (internalDatabase.persistence.enabled=false) to avoid any platform complexity concerning persistent volume allocation.
 
 ```
-helm install myodmrelease ibmcharts/ibm-odm-prod --version 21.3.0 \
+helm install release ibmcharts/ibm-odm-prod --version 21.3.0 \
         --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
         --set oidc.enabled=true \
         --set internalDatabase.persistence.enabled=false \
@@ -297,25 +297,34 @@ See https://www.ibm.com/support/knowledgecenter/SSQP76_8.10.x/com.ibm.odm.kube/t
 
 ## Register the ODM redirect URL
 
-Get the endpoints. On OpenShift, you can get the routes with:
+Get the endpoints. On OpenShift, you can get the routes names and hosts with:
 
 ```
-oc get routes
+oc get routes --no-headers --output custom-columns=":metadata.name,:spec.host"
 ```
 
 You should get something like :
 ```
-NAME                                HOST/PORT                                                                       PATH   SERVICES                                 PORT                          TERMINATION   WILDCARD
-myodmrelease-odm-dc-route           myodmrelease-odm-dc-route-okta-article.apps.odm-dev48.cp.fyre.ibm.com                  myodmrelease-odm-decisioncenter          decisioncenter-https          passthrough   None
-myodmrelease-odm-dr-route           myodmrelease-odm-dr-route-okta-article.apps.odm-dev48.cp.fyre.ibm.com                  myodmrelease-odm-decisionrunner          decisionrunner-https          passthrough   None
-myodmrelease-odm-ds-console-route   myodmrelease-odm-ds-console-route-okta-article.apps.odm-dev48.cp.fyre.ibm.com          myodmrelease-odm-decisionserverconsole   decisionserverconsole-https   passthrough   None
-myodmrelease-odm-ds-runtime-route   myodmrelease-odm-ds-runtime-route-okta-article.apps.odm-dev48.cp.fyre.ibm.com          myodmrelease-odm-decisionserverruntime   decisionserverruntime-https   passthrough   None
+release-odm-dc-route           release-odm-dc-route-odm1.apps.pylocp49.cp.fyre.ibm.com
+release-odm-dr-route           release-odm-dr-route-odm1.apps.pylocp49.cp.fyre.ibm.com
+release-odm-ds-console-route   release-odm-ds-console-route-odm1.apps.pylocp49.cp.fyre.ibm.com
+release-odm-ds-runtime-route   release-odm-ds-runtime-route-odm1.apps.pylocp49.cp.fyre.ibm.com
 ```
 
-The redirect are built this way :
-* DC-REDIRECT_URL=https://DC-HOST/decisioncenter/openid/redirect/odm
-* DR-REDIRECT_URL=https://DR-HOST/DecisionRunner/openid/redirect/odm
-* DSC-REDIRECT_URL=https://DSC-HOST/res/openid/redirect/odm
-* DSR-REDIRECT_URL=https://DSR-HOST/DecisionService/openid/redirect/odm
+The redirect URIs are built this way:
 
-You must register these endpoints into your Okta application.
+- Decision Center redirect URI:  https://<DC_HOST>/decisioncenter/openid/redirect/odm
+- Decision Runtime redirect URI:  https://<DR_HOST/DecisionRunner/openid/redirect/odm
+- Decision Server Console redirect URI:  https://<DS_CONSOLE_HOST>/res/openid/redirect/odm
+- Decision Server Runtime redirect URI:  https://<DS_RUNTIME_HOST>/DecisionService/openid/redirect/odm
+
+You must register these endpoints into your Okta application:
+
+- Menu Applications / Applications
+  - Select ODM Application.
+  - On the General tab, click Edit on the General Settings section.
+  - In the LOGIN section, click on + Add URI in the Sign-in redirect URIs section and add the Decision Center redirect URI you got earlier (https://<DC_HOST>/decisioncenter/openid/redirect/odm -- don't forget to replace <DC_HOST> by your actual host name!)
+  - Repeat the previous step for all other three redirect URIs.
+  - Click Save at the bottom of the LOGIN section.
+
+![Sign-in redirect URIs](Sign-in_redirect_URIs.png)
