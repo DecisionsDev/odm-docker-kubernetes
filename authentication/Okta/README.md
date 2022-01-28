@@ -184,7 +184,7 @@ You have to check that the login name and groups are available in the ID token u
       *  OAuth/OIDC client: ODM Application
       *  Grant type: Authorization Code
       *  User: ``<YourEmailAddress>``
-      *  Scopes: openid
+      *  Scopes: odmapiusers
       * Click the Preview Token button
 
 As result the id_token tab as well as in the token tab should contains:
