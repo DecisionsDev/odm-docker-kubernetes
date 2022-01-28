@@ -48,19 +48,19 @@ Terminology:
 
 The Client Credentials flow is intended for server-side (AKA "confidential") client applications with no end user, which normally describes machine-to-machine communication. The application must be server-side because it must be trusted with the client secret, and since the credentials are hard-coded, it can't be used by an actual end user. It involves a single, authenticated request to the /token endpoint, which returns an access token.
 
-![Okta Client Credential Flow](../../images/oauth_client_creds_flow.png)
+![Okta Client Credential Flow](../../images/oauth_client_creds_flow.png) (© Okta)
 
 The Authorization Code flow is best used by server-side apps where the source code isn't publicly exposed. The apps should be server-side because the request that exchanges the authorization code for a token requires a client secret, which has to be stored in your client. The server-side app requires an end user, however, because it relies on interaction with the end user's web browser, which redirects the user and then receives the authorization code.
 
 Auth Code flow width:
 
-![image](https://user-images.githubusercontent.com/24404215/135082320-6c8d3506-5d93-4c87-83b5-728eebbcd321.png)
+![image](https://user-images.githubusercontent.com/24404215/135082320-6c8d3506-5d93-4c87-83b5-728eebbcd321.png) (© Okta)
 
 ## Prerequisites
 
 First, install the following software on your machine:
 
-- [Helm v3](https://github.com/helm/helm/releases)
+- [Helm v3](https://helm.sh/docs/intro/install/)
 - [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl)
 - Access to an Operational Decision Manager Product
 - A CNCF Kubernetes cluster
