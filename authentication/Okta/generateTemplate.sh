@@ -11,20 +11,22 @@ Usage: $(basename "$0") [-<option letter> <option value>] [-h]
 
 Options:
 
--g : Okta ODM Group"
--i : Client ID"
--s : Okta Server URL"
--x : Cient Secret"
+-g : Okta ODM Group
+-i : Client ID
+-n : Okta domain (Okta server name)
+-s : API scope
+-x : Cient Secret
 
-Usage example: $0 -i OktaclientId -x OktaclientSecret -s https://fr-ibmodmdev.okta.com -g odm-admin"
+Usage example: $0 -i OktaclientId -x OktaclientSecret -s odmapiusers -n fr-ibmodmdev.okta.com -g odm-admin"
 EOF
 }
 
-while getopts "x:i:s:g:h" option; do
+while getopts "x:i:n:s:g:h" option; do
     case "${option}" in
         g) OKTA_ODM_GROUP=${OPTARG};;
         i) OKTA_CLIENT_ID=${OPTARG};;
-        s) OKTA_SERVER_NAME=${OPTARG};;
+        n) OKTA_SERVER_NAME=${OPTARG};;
+        s) OKTA_API_SCOPE=${OPTARG};;
         x) OKTA_CLIENT_SECRET=${OPTARG};;
         h) usage; exit 0;;
         *) usage; exit 1;;
@@ -40,7 +42,11 @@ if [[ -z ${OKTA_CLIENT_ID} ]]; then
   exit 1
 fi
 if [[ -z ${OKTA_SERVER_NAME} ]]; then
-  echo "OKTA_SERVER_NAME has to be provided, either as in environment or with -s."
+  echo "OKTA_SERVER_NAME has to be provided, either as in environment or with -n."
+  exit 1
+fi
+if [[ -z ${OKTA_API_SCOPE} ]]; then
+  echo "OKTA_API_SCOPE has to be provided, either as in environment or with -s."
   exit 1
 fi
 if [[ -z ${OKTA_CLIENT_SECRET} ]]; then
@@ -55,10 +61,11 @@ fi
 
 mkdir -p $OUTPUT_DIR && cp $TEMPLATE_DIR/* $OUTPUT_DIR
 echo "Generating files for Okta"
-sed -i ''  's|OKTA_SERVER_URL|'$OKTA_SERVER_URL'|g' $OUTPUT_DIR/*.*
-sed -i ''  's|OKTA_CLIENT_SECRET|'$OKTA_CLIENT_SECRET'|g' $OUTPUT_DIR/*.*
+sed -i ''  's|OKTA_API_SCOPE|'$OKTA_API_SCOPE'|g' $OUTPUT_DIR/*.*
 sed -i ''  's|OKTA_CLIENT_ID|'$OKTA_CLIENT_ID'|g' $OUTPUT_DIR/*.*
+sed -i ''  's|OKTA_CLIENT_SECRET|'$OKTA_CLIENT_SECRET'|g' $OUTPUT_DIR/*.*
 sed -i ''  's|OKTA_ODM_GROUP|'$OKTA_ODM_GROUP'|g' $OUTPUT_DIR/*.*
+sed -i ''  's|OKTA_SERVER_URL|'$OKTA_SERVER_URL'|g' $OUTPUT_DIR/*.*
 # Claim replacement
 sed -i ''  's|OKTA_CLAIM_GROUPS|'$OKTA_CLAIM_GROUPS'|g' $OUTPUT_DIR/*.*
 sed -i ''  's|OKTA_CLAIM_LOGIN|'$OKTA_CLAIM_LOGIN'|g' $OUTPUT_DIR/*.*

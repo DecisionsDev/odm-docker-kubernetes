@@ -128,17 +128,18 @@ In this section we will explain how to:
 TODO BLABLA
 
 - Menu Security -> API
-  - Click default link of Authorization server
+  - Click default link of authorization server
 
-Note that the discovery endpoint can be found in the settings tag as Metadata URI. Menu Security -> API -> default (link) -> Metadata URI (link).
-To be more secured we will use the client credential flow for the ODM Rest API call. This require to create a specific restricted scope.
+Note that the discovery endpoint can be found in the settings tag as Metadata URI. Menu Security / API / default / Metadata URI.
+
+To be more secured we will use the client credential flow for the ODM Rest API call. This requires to create a specific restricted scope (named OKTA_API_SCOPE later in this article).
 
 - Click Scopes tab
 - Click 'Add Scope' Button
   - Name : odmapiusers
   - Click 'Create' Button
 
-We need to augment the token by the useridentifier and group properties that will be used for the ODM authentication and authorization mechanism.
+We need to augment the token by the user identifier and group properties that will be used for the ODM authentication and authorization mechanism.
 
 * Select Claims tab
 
@@ -171,7 +172,7 @@ We need to augment the token by the useridentifier and group properties that wil
 ![Add Claim Result](ResultAddClaims.png)
 
 You can verify the content of the token with the Token Preview panel.
-You have to check that the login name and groups are available in the id token using the authorization flow which the flow used by ODM.
+You have to check that the login name and groups are available in the ID token using the authorization flow which the flow used by ODM.
 
    *  Click the Token Preview
       *  OAuth/OIDC client: ODM Application
@@ -223,8 +224,8 @@ Make a note of the secret name so that you can set it for the image.pullSecrets 
 The following steps require to retrieve this informations from Okta console:
 
 - Log into Okta console
-- Go to Security->API
-- Note the OKTA_SERVER_NAME which is the server part of the default Issuer URI (it will be something like "<shortname>.okta.com").
+- Go to Application / Application / ODM Application
+- Note the OKTA_SERVER_NAME which is the Okta domain in the General Settings of the application (it will be something like "<shortname>.okta.com").
 
 ## Create a secret with the Okta Server certificate
 
@@ -247,6 +248,7 @@ To configure ODM with Okta, we need to provide 4 files:
 
 We provide a [script](generateTemplate.sh) allowing to generate these 4 files according to your OKTA_SERVER_NAME, OKTA_CLIENT_ID, OKTA_CLIENT_SECRET and OKTA_ODM_GROUP parameters:
 
+- OKTA_API_SCOPE has been defined [above](#configure-the-default-authorization-server)
 - OKTA_SERVER_NAME has been obtained from [previous step](#retrieve-okta-server-information)
 - Both OKTA_CLIENT_ID and OKTA_CLIENT_SECRET are listed in your ODM Application, section General / Client Credentials
 - OKTA_ODM_GROUP is the ODM Admin group we created in a [previous step](#manage-group-and-user) (odm-admin)

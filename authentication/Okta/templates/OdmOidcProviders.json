@@ -6,7 +6,7 @@
           "authorizationURL": "OKTA_SERVER_URL/oauth2/default/v1/authorize",
           "tokenURL": "OKTA_SERVER_URL/oauth2/default/v1/token",
           "introspectionURL": "OKTA_SERVER_URL/oauth2/default/v1/introspect",
-          "scope": "odmapiusers",
+          "scope": "OKTA_API_SCOPE",
           "clientId": "OKTA_CLIENT_ID",
           "clientSecret": "OKTA_CLIENT_SECRET"
       }
