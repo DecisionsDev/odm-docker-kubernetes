@@ -21,7 +21,7 @@
 
 # Introduction
 
-In the context of the IBM Cloud Pak for Business Automation or ODM on Certified Kubernetes offering, Operational Decision Manager for production can be configured with an external OpenID Connect server (OIDC Provider) such as Okta Server.
+In the context of the IBM Cloud Pak for Business Automation or ODM on Certified Kubernetes offering, Operational Decision Manager for production can be configured with an external OpenID Connect server (OIDC Provider) such as Okta service.
 
 ## What is Okta?
 
@@ -29,11 +29,11 @@ Okta is a secure identity cloud that links all your apps, logins and devices int
 
 ## About this task
 
-You need to create a number of secrets before you can install an ODM instance with an external OIDC provider such as Okta server and use web application single sign-on (SSO). The following diagram shows the ODM services with an external OIDC provider after a successful installation.
+You need to create a number of secrets before you can install an ODM instance with an external OIDC provider such as Okta service and use web application single sign-on (SSO). The following diagram shows the ODM services with an external OIDC provider after a successful installation.
 
 ![ODM web application SSO](/images/Okta/diag_oidc_interaction.jpg)
 
-The following procedure describes how to manually configure ODM with an Okta Connect server.
+The following procedure describes how to manually configure ODM with an Okta service.
 
 ## ODM OpenID flows
 
