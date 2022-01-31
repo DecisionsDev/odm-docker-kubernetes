@@ -256,6 +256,42 @@ The certificate must be the same as the one you used to enable TLS connections i
 
 ## Install an ODM Helm release using the GKE loadbalancer (10 min)
 
+### Manage a PV containing the JDBC driver
+
+1/ [Enable the SCI FileStore Driver]<https://cloud.google.com/kubernetes-engine/docs/how-to/persistent-volumes/filestore-csi-driver#console_1>
+
+2/ Create the [filestore-example](filestore-example.yaml) storageClass
+
+```
+kubectl apply -f filestore-example.yaml
+```
+
+3/ Create the [customdatasource-pvc](customdatasource-pvc.yaml) PVC using the filestore-example StorageClass in ReadWriteOnce access Mode
+So, we can copy the driver on the PV.
+
+```
+kubectl apply -f customdatasource-pvc.yaml
+```
+
+4/ Create a [nginx](nginx.yaml) pod using this PVC that will be used only to copy the driver because this container is accessible as root.
+
+```
+kubectl apply -f nginx.yaml
+```
+
+5/ Copy the Google Cloud PostgresSQL driver on the nginx pod
+
+```
+kubectl cp postgres-socket-factory-<X.X.X>-jar-with-driver-and-dependencies.jar nginx-app-pod:/usr/share/nginx/html
+```
+
+6/ Change the PV accessmode to ReadOnlyMany
+This way, all ODM containers will be able to access the PV as readonly and scheduled on several node
+
+```
+kubectl patch pv <PV-NAME> -p '{"spec":{"accessModes":["ReadOnlyMany"]}}'
+```
+
 ### Install the ODM release
 
 You can now install the product:
