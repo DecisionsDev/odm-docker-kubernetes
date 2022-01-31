@@ -300,7 +300,7 @@ It should be something like in the following extract:
   serverName="<postgresqlserver>.postgres.database.azure.com" />
 ```
 
-Create a secret with this two modified files
+Create a secret with these two modified files
 
 ```
 kubectl create secret generic <customdatasourcesecret> \
