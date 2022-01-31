@@ -252,6 +252,12 @@ openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mycompany.key \
         -out mycompany.crt -subj "/CN=mycompany.com/OU=it/O=mycompany/L=Paris/C=FR"
 ```
 
+2. Create a TLS secret with these keys
+
+```
+kubectl create secret tls mycompany-crt-secret --key mycompany.key --cert mycompany.crt
+```
+
 The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://www.ibm.com/docs/en/odm/8.11.0?topic=servers-server-certificates) and [Working with certificates and SSL](https://docs.oracle.com/cd/E19830-01/819-4712/ablqw/index.html).
 
 ## Install an ODM Helm release using the GKE loadbalancer (10 min)
@@ -296,12 +302,18 @@ kubectl patch pv <PV-NAME> -p '{"spec":{"accessModes":["ReadOnlyMany"]}}'
 
 You can now install the product:
 
+The ODM instance is using the externalCustomDatabase parameters to import the PostgreSQL datasource and driver.
+The ODM services will be exposed with an Ingress using the previously created mycompany certificate.
+It will create automatically an HTTPS GKE loadbalancer. So, we disable the ODM internal TLS as it's not needed.
+We use a kustomize as post-rendering to change the decision server readiness because the GKE loadbalancer is using it to create service healthCheck that recquires 200 as response code (ODM default is 301).
+
 ```
-helm install <release> ibmcharts/ibm-odm-prod --version 21.3.0 \
+helm install <release> ibmcharts/ibm-odm-prod \
         --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=<registrysecret> \
-        --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.11.0.0} --set service.type=LoadBalancer \
-        --set externalCustomDatabase.datasourceRef=<customdatasourcesecret> \
-        --set customization.securitySecretRef=<mycompanystore>
+        --set externalCustomDatabase.datasourceRef=<customdatasourcesecret> --set externalCustomDatabase.driverPvc=customdatasource-pvc \
+        --set service.enableTLS=false --set service.ingress.tlsSecretRef=mycompany-crt-secret \
+        --set service.ingress.enabled=true --set service.ingress.host=mycompany.com --set service.ingress.tlsHosts={"mycompany.com"} \
+        --post-renderer ./kustomize
 ```
 
 ### Check the topology
