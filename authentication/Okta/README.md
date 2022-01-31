@@ -291,7 +291,7 @@ ibmcharts/ibm-odm-prod	21.3.0       	8.11.0.0   	IBM Operational Decision Manage
 You can now install the product. We will use the PostgreSQL internal database and disable the data persistence (internalDatabase.persistence.enabled=false) to avoid any platform complexity concerning persistent volume allocation.
 
 ```
-helm install release ibmcharts/ibm-odm-prod --version 21.3.0 \
+helm install release ibmcharts/ibm-odm-prod \
         --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
         --set oidc.enabled=true \
         --set internalDatabase.persistence.enabled=false \
