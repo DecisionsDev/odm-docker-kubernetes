@@ -130,78 +130,26 @@ kubectl get pods
 ```
 
 
-## Create the PostgreSQL Azure instance (10 min)
+## Create the Google Cloud SQL PostgreSQL instance (10 min)
 
-### Create an Azure Database for PostgreSQL
+We will use the Google Cloud Console to create this instance :
 
-Create an Azure Database for PostgreSQL server by running the `az postgres server create` command. A server can contain multiple databases.
+- Go on the [SQL context](https://console.cloud.google.com/sql) and click on the "CREATE INSTANCE" button
+- Choose PostgreSQL
+  * Take "PostgreSQL 13" as database version
+  * Choose a region similar to the cluster. So, the communication is optimal between the database and the ODM instance
+  * Keep "Multiple zones" for Zonal availability to the highest availability
+  * Expand "Customize your instance" and Expand "Connections"
+  * As Public IP is selected by default, click on the "ADD NETWORK" button, put a name and add "0.0.0.0/0" for Network, then click on "DONE"
 
-```
-az postgres server create --name <postgresqlserver> --resource-group <resourcegroup> \
-                          --admin-user myadmin --admin-password 'passw0rd!' \
-                          --sku-name GP_Gen5_2 --version 11 [--location <azurelocation>]
-```
 
-> Note:  The PostgreSQL server name must be unique within Azure.
+When created, you can drill on the SQL instance overview to retrieve needed information to connect to this instance like the IP adress and the connection name :
 
-Verify the database.
-To connect to your server, you need to provide host information and access credentials.
+<img width="1000" height="630" src='./images/database_overview.png'/>
 
-```
-az postgres server show --name <postgresqlserver> --resource-group <resourcegroup>
-```
+A default "postgres" database is created with a default "postgres" user. You can change the password of the postgres user by using the Users panel, selecting the postgres user, and using the "Change password" menu :
 
-Result:
-
-```json
-{
-  "administratorLogin": "myadmin",
-  "byokEnforcement": "Disabled",
-  "earliestRestoreDate": "2022-01-06T09:15:54.563000+00:00",
-  "fullyQualifiedDomainName": "<postgresqlserver>.postgres.database.azure.com",
-  "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-5242e4507709/resourceGroups/<resourcegroup>/providers/Microsoft.DBforPostgreSQL/servers/<postgresqlserver>",
-  "identity": null,
-  "infrastructureEncryption": "Disabled",
-  "location": "<azurelocation>",
-  "masterServerId": "",
-  "minimalTlsVersion": "TLSEnforcementDisabled",
-  "name": "<postgresqlserver>",
-  "privateEndpointConnections": [],
-  "publicNetworkAccess": "Enabled",
-  "replicaCapacity": 5,
-  "replicationRole": "None",
-  "resourceGroup": "<resourcegroup>",
-  "sku": {
-    "capacity": 2,
-    "family": "Gen5",
-    "name": "GP_Gen5_2",
-    "size": null,
-    "tier": "GeneralPurpose"
-  },
-  "sslEnforcement": "Enabled",
-  "storageProfile": {
-    "backupRetentionDays": 7,
-    "geoRedundantBackup": "Disabled",
-    "storageAutogrow": "Enabled",
-    "storageMb": 51200
-  },
-  "tags": null,
-  "type": "Microsoft.DBforPostgreSQL/servers",
-  "userVisibleState": "Ready",
-  "version": "11"
-}
-```
-
-Make a note of the server name that is displayed in the JSON output (e.g.: "fullyQualifiedDomainName": "<postgresqlserver>.postgres.database.azure.com") as it will be used [later](#create-the-datasource-secrets-for-azure-postgresql).
-
-###  Create a firewall rule that allows access from Azure services
-
-To make sure your database and your AKS cluster can communicate, put in place firewall rules with the following command:
-
-```
-az postgres server firewall-rule create --resource-group <resourcegroup> --server-name <postgresqlserver> \
-            --name <rulename> --start-ip-address 0.0.0.0 --end-ip-address 255.255.255.255
-```
+<img width="1000" height="360" src='./images/database_changepassword.png'/>
 
 ## Prepare your environment for the ODM installation
 
@@ -254,38 +202,48 @@ ibmcharts/ibm-odm-prod	20.3.0       	8.10.5.0   	IBM Operational Decision Manage
 
 You can now proceed to the [datasource secret's creation](#create-the-datasource-secrets-for-azure-postgresql).
 
-### Create the datasource secrets for Azure PostgreSQL
+### Create the datasource secrets for Google Cloud SQL PostgreSQL
 
-Copy the files [ds-bc.xml.template](ds-bc.xml.template) and [ds-res.xml.template](ds-res.xml.template) on your local machine and rename them to `ds-bc.xml` and `ds-res.xml`.
+The Google Cloud SQL PostgreSQL connection will be done using [Cloud SQL Connector for Java](https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory#cloud-sql-connector-for-java)
+
+If you don't want to build the driver, you can get the last [driver](https://storage.googleapis.com/cloud-sql-java-connector/) named postgres-socket-factory-X.X.X-jar-with-driver-and-dependencies.jar.
+
+We realised the test with the driver version [postgres-socket-factory-1.4.2-jar-with-driver-and-dependencies.jar](https://storage.googleapis.com/cloud-sql-java-connector/v1.4.2/postgres-socket-factory-1.4.2-jar-with-driver-and-dependencies.jar)
+
+Copy the files [datasource-dc.xml.template](datasource-dc.xml.template) and [datasource-ds.xml.template](datasource-ds.xml.template) on your local machine and rename them to `datasource-dc.xml` and `datasource-ds.xml`.
 
 Replace the following placeholers:
-- DBNAME: The database name
-- USERNAME: The database username 
+- DRIVER_VERSION: The Cloud SQL Connector for Java Version (ex : 1.4.2)
+- IP: The public IP adress
+- CONNECTION_NAME: The database connection name
+- DBNAME: The database name (default is postgres)
+- USERNAME: The database username (default is postgres)
 - PASSWORD: The database password
-- SERVERNAME: The name of the database server
 
 It should be something like in the following extract:
 
 ```xml
- <properties
-  databaseName="postgres"
-  user="myadmin@<postgresqlserver>"
-  password="passw0rd!"
-  portNumber="5432"
-  sslMode="require"
-  serverName="<postgresqlserver>.postgres.database.azure.com" />
+...
+ <library id="postgresql-library">
+            <fileset id="postgresql-fileset"  dir="/drivers" includes="postgres-socket-factory-<DRIVER_VERSION>-jar-with-driver-and-dependencies.jar" />
+  </library>
+...
+        <properties URL="jdbc:postgresql://<IP>/<DBNAME>?cloudSqlInstance=<CONNECTION_NAME>;socketFactory=com.google.cloud.sql.postgres.SocketFactory"
+                        user="<USERNAME>"
+                        password="<PASSWORD>"/>
+...
 ```
 
 Create a secret with this two modified files
 
 ```
 kubectl create secret generic <customdatasourcesecret> \
-        --from-file datasource-ds.xml=ds-res.xml --from-file datasource-dc.xml=ds-bc.xml
+        --from-file datasource-ds.xml --from-file datasource-dc.xml
 ```
 
 ### Manage a digital certificate (10 min)
 
-1. (Optional) Generate a self-signed certificate
+1. Generate a self-signed certificate
 
 If you do not have a trusted certificate, you can use OpenSSL and other cryptography and certificate management libraries to generate a certificate file and a private key, to define the domain name, and to set the expiration date. The following command creates a self-signed certificate (.crt file) and a private key (.key file) that accept the domain name *mycompany.com*. The expiration is set to 1000 days:
 
@@ -294,36 +252,9 @@ openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mycompany.key \
         -out mycompany.crt -subj "/CN=mycompany.com/OU=it/O=mycompany/L=Paris/C=FR"
 ```
 
-2. Generate a JKS version of the certificate to be used in the ODM container 
-
-```
-openssl pkcs12 -export -passout pass:password -passin pass:password \
-      -inkey mycompany.key -in mycompany.crt -name mycompany -out mycompany.p12
-keytool -importkeystore -srckeystore mycompany.p12 -srcstoretype PKCS12 \
-      -srcstorepass password -destkeystore mycompany.jks \
-      -deststoretype JKS -deststorepass password
-keytool -import -v -trustcacerts -alias mycompany -file mycompany.crt \
-      -keystore truststore.jks -storepass password -storetype jks -noprompt
-```
-
-3. Create a Kubernetes secret with the certificate
-
-```
-kubectl create secret generic <mycompanystore> --from-file=keystore.jks=mycompany.jks \
-                                               --from-file=truststore.jks=truststore.jks \
-                                               --from-literal=keystore_password=password \
-                                               --from-literal=truststore_password=password
-```
-
 The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://www.ibm.com/docs/en/odm/8.11.0?topic=servers-server-certificates) and [Working with certificates and SSL](https://docs.oracle.com/cd/E19830-01/819-4712/ablqw/index.html).
 
-## Install an ODM Helm release and expose it with the service type LoadBalancer (10 min)
-
-### Allocate public IP addresses
-
-```
-az aks update --name <cluster> --resource-group <resourcegroup> --load-balancer-managed-outbound-ip-count 4
-```
+## Install an ODM Helm release using the GKE loadbalancer (10 min)
 
 ### Install the ODM release
 
