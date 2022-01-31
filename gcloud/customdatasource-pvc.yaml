@@ -1,11 +1,11 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: customdatasource-pvc
+  name: customdatasource-pvc
 spec:
-  accessModes:
-    - ReadWriteOnce
-  storageClassName: "filestore-example"
-  resources:
-    requests:
-      storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: "filestore-example"
+  resources:
+    requests:
+      storage: 1Gi
