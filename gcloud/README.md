@@ -264,7 +264,7 @@ The certificate must be the same as the one you used to enable TLS connections i
 
 ### Manage a PV containing the JDBC driver
 
-1/ [Enable the SCI FileStore Driver]<https://cloud.google.com/kubernetes-engine/docs/how-to/persistent-volumes/filestore-csi-driver#console_1>
+1/ [Enable the SCI FileStore Driver](https://cloud.google.com/kubernetes-engine/docs/how-to/persistent-volumes/filestore-csi-driver#console_1)
 
 2/ Create the [filestore-example](filestore-example.yaml) storageClass
 
