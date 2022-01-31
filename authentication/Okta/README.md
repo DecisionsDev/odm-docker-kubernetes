@@ -69,7 +69,7 @@ First, install the following software on your machine:
 
 ### Create an Okta account
 
-First, sign up for [a free Okta developer account](https://www.okta.com/free-trial/customer-identity/) that provides access for up to 1k monthly active users. You can skip this section of course if you already have one.
+First, sign up for [a free Okta developer account](https://www.okta.com/free-trial/customer-identity/). You can of course skip this section if you already have one. Beware, free Okta developer accounts are bound to [rate limits](https://developer.okta.com/docs/reference/rate-limits/) but it should not be a problem for a demo.
 
 # Configure Okta instance for ODM (Part 1)
 
