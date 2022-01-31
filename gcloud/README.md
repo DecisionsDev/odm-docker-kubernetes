@@ -329,22 +329,35 @@ NAME                                                   READY   STATUS    RESTART
 <release>-odm-decisionserverruntime-***                1/1     Running   0          20m
 ```
 
+### Check the Ingress and GKE LoadBalancer
+
+To get a status on the current deployment, you can go in the console to the [Kubernetes Engine/Services & Ingress Panel](https://console.cloud.google.com/kubernetes/ingress)
+The ingress is remaining in the "ingress creating" state several minutes until the pods are up and ready, and that the backend is getting an healthy state
+
+<img width="1000" height="308" src='./images/ingress_creating.png'/>
+
+You can also check the [load balancer status](https://console.cloud.google.com/net-services/loadbalancing/list/loadBalancers).
+It provides information about the backend using the service health check.
+
+<img width="1000" height="352" src='./images/loadbalancer.png'/>
+
+Entering inside the Ingress details, you should get an HEALTHY state on all backends.
+This panel is also providing some logs on the loadbalancer activity.
+When the Ingress is showing an OK status, the all ODM services can be accessed.
+
+<img width="1000" height="517" src='./images/ingress_details.png'/>
+
+
+
 ### Access ODM services
 
-By setting `service.type=LoadBalancer`, the services are exposed with a public IP to be accessed with the following command:
+We are using a self-signed certificate.
+So, to access ODM services, you have to edit your /etc/hosts file and add the following entry :
+<EXTERNAL_IP> mycompany.com
 
-```
-kubectl get services
-NAME                                        TYPE           CLUSTER-IP     EXTERNAL-IP       PORT(S)          AGE
-kubernetes                                  ClusterIP      10.0.0.1       <none>            443/TCP          26h
-<release>-odm-decisioncenter                LoadBalancer   10.0.141.125   xxx.xxx.xxx.xxx   9453:31130/TCP   22m
-<release>-odm-decisionrunner                LoadBalancer   10.0.157.225   xxx.xxx.xxx.xxx   9443:31325/TCP   22m
-<release>-odm-decisionserverconsole         LoadBalancer   10.0.215.192   xxx.xxx.xxx.xxx   9443:32448/TCP   22m
-<release>-odm-decisionserverconsole-notif   ClusterIP      10.0.201.87    <none>            1883/TCP         22m
-<release>-odm-decisionserverruntime         LoadBalancer   10.0.177.153   xxx.xxx.xxx.xxx   9443:31921/TCP   22m
-```
+You can get EXTERNAL_IP with :
 
-You can then open a browser on https://xxx.xxx.xxx.xxx:9443 to access Decision Server console, Decision Server Runtime, and Decision Runner, and on https://xxx.xxx.xxx.xxx:9453 to access Decision Center.
+kubectl get ingress <release>-odm-ingress -o jsonpath='{.items[].status.loadBalancer.ingress[].ip}'
 
 ## Install the IBM License Service and retrieve license usage
 
