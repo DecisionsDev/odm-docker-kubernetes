@@ -90,16 +90,44 @@ If your project is already created, you can also retrieve the gcloud
 There is several [type of clusters](https://cloud.google.com/kubernetes-engine/docs/concepts/types-of-clusters)
 We will choose to create a [regional cluster](https://cloud.google.com/kubernetes-engine/docs/how-to/creating-a-regional-cluster)
 
+Set the project (associated to a billing account)
+```
+gcloud config set project [PROJECT_NAME]
+```
+
+Set the zone:
+```
+gcloud config set compute/zone [ZONE (ex: europe-west1-b)]
+```
+
+Set the region:
+```
+gcloud config set compute/region [REGION (ex: europe-west1-b)]
+```
+
+Create a cluster by enabling autoscaling. Here, we starts with 4 node until 16
+```
+gcloud container clusters create [CLUSTER_NAME] --num-nodes 4 --enable-autoscaling --min-nodes 1 --max-nodes 16
+```
+
 You can also create your cluster from the Google Cloud Platform using the Kubernetes Engine Clusters panel, by clicking on the Create button
-
-
 
        
 ### Set up your environment to this cluster
 
 To manage a Kubernetes cluster, use kubectl, the Kubernetes command-line client.
+```
+gcloud container clusters get-credentials [CLUSTER_NAME]
+```
 
-When your cluster is created 
+You can also retrieve the command line to configure kubectl by going on the Google Cloud Console in the Kubernetes Engine>Cluster panel,  by selecting "Connect" on the dedicated cluster.
+
+<img width="1000" height="300" src='./images/connection.png'/>
+
+Now, you can check that kubectl is working fine.
+```
+kubectl get pods
+```
 
 
 ## Create the PostgreSQL Azure instance (10 min)
