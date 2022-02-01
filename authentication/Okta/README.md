@@ -103,6 +103,8 @@ Then create at least one user belonging to this new group:
     * Groups (optional): **odm-admin**
     * Click Save button
 
+![Add Person](/images/Okta/add_person.png)
+
 Repeat for each user you want to add.
 
 ## Setup an application
