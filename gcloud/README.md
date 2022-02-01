@@ -354,7 +354,9 @@ When the Ingress is showing an OK status, the all ODM services can be accessed.
 
 We are using a self-signed certificate.
 So, to access ODM services, you have to edit your /etc/hosts file and add the following entry :
+```
 <EXTERNAL-IP> mycompany.com
+```
 
 You can get the EXTERNAL-IP using the command line :
 
