@@ -363,7 +363,7 @@ Decision Center needs a sticky session management. The browser session is contai
 The ODM on k8s helm chart has [clientIP](https://kubernetes.io/docs/concepts/services-networking/service/#proxy-mode-ipvs) for the Decision Center session affinity. Unfortunately, GKE doesn't exploit it automatically.
 Obviously, you will not see this issue with the current deployment until you scale up the Decision Center deployment.
 
-A configuration using [BackendConfig](https://cloud.google.com/kubernetes-engine/docs/how-to/ingress-features#direct_health) is needed to manage it at the loadbalancer level.
+A configuration using [BackendConfig](https://cloud.google.com/kubernetes-engine/docs/how-to/ingress-features#session_affinity) is needed to manage it at the loadbalancer level.
 
 1. Create the [Decision Center Backend Config](decisioncenter-backendconfig.yaml)
 
