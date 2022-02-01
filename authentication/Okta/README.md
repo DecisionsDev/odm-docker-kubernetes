@@ -1,4 +1,4 @@
-<!-- TOC titleSize:2 tabSpaces:2 depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 skip:0 title:1 charForUnorderedList:* -->
+<!-- TOC titleSize:2 tabSpaces:2 depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 skip:0 title:1 charForUnorderedList:- -->
 ## Table of Contents
 - [Introduction](#introduction)
   - [What is Okta?](#what-is-okta)
@@ -54,7 +54,7 @@ The Client Credentials flow is intended for server-side (AKA "confidential") cli
 
 The Authorization Code flow is best used by server-side apps where the source code isn't publicly exposed. The apps should be server-side because the request that exchanges the authorization code for a token requires a client secret, which has to be stored in your client. The server-side app requires an end user, however, because it relies on interaction with the end user's web browser, which redirects the user and then receives the authorization code.
 
-Authentication Code flow:
+Auth Code flow width:
 
 ![Authentication flow](/images/Okta/Authentication_flow.png) (© Okta)
 
@@ -131,12 +131,10 @@ Repeat for each user you want to add.
 
 ## Configure the default Authorization Server
 
-In this steps we will augment the token with meta-informations require by the ODM OpenID configuration so ODM can manage the authentication and authorization mechanism.
+In this step we will augment the token with meta-information required by the ODM OpenID configuration so ODM can manage both authentication and authorization mechanisms.
 
 - Menu Security -> API
   - Click default link of authorization server
-
-Note that the discovery endpoint can be found in the settings tag as Metadata URI. Menu Security / API / default / Metadata URI.
 
 To be more secured we will use the client credential flow for the ODM Rest API call. This requires to create a specific restricted scope (named OKTA_API_SCOPE later in this article).
 
@@ -198,6 +196,8 @@ As result the id_token tab as well as in the token tab should contains:
 ```
 
 ![Token Preview](/images/Okta/TokenPreview.png)
+
+>Note:  The discovery endpoint can be found in Security / API / default as Metadata URI.
 
 # Deploy ODM on container configured with Okta Server (Part 2)
 
