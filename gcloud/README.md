@@ -57,6 +57,7 @@ Without the relevant billing level, some google cloud resources will not be crea
     * [Install the ODM release](#install-the-odm-release)
     * [Check the topology](#check-the-topology)
     * [Check the Ingress and GKE LoadBalancer](#check-the-ingress-and-gke-loadbalancer)
+    * [(Optional) Create a Backend Configuration for the Decision Center Service](#optional-create-a-backend-configuration-for-the-decision-center-service)
     * [Access ODM services](#access-odm-services)
   * [Install the IBM License Service and retrieve license usage](#install-the-ibm-license-service-and-retrieve-license-usage)
     * [Create a NGINX Ingress controller](#create-a-nginx-ingress-controller)
@@ -271,35 +272,35 @@ Warning  FailedAttachVolume  ... : googleapi: Error 400: RESOURCE_IN_USE_BY_AN
 To workaound this issue, we will use a ReadWriteOnce PV used by an NGINX pod that has the root permission to copy the driver.
 Then, we will change the PV permission to ReadOnlyMany before to launch the ODM release in order to be able to install ODM on many nodes.
 
-1/ [Enable the SCI FileStore Driver](https://cloud.google.com/kubernetes-engine/docs/how-to/persistent-volumes/filestore-csi-driver#console_1)
+1. [Enable the SCI FileStore Driver](https://cloud.google.com/kubernetes-engine/docs/how-to/persistent-volumes/filestore-csi-driver#console_1)
 
-2/ Create the [filestore-example](filestore-example.yaml) storageClass
+2. Create the [filestore-example](filestore-example.yaml) storageClass
 
 ```
 kubectl apply -f filestore-example.yaml
 ```
 
-3/ Create the [customdatasource-pvc](customdatasource-pvc.yaml) PVC using the filestore-example StorageClass in ReadWriteOnce access Mode
+3. Create the [customdatasource-pvc](customdatasource-pvc.yaml) PVC using the filestore-example StorageClass in ReadWriteOnce access Mode
 So, we can copy the driver on the PV.
 
 ```
 kubectl apply -f customdatasource-pvc.yaml
 ```
 
-4/ Create a [nginx](nginx.yaml) pod using this PVC that will be used only to copy the driver because this container is accessible as root.
+4. Create a [nginx](nginx.yaml) pod using this PVC that will be used only to copy the driver because this container is accessible as root.
 
 ```
 kubectl apply -f nginx.yaml
 ```
 
-5/ Copy the Google Cloud PostgresSQL driver on the nginx pod
+5. Copy the Google Cloud PostgresSQL driver on the nginx pod
 
 ```
 export NGINX_COPY_POD=$(kubectl get pod | grep nginx-driver-copy)
 kubectl cp postgres-socket-factory-<X.X.X>-jar-with-driver-and-dependencies.jar $(NGINX_COPY_POD):/usr/share/nginx/html
 ```
 
-6/ Change the PV accessmode to ReadOnlyMany
+6. Change the PV accessmode to ReadOnlyMany
 This way, all ODM containers will be able to access the PV as readonly and scheduled on several node
 
 ```
@@ -356,7 +357,25 @@ When the Ingress is showing an OK status, the all ODM services can be accessed.
 
 <img width="1000" height="517" src='./images/ingress_details.png'/>
 
+### (Optional) Create a Backend Configuration for the Decision Center Service
 
+Decision Center needs a sticky session management. The browser session is containing a cookie that is recognized on container side to allow to work with the Business Console. So, we need that a browser alive session is always managed during all is life by the same container.
+The ODM on k8s helm chart has [clientIP](https://kubernetes.io/docs/concepts/services-networking/service/#proxy-mode-ipvs) for the Decision Center session affinity. Unfortunately, GKE doesn't exploit it automatically.
+Obviously, you will not see this issue with the current deployment until you scale up the Decision Center deployment.
+
+A configuration using [BackendConfig](https://cloud.google.com/kubernetes-engine/docs/how-to/ingress-features#direct_health) is needed to manage it at the loadbalancer level.
+
+1. Create the [Decision Center Backend Config](decisioncenter-backendconfig.yaml)
+
+```
+kubectl apply -f nginx.yaml
+```
+
+2. Annotate the Decision Center Service with this GKE Backend Config
+
+```
+kubectl annotate service <release>-odm-decisioncenter cloud.google.com/backend-config=dc-backendconfig
+```
 
 ### Access ODM services
 
