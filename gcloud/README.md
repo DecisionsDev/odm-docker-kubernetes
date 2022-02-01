@@ -240,7 +240,7 @@ kubectl create secret generic <customdatasourcesecret> \
         --from-file datasource-ds.xml --from-file datasource-dc.xml
 ```
 
-### Manage a digital certificate (2 min)
+### Manage a digital certificate (2 min)
 
 1. Generate a self-signed certificate
 
