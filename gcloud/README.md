@@ -1,9 +1,11 @@
 # Deploying IBM Operational Decision Manager on Google GKE
 
-This project demonstrates how to deploy an IBM® Operational Decision Manager (ODM) clustered topology on the Google Kubernetes Engine (GKE) cloud service. This deployment implements Kubernetes and Docker technologies.
+This project demonstrates how to deploy an IBM® Operational Decision Manager (ODM) clustered topology thanks to the [container-native load balancer of GKE](https://cloud.google.com/blog/products/containers-kubernetes/container-native-load-balancing-on-gke-now-generally-available). 
+The ODM services will be exposed using the Ingress provided by ODM on k8s Helm chart. 
+This deployment implements Kubernetes and Docker technologies.
 Here is the home page of Google Cloud: https://cloud.google.com
 
-<img width="800" height="560" src='./images/aks-schema.jpg'/>
+<img width="800" height="560" src='./images/gke-schema.jpg'/>
 
 The ODM Docker material is available in Passport Advantage. It includes Docker container images and Helm chart descriptors.
 
