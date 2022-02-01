@@ -17,6 +17,7 @@
   - [Create a secret to configure ODM with Okta](#create-a-secret-to-configure-odm-with-okta)
   - [Install your ODM Helm release](#install-your-odm-helm-release)
   - [Register the ODM redirect URL](#register-the-odm-redirect-url)
+- [License](#license)
 <!-- /TOC -->
 
 # Introduction
@@ -341,3 +342,7 @@ You must register these endpoints into your Okta application:
   - Click Save at the bottom of the LOGIN section.
 
 ![Sign-in redirect URIs](/images/Okta/Sign-in_redirect_URIs.png)
+
+# License
+
+[Apache 2.0](/LICENSE)
