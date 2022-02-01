@@ -196,9 +196,6 @@ Check you can access ODM's charts:
 helm search repo ibm-odm-prod --versions                  
 NAME                  	CHART VERSION	APP VERSION	DESCRIPTION                     
 ibmcharts/ibm-odm-prod	21.3.0       	8.11.0.0   	IBM Operational Decision Manager
-ibmcharts/ibm-odm-prod	21.2.0       	8.10.5.1   	IBM Operational Decision Manager
-ibmcharts/ibm-odm-prod	21.1.0       	8.10.5.0   	IBM Operational Decision Manager
-ibmcharts/ibm-odm-prod	20.3.0       	8.10.5.0   	IBM Operational Decision Manager
 ```
 
 You can now proceed to the [datasource secret's creation](#create-the-datasource-secrets-for-azure-postgresql).
