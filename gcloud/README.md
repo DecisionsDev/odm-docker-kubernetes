@@ -380,7 +380,7 @@ Now, you can access all ODM services with the following URL :
 
 You can also click on the Ingress routes accessible from the Google Cloud console below the [Kubernetes Engine/Services & Ingress Details Panel](https://console.cloud.google.com/kubernetes/ingresses)
 
-<img width="1000" height="532" src='./images/ingress_details.png'/>
+<img width="1000" height="532" src='./images/ingress_routes.png'/>
 
 
 ## Install the IBM License Service and retrieve license usage
