@@ -296,7 +296,8 @@ kubectl cp postgres-socket-factory-<X.X.X>-jar-with-driver-and-dependencies.jar 
 This way, all ODM containers will be able to access the PV as readonly and scheduled on several node
 
 ```
-kubectl patch pv <PV-NAME> -p '{"spec":{"accessModes":["ReadOnlyMany"]}}'
+export PV_NAME=$(kubectl get pvc customdatasource-pvc -o jsonpath={.spec.volumeName})
+kubectl patch pv $PV_NAME -p '{"spec":{"accessModes":["ReadOnlyMany"]}}'
 ```
 
 ### Install the ODM release
