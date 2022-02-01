@@ -51,7 +51,7 @@ Without the relevant billing level, some google cloud resources will not be crea
   * [Prepare your environment for the ODM installation](#prepare-your-environment-for-the-odm-installation)
     * [Using the IBM Entitled registry with your IBMid (10 min)](#using-the-ibm-entitled-registry-with-your-ibmid-10-min)
     * [Create the datasource secrets for Google Cloud SQL PostgreSQL](#create-the-datasource-secrets-for-google-cloud-sql-postgresql)
-    * [Manage a digital certificate (10 min)](#manage-a-digital-certificate-10-min)
+    * [Manage a digital certificate (2 min)](#manage-a-digital-certificate-2-min)
   * [Install an ODM Helm release using the GKE loadbalancer (10 min)](#install-an-odm-helm-release-using-the-gke-loadbalancer-10-min)
     * [Manage a PV containing the JDBC driver](#manage-a-pv-containing-the-jdbc-driver)
     * [Install the ODM release](#install-the-odm-release)
@@ -240,7 +240,7 @@ kubectl create secret generic <customdatasourcesecret> \
         --from-file datasource-ds.xml --from-file datasource-dc.xml
 ```
 
-### Manage a digital certificate (10 min)
+### Manage a digital certificate (2 min)
 
 1. Generate a self-signed certificate
 
