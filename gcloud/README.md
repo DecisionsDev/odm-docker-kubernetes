@@ -57,7 +57,7 @@ Without the relevant billing level, some google cloud resources will not be crea
     * [Install the ODM release](#install-the-odm-release)
     * [Check the topology](#check-the-topology)
     * [Check the Ingress and GKE LoadBalancer](#check-the-ingress-and-gke-loadbalancer)
-    * [(Optional) Create a Backend Configuration for the Decision Center Service](#optional-create-a-backend-configuration-for-the-decision-center-service)
+    * [Create a Backend Configuration for the Decision Center Service](#create-a-backend-configuration-for-the-decision-center-service)
     * [Access ODM services](#access-odm-services)
   * [Install the IBM License Service and retrieve license usage](#install-the-ibm-license-service-and-retrieve-license-usage)
     * [Create a NGINX Ingress controller](#create-a-nginx-ingress-controller)
@@ -357,7 +357,7 @@ When the Ingress is showing an OK status, the all ODM services can be accessed.
 
 <img width="1000" height="517" src='./images/ingress_details.png'/>
 
-### (Optional) Create a Backend Configuration for the Decision Center Service
+### Create a Backend Configuration for the Decision Center Service
 
 Decision Center needs a sticky session management. The browser session is containing a cookie that is recognized on container side to allow to work with the Business Console. So, we need that a browser alive session is always managed during all is life by the same container.
 The ODM on k8s helm chart has [clientIP](https://kubernetes.io/docs/concepts/services-networking/service/#proxy-mode-ipvs) for the Decision Center session affinity. Unfortunately, GKE doesn't exploit it automatically.
