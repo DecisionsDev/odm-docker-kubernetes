@@ -343,6 +343,8 @@ You must register these endpoints into your Okta application:
 
 ![Sign-in redirect URIs](/images/Okta/Sign-in_redirect_URIs.png)
 
+Well done!  You can now connect to ODM using the routes you got [earlier](#register-the-odm-redirect-url) and log in as an ODM admin with the account you created in [the first step](#manage-group-and-user).
+
 # License
 
 [Apache 2.0](/LICENSE)
