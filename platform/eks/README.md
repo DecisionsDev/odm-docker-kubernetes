@@ -423,4 +423,4 @@ Check the ALB configuration if you get a message like :
 https://aws.amazon.com/blogs/opensource/network-load-balancer-nginx-ingress-controller-eks/
 
 # License
-[Apache 2.0](LICENSE)
+[Apache 2.0](/LICENSE)
