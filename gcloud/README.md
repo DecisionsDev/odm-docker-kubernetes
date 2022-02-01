@@ -332,7 +332,7 @@ NAME                                                   READY   STATUS    RESTART
 
 ### Check the Ingress and GKE LoadBalancer
 
-To get a status on the current deployment, you can go in the console to the [Kubernetes Engine/Services & Ingress Panel](https://console.cloud.google.com/kubernetes/ingress)
+To get a status on the current deployment, you can go in the console to the [Kubernetes Engine/Services & Ingress Panel](https://console.cloud.google.com/kubernetes/ingresses)
 The ingress is remaining in the "ingress creating" state several minutes until the pods are up and ready, and that the backend is getting an healthy state
 
 <img width="1000" height="308" src='./images/ingress_creating.png'/>
@@ -352,17 +352,36 @@ When the Ingress is showing an OK status, the all ODM services can be accessed.
 
 ### Access ODM services
 
-We are using a self-signed certificate.
-So, to access ODM services, you have to edit your /etc/hosts file and add the following entry :
-```
-<EXTERNAL-IP> mycompany.com
-```
+In a real enterprise use-case, to access the mycompany.com domain name, you will have to deal with [Google Managed Certificate](https://cloud.google.com/load-balancing/docs/ssl-certificates/google-managed-certs) and [Google Cloud DNS](https://cloud.google.com/dns).
+
+In this trial, we are using a self-signed certificate. So, there is no extra charge like certificate and domain purchase.
+We just have to manage a configuration to simulate the mycompany.com access.
 
 You can get the EXTERNAL-IP using the command line :
 
 ```
 kubectl get ingress <release>-odm-ingress -o json | jq -r '.status.loadBalancer.ingress[].ip'
 ```
+
+So, to access ODM services, you have to edit your /etc/hosts file and add the following entry :
+```
+<EXTERNAL-IP> mycompany.com
+```
+
+Now, you can access all ODM services with the following URL :
+
+| SERVICE NAME | URL | USERNAME/PASSWORD
+| --- | --- | ---
+| Decision Server Console | https://mycompany.com/res | odmAdmin/odmAdmin
+| Decision Center | https://mycompany.com/decisioncenter | odmAdmin/odmAdmin
+| Decision Center REST-API | https://mycompany.com/decisioncenter-api | odmAdmin/odmAdmin
+| Decision Server Runtime | https://mycompany.com/DecisionService | odmAdmin/odmAdmin
+| Decision Runner | https://mycompany.com/DecisionRunner | odmAdmin/odmAdmin
+
+You can also click on the Ingress routes accessible from the Google Cloud console below the [Kubernetes Engine/Services & Ingress Details Panel](https://console.cloud.google.com/kubernetes/ingresses)
+
+<img width="1000" height="532" src='./images/ingress_details.png'/>
+
 
 ## Install the IBM License Service and retrieve license usage
 
