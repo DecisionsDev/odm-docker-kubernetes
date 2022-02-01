@@ -18,8 +18,6 @@ NGINX has been installed while deploying IBM License Manager, see [README.md](RE
 
 ## Create a Kubernetes secret for the TLS certificate
 
-For more informations see https://docs.microsoft.com/en-US/azure/aks/ingress-own-tls#create-kubernetes-secret-for-the-tls-certificate
-
 1. (Optional) Generate a self-signed certificate
 
 If you do not have a trusted certificate, you can use OpenSSL and other cryptography and certificate management libraries to generate a certificate file and a private key, to define the domain name, and to set the expiration date. The following command creates a self-signed certificate (.crt file) and a private key (.key file) that accept the domain name *mycompany.com*. The expiration is set to 1000 days:
