@@ -45,7 +45,7 @@ The ODM instance is using the externalCustomDatabase parameters to import the Po
 helm install <release> ibmcharts/ibm-odm-prod \
         --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=<registrysecret> \
         --set externalCustomDatabase.datasourceRef=<customdatasourcesecret> --set externalCustomDatabase.driverPvc=customdatasource-pvc \
-        --set service.enableTLS=false --set service.ingress.tlsSecretRef=mycompany-crt-secret \
+        --set service.enableTLS=false --set service.ingress.tlsSecretRef=<mycompanytlssecret> \
         --set service.ingress.enabled=true --set service.ingress.host=mycompany.com --set service.ingress.tlsHosts={"mycompany.com"} \
         --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"\,"nginx.ingress.kubernetes.io/backend-protocol: HTTPS"\,"nginx.ingress.kubernetes.io/affinity: cookie"} \
         --post-renderer ./kustomize
