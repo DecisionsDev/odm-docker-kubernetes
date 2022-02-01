@@ -288,7 +288,8 @@ kubectl apply -f nginx.yaml
 5/ Copy the Google Cloud PostgresSQL driver on the nginx pod
 
 ```
-kubectl cp postgres-socket-factory-<X.X.X>-jar-with-driver-and-dependencies.jar nginx-app-pod:/usr/share/nginx/html
+export NGINX_COPY_POD=$(kubectl get pod | grep nginx-driver-copy)
+kubectl cp postgres-socket-factory-<X.X.X>-jar-with-driver-and-dependencies.jar $(NGINX_COPY_POD):/usr/share/nginx/html
 ```
 
 6/ Change the PV accessmode to ReadOnlyMany
@@ -353,11 +354,13 @@ When the Ingress is showing an OK status, the all ODM services can be accessed.
 
 We are using a self-signed certificate.
 So, to access ODM services, you have to edit your /etc/hosts file and add the following entry :
-<EXTERNAL_IP> mycompany.com
+<EXTERNAL-IP> mycompany.com
 
-You can get EXTERNAL_IP with :
+You can get the EXTERNAL-IP using the command line :
 
-kubectl get ingress <release>-odm-ingress -o jsonpath='{.items[].status.loadBalancer.ingress[].ip}'
+```
+kubectl get ingress <release>-odm-ingress -o json | jq -r '.status.loadBalancer.ingress[].ip'
+```
 
 ## Install the IBM License Service and retrieve license usage
 
