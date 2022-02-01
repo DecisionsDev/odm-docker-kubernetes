@@ -27,9 +27,13 @@ First, install the following software on your machine:
 * [gcloud tool](https://cloud.google.com/sdk/gcloud)
 * [Helm v3](https://github.com/helm/helm/releases)
 
-[create a google cloud account](https://cloud.google.com/apigee/docs/hybrid/v1.6/precog-gcpaccount)
-[create a google cloud project](https://cloud.google.com/resource-manager/docs/creating-managing-projects)
-[manage the associated billing](https://cloud.google.com/billing/docs/how-to/modify-project#confirm_billing_is_enabled_on_a_project).
+Then, manage the following tasks:
+
+1. [create a google cloud account](https://cloud.google.com/apigee/docs/hybrid/v1.6/precog-gcpaccount)
+
+2. [create a google cloud project](https://cloud.google.com/resource-manager/docs/creating-managing-projects)
+
+3. [manage the associated billing](https://cloud.google.com/billing/docs/how-to/modify-project#confirm_billing_is_enabled_on_a_project).
 
 Without the relevant billing level, some google cloud resources will not be created
 
