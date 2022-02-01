@@ -118,6 +118,8 @@ gcloud container clusters create [CLUSTER_NAME] --num-nodes 4 --enable-autoscali
 
 You can also create your cluster from the Google Cloud Platform using the Kubernetes Engine Clusters panel, by clicking on the Create button
 
+<img width="1000" height="300" src='./images/create_cluster.png'/>
+
        
 ### Set up your environment to this cluster
 
