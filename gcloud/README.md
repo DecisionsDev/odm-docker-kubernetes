@@ -5,7 +5,7 @@ The ODM services will be exposed using the Ingress provided by ODM on k8s Helm c
 This deployment implements Kubernetes and Docker technologies.
 Here is the home page of Google Cloud: https://cloud.google.com
 
-<img width="800" height="560" src='./images/gke-schema.jpg'/>
+<img width="800" height="560" src='./images/architecture.png'/>
 
 The ODM Docker material is available in Passport Advantage. It includes Docker container images and Helm chart descriptors.
 
