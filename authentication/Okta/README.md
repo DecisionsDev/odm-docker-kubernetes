@@ -1,22 +1,22 @@
 <!-- TOC titleSize:2 tabSpaces:2 depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 skip:0 title:1 charForUnorderedList:* -->
 ## Table of Contents
-* [Introduction](#introduction)
-  * [What is Okta?](#what-is-okta)
-  * [About this task](#about-this-task)
-  * [ODM OpenID flows](#odm-openid-flows)
-  * [Prerequisites](#prerequisites)
-    * [Create an Okta account](#create-an-okta-account)
-* [Configure Okta instance for ODM (Part 1)](#configure-okta-instance-for-odm-part-1)
-  * [Manage group and user](#manage-group-and-user)
-  * [Setup an application](#setup-an-application)
-  * [Configure the default Authorization Server](#configure-the-default-authorization-server)
-* [Deploy ODM on container configured with Okta Server (Part 2)](#deploy-odm-on-container-configured-with-okta-server-part-2)
-  * [Prepare your environment for the ODM installation](#prepare-your-environment-for-the-odm-installation)
-  * [Retrieve Okta Server information](#retrieve-okta-server-information)
-  * [Create a secret with the Okta Server certificate](#create-a-secret-with-the-okta-server-certificate)
-  * [Create a secret to configure ODM with Okta](#create-a-secret-to-configure-odm-with-okta)
-  * [Install your ODM Helm release](#install-your-odm-helm-release)
-  * [Register the ODM redirect URL](#register-the-odm-redirect-url)
+- [Introduction](#introduction)
+  - [What is Okta?](#what-is-okta)
+  - [About this task](#about-this-task)
+  - [ODM OpenID flows](#odm-openid-flows)
+  - [Prerequisites](#prerequisites)
+    - [Create an Okta account](#create-an-okta-account)
+- [Configure Okta instance for ODM (Part 1)](#configure-okta-instance-for-odm-part-1)
+  - [Manage group and user](#manage-group-and-user)
+  - [Setup an application](#setup-an-application)
+  - [Configure the default Authorization Server](#configure-the-default-authorization-server)
+- [Deploy ODM on container configured with Okta Server (Part 2)](#deploy-odm-on-container-configured-with-okta-server-part-2)
+  - [Prepare your environment for the ODM installation](#prepare-your-environment-for-the-odm-installation)
+  - [Retrieve Okta Server information](#retrieve-okta-server-information)
+  - [Create a secret with the Okta Server certificate](#create-a-secret-with-the-okta-server-certificate)
+  - [Create a secret to configure ODM with Okta](#create-a-secret-to-configure-odm-with-okta)
+  - [Install your ODM Helm release](#install-your-odm-helm-release)
+  - [Register the ODM redirect URL](#register-the-odm-redirect-url)
 <!-- /TOC -->
 
 # Introduction
@@ -31,7 +31,7 @@ Okta is a secure identity cloud that links all your apps, logins and devices int
 
 You need to create a number of secrets before you can install an ODM instance with an external OIDC provider such as Okta service and use web application single sign-on (SSO). The following diagram shows the ODM services with an external OIDC provider after a successful installation.
 
-![ODM web application SSO](/images/Okta/diag_oidc_interaction.jpg)
+![ODM web application SSO](/images/Okta/diag_okta_interaction.jpg)
 
 The following procedure describes how to manually configure ODM with an Okta service.
 
