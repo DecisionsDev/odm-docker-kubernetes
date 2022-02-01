@@ -54,7 +54,7 @@ The Client Credentials flow is intended for server-side (AKA "confidential") cli
 
 The Authorization Code flow is best used by server-side apps where the source code isn't publicly exposed. The apps should be server-side because the request that exchanges the authorization code for a token requires a client secret, which has to be stored in your client. The server-side app requires an end user, however, because it relies on interaction with the end user's web browser, which redirects the user and then receives the authorization code.
 
-Auth Code flow width:
+Authentication Code flow:
 
 ![Authentication flow](/images/Okta/Authentication_flow.png) (© Okta)
 
