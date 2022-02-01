@@ -130,7 +130,7 @@ Repeat for each user you want to add.
 
 ## Configure the default Authorization Server
 
-TODO BLABLA
+In this steps we will augment the token with meta-informations require by the ODM OpenID configuration so ODM can manage the authentication and authorization mechanism.
 
 - Menu Security -> API
   - Click default link of authorization server
