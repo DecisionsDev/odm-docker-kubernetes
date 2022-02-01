@@ -265,6 +265,15 @@ The certificate must be the same as the one you used to enable TLS connections i
 
 ### Manage a PV containing the JDBC driver
 
+To be able to use the PostgreSQL database that we have created, we need to use a Persistent Volume in order to provide the JDBC driver to the ODM container.
+Unfortunately, GKE PV is still not supporting the [ReadWriteMany access mode](https://cloud.google.com/kubernetes-engine/docs/concepts/persistent-volumes).
+If you make a try using a PV with the ReadWriteMany access mode, only 1 ODM pod will start and the other will fail with the following error :
+```
+Warning  FailedAttachVolume  ... : googleapi: Error 400: RESOURCE_IN_USE_BY_ANOTHER_RESOURCE - The disk resource '...' is already being used by '...'
+```
+To workaound this issue, we will use a ReadWriteOnce PV used by an NGINX pod that has the root permission to copy the driver.
+Then, we will change the PV permission to ReadOnlyMany before to launch the ODM release in order to be able to install ODM on many nodes.
+
 1/ [Enable the SCI FileStore Driver](https://cloud.google.com/kubernetes-engine/docs/how-to/persistent-volumes/filestore-csi-driver#console_1)
 
 2/ Create the [filestore-example](filestore-example.yaml) storageClass
