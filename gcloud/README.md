@@ -365,9 +365,9 @@ When the Ingress is showing an OK status, all ODM services can be accessed.
 
 ### Create a Backend Configuration for the Decision Center Service
 
-Decision Center needs a sticky session management. The browser session is containing a cookie that is recognized on container side to allow to work with the Business Console. So, we need that a browser alive session is always managed during all is life by the same container.
+Sticky session is needed for Decision Center. The browser contains a cookie identifying the user session that will be linked to a unique container. 
 The ODM on k8s helm chart has [clientIP](https://kubernetes.io/docs/concepts/services-networking/service/#proxy-mode-ipvs) for the Decision Center session affinity. Unfortunately, GKE doesn't use it automatically.
-However, you will not see this issue with the current deployment until you scale up the Decision Center deployment.
+However, you will not encounter any issue until you scale up the Decision Center deployment.
 
 A configuration using [BackendConfig](https://cloud.google.com/kubernetes-engine/docs/how-to/ingress-features#session_affinity) is needed to manage it at the loadbalancer level.
 
