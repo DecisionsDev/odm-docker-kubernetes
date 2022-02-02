@@ -335,7 +335,7 @@ Note: On OpenShift, you have to add the following parameters due to security con
 Get the endpoints. On OpenShift, you can get the routes names and hosts with:
 
 ```
-oc get routes --no-headers --output custom-columns=":metadata.name,:spec.host"
+kubectl get routes --no-headers --output custom-columns=":metadata.name,:spec.host"
 ```
 
 You should get something like :
