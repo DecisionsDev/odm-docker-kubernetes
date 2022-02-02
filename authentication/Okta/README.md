@@ -268,7 +268,7 @@ To configure ODM with Okta, we need to provide 4 files:
 - Execute the generateTemplate.sh script file.
   
 ```
- ./generateTemplate.sh -i OKTA_CLIENT_ID -x OKTA_CLIENT_SECRET -s OKTA_SERVER_NAME -g odm-admin -s odmapiusers
+ ./generateTemplate.sh -i OKTA_CLIENT_ID -x OKTA_CLIENT_SECRET -n OKTA_SERVER_NAME -g odm-admin -s odmapiusers
 ```
 Where :
 - OKTA_API_SCOPE has been defined [above](#configure-the-default-authorization-server) (odmapiusers)
