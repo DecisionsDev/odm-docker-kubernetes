@@ -26,8 +26,10 @@ The commands and tools have been tested on macOS and Linux.
 
 First, install the following software on your machine:
 
-* [gcloud tool](https://cloud.google.com/sdk/gcloud)
-* [Helm v3](https://helm.sh/docs/intro/install/)
+- [gcloud CLI](https://cloud.google.com/sdk/gcloud)
+- [kubectl](https://kubernetes.io/docs/tasks/tools/)
+- [Helm v3](https://helm.sh/docs/intro/install/)
+- [kustomize](https://kubectl.docs.kubernetes.io/installation/kustomize/)
 
 Then, manage the following tasks:
 
@@ -95,25 +97,29 @@ If your project is already created, you can also retrieve the gcloud
 
 ### Create a GKE cluster
 
-There is several [type of clusters](https://cloud.google.com/kubernetes-engine/docs/concepts/types-of-clusters)
-We will choose to create a [regional cluster](https://cloud.google.com/kubernetes-engine/docs/how-to/creating-a-regional-cluster)
+There are several [types of clusters](https://cloud.google.com/kubernetes-engine/docs/concepts/types-of-clusters).
+In this article we chose to create a [regional cluster](https://cloud.google.com/kubernetes-engine/docs/how-to/creating-a-regional-cluster).
 
-Set the project (associated to a billing account)
+Set the project (associated to a billing account):
+
 ```
 gcloud config set project [PROJECT_NAME]
 ```
 
 Set the zone:
+
 ```
 gcloud config set compute/zone [ZONE (ex: europe-west1-b)]
 ```
 
 Set the region:
+
 ```
 gcloud config set compute/region [REGION (ex: europe-west1-b)]
 ```
 
-Create a cluster by enabling autoscaling. Here, we starts with 4 node until 16
+Create a cluster and enable autoscaling. Here, we start with 4 nodes (with 16 max):
+
 ```
 gcloud container clusters create [CLUSTER_NAME] --num-nodes 4 --enable-autoscaling --min-nodes 1 --max-nodes 16
 ```
@@ -122,7 +128,6 @@ You can also create your cluster from the Google Cloud Platform using the Kubern
 
 <img width="1000" height="300" src='./images/create_cluster.png'/>
 
-       
 ### Set up your environment to this cluster
 
 To manage a Kubernetes cluster, use kubectl, the Kubernetes command-line client.
@@ -130,7 +135,7 @@ To manage a Kubernetes cluster, use kubectl, the Kubernetes command-line client.
 gcloud container clusters get-credentials [CLUSTER_NAME]
 ```
 
-You can also retrieve the command line to configure kubectl by going on the Google Cloud Console in the Kubernetes Engine>Cluster panel,  by selecting "Connect" on the dedicated cluster.
+You can also retrieve the command line to configure kubectl by going on the Google Cloud Console in the Kubernetes Engine>Cluster panel, by selecting "Connect" on the dedicated cluster.
 
 <img width="1000" height="300" src='./images/connection.png'/>
 
@@ -139,25 +144,23 @@ Now, you can check that kubectl is working fine.
 kubectl get pods
 ```
 
-
 ## Create the Google Cloud SQL PostgreSQL instance (10 min)
 
-We will use the Google Cloud Console to create this instance :
+We will use the Google Cloud Console to create this instance:
 
 - Go on the [SQL context](https://console.cloud.google.com/sql) and click on the "CREATE INSTANCE" button
 - Choose PostgreSQL
-  * Take "PostgreSQL 13" as database version
-  * Choose a region similar to the cluster. So, the communication is optimal between the database and the ODM instance
-  * Keep "Multiple zones" for Zonal availability to the highest availability
-  * Expand "Customize your instance" and Expand "Connections"
-  * As Public IP is selected by default, click on the "ADD NETWORK" button, put a name and add "0.0.0.0/0" for Network, then click on "DONE"
+  - Take "PostgreSQL 13" as database version
+  - Choose a region similar to the cluster. So, the communication is optimal between the database and the ODM instance
+  - Keep "Multiple zones" for Zonal availability to the highest availability
+  - Expand "Customize your instance" and Expand "Connections"
+  - As Public IP is selected by default, click on the "ADD NETWORK" button, put a name and add "0.0.0.0/0" for Network, then click on "DONE"
 
-
-When created, you can drill on the SQL instance overview to retrieve needed information to connect to this instance like the IP adress and the connection name :
+When created, you can drill on the SQL instance overview to retrieve needed information to connect to this instance like the IP adress and the connection name:
 
 <img width="1000" height="630" src='./images/database_overview.png'/>
 
-A default "postgres" database is created with a default "postgres" user. You can change the password of the postgres user by using the Users panel, selecting the postgres user, and using the "Change password" menu :
+A default "postgres" database is created with a default "postgres" user. You can change the password of the postgres user by using the Users panel, selecting the postgres user, and using the "Change password" menu:
 
 <img width="1000" height="360" src='./images/database_changepassword.png'/>
 
@@ -202,7 +205,7 @@ helm repo update
 Check you can access ODM's charts:
 
 ```
-helm search repo ibm-odm-prod --versions                  
+helm search repo ibm-odm-prod
 NAME                  	CHART VERSION	APP VERSION	DESCRIPTION                     
 ibmcharts/ibm-odm-prod	21.3.0       	8.11.0.0   	IBM Operational Decision Manager
 ```
@@ -211,16 +214,17 @@ You can now proceed to the [datasource secret's creation](#create-the-datasource
 
 ### Create the datasource secrets for Google Cloud SQL PostgreSQL
 
-The Google Cloud SQL PostgreSQL connection will be done using [Cloud SQL Connector for Java](https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory#cloud-sql-connector-for-java)
+The Google Cloud SQL PostgreSQL connection will be done using [Cloud SQL Connector for Java](https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory#cloud-sql-connector-for-java).
 
 If you don't want to build the driver, you can get the last [driver](https://storage.googleapis.com/cloud-sql-java-connector/) named postgres-socket-factory-X.X.X-jar-with-driver-and-dependencies.jar.
 
-We realised the test with the driver version [postgres-socket-factory-1.4.2-jar-with-driver-and-dependencies.jar](https://storage.googleapis.com/cloud-sql-java-connector/v1.4.2/postgres-socket-factory-1.4.2-jar-with-driver-and-dependencies.jar)
+We realised the test with the driver version [postgres-socket-factory-1.4.2-jar-with-driver-and-dependencies.jar](https://storage.googleapis.com/cloud-sql-java-connector/v1.4.2/postgres-socket-factory-1.4.2-jar-with-driver-and-dependencies.jar).
 
-Copy the files [datasource-dc.xml.template](datasource-dc.xml.template) and [datasource-ds.xml.template](datasource-ds.xml.template) on your local machine and rename them to `datasource-dc.xml` and `datasource-ds.xml`.
+Copy the files [datasource-dc.xml.template](datasource-dc.xml.template) and [datasource-ds.xml.template](datasource-ds.xml.template) to your local machine and rename them `datasource-dc.xml` and `datasource-ds.xml`.
 
-Replace the following placeholers:
-- DRIVER_VERSION: The Cloud SQL Connector for Java Version (ex : 1.4.2)
+Replace the following placeholders:
+
+- DRIVER_VERSION: The Cloud SQL Connector for Java Version (ex: 1.4.2)
 - IP: The public IP adress
 - CONNECTION_NAME: The database connection name
 - DBNAME: The database name (default is postgres)
@@ -233,15 +237,15 @@ It should be something like in the following extract:
 ...
  <library id="postgresql-library">
             <fileset id="postgresql-fileset"  dir="/drivers" includes="postgres-socket-factory-<DRIVER_VERSION>-jar-with-driver-and-dependencies.jar" />
-  </library>
+ </library>
 ...
         <properties URL="jdbc:postgresql://<IP>/<DBNAME>?cloudSqlInstance=<CONNECTION_NAME>;socketFactory=com.google.cloud.sql.postgres.SocketFactory"
-                        user="<USERNAME>"
-                        password="<PASSWORD>"/>
+                    user="<USERNAME>"
+                    password="<PASSWORD>"/>
 ...
 ```
 
-Create a secret with this two modified files
+Create a secret with this two modified files:
 
 ```
 kubectl create secret generic <customdatasourcesecret> \
@@ -252,7 +256,7 @@ kubectl create secret generic <customdatasourcesecret> \
 
 1. Generate a self-signed certificate
 
-If you do not have a trusted certificate, you can use OpenSSL and other cryptography and certificate management libraries to generate a certificate file and a private key, to define the domain name, and to set the expiration date. The following command creates a self-signed certificate (.crt file) and a private key (.key file) that accept the domain name *mycompany.com*. The expiration is set to 1000 days:
+If you do not have a trusted certificate, you can use OpenSSL and other cryptography and certificate management libraries to generate a certificate file and a private key, to define the domain name, and to set the expiration date. The following command creates a self-signed certificate (.crt file) and a private key (.key file) that accepts the domain name *mycompany.com*. The expiration is set to 1000 days:
 
 ```
 openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mycompany.key \
@@ -273,43 +277,43 @@ The certificate must be the same as the one you used to enable TLS connections i
 
 To be able to use the PostgreSQL database that we have created, we need to use a Persistent Volume in order to provide the JDBC driver to the ODM container.
 Unfortunately, GKE PV is still not supporting the [ReadWriteMany access mode](https://cloud.google.com/kubernetes-engine/docs/concepts/persistent-volumes).
-If you make a try using a PV with the ReadWriteMany access mode, only 1 ODM pod will start and the other will fail with the following error :
+If you try using a PV with the ReadWriteMany access mode, only 1 ODM pod will start and the other will fail with the following error:
+
 ```
 Warning  FailedAttachVolume  ... : Googleapi: Error 400: RESOURCE_IN_USE_BY_ANOTHER_RESOURCE - The disk resource '...' is already being used by '...'
 ```
+
 To workaound this issue, we will use a ReadWriteOnce PV used by an NGINX pod that has the root permission to copy the driver.
 Then, we will change the PV permission to ReadOnlyMany before to launch the ODM release in order to be able to install ODM on many nodes.
 
-1. [Enable the SCI FileStore Driver](https://cloud.google.com/kubernetes-engine/docs/how-to/persistent-volumes/filestore-csi-driver#console_1)
+1. [Enable the SCI FileStore Driver](https://cloud.google.com/kubernetes-engine/docs/how-to/persistent-volumes/filestore-csi-driver#console_1).
 
-2. Create the [filestore-example](filestore-example.yaml) storageClass
+2. Create the [filestore-example](filestore-example.yaml) storageClass:
 
 ```
 kubectl apply -f filestore-example.yaml
 ```
 
-3. Create the [customdatasource-pvc](customdatasource-pvc.yaml) PVC using the filestore-example StorageClass in ReadWriteOnce access Mode
-So, we can copy the driver on the PV.
+3. Create the [customdatasource-pvc](customdatasource-pvc.yaml) PVC using the filestore-example StorageClass in ReadWriteOnce access Mode so we can copy the driver to the PV:
 
 ```
 kubectl apply -f customdatasource-pvc.yaml
 ```
 
-4. Create a [nginx](nginx.yaml) pod using this PVC that will be used only to copy the driver because this container is accessible as root.
+4. Create a [nginx](nginx.yaml) pod using this PVC that will be used only to copy the driver because this container is accessible as root:
 
 ```
 kubectl apply -f nginx.yaml
 ```
 
-5. Copy the Google Cloud PostgresSQL driver on the nginx pod
+5. Copy the Google Cloud PostgresSQL driver on the nginx pod:
 
 ```
 export NGINX_COPY_POD=$(kubectl get pod | grep nginx-driver-copy)
 kubectl cp postgres-socket-factory-<X.X.X>-jar-with-driver-and-dependencies.jar $(NGINX_COPY_POD):/usr/share/nginx/html
 ```
 
-6. Change the PV accessmode to ReadOnlyMany
-This way, all ODM containers will be able to access the PV as readonly and scheduled on several node
+6. Change the PV accessmode to ReadOnlyMany; this way, all ODM containers will be able to access the PV as readonly and scheduled on several node:
 
 ```
 export PV_NAME=$(kubectl get pvc customdatasource-pvc -o jsonpath={.spec.volumeName})
@@ -318,12 +322,12 @@ kubectl patch pv $PV_NAME -p '{"spec":{"accessModes":["ReadOnlyMany"]}}'
 
 ### Install the ODM release
 
-You can now install the product:
+You can now install the product.
 
 The ODM instance is using the externalCustomDatabase parameters to import the PostgreSQL datasource and driver.
 The ODM services will be exposed with an Ingress using the previously created mycompany certificate.
 It will create automatically an HTTPS GKE loadbalancer. So, we disable the ODM internal TLS as it's not needed.
-We use a kustomize as post-rendering to change the decision server readiness because the GKE loadbalancer is using it to create service healthCheck that recquires 200 as response code (ODM default is 301).
+We use a kustomize as post-rendering to change the decision server readiness because the GKE loadbalancer is using it to create service healthCheck that requires 200 as response code (ODM default is 301).
 
 ```
 helm install <release> ibmcharts/ibm-odm-prod \
