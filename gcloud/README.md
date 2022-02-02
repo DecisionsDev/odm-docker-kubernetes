@@ -383,6 +383,10 @@ kubectl apply -f decisioncenter-backendconfig.yaml
 kubectl annotate service <release>-odm-decisioncenter cloud.google.com/backend-config="{\"ports\": {\"9453\":\"dc-backendconfig\"}}"
 ```
 
+As soon as GKE has managed the Decision Center session affinity at the loadbalancer level, you can check the ClientIP availability below the Decision Center Network Endpoint Group configuration from the Google Cloud Console in the Load Balancer details:
+
+<img width="1000" height="353" src='./images/dc_sessionaffinity.png'/>
+
 ### Access ODM services
 
 In a real enterprise use-case, to access the mycompany.com domain name, you will have to deal with [Google Managed Certificate](https://cloud.google.com/load-balancing/docs/ssl-certificates/google-managed-certs) and [Google Cloud DNS](https://cloud.google.com/dns).
