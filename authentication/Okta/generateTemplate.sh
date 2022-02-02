@@ -61,11 +61,12 @@ fi
 
 mkdir -p $OUTPUT_DIR && cp $TEMPLATE_DIR/* $OUTPUT_DIR
 echo "Generating files for Okta"
-sed -i ''  's|OKTA_API_SCOPE|'$OKTA_API_SCOPE'|g' $OUTPUT_DIR/*.*
-sed -i ''  's|OKTA_CLIENT_ID|'$OKTA_CLIENT_ID'|g' $OUTPUT_DIR/*.*
-sed -i ''  's|OKTA_CLIENT_SECRET|'$OKTA_CLIENT_SECRET'|g' $OUTPUT_DIR/*.*
-sed -i ''  's|OKTA_ODM_GROUP|'$OKTA_ODM_GROUP'|g' $OUTPUT_DIR/*.*
-sed -i ''  's|OKTA_SERVER_URL|'$OKTA_SERVER_URL'|g' $OUTPUT_DIR/*.*
+sed -i.bak 's|OKTA_API_SCOPE|'$OKTA_API_SCOPE'|g' $OUTPUT_DIR/*
+sed -i.bak 's|OKTA_CLIENT_ID|'$OKTA_CLIENT_ID'|g' $OUTPUT_DIR/*
+sed -i.bak 's|OKTA_CLIENT_SECRET|'$OKTA_CLIENT_SECRET'|g' $OUTPUT_DIR/*
+sed -i.bak 's|OKTA_ODM_GROUP|'$OKTA_ODM_GROUP'|g' $OUTPUT_DIR/*
+sed -i.bak 's|OKTA_SERVER_URL|'$OKTA_SERVER_URL'|g' $OUTPUT_DIR/*
 # Claim replacement
-sed -i ''  's|OKTA_CLAIM_GROUPS|'$OKTA_CLAIM_GROUPS'|g' $OUTPUT_DIR/*.*
-sed -i ''  's|OKTA_CLAIM_LOGIN|'$OKTA_CLAIM_LOGIN'|g' $OUTPUT_DIR/*.*
+sed -i.bak 's|OKTA_CLAIM_GROUPS|'$OKTA_CLAIM_GROUPS'|g' $OUTPUT_DIR/*
+sed -i.bak 's|OKTA_CLAIM_LOGIN|'$OKTA_CLAIM_LOGIN'|g' $OUTPUT_DIR/*
+rm -f $OUTPUT_DIR/*.bak
