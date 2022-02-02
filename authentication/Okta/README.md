@@ -347,6 +347,8 @@ You must register these endpoints into your Okta application:
 
 Well done!  You can now connect to ODM using the routes you got [earlier](#register-the-odm-redirect-url) and log in as an ODM admin with the account you created in [the first step](#manage-group-and-user).
 
+>Note:  Logout in ODM components using Okta authentication raises an error for the time being.  This is a known issue.
+
 # License
 
 [Apache 2.0](/LICENSE)
