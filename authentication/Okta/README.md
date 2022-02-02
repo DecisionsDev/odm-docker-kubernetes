@@ -240,7 +240,12 @@ The following steps require to retrieve this informations from Okta console:
 
 - Log into Okta console
 - Go to Application / Application / ODM Application
-- Note the OKTA_SERVER_NAME which is the Okta domain in the General Settings of the application (it will be something like "\<shortname\>.okta.com").
+- Note the following informations:
+  - OKTA_SERVER_NAME which is the Okta domain in the General Settings of the application (it will be something like "\<shortname\>.okta.com").
+  - OKTA_CLIENT_ID which is the identifier for the OpenID client
+  - OKTA_CLIENT_SECRET which is the secret used by the client to exchange an authorization code for a token.
+
+![Application Informations](/images/Okta/ApplicationInfo.png)
 
 ## Create a secret with the Okta Server certificate
 
@@ -271,9 +276,9 @@ To configure ODM with Okta, we need to provide 4 files:
 ./generateTemplate.sh -i OKTA_CLIENT_ID -x OKTA_CLIENT_SECRET -n OKTA_SERVER_NAME -g OKTA_ODM_GROUP -s OKTA_API_SCOPE
 ```
 Where:
-- OKTA_API_SCOPE has been defined [above](#configure-the-default-authorization-server) (odmapiusers)
 - OKTA_SERVER_NAME has been obtained from [previous step](#retrieve-okta-server-information)
-- Both OKTA_CLIENT_ID and OKTA_CLIENT_SECRET are listed in your ODM Application, section General / Client Credentials
+- Both OKTA_CLIENT_ID and OKTA_CLIENT_SECRET are listed in your ODM Application, section General / Client Credentials [previous step](#retrieve-okta-server-information)
+- OKTA_API_SCOPE has been defined [above](#configure-the-default-authorization-server) (odmapiusers)
 - OKTA_ODM_GROUP is the ODM Admin group we created in a [previous step](#manage-group-and-user) (odm-admin)
 
 As result the script will generate these 4 files according to your OKTA_SERVER_NAME, OKTA_CLIENT_ID, OKTA_CLIENT_SECRET and OKTA_ODM_GROUP parameters in the output directory.
