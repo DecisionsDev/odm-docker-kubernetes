@@ -145,7 +145,7 @@ To be more secured we will use the client credential flow for the ODM Rest API c
   - Name : odmapiusers
   - Click 'Create' Button
 
-We need to augment the token by the user identifier and group properties that will be used for the ODM authentication and authorization mechanism.
+We need to augment the tokens by the user identifier and group properties that will be used for the ODM authentication (in ID tokens) and authorization (in access tokens) mechanisms.
 
 * Select Claims tab
 
