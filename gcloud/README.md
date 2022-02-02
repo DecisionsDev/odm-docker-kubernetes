@@ -139,7 +139,8 @@ You can also retrieve the command line to configure kubectl by going on the Goog
 
 <img width="1000" height="300" src='./images/connection.png'/>
 
-Now, you can check that kubectl is working fine.
+Now, you can check that kubectl is working fine:
+
 ```
 kubectl get pods
 ```
@@ -353,8 +354,8 @@ NAME                                                   READY   STATUS    RESTART
 
 ### Check the Ingress and GKE LoadBalancer
 
-To get a status on the current deployment, you can go in the console to the [Kubernetes Engine/Services & Ingress Panel](https://console.cloud.google.com/kubernetes/ingresses)
-The ingress is remaining in the "ingress creating" state several minutes until the pods are up and ready, and that the backend is getting an healthy state
+To get a status on the current deployment, you can go in the console to the [Kubernetes Engine/Services & Ingress Panel](https://console.cloud.google.com/kubernetes/ingresses).
+The ingress is remaining in the "ingress creating" state several minutes until the pods are up and ready, and that the backend is getting an healthy state.
 
 <img width="1000" height="308" src='./images/ingress_creating.png'/>
 
@@ -365,25 +366,25 @@ It provides information about the backend using the service health check.
 
 Entering inside the Ingress details, you should get an HEALTHY state on all backends.
 This panel is also providing some logs on the loadbalancer activity.
-When the Ingress is showing an OK status, the all ODM services can be accessed.
+When the Ingress is showing an OK status, all ODM services can be accessed.
 
 <img width="1000" height="517" src='./images/ingress_details.png'/>
 
 ### Create a Backend Configuration for the Decision Center Service
 
 Decision Center needs a sticky session management. The browser session is containing a cookie that is recognized on container side to allow to work with the Business Console. So, we need that a browser alive session is always managed during all is life by the same container.
-The ODM on k8s helm chart has [clientIP](https://kubernetes.io/docs/concepts/services-networking/service/#proxy-mode-ipvs) for the Decision Center session affinity. Unfortunately, GKE doesn't exploit it automatically.
-Obviously, you will not see this issue with the current deployment until you scale up the Decision Center deployment.
+The ODM on k8s helm chart has [clientIP](https://kubernetes.io/docs/concepts/services-networking/service/#proxy-mode-ipvs) for the Decision Center session affinity. Unfortunately, GKE doesn't use it automatically.
+However, you will not see this issue with the current deployment until you scale up the Decision Center deployment.
 
 A configuration using [BackendConfig](https://cloud.google.com/kubernetes-engine/docs/how-to/ingress-features#session_affinity) is needed to manage it at the loadbalancer level.
 
-1. Create the [Decision Center Backend Config](decisioncenter-backendconfig.yaml)
+1. Create the [Decision Center Backend Config](decisioncenter-backendconfig.yaml):
 
 ```
 kubectl apply -f nginx.yaml
 ```
 
-2. Annotate the Decision Center Service with this GKE Backend Config
+2. Annotate the Decision Center Service with this GKE Backend Config:
 
 ```
 kubectl annotate service <release>-odm-decisioncenter cloud.google.com/backend-config="{\"ports\": {\"9453\":\"dc-backendconfig\"}}"
@@ -396,18 +397,19 @@ In a real enterprise use-case, to access the mycompany.com domain name, you will
 In this trial, we are using a self-signed certificate. So, there is no extra charge like certificate and domain purchase.
 We just have to manage a configuration to simulate the mycompany.com access.
 
-You can get the EXTERNAL-IP using the command line :
+You can get the EXTERNAL-IP using the command line:
 
 ```
 kubectl get ingress <release>-odm-ingress -o json | jq -r '.status.loadBalancer.ingress[].ip'
 ```
 
-So, to access ODM services, you have to edit your /etc/hosts file and add the following entry :
+So, to access ODM services, you have to edit your /etc/hosts file and add the following entry:
+
 ```
 <EXTERNAL-IP> mycompany.com
 ```
 
-Now, you can access all ODM services with the following URL :
+Now, you can access all ODM services with the following URLs:
 
 | SERVICE NAME | URL | USERNAME/PASSWORD
 | --- | --- | ---
@@ -417,10 +419,9 @@ Now, you can access all ODM services with the following URL :
 | Decision Server Runtime | https://mycompany.com/DecisionService | odmAdmin/odmAdmin
 | Decision Runner | https://mycompany.com/DecisionRunner | odmAdmin/odmAdmin
 
-You can also click on the Ingress routes accessible from the Google Cloud console below the [Kubernetes Engine/Services & Ingress Details Panel](https://console.cloud.google.com/kubernetes/ingresses)
+You can also click on the Ingress routes accessible from the Google Cloud console below the [Kubernetes Engine/Services & Ingress Details Panel](https://console.cloud.google.com/kubernetes/ingresses):
 
 <img width="1000" height="532" src='./images/ingress_routes.png'/>
-
 
 ## Install the IBM License Service and retrieve license usage
 
@@ -428,13 +429,13 @@ This section explains how to track ODM usage with the IBM License Service.
 
 ### Create a NGINX Ingress controller
 
-1. Add the official stable repository
+1. Add the official stable repository:
 
     ```
     helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
     ```
 
-2. Use Helm to deploy an NGINX Ingress controller
+2. Use Helm to deploy an NGINX Ingress controller:
 
     ```
     helm install nginx-ingress ingress-nginx/ingress-nginx \
@@ -443,7 +444,7 @@ This section explains how to track ODM usage with the IBM License Service.
       --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux
     ```
 
-3. Get the Ingress controller external IP address
+3. Get the Ingress controller external IP address:
 
     ```
     kubectl get service -l app.kubernetes.io/name=ingress-nginx
@@ -476,6 +477,7 @@ export TOKEN=$(oc get secret ibm-licensing-token -o jsonpath={.data.token} -n ib
 ```
 
 You can access the `http://${LICENSING_URL}/status?token=${TOKEN}` URL to view the licensing usage or retrieve the licensing report zip file by running:
+
 ```
 curl -v "http://${LICENSING_URL}/snapshot?token=${TOKEN}" --output report.zip
 ```
@@ -492,4 +494,4 @@ If your ODM instances are not running properly, please refer to [our dedicated t
 
 # License
 
-[Apache 2.0](../LICENSE)
+[Apache 2.0](/LICENSE)
