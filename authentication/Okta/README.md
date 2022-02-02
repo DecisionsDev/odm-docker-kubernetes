@@ -80,6 +80,9 @@ In this section we will explain how to:
 - Setup an application
 - Configure the default Authorization server
 
+## Login OKTA instance
+After activating your account by email, you should have access to your Okta instance. Sign in to Okta
+
 ## Manage group and user
 
 First create a group which will contain ODM administrators. It will be referenced as OKTA_ODM_GROUP later in this article:
