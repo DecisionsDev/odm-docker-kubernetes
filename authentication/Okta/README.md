@@ -7,6 +7,7 @@
   - [Prerequisites](#prerequisites)
     - [Create an Okta account](#create-an-okta-account)
 - [Configure Okta instance for ODM (Part 1)](#configure-okta-instance-for-odm-part-1)
+  - [Login OKTA instance](#login-okta-instance)
   - [Manage group and user](#manage-group-and-user)
   - [Setup an application](#setup-an-application)
   - [Configure the default Authorization Server](#configure-the-default-authorization-server)
@@ -15,6 +16,8 @@
   - [Retrieve Okta Server information](#retrieve-okta-server-information)
   - [Create a secret with the Okta Server certificate](#create-a-secret-with-the-okta-server-certificate)
   - [Create a secret to configure ODM with Okta](#create-a-secret-to-configure-odm-with-okta)
+    - [Generate the ODM configuration file for Okta](#generate-the-odm-configuration-file-for-okta)
+    - [Create the ODM Okta secret:](#create-the-odm-okta-secret)
   - [Install your ODM Helm release](#install-your-odm-helm-release)
   - [Register the ODM redirect URL](#register-the-odm-redirect-url)
 - [License](#license)
@@ -258,16 +261,24 @@ To configure ODM with Okta, we need to provide 4 files:
 - openIdWebSecurity.xml to configure the liberty OpenId connect client relying party
 - webSecurity.xml to provide a mapping between liberty roles and Okta groups/users to manage authorization
 
-We provide a [script](generateTemplate.sh) allowing to generate these 4 files according to your OKTA_SERVER_NAME, OKTA_CLIENT_ID, OKTA_CLIENT_SECRET and OKTA_ODM_GROUP parameters:
+### Generate the ODM configuration file for Okta
 
-- OKTA_API_SCOPE has been defined [above](#configure-the-default-authorization-server)
+- Download the [okta-odm-script.zip] zip file in your machine. This zip file contains the  [script](generateTemplate.sh) and the content of the [templates] directory.
+- Unzip the [okta-odm-script.zip] zip file in your machine.
+- Execute the generateTemplate.sh script file.
+  
+```
+ ./generateTemplate.sh -i OKTA_CLIENT_ID -x OKTA_CLIENT_SECRET -s OKTA_SERVER_NAME -g odm-admin -s odmapiusers
+```
+Where :
+- OKTA_API_SCOPE has been defined [above](#configure-the-default-authorization-server) (odmapiusers)
 - OKTA_SERVER_NAME has been obtained from [previous step](#retrieve-okta-server-information)
 - Both OKTA_CLIENT_ID and OKTA_CLIENT_SECRET are listed in your ODM Application, section General / Client Credentials
 - OKTA_ODM_GROUP is the ODM Admin group we created in a [previous step](#manage-group-and-user) (odm-admin)
 
-You will get the generation in the output directory.
+As result the script will generate these 4 files according to your OKTA_SERVER_NAME, OKTA_CLIENT_ID, OKTA_CLIENT_SECRET and OKTA_ODM_GROUP parameters in the output directory.
 
-Then create the following secret:
+### Create the ODM Okta secret:
 
 ```
 kubectl create secret generic okta-auth-secret \
