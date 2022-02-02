@@ -90,11 +90,6 @@ gcloud auth login [ACCOUNT]
 ```
 https://cloud.google.com/sdk/gcloud/reference/auth/login
 
-If your project is already created, you can also retrieve the gcloud
-
-
-
-
 ### Create a GKE cluster
 
 There are several [types of clusters](https://cloud.google.com/kubernetes-engine/docs/concepts/types-of-clusters).
@@ -168,8 +163,6 @@ A default "postgres" database is created with a default "postgres" user. You can
 ## Prepare your environment for the ODM installation
 
 To get access to the ODM material, you must have an IBM entitlement registry key to pull the images from the IBM Entitled registry.
-
-(If you prefer to install ODM from Azure Container Registry instead, you can a look at [this dedicated page](README_PPA.md).)
 
 ### Using the IBM Entitled registry with your IBMid (10 min)
 
@@ -381,7 +374,7 @@ A configuration using [BackendConfig](https://cloud.google.com/kubernetes-engine
 1. Create the [Decision Center Backend Config](decisioncenter-backendconfig.yaml):
 
 ```
-kubectl apply -f nginx.yaml
+kubectl apply -f decisioncenter-backendconfig.yaml
 ```
 
 2. Annotate the Decision Center Service with this GKE Backend Config:
