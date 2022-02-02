@@ -263,8 +263,8 @@ To configure ODM with Okta, we need to provide 4 files:
 
 ### Generate the ODM configuration file for Okta
 
-- Download the [okta-odm-script.zip] zip file in your machine. This zip file contains the  [script](generateTemplate.sh) and the content of the [templates] directory.
-- Unzip the [okta-odm-script.zip] zip file in your machine.
+- Download the [okta-odm-script.zip](okta-odm-script.zip) zip file in your machine. This zip file contains the  [script](generateTemplate.sh) and the content of the [templates](templates) directory.
+- Unzip the [okta-odm-script.zip](okta-odm-script.zip) zip file in your machine.
 - Execute the generateTemplate.sh script file.
   
 ```
