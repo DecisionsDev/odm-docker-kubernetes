@@ -284,7 +284,7 @@ If you try using a PV with the ReadWriteMany access mode, only 1 ODM pod will st
 Warning  FailedAttachVolume  ... : Googleapi: Error 400: RESOURCE_IN_USE_BY_ANOTHER_RESOURCE - The disk resource '...' is already being used by '...'
 ```
 
-To workaound this issue, we will use a ReadWriteOnce PV used by an NGINX pod that has the root permission to copy the driver.
+To workaround this issue, we will use a ReadWriteOnce PV used by an NGINX pod that has the root permission to copy the driver.
 Then, we will change the PV permission to ReadOnlyMany before to launch the ODM release in order to be able to install ODM on many nodes.
 
 1. [Enable the SCI FileStore Driver](https://cloud.google.com/kubernetes-engine/docs/how-to/persistent-volumes/filestore-csi-driver#console_1).
