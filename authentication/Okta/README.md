@@ -265,12 +265,12 @@ To configure ODM with Okta, we need to provide 4 files:
 
 - Download the [okta-odm-script.zip](okta-odm-script.zip) zip file in your machine. This zip file contains the  [script](generateTemplate.sh) and the content of the [templates](templates) directory.
 - Unzip the [okta-odm-script.zip](okta-odm-script.zip) zip file in your machine.
-- Execute the generateTemplate.sh script file.
+- Execute the generateTemplate.sh script file:
   
 ```
- ./generateTemplate.sh -i OKTA_CLIENT_ID -x OKTA_CLIENT_SECRET -n OKTA_SERVER_NAME -g odm-admin -s odmapiusers
+./generateTemplate.sh -i OKTA_CLIENT_ID -x OKTA_CLIENT_SECRET -n OKTA_SERVER_NAME -g OKTA_ODM_GROUP -s OKTA_API_SCOPE
 ```
-Where :
+Where:
 - OKTA_API_SCOPE has been defined [above](#configure-the-default-authorization-server) (odmapiusers)
 - OKTA_SERVER_NAME has been obtained from [previous step](#retrieve-okta-server-information)
 - Both OKTA_CLIENT_ID and OKTA_CLIENT_SECRET are listed in your ODM Application, section General / Client Credentials
