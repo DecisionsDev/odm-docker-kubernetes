@@ -24,7 +24,8 @@ If you do not have a trusted certificate, you can use OpenSSL and other cryptogr
 
 ```
 openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mycompany.key \
-        -out mycompany.crt -subj "/CN=mycompany.com/OU=it/O=mycompany/L=Paris/C=FR"
+        -out mycompany.crt -subj "/CN=mycompany.com/OU=it/O=mycompany/L=Paris/C=FR" \
+        -extensions san -config <(echo '[req]'; echo 'distinguished_name=req';echo '[san]'; echo 'subjectAltName=DNS:mycompany.com')
 ```
 
 2. Create the according Kubernetes secret that contains the certificate
@@ -37,7 +38,7 @@ kubectl create secret tls <mycompanytlssecret> --key mycompany.key --cert mycomp
 
 You can now install the product:
 
-The ODM instance is using the externalCustomDatabase parameters to import the PostgreSQL datasource and driver. The ODM services will be exposed through NGINX thanks to the dedicated Ingress annotation (kubernetes.io/ingress.class: nginx). It allows sticky session needed by decision center thanks to the affinity annotation (nginx.ingress.kubernetes.io/affinity: cookie).  The secured HTTPS communcation is managed by NGINX. So, we disable the ODM internal TLS as it's not needed. We use a kustomize as post-rendering to change the decision server readiness because the GKE loadbalancer is using it to create service healthCheck that recquires 200 as response code (ODM default is 301).
+The ODM instance is using the externalCustomDatabase parameters to import the PostgreSQL datasource and driver. The ODM services will be exposed through NGINX thanks to the dedicated Ingress annotation (kubernetes.io/ingress.class: nginx). It allows sticky session needed by decision center thanks to the affinity annotation (nginx.ingress.kubernetes.io/affinity: cookie).The secured HTTPS communication is managed by NGINX.
 
 ```
 helm install <release> ibmcharts/ibm-odm-prod \
@@ -45,8 +46,7 @@ helm install <release> ibmcharts/ibm-odm-prod \
         --set externalCustomDatabase.datasourceRef=<customdatasourcesecret> --set externalCustomDatabase.driverPvc=customdatasource-pvc \
         --set service.enableTLS=false --set service.ingress.tlsSecretRef=<mycompanytlssecret> \
         --set service.ingress.enabled=true --set service.ingress.host=mycompany.com --set service.ingress.tlsHosts={"mycompany.com"} \
-        --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"\,"nginx.ingress.kubernetes.io/backend-protocol: HTTPS"\,"nginx.ingress.kubernetes.io/affinity: cookie"} \
-        --post-renderer ./kustomize
+        --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"\,"nginx.ingress.kubernetes.io/affinity: cookie"}
 ```
 
 ## Edit your /etc/hosts
