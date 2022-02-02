@@ -1,7 +1,7 @@
 # Deploying IBM Operational Decision Manager on Google GKE
 
-This project demonstrates how to deploy an IBM® Operational Decision Manager (ODM) clustered topology thanks to the [container-native load balancer of GKE](https://cloud.google.com/blog/products/containers-kubernetes/container-native-load-balancing-on-gke-now-generally-available). 
-The ODM services will be exposed using the Ingress provided by ODM on k8s Helm chart. 
+This project demonstrates how to deploy an IBM® Operational Decision Manager (ODM) clustered topology thanks to the [container-native load balancer of GKE](https://cloud.google.com/blog/products/containers-kubernetes/container-native-load-balancing-on-gke-now-generally-available).
+The ODM services will be exposed using the Ingress provided by ODM on k8s Helm chart.
 This deployment implements Kubernetes and Docker technologies.
 Here is the home page of Google Cloud: https://cloud.google.com
 
@@ -19,30 +19,32 @@ The project comes with the following components:
 - [IBM License Service](https://github.com/IBM/ibm-licensing-operator)
 
 ## Tested environment
+
 The commands and tools have been tested on macOS and Linux.
 
 ## Prerequisites
+
 First, install the following software on your machine:
 
 * [gcloud tool](https://cloud.google.com/sdk/gcloud)
-* [Helm v3](https://github.com/helm/helm/releases)
+* [Helm v3](https://helm.sh/docs/intro/install/)
 
 Then, manage the following tasks:
 
-1. [create a google cloud account](https://cloud.google.com/apigee/docs/hybrid/v1.6/precog-gcpaccount)
+1. [Create a Google Cloud account](https://cloud.google.com/apigee/docs/hybrid/v1.6/precog-gcpaccount)
 
-2. [create a google cloud project](https://cloud.google.com/resource-manager/docs/creating-managing-projects)
+2. [Create a Google Cloud project](https://cloud.google.com/resource-manager/docs/creating-managing-projects)
 
-3. [manage the associated billing](https://cloud.google.com/billing/docs/how-to/modify-project#confirm_billing_is_enabled_on_a_project).
+3. [Manage the associated billing](https://cloud.google.com/billing/docs/how-to/modify-project#confirm_billing_is_enabled_on_a_project).
 
-Without the relevant billing level, some google cloud resources will not be created
+Without the relevant billing level, some Google Cloud resources will not be created.
 
 > Note:  Prerequisites and software supported by ODM 8.11 are listed on [the Detailed System Requirements page](https://www.ibm.com/software/reports/compatibility/clarity-reports/report/html/softwareReqsForProduct?deliverableId=2D28A510507B11EBBBEA1195F7E6DF31&osPlatforms=AIX%7CLinux%7CMac%20OS%7CWindows&duComponentIds=D002%7CS003%7CS006%7CS005%7CC006&mandatoryCapIds=30%7C1%7C13%7C25%7C26&optionalCapIds=341%7C47%7C9%7C1%7C15).
 
 ## Steps to deploy ODM on Kubernetes from Google GKE
 
 <!-- TOC titleSize:2 tabSpaces:2 depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 skip:0 title:0 charForUnorderedList:* -->
-* [Deploying IBM Operational Decision Manager on Google GKE](#deploying-ibm-operational-decision-manager-on-azure-aks)
+* [Deploying IBM Operational Decision Manager on Google GKE](#deploying-ibm-operational-decision-manager-on-google-gke)
   * [Included components](#included-components)
   * [Tested environment](#tested-environment)
   * [Prerequisites](#prerequisites)
@@ -55,7 +57,7 @@ Without the relevant billing level, some google cloud resources will not be crea
   * [Prepare your environment for the ODM installation](#prepare-your-environment-for-the-odm-installation)
     * [Using the IBM Entitled registry with your IBMid (10 min)](#using-the-ibm-entitled-registry-with-your-ibmid-10-min)
     * [Create the datasource secrets for Google Cloud SQL PostgreSQL](#create-the-datasource-secrets-for-google-cloud-sql-postgresql)
-    * [Manage a digital certificate (2 min)](#manage-a-digital-certificate-2-min)
+    * [Manage a digital certificate (2 min)](#manage-a-digital-certificate-2-min)
   * [Install an ODM Helm release using the GKE loadbalancer (10 min)](#install-an-odm-helm-release-using-the-gke-loadbalancer-10-min)
     * [Manage a PV containing the JDBC driver](#manage-a-pv-containing-the-jdbc-driver)
     * [Install the ODM release](#install-the-odm-release)
@@ -86,7 +88,7 @@ gcloud auth login [ACCOUNT]
 ```
 https://cloud.google.com/sdk/gcloud/reference/auth/login
 
-If your project is already created, you can also retrieve the gcloud 
+If your project is already created, you can also retrieve the gcloud
 
 
 
@@ -273,7 +275,7 @@ To be able to use the PostgreSQL database that we have created, we need to use a
 Unfortunately, GKE PV is still not supporting the [ReadWriteMany access mode](https://cloud.google.com/kubernetes-engine/docs/concepts/persistent-volumes).
 If you make a try using a PV with the ReadWriteMany access mode, only 1 ODM pod will start and the other will fail with the following error :
 ```
-Warning  FailedAttachVolume  ... : googleapi: Error 400: RESOURCE_IN_USE_BY_ANOTHER_RESOURCE - The disk resource '...' is already being used by '...'
+Warning  FailedAttachVolume  ... : Googleapi: Error 400: RESOURCE_IN_USE_BY_ANOTHER_RESOURCE - The disk resource '...' is already being used by '...'
 ```
 To workaound this issue, we will use a ReadWriteOnce PV used by an NGINX pod that has the root permission to copy the driver.
 Then, we will change the PV permission to ReadOnlyMany before to launch the ODM release in order to be able to install ODM on many nodes.
