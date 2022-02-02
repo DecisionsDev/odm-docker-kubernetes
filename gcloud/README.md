@@ -382,7 +382,7 @@ kubectl apply -f nginx.yaml
 2. Annotate the Decision Center Service with this GKE Backend Config
 
 ```
-kubectl annotate service <release>-odm-decisioncenter cloud.google.com/backend-config=dc-backendconfig
+kubectl annotate service <release>-odm-decisioncenter cloud.google.com/backend-config="{\"ports\": {\"9453\":\"dc-backendconfig\"}}"
 ```
 
 ### Access ODM services
