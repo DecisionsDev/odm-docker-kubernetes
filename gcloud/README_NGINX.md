@@ -38,7 +38,8 @@ kubectl create secret tls <mycompanytlssecret> --key mycompany.key --cert mycomp
 
 You can now install the product:
 
-The ODM instance is using the externalCustomDatabase parameters to import the PostgreSQL datasource and driver. The ODM services will be exposed through NGINX thanks to the dedicated Ingress annotation (kubernetes.io/ingress.class: nginx). It allows sticky session needed by decision center thanks to the affinity annotation (nginx.ingress.kubernetes.io/affinity: cookie).The secured HTTPS communication is managed by NGINX.
+The ODM instance is using the externalCustomDatabase parameters to import the PostgreSQL datasource and driver. The ODM services will be exposed through NGINX thanks to the dedicated Ingress annotation (kubernetes.io/ingress.class: nginx).
+The secured HTTPS communication is managed by the NGINX ingress controller. So, we disable TLS at container level
 
 ```
 helm install <release> ibmcharts/ibm-odm-prod \
@@ -46,7 +47,7 @@ helm install <release> ibmcharts/ibm-odm-prod \
         --set externalCustomDatabase.datasourceRef=<customdatasourcesecret> --set externalCustomDatabase.driverPvc=customdatasource-pvc \
         --set service.enableTLS=false --set service.ingress.tlsSecretRef=<mycompanytlssecret> \
         --set service.ingress.enabled=true --set service.ingress.host=mycompany.com --set service.ingress.tlsHosts={"mycompany.com"} \
-        --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"\,"nginx.ingress.kubernetes.io/affinity: cookie"}
+        --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"}
 ```
 
 ## Edit your /etc/hosts
