@@ -321,13 +321,13 @@ helm install release ibmcharts/ibm-odm-prod \
         --set internalDatabase.persistence.enabled=false \
         --set customization.trustedCertificateList={"okta-secret"} \
         --set customization.authSecretRef=okta-auth-secret \
-        --set service.enableRoute=true
+
 ```
 
 Note: On OpenShift, you have to add the following parameters due to security context constraint:
 
 ```
---set internalDatabase.runAsUser='' --set customization.runAsUser=''
+--set internalDatabase.runAsUser='' --set customization.runAsUser='' --set service.enableRoute=true
 ```
 
 (See https://www.ibm.com/docs/en/odm/8.11.0?topic=production-preparing-install-operational-decision-manager for additional information.)
