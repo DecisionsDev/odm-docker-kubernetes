@@ -30,11 +30,11 @@ The ODM Docker material is used here, which is available in the [odm-ondocker](h
 - [MiniKube](MiniKube/README.md)
 
 ## Configuring ODM with third party provider
-- [OpenID Okta service](okta/README.md)
+- [OpenID Okta service](authentication/Okta/README.md)
 
 
 # Notice
-© Copyright IBM Corporation 2020.
+© Copyright IBM Corporation 2022.
 
 # License
 ```text
