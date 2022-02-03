@@ -23,8 +23,8 @@ The commands and tools have been tested on macOS and Linux.
 ## Prerequisites
 First, install the following software on your machine:
 
-* [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)
-* [Helm v3](https://github.com/helm/helm/releases)
+- [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)
+- [Helm v3](https://github.com/helm/helm/releases)
 
 Then [create an Azure account and pay as you go](https://azure.microsoft.com/en-us/pricing/purchase-options/pay-as-you-go/).
 
@@ -315,8 +315,11 @@ If you do not have a trusted certificate, you can use OpenSSL and other cryptogr
 
 ```
 openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mycompany.key \
-        -out mycompany.crt -subj "/CN=mycompany.com/OU=it/O=mycompany/L=Paris/C=FR"
+        -out mycompany.crt -subj "/CN=mycompany.com/OU=it/O=mycompany/L=Paris/C=FR" \
+        -addext "subjectAltName = DNS:mycompany.com"
 ```
+
+>Note:  You can use -addext only with actual OpenSSL, not LibreSSL (yet).
 
 2. Generate a JKS version of the certificate to be used in the ODM container. 
 
