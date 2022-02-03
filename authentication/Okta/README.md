@@ -7,7 +7,7 @@
   - [Prerequisites](#prerequisites)
     - [Create an Okta account](#create-an-okta-account)
 - [Configure Okta instance for ODM (Part 1)](#configure-okta-instance-for-odm-part-1)
-  - [Log into OKTA instance](#log-into-okta-instance)
+  - [Log into the OKTA instance](#log-into-the-okta-instance)
   - [Manage group and user](#manage-group-and-user)
   - [Setup an application](#setup-an-application)
   - [Configure the default Authorization Server](#configure-the-default-authorization-server)
@@ -83,62 +83,62 @@ In this section we will explain how to:
 - Setup an application
 - Configure the default Authorization server
 
-## Login OKTA instance
+## Log into the OKTA instance
 After activating your account by email, you should have access to your Okta instance. Sign in to Okta
 
 ## Manage group and user
 
 1. Create a group which will contain ODM administrators. It will be referenced as *OKTA_ODM_GROUP* later in this article:
 
-  In Menu **Directory** / **Groups**:
-    * Click **Add Group** button
-      * Name: *odm-admin*
-      * Group Description: *ODM Admin group*
+    In Menu **Directory** / **Groups**:
+      * Click **Add Group** button
+        * Name: *odm-admin*
+        * Group Description: *ODM Admin group*
 
-  ![Add Group](/images/Okta/AddGroup.png)
+    ![Add Group](/images/Okta/AddGroup.png)
 
 2. Create at least one user belonging to this new group:
 
-  In Menu **Directory** / **People**:
-    * Click **Add Person** button
-      * User type: *User*
-      * First name: ``<YourFirstName>``
-      * Last name: ``<YourLastName>``
-      * Username: ``<YourEmailAddress>``
-      * Primary email: ``<YourEmailAddress>``
-      * Groups (optional): ***odm-admin***
-      * Click **Save** button
+    In Menu **Directory** / **People**:
+      * Click **Add Person** button
+        * User type: *User*
+        * First name: ``<YourFirstName>``
+        * Last name: ``<YourLastName>``
+        * Username: ``<YourEmailAddress>``
+        * Primary email: ``<YourEmailAddress>``
+        * Groups (optional): ***odm-admin***
+        * Click **Save** button
 
-  ![Add Person](/images/Okta/add_person.png)
+    ![Add Person](/images/Okta/add_person.png)
 
-  Repeat this step for each user you want to add.
+    Repeat this step for each user you want to add.
 
 ## Setup an application
 
 1. Create the *ODM application*
 
-  In Menu **Applications** / **Applications**, click **Create an App Integration**:
-    * Select **OIDC - OpenID Connect**
-    * Select **Web Application**
-    * Click **Next**
+    In Menu **Applications** / **Applications**, click **Create an App Integration**:
+      * Select **OIDC - OpenID Connect**
+      * Select **Web Application**
+      * Click **Next**
 
-  ![Add Application](/images/Okta/AddApplication.png)
+    ![Add Application](/images/Okta/AddApplication.png)
 
 2. Configure the new web app integration
 
-  * Fill the **App integration name**: *ODM Application*
-  * In **Grant type**:
-    * Check **Client Credentials**
-    * Check **Refresh Token**
-    * Check **Implicit (hybrid)**
-  * Leave the default **Sign-in redirect URIs** and **Sign-out redirect URIs** and leave blank the **Base URIs**
-  * In **Assignments**:
-    * Under **Controlled access**:
-      * Check **Limit access to selected groups**
-    * Fill the **Selected group(s)** : ***odm-admin***
-  * Click **Save** button
+    * Fill the **App integration name**: *ODM Application*
+    * In **Grant type**:
+      * Check **Client Credentials**
+      * Check **Refresh Token**
+      * Check **Implicit (hybrid)**
+    * Leave the default **Sign-in redirect URIs** and **Sign-out redirect URIs** and leave blank the **Base URIs**
+    * In **Assignments**:
+      * Under **Controlled access**:
+        * Check **Limit access to selected groups**
+      * Fill the **Selected group(s)** : ***odm-admin***
+    * Click **Save** button
 
-  ![New Web Application](/images/Okta/NewWebAppIntegration.png)
+    ![New Web Application](/images/Okta/NewWebAppIntegration.png)
 
 ## Configure the *default* Authorization Server
 
@@ -148,65 +148,65 @@ In this step we will augment the token with meta-information required by the ODM
 
 2. Add the *odmapiusers* scope
 
-  To be more secured, we will use the client credential flow for the ODM Rest API call. This requires to create a specific restricted scope (named *OKTA_API_SCOPE* later in this article).
+    To be more secured, we will use the client credential flow for the ODM Rest API call. This requires to create a specific restricted scope (named *OKTA_API_SCOPE* later in this article).
 
-  In the **Scopes** tab, click **Add Scope** Button
-    - Name : *odmapiusers*
-    - Click **Create** Button
+    In the **Scopes** tab, click **Add Scope** Button
+      - Name : *odmapiusers*
+      - Click **Create** Button
 
 3. Add the identifier and group claims
 
-  We need to augment the tokens by the user identifier and group properties that will be used for the ODM authentication (in ID tokens) and authorization (in access tokens) mechanisms.
+    We need to augment the tokens by the user identifier and group properties that will be used for the ODM authentication (in ID tokens) and authorization (in access tokens) mechanisms.
 
-  In **Claims** tab, create the following claims:
+    In **Claims** tab, create the following claims:
 
-  * Click **Add claim** button
-    * Name: *loginName*
-    * Include in token type: *Access Token*
-    * Value: `(appuser != null) ? appuser.userName : app.clientId`
-    * Click **Create** Button  
+    * Click **Add claim** button
+      * Name: *loginName*
+      * Include in token type: *Access Token*
+      * Value: `(appuser != null) ? appuser.userName : app.clientId`
+      * Click **Create** Button  
 
-  Similarly create:
-  * *loginName - Id Token* claim:
-    * Name: *loginName*
-    * Include in token type: *Id Token*
-    * Value: `(appuser != null) ? appuser.userName : app.clientId`
-  * *groups - Access Token* claim:
-    * Name: *groups*
-    * Include in token type: *Access Token*
-    * Value type: *Groups*
-    * Filter: **Equals**: *odm-admin*
-  * *groups - Id Token* claim:
-    * Name: *groups*
-    * Include in token type: *Id Token*
-    * Value type: *Groups*
-    * Filter: **Equals**: odm-admin
-    * Click **Create** Button
+    Similarly create:
+    * *loginName - Id Token* claim:
+      * Name: *loginName*
+      * Include in token type: *Id Token*
+      * Value: `(appuser != null) ? appuser.userName : app.clientId`
+    * *groups - Access Token* claim:
+      * Name: *groups*
+      * Include in token type: *Access Token*
+      * Value type: *Groups*
+      * Filter: **Equals**: *odm-admin*
+    * *groups - Id Token* claim:
+      * Name: *groups*
+      * Include in token type: *Id Token*
+      * Value type: *Groups*
+      * Filter: **Equals**: odm-admin
+      * Click **Create** Button
 
-  ![Add Claim Result](/images/Okta/ResultAddClaims.png)
+    ![Add Claim Result](/images/Okta/ResultAddClaims.png)
 
 4. Verify the content of the token
 
-  Check that the login name and groups are available in the ID token using the authorization flow which the flow used by ODM.
+    Check that the login name and groups are available in the ID token using the authorization flow which the flow used by ODM.
 
-  In the **Token Preview** tab:
-    *  OAuth/OIDC client: *ODM Application*
-    *  Grant type: *Authorization Code*
-    *  User: ``<YourEmailAddress>``
-    *  Scopes: *odmapiusers*
-    * Click the **Preview Token** button
+    In the **Token Preview** tab:
+      *  OAuth/OIDC client: *ODM Application*
+      *  Grant type: *Authorization Code*
+      *  User: ``<YourEmailAddress>``
+      *  Scopes: *odmapiusers*
+      * Click the **Preview Token** button
 
-  As result the **id_token** tab as well as in the token tab should contains:
+    As result the **id_token** tab as well as in the token tab should contains:
 
-  ```
-  ...
-  "loginName": "<YourEmailAddress>",
-  "groups": [
-    "odm-admin"
-  ]
-  ```
+    ```
+    ...
+    "loginName": "<YourEmailAddress>",
+    "groups": [
+      "odm-admin"
+    ]
+    ```
 
-  ![Token Preview](/images/Okta/TokenPreview.png)
+    ![Token Preview](/images/Okta/TokenPreview.png)
 
 >Note:  The discovery endpoint can be found in **Security** / **API** / **default** / **Settings** in **Metadata URI**.
 
@@ -218,24 +218,24 @@ In this step we will augment the token with meta-information required by the ODM
 
 1. Log in to [MyIBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary) with the IBMid and password that are associated with the entitled software to get your entitlement key.
 
-  In the **Container software library** tile, verify your entitlement on the **View library** page, and then go to **Get entitlement** key to retrieve the key.
+    In the **Container software library** tile, verify your entitlement on the **View library** page, and then go to **Get entitlement** key to retrieve the key.
 
 2. Create a pull secret by running a `kubectl create secret` command.
 
-  ```
-  $ kubectl create secret docker-registry icregistry-secret \
-      --docker-server=cp.icr.io \
-      --docker-username=cp \
-      --docker-password="<API_KEY_GENERATED>" \
-      --docker-email=<USER_EMAIL>
-  ```
+    ```
+    $ kubectl create secret docker-registry icregistry-secret \
+        --docker-server=cp.icr.io \
+        --docker-username=cp \
+        --docker-password="<API_KEY_GENERATED>" \
+        --docker-email=<USER_EMAIL>
+    ```
 
-  Where:
+    Where:
 
-  - *API_KEY_GENERATED* is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
-  - *USER_EMAIL* is the email address associated with your IBMid.
+    - *API_KEY_GENERATED* is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
+    - *USER_EMAIL* is the email address associated with your IBMid.
 
-  > Note: The **cp.icr.io** value for the docker-server parameter is the only registry domain name that contains the images. You must set the *docker-username* to **cp** to use an entitlement key as *docker-password*.
+    > Note: The **cp.icr.io** value for the docker-server parameter is the only registry domain name that contains the images. You must set the *docker-username* to **cp** to use an entitlement key as *docker-password*.
 
 3. Make a note of the secret name so that you can set it for the **image.pullSecrets** parameter when you run a helm install of your containers. The image.repository parameter will later be set to *cp.icr.io/cp/cp4a/odm*.
 
@@ -243,121 +243,121 @@ In this step we will augment the token with meta-information required by the ODM
 
 1. Retrieve Okta Server information
 
-  From the Okta console, in **Application** / **Application** / **ODM Application**:
-  - Note the *OKTA_SERVER_NAME* which is the **Okta domain** in the **General Settings** (similar to *\<shortname\>.okta.com*).
+    From the Okta console, in **Application** / **Application** / **ODM Application**:
+    - Note the *OKTA_SERVER_NAME* which is the **Okta domain** in the **General Settings** (similar to *\<shortname\>.okta.com*).
 
 2. Create a secret with the Okta Server certificate
 
-  To allow ODM services to access Okta Server, it is mandatory to provide the Okta Server certificate.
-  You can create the secret as follow:
+    To allow ODM services to access Okta Server, it is mandatory to provide the Okta Server certificate.
+    You can create the secret as follow:
 
-  ```
-  keytool -printcert -sslserver <OKTA_SERVER_NAME> -rfc > okta.crt
-  kubectl create secret generic okta-secret --from-file=tls.crt=okta.crt
-  ```
+    ```
+    keytool -printcert -sslserver <OKTA_SERVER_NAME> -rfc > okta.crt
+    kubectl create secret generic okta-secret --from-file=tls.crt=okta.crt
+    ```
 
 3. Generate the ODM configuration file for Okta
 
-  We provide a [script](generateTemplate.sh) allowing to generate the needed configuration files.
-  You can download the [okta-odm-script.zip](okta-odm-script.zip) zip file in your machine. This zip file contains the  [script](generateTemplate.sh) and the content of the [templates](templates) directory.
+    We provide a [script](generateTemplate.sh) allowing to generate the needed configuration files.
+    You can download the [okta-odm-script.zip](okta-odm-script.zip) zip file in your machine. This zip file contains the  [script](generateTemplate.sh) and the content of the [templates](templates) directory.
 
-  Generate the files with the following command:
-  ```
-  ./generateTemplate.sh -i <OKTA_CLIENT_ID> -x <OKTA_CLIENT_SECRET> -n <OKTA_SERVER_NAME> -g <OKTA_ODM_GROUP> -s <OKTA_API_SCOPE>
-  ```
+    Generate the files with the following command:
+    ```
+    ./generateTemplate.sh -i <OKTA_CLIENT_ID> -x <OKTA_CLIENT_SECRET> -n <OKTA_SERVER_NAME> -g <OKTA_ODM_GROUP> -s <OKTA_API_SCOPE>
+    ```
 
-  Where:
-  - *OKTA_API_SCOPE* has been defined [above](#configure-the-default-authorization-server)
-  - *OKTA_SERVER_NAME* has been obtained from [previous step](#retrieve-okta-server-information)
-  - Both *OKTA_CLIENT_ID* and *OKTA_CLIENT_SECRET* are listed in your ODM Application, section **General** / **Client Credentials**
-  - *OKTA_ODM_GROUP* is the ODM Admin group we created in a [previous step](#manage-group-and-user) (*odm-admin*)
+    Where:
+    - *OKTA_API_SCOPE* has been defined [above](#configure-the-default-authorization-server)
+    - *OKTA_SERVER_NAME* has been obtained from [previous step](#retrieve-okta-server-information)
+    - Both *OKTA_CLIENT_ID* and *OKTA_CLIENT_SECRET* are listed in your ODM Application, section **General** / **Client Credentials**
+    - *OKTA_ODM_GROUP* is the ODM Admin group we created in a [previous step](#manage-group-and-user) (*odm-admin*)
 
-  The files will be generated in the `output` directory.
+    The files will be generated in the `output` directory.
 
 4. Create the Okta authentication secret
 
-  ```
-  kubectl create secret generic okta-auth-secret \
-      --from-file=OdmOidcProviders.json=./output/OdmOidcProviders.json \
-      --from-file=openIdParameters.properties=./output/openIdParameters.properties \
-      --from-file=openIdWebSecurity.xml=./output/openIdWebSecurity.xml \
-      --from-file=webSecurity.xml=./output/webSecurity.xml
-  ```
+    ```
+    kubectl create secret generic okta-auth-secret \
+        --from-file=OdmOidcProviders.json=./output/OdmOidcProviders.json \
+        --from-file=openIdParameters.properties=./output/openIdParameters.properties \
+        --from-file=openIdWebSecurity.xml=./output/openIdWebSecurity.xml \
+        --from-file=webSecurity.xml=./output/webSecurity.xml
+    ```
 
 ## Install your ODM Helm release
 
 1. Add the public IBM Helm charts repository:
 
-  ```
-  helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo/entitled
-  helm repo update
-  ```
+    ```
+    helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo/entitled
+    helm repo update
+    ```
 
 2. Check you can access ODM's chart:
 
-  ```
-  helm search repo ibm-odm-prod
-  NAME                  	CHART VERSION	APP VERSION	DESCRIPTION                     
-  ibmcharts/ibm-odm-prod	21.3.0       	8.11.0.0   	IBM Operational Decision Manager
-  ```
+    ```
+    helm search repo ibm-odm-prod
+    NAME                  	CHART VERSION	APP VERSION	DESCRIPTION                     
+    ibmcharts/ibm-odm-prod	21.3.0       	8.11.0.0   	IBM Operational Decision Manager
+    ```
 
 3. Run the `helm install` command
 
-  You can now install the product. We will use the PostgreSQL internal database and disable the data persistence (`internalDatabase.persistence.enabled=false`) to avoid any platform complexity concerning persistent volume allocation.
+    You can now install the product. We will use the PostgreSQL internal database and disable the data persistence (`internalDatabase.persistence.enabled=false`) to avoid any platform complexity concerning persistent volume allocation.
 
-  ```
-  helm install my-odm-release ibmcharts/ibm-odm-prod \
-        --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
-        --set oidc.enabled=true \
-        --set internalDatabase.persistence.enabled=false \
-        --set customization.trustedCertificateList={"okta-secret"} \
-        --set customization.authSecretRef=okta-auth-secret \
-        --set service.enableRoute=true
-  ```
+    ```
+    helm install my-odm-release ibmcharts/ibm-odm-prod \
+          --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
+          --set oidc.enabled=true \
+          --set internalDatabase.persistence.enabled=false \
+          --set customization.trustedCertificateList={"okta-secret"} \
+          --set customization.authSecretRef=okta-auth-secret \
+          --set service.enableRoute=true
+    ```
 
-  > Note: On OpenShift, you have to add the following parameters due to security context constraint:
-  > ```
-  > --set internalDatabase.runAsUser='' --set customization.runAsUser=''
-  > ```
-  > See [Preparing to install](https://www.ibm.com/docs/en/odm/8.11.0?topic=production-preparing-install-operational-decision-manager) documentation topic for additional information.
+    > Note: On OpenShift, you have to add the following parameters due to security context constraint:
+    > ```
+    > --set internalDatabase.runAsUser='' --set customization.runAsUser=''
+    > ```
+    > See [Preparing to install](https://www.ibm.com/docs/en/odm/8.11.0?topic=production-preparing-install-operational-decision-manager) documentation topic for additional information.
 
 ## Complete post-deployment tasks
 
 ### Register the ODM redirect URL
 
 1. Get the ODM endpoints.
-  You can refer to the [documentation](https://www.ibm.com/docs/en/odm/8.11.0?topic=production-completing-post-deployment-tasks) to retrieve the ODM endpoints.
-  For example on OpenShift, you can get the routes names and hosts with:
+    You can refer to the [documentation](https://www.ibm.com/docs/en/odm/8.11.0?topic=production-completing-post-deployment-tasks) to retrieve the ODM endpoints.
+    For example on OpenShift, you can get the routes names and hosts with:
 
-  ```
-  kubectl get routes --no-headers --output custom-columns=":metadata.name,:spec.host"
-  ```
+    ```
+    kubectl get routes --no-headers --output custom-columns=":metadata.name,:spec.host"
+    ```
 
-  You will get the following hosts:
-  ```
-  my-odm-release-odm-dc-route           <DC_HOST>
-  my-odm-release-odm-dr-route           <DR_HOST>
-  my-odm-release-odm-ds-console-route   <DS_CONSOLE_HOST>
-  my-odm-release-odm-ds-runtime-route   <DS_RUNTIME_HOST>
-  ```
+    You will get the following hosts:
+    ```
+    my-odm-release-odm-dc-route           <DC_HOST>
+    my-odm-release-odm-dr-route           <DR_HOST>
+    my-odm-release-odm-ds-console-route   <DS_CONSOLE_HOST>
+    my-odm-release-odm-ds-runtime-route   <DS_RUNTIME_HOST>
+    ```
 
 2. Register the redirect URIs into your Okta application:
 
-  The redirect URIs are built this way:
+    The redirect URIs are built this way:
 
-    - Decision Center redirect URI:  `https://<DC_HOST>/decisioncenter/openid/redirect/odm`
-    - Decision Runner redirect URI:  `https://<DR_HOST>/DecisionRunner/openid/redirect/odm`
-    - Decision Server Console redirect URI:  `https://<DS_CONSOLE_HOST>/res/openid/redirect/odm`
-    - Decision Server Runtime redirect URI:  `https://<DS_RUNTIME_HOST>/DecisionService/openid/redirect/odm`
+      - Decision Center redirect URI:  `https://<DC_HOST>/decisioncenter/openid/redirect/odm`
+      - Decision Runner redirect URI:  `https://<DR_HOST>/DecisionRunner/openid/redirect/odm`
+      - Decision Server Console redirect URI:  `https://<DS_CONSOLE_HOST>/res/openid/redirect/odm`
+      - Decision Server Runtime redirect URI:  `https://<DS_RUNTIME_HOST>/DecisionService/openid/redirect/odm`
 
-  In **Applications** / **Applications**:
-    - Select **ODM Application**.
-    - In the **General** tab, click **Edit** on the **General Settings** section.
-    - In the **LOGIN** section, click on **+ Add URI** in the **Sign-in redirect URIs** section and add the Decision Center redirect URI you got earlier (`https://<DC_HOST>/decisioncenter/openid/redirect/odm` -- don't forget to replace <DC_HOST> by your actual host name!)
-    - Repeat the previous step for all other three redirect URIs.
-    - Click **Save** at the bottom of the LOGIN section.
+    In **Applications** / **Applications**:
+      - Select **ODM Application**.
+      - In the **General** tab, click **Edit** on the **General Settings** section.
+      - In the **LOGIN** section, click on **+ Add URI** in the **Sign-in redirect URIs** section and add the Decision Center redirect URI you got earlier (`https://<DC_HOST>/decisioncenter/openid/redirect/odm` -- don't forget to replace <DC_HOST> by your actual host name!)
+      - Repeat the previous step for all other three redirect URIs.
+      - Click **Save** at the bottom of the LOGIN section.
 
-  ![Sign-in redirect URIs](/images/Okta/Sign-in_redirect_URIs.png)
+    ![Sign-in redirect URIs](/images/Okta/Sign-in_redirect_URIs.png)
 
 ### Access the ODM services
 
@@ -370,21 +370,21 @@ Well done!  You can now connect to ODM using the endpoints you got [earlier](#re
 To be able to securely connect your Rule Designer to the Decision Server and Decision Center services that are running in Certified Kubernetes, you need to establish a TLS connection through a security certificate as well as the OpenID configuration.
 
 1. Get the following configuration files
-  * `https://<DC_HOST>/decisioncenter/assets/truststore.jks`
-  * `https://<DC_HOST>/odm/decisioncenter/assets/OdmOidcProvidersRD.json`
-    Where *DC_HOST* is the Decision Center endpoint.
+    * `https://<DC_HOST>/decisioncenter/assets/truststore.jks`
+    * `https://<DC_HOST>/odm/decisioncenter/assets/OdmOidcProvidersRD.json`
+      Where *DC_HOST* is the Decision Center endpoint.
 
 2. Copy the `truststore.jks` and `OdmOidcProvidersRD.json` files to your Rule Designer installation directory next to the `eclipse.ini` file
 
 3. Edit your `eclipse.ini` file and add this following lines at the end:
-  ```
-  -Djavax.net.ssl.trustStore=<ECLIPSEINITDIR>/truststore.jks
-  -Djavax.net.ssl.trustStorePassword=changeit
-  -Dcom.ibm.rules.authentication.oidcconfig=<ECLIPSEINITDIR>/OdmOidcProvidersRD.json
-  ```
-  Where:
-     * *changeit* is the fixed password to be used for the default truststore.jks file.
-     * *ECLIPSEINITDIR* is the Rule Designer installation directory next to the eclipse.ini file
+    ```
+    -Djavax.net.ssl.trustStore=<ECLIPSEINITDIR>/truststore.jks
+    -Djavax.net.ssl.trustStorePassword=changeit
+    -Dcom.ibm.rules.authentication.oidcconfig=<ECLIPSEINITDIR>/OdmOidcProvidersRD.json
+    ```
+    Where:
+       * *changeit* is the fixed password to be used for the default truststore.jks file.
+       * *ECLIPSEINITDIR* is the Rule Designer installation directory next to the eclipse.ini file
 
 4. Restart Rule Designer.
 
