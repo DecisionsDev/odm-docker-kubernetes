@@ -273,7 +273,7 @@ To configure ODM with Okta, we need to provide 4 files:
 - Download the [okta-odm-script.zip](okta-odm-script.zip) zip file in your machine. This zip file contains the  [script](generateTemplate.sh) and the content of the [templates](templates) directory.
 - Unzip the [okta-odm-script.zip](okta-odm-script.zip) zip file in your machine.
 - Execute the generateTemplate.sh script file:
-  
+
 ```
 ./generateTemplate.sh -i OKTA_CLIENT_ID -x OKTA_CLIENT_SECRET -n OKTA_SERVER_NAME -g OKTA_ODM_GROUP -s OKTA_API_SCOPE
 ```
@@ -334,7 +334,7 @@ Note: On OpenShift, you have to add the following parameters due to security con
 
 ## Register the ODM redirect URL
 
-Get the endpoints. On OpenShift, you can get the routes names and hosts with:
+Get the [endpoints](https://www.ibm.com/docs/en/odm/8.11.0?topic=production-configuring-external-access). On OpenShift, you can get the routes names and hosts with:
 
 ```
 kubectl get routes --no-headers --output custom-columns=":metadata.name,:spec.host"
@@ -361,7 +361,7 @@ Where:
    - DR_HOST: The Decision Runner endpoint
    - DC_CONSOLE_HOST: The Decision Server Console endpoint
    - DS_RUNTIME_HOST: The Decision Server Runtime endpoint
-  
+
 You must register these endpoints into your Okta application:
 
 - Menu Applications / Applications
@@ -374,31 +374,35 @@ You must register these endpoints into your Okta application:
 ![Sign-in redirect URIs](/images/Okta/Sign-in_redirect_URIs.png)
 
 ## Access the ODM services
+
 Well done!  You can now connect to ODM using the endpoints you got [earlier](#register-the-odm-redirect-url) and log in as an ODM admin with the account you created in [the first step](#manage-group-and-user).
 
 >Note:  Logout in ODM components using Okta authentication raises an error for the time being.  This is a known issue.  We recommend to use a private window in your browser to log in, so that logout is done just by closing this window.
 
 ## Setup Rule Designer
+
 To be able to securely connect your Rule Designer to the Decision Server and Decision Center services that are running in Certified Kubernetes, you need to establish a TLS connection through a security certificate as well as the OpenID configuration.
 
 * Get the https://<DC_HOST>/decisioncenter/assets/truststore.jks file.
-* Get the https://<<DC_HOST>/odm/decisioncenter/assets/OdmOidcProvidersRD.json file.
- Where DC_HOST is the Decision Center endpoint. 
+* Get the https://<DC_HOST>/odm/decisioncenter/assets/OdmOidcProvidersRD.json file.
+where DC_HOST is the Decision Center endpoint.
 
 * Copy the truststore.jks and OdmOidcProvidersRD.json files to your Rule Designer installation directory next to the eclipse.ini file.
-* Add this properties setting at the end of your eclipse.ini file
+* Add these properties settings at the end of your eclipse.ini file
 
 Edit your eclipse.ini file and add this following lines at the end:
+
 ```
 -Djavax.net.ssl.trustStore=<ECLIPSEINITDIR>/truststore.jks
 -Djavax.net.ssl.trustStorePassword=changeit
 -Dcom.ibm.rules.authentication.oidcconfig=<ECLIPSEINITDIR>/OdmOidcProvidersRD.json
 ```
-Where:
-   * changeit is the fixed password to be used for the default truststore.jks file.
-   * ECLIPSEINITDIR : The Rule Designer installation directory next to the eclipse.ini file
-Restart Rule Designer.
 
+where:
+- changeit is the fixed password to be used for the default truststore.jks file.
+- ECLIPSEINITDIR : The Rule Designer installation directory next to the eclipse.ini file
+
+Restart Rule Designer.
 
 https://www.ibm.com/docs/en/odm/8.11.0?topic=designer-importing-security-certificate-in-rule
 
