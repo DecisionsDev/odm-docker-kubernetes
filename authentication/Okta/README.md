@@ -258,7 +258,7 @@ In this step we will augment the token with meta-information required by the ODM
 3. Generate the ODM configuration file for Okta
 
     We provide a [script](generateTemplate.sh) allowing to generate the needed configuration files.
-    You can download the [okta-odm-script.zip](okta-odm-script.zip) zip file in your machine. This zip file contains the  [script](generateTemplate.sh) and the content of the [templates](templates) directory.
+    You can download the [okta-odm-script.zip](okta-odm-script.zip) zip file in your machine. This zip file contains the [script](generateTemplate.sh) and the content of the [templates](templates) directory.
 
     Generate the files with the following command:
     ```
@@ -310,13 +310,12 @@ In this step we will augment the token with meta-information required by the ODM
           --set oidc.enabled=true \
           --set internalDatabase.persistence.enabled=false \
           --set customization.trustedCertificateList={"okta-secret"} \
-          --set customization.authSecretRef=okta-auth-secret \
-          --set service.enableRoute=true
+          --set customization.authSecretRef=okta-auth-secret
     ```
 
     > Note: On OpenShift, you have to add the following parameters due to security context constraint:
     > ```
-    > --set internalDatabase.runAsUser='' --set customization.runAsUser=''
+    > --set internalDatabase.runAsUser='' --set customization.runAsUser='' --set service.enableRoute=true
     > ```
     > See [Preparing to install](https://www.ibm.com/docs/en/odm/8.11.0?topic=production-preparing-install-operational-decision-manager) documentation topic for additional information.
 
@@ -325,7 +324,7 @@ In this step we will augment the token with meta-information required by the ODM
 ### Register the ODM redirect URL
 
 1. Get the ODM endpoints.
-    You can refer to the [documentation](https://www.ibm.com/docs/en/odm/8.11.0?topic=production-completing-post-deployment-tasks) to retrieve the ODM endpoints.
+    You can refer to the [documentation](https://www.ibm.com/docs/en/odm/8.11.0?topic=production-configuring-external-access) to retrieve the ODM endpoints.
     For example on OpenShift, you can get the routes names and hosts with:
 
     ```
