@@ -29,6 +29,10 @@ The ODM Docker material is used here, which is available in the [odm-ondocker](h
 - [Azure AKS](azure/README.md)
 - [MiniKube](MiniKube/README.md)
 
+## Configuring ODM with third party provider
+- [OpenID Okta service](okta/README.md)
+
+
 # Notice
 © Copyright IBM Corporation 2020.
 
