@@ -73,7 +73,7 @@ First, install the following software on your machine:
 
 ### Create an Okta account
 
-You can sign up for [a free Okta developer account](https://www.okta.com/free-trial/customer-identity/)if you don't own an Okta account already. Beware, Okta enforces [rate limits](https://developer.okta.com/docs/reference/rate-limits/) that are obviously lower for free developer accounts than for paid accounts but they should not be a problem for a demo.
+You can sign up for a [free Okta developer account](https://www.okta.com/free-trial/customer-identity/) if you don't own an Okta account already. Beware, Okta enforces [rate limits](https://developer.okta.com/docs/reference/rate-limits/) that are obviously lower for free developer accounts than for paid accounts but they should not be a problem for a demo.
 
 # Configure Okta instance for ODM (Part 1)
 
@@ -181,7 +181,6 @@ In this step we will augment the token with meta-information required by the ODM
       * Include in token type: *Id Token*
       * Value type: *Groups*
       * Filter: **Equals**: odm-admin
-      * Click **Create** Button
 
     ![Add Claim Result](/images/Okta/ResultAddClaims.png)
 
@@ -196,7 +195,7 @@ In this step we will augment the token with meta-information required by the ODM
       *  Scopes: *odmapiusers*
       * Click the **Preview Token** button
 
-    As result the **id_token** tab as well as in the token tab should contains:
+    As a result payload should contains:
 
     ```
     ...
@@ -349,6 +348,7 @@ In this step we will augment the token with meta-information required by the ODM
       - Decision Runner redirect URI:  `https://<DR_HOST>/DecisionRunner/openid/redirect/odm`
       - Decision Server Console redirect URI:  `https://<DS_CONSOLE_HOST>/res/openid/redirect/odm`
       - Decision Server Runtime redirect URI:  `https://<DS_RUNTIME_HOST>/DecisionService/openid/redirect/odm`
+      - Rule Designer redirect URI: `https://127.0.0.1:9081/oidcCallback`
 
     In **Applications** / **Applications**:
       - Select **ODM Application**.
@@ -383,8 +383,8 @@ To be able to securely connect your Rule Designer to the Decision Server and Dec
     -Dcom.ibm.rules.authentication.oidcconfig=<ECLIPSEINITDIR>/OdmOidcProvidersRD.json
     ```
     Where:
-       * *changeit* is the fixed password to be used for the default truststore.jks file.
-       * *ECLIPSEINITDIR* is the Rule Designer installation directory next to the eclipse.ini file
+    - *changeit* is the fixed password to be used for the default truststore.jks file.
+    - *ECLIPSEINITDIR* is the Rule Designer installation directory next to the eclipse.ini file
 
 4. Restart Rule Designer.
 
