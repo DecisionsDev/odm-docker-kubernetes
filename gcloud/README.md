@@ -125,7 +125,7 @@ You can also create your cluster from the Google Cloud Platform using the Kubern
 
 ### Set up your environment to this cluster
 
-To manage a Kubernetes cluster, use kubectl, the Kubernetes command-line client.
+To configure kubectl, use the following command line:
 ```
 gcloud container clusters get-credentials [CLUSTER_NAME]
 ```
