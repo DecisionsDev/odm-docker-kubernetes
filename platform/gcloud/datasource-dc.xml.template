@@ -1,0 +1,23 @@
+<server>
+  <library id="postgresql-library">
+	<fileset id="postgresql-fileset" dir="/drivers" includes="postgres-socket-factory-<DRIVER_VERSION>-jar-with-driver-and-dependencies.jar"/>
+  </library>
+  <dataSource id="resdatasource"
+	isolationLevel="TRANSACTION_READ_COMMITTED"
+	jndiName="jdbc/ilogDataSource"
+	statementCacheSize="150"
+	type="javax.sql.ConnectionPoolDataSource"
+	validationTimeout="0">
+	<connectionManager
+		maxPoolSize="25"
+		minPoolSize="10"
+		connectionTimout="10s"
+		agedTimeout="30m"/>
+	<jdbcDriver libraryRef="postgresql-library"
+		javax.sql.XADataSource="org.postgresql.xa.PGXADataSource"
+		javax.sql.ConnectionPoolDataSource="org.postgresql.ds.PGConnectionPoolDataSource"/>
+	<properties URL="jdbc:postgresql://<IP>/<DBNAME>?cloudSqlInstance=<CONNECTION_NAME>;socketFactory=com.google.cloud.sql.postgres.SocketFactory"
+		user="postgres"
+		password="postgres"/>
+  </dataSource>
+</server>
