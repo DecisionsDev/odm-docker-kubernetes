@@ -55,7 +55,7 @@ The Client Credentials flow is intended for server-side (AKA "confidential") cli
 
 ![Okta Client Credential Flow](/images/Okta/oauth_client_creds_flow.png) (© Okta)
 
-The Authorization Code flow is best used by server-side apps where the source code isn't publicly exposed. The apps should be server-side because the request that exchanges the authorization code for a token requires a client secret, which has to be stored in your client. The server-side app requires an end user, however, because it relies on interaction with the end user's web browser, which redirects the user and then receives the authorization code.
+The Authorization Code flow is best used by server-side apps where the source code isn't publicly exposed. The apps must be server-side because the request that exchanges the authorization code for a token requires a client secret, which has to be stored in your client. However, the server-side app requires an end user because it relies on interactions with the end user's web browser, which redirects the user and then receives the authorization code.
 
 Auth Code flow width:
 
@@ -88,7 +88,7 @@ After activating your account by email, you should have access to your Okta inst
 
 ## Manage groups and users
 
-1. Create a group which will contain ODM administrators. It is referenced as *OKTA_ODM_GROUP* later in this article:
+1. Create a group for ODM administrators. It is referenced as *OKTA_ODM_GROUP* later in this article.
 
     In Menu **Directory** / **Groups**:
       * Click **Add Group** button
@@ -97,7 +97,7 @@ After activating your account by email, you should have access to your Okta inst
 
     ![Add Group](/images/Okta/AddGroup.png)
 
-2. Create at least one user belonging to this new group:
+2. Create at least one user that belongs to this new group.
 
     In Menu **Directory** / **People**:
       * Click **Add Person** button
@@ -107,7 +107,7 @@ After activating your account by email, you should have access to your Okta inst
         * Username: ``<YourEmailAddress>``
         * Primary email: ``<YourEmailAddress>``
         * Groups (optional): ***odm-admin***
-        * Click **Save** button
+        * Click **Save**
 
     ![Add Person](/images/Okta/add_person.png)
 
@@ -115,7 +115,7 @@ After activating your account by email, you should have access to your Okta inst
 
 ## Set up an application
 
-1. Create the *ODM application*
+1. Create the *ODM application*.
 
     In Menu **Applications** / **Applications**, click **Create an App Integration**:
       * Select **OIDC - OpenID Connect**
@@ -124,7 +124,7 @@ After activating your account by email, you should have access to your Okta inst
 
     ![Add Application](/images/Okta/AddApplication.png)
 
-2. Configure the new web app integration
+2. Configure the new web app integration.
 
     * Fill the **App integration name**: *ODM Application*
     * In **Grant type**:
@@ -144,17 +144,17 @@ After activating your account by email, you should have access to your Okta inst
 
 In this step, we augment the token with meta-information that is required by the ODM OpenID configuration so that ODM can manage both authentication and authorization mechanisms.
 
-1. In Menu **Security** / **API**, select the **default** authorization server
+1. In Menu **Security** / **API**, select the **default** authorization server.
 
-2. Add the *odmapiusers* scope
+2. Add the *odmapiusers* scope.
 
     To be more secure, we will use the client credentials flow for the ODM Rest API call. This requires to create a specific restricted scope (named *OKTA_API_SCOPE* later in this article).
 
-    In the **Scopes** tab, click **Add Scope** Button
+    In the **Scopes** tab, click **Add Scope** 
       - Name : *odmapiusers*
-      - Click **Create** Button
+      - Click **Create** 
 
-3. Add the identifier and group claims
+3. Add the identifier and group claims.
 
     We need to augment the tokens with the user identifier and group properties that are used for the ODM authentication (in ID tokens) and authorization (in access tokens) mechanisms.
 
@@ -164,7 +164,7 @@ In this step, we augment the token with meta-information that is required by the
       * Name: *loginName*
       * Include in token type: *Access Token*
       * Value: `(appuser != null) ? appuser.userName : app.clientId`
-      * Click **Create** Button  
+      * Click **Create**   
 
     Similarly, create:
     * *loginName - Id Token* claim:
@@ -184,16 +184,16 @@ In this step, we augment the token with meta-information that is required by the
 
     ![Add Claim Result](/images/Okta/ResultAddClaims.png)
 
-4. Verify the content of the token
+4. Verify the content of the token.
 
-    Check that the login name and groups are available in the ID token using the authorization flow which the flow used by ODM.
+    Check that the login name and groups are available in the ID token using the authorization flow which the flow used by ODM???.
 
     In the **Token Preview** tab:
       *  OAuth/OIDC client: *ODM Application*
       *  Grant type: *Authorization Code*
       *  User: ``<YourEmailAddress>``
       *  Scopes: *odmapiusers*
-      * Click the **Preview Token** button
+      * Click **Preview Token**
 
     As a result, the payload should contain:
 
@@ -240,14 +240,14 @@ In this step, we augment the token with meta-information that is required by the
 
 ### Create secrets to configure ODM with Okta
 
-1. Retrieve Okta Server information
+1. Retrieve Okta Server information.
 
     From the Okta console, in **Application** / **Application** / **ODM Application**:
     - Note the *OKTA_SERVER_NAME* which is the **Okta domain** in the **General Settings** (similar to *\<shortname\>.okta.com*).
 
-2. Create a secret with the Okta Server certificate
+2. Create a secret with the Okta Server certificate.
 
-    To allow ODM services to access Okta Server, it is mandatory to provide the Okta Server certificate.
+    To allow ODM services to access the Okta Server, it is mandatory to provide the Okta Server certificate.
     You can create the secret as follows:
 
     ```
@@ -255,7 +255,7 @@ In this step, we augment the token with meta-information that is required by the
     kubectl create secret generic okta-secret --from-file=tls.crt=okta.crt
     ```
 
-3. Generate the ODM configuration file for Okta
+3. Generate the ODM configuration file for Okta.
 
     The [script](generateTemplate.sh) allows you to generate the necessary configuration files.
     You can download the [okta-odm-script.zip](okta-odm-script.zip) .zip file to your machine. This .zip file contains the [script](generateTemplate.sh) and the content of the [templates](templates) directory.
@@ -271,9 +271,9 @@ In this step, we augment the token with meta-information that is required by the
     - Both *OKTA_CLIENT_ID* and *OKTA_CLIENT_SECRET* are listed in your ODM Application, section **General** / **Client Credentials**
     - *OKTA_ODM_GROUP* is the ODM Admin group we created in a [previous step](#manage-group-and-user) (*odm-admin*)
 
-    The files are generated to the `output` directory.
+    The files are generated into the `output` directory.
 
-4. Create the Okta authentication secret
+4. Create the Okta authentication secret.
 
     ```
     kubectl create secret generic okta-auth-secret \
@@ -285,14 +285,14 @@ In this step, we augment the token with meta-information that is required by the
 
 ## Install your ODM Helm release
 
-1. Add the public IBM Helm charts repository:
+1. Add the public IBM Helm charts repository.
 
     ```
     helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo/entitled
     helm repo update
     ```
 
-2. Check that you can access the ODM chart:
+2. Check that you can access the ODM chart.
 
     ```
     helm search repo ibm-odm-prod
@@ -300,7 +300,7 @@ In this step, we augment the token with meta-information that is required by the
     ibmcharts/ibm-odm-prod	21.3.0       	8.11.0.0   	IBM Operational Decision Manager
     ```
 
-3. Run the `helm install` command
+3. Run the `helm install` command.
 
     You can now install the product. We will use the PostgreSQL internal database and disable the data persistence (`internalDatabase.persistence.enabled=false`) to avoid any platform complexity concerning persistent volume allocation.
 
@@ -313,7 +313,7 @@ In this step, we augment the token with meta-information that is required by the
           --set customization.authSecretRef=okta-auth-secret
     ```
 
-    > Note: On OpenShift, you have to add the following parameters due to security context constraints:
+    > Note: On OpenShift, you have to add the following parameters due to security context constraints.
     > ```
     > --set internalDatabase.runAsUser='' --set customization.runAsUser='' --set service.enableRoute=true
     > ```
@@ -325,7 +325,7 @@ In this step, we augment the token with meta-information that is required by the
 
 1. Get the ODM endpoints.
     You can refer to the [documentation](https://www.ibm.com/docs/en/odm/8.11.0?topic=production-configuring-external-access) to retrieve the ODM endpoints.
-    For example on OpenShift, you can get the routes names and hosts with:
+    For example, on OpenShift you can get the route names and hosts with:
 
     ```
     kubectl get routes --no-headers --output custom-columns=":metadata.name,:spec.host"
@@ -339,7 +339,7 @@ In this step, we augment the token with meta-information that is required by the
     my-odm-release-odm-ds-runtime-route   <DS_RUNTIME_HOST>
     ```
 
-2. Register the redirect URIs into your Okta application:
+2. Register the redirect URIs into your Okta application.
 
     The redirect URIs are built the following way:
 
@@ -362,20 +362,20 @@ In this step, we augment the token with meta-information that is required by the
 
 Well done!  You can now connect to ODM using the endpoints you got [earlier](#register-the-odm-redirect-url) and log in as an ODM admin with the account you created in [the first step](#manage-group-and-user).
 
->Note:  Loging out in ODM components using Okta authentication raises an error for the time being.  This is a known issue.  We recommend to use a private window in your browser to log in, so that logout is done just by closing this window.
+>Note:  Logout in ODM components using Okta authentication raises an error for the time being.  This is a known issue.  We recommend to use a private window in your browser to log in, so that logout is done just by closing this window.
 
 ### Set up Rule Designer
 
-To be able to securely connect your Rule Designer to the Decision Server and Decision Center services that are running in Certified Kubernetes, you need to establish a TLS connection through a security certificate as well as the OpenID configuration.
+To be able to securely connect your Rule Designer to the Decision Server and Decision Center services that are running in Certified Kubernetes, you need to establish a TLS connection through a security certificate in addition to the OpenID configuration.
 
-1. Get the following configuration files
+1. Get the following configuration files.
     * `https://<DC_HOST>/decisioncenter/assets/truststore.jks`
     * `https://<DC_HOST>/odm/decisioncenter/assets/OdmOidcProvidersRD.json`
       Where *DC_HOST* is the Decision Center endpoint.
 
-2. Copy the `truststore.jks` and `OdmOidcProvidersRD.json` files to your Rule Designer installation directory next to the `eclipse.ini` file
+2. Copy the `truststore.jks` and `OdmOidcProvidersRD.json` files to your Rule Designer installation directory next to the `eclipse.ini` file.
 
-3. Edit your `eclipse.ini` file and add the following lines at the end:
+3. Edit your `eclipse.ini` file and add the following lines at the end.
     ```
     -Djavax.net.ssl.trustStore=<ECLIPSEINITDIR>/truststore.jks
     -Djavax.net.ssl.trustStorePassword=changeit
@@ -383,7 +383,7 @@ To be able to securely connect your Rule Designer to the Decision Server and Dec
     ```
     Where:
     - *changeit* is the fixed password to be used for the default truststore.jks file.
-    - *ECLIPSEINITDIR* is the Rule Designer installation directory next to the eclipse.ini file
+    - *ECLIPSEINITDIR* is the Rule Designer installation directory next to the eclipse.ini file.
 
 4. Restart Rule Designer.
 
