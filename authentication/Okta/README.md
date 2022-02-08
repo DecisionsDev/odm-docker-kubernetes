@@ -25,15 +25,15 @@
 
 # Introduction
 
-In the context of the ODM on Certified Kubernetes offering, Operational Decision Manager for production can be configured with an external OpenID Connect server (OIDC Provider) such as Okta service.
+In the context of the ODM on Certified Kubernetes offering, Operational Decision Manager for production can be configured with an external OpenID Connect server (OIDC provider) such as the Okta service.
 
 ## What is Okta?
 
-[Okta](https://www.okta.com/) is a secure identity cloud that links all your apps, logins and devices into a unified digital fabric. Okta sells centralized services, including a single sign-on service that allows users to log into a variety of systems. This is the service we'll use in this article.
+[Okta](https://www.okta.com/) is a secure identity cloud that links all your apps, logins and devices into a unified digital fabric. Okta sells centralized services, including a single sign-on service that allows users to log into a variety of systems. This is the service that we use in this article.
 
 ## About this task
 
-You need to create a number of secrets before you can install an ODM instance with an external OIDC provider such as Okta service and use web application single sign-on (SSO). The following diagram shows the ODM services with an external OIDC provider after a successful installation.
+You need to create a number of secrets before you can install an ODM instance with an external OIDC provider such as the Okta service and use web application single sign-on (SSO). The following diagram shows the ODM services with an external OIDC provider after a successful installation.
 
 ![ODM web application SSO](/images/Okta/diag_okta_interaction.jpg)
 
@@ -41,15 +41,15 @@ The following procedure describes how to manually configure ODM with an Okta ser
 
 ## ODM OpenID flows
 
-OpenID Connect is an authentication standard built on top of OAuth 2.0. It adds an additional token called an ID token.
+OpenID Connect is an authentication standard built on top of OAuth 2.0. It adds a token called an ID token.
 
 Terminology:
 
-- The **OpenID provider** — The authorization server that issues the ID token. In this case Okta is the OpenID provider.
-- The **end user** — Whose information is contained in the ID token
-- The **relying party** — The client application that requests the ID token from Okta
-- The **ID token** is issued by the OpenID Provider and contains information about the end user in the form of claims.
-- A **claim** is a piece of information about the end user.
+- The **OpenID provider** — The authorization server that issues the ID token. In this case, Okta is the OpenID provider.
+- The **end user** — The end user whose information is contained in the ID token.
+- The **relying party** — The client application that requests the ID token from Okta.
+- The **ID token** — The token that is issued by the OpenID provider and contains information about the end user in the form of claims.
+- A **claim** — A piece of information about the end user.
 
 The Client Credentials flow is intended for server-side (AKA "confidential") client applications with no end user, which normally describes machine-to-machine communication. The application must be server-side because it must be trusted with the client secret, and since the credentials are hard-coded, it can't be used by an actual end user. It involves a single, authenticated request to the token endpoint, which returns an access token.
 
@@ -75,20 +75,20 @@ First, install the following software on your machine:
 
 You can sign up for a [free Okta developer account](https://www.okta.com/free-trial/customer-identity/) if you don't own an Okta account already. Beware, Okta enforces [rate limits](https://developer.okta.com/docs/reference/rate-limits/) that are obviously lower for free developer accounts than for paid accounts but they should not be a problem for a demo.
 
-# Configure Okta instance for ODM (Part 1)
+# Configure an Okta instance for ODM (Part 1)
 
-In this section we will explain how to:
+In this section, we explain how to:
 
-- Manage group and users
-- Setup an application
+- Manage groups and users
+- Set up an application
 - Configure the default Authorization server
 
 ## Log into the OKTA instance
-After activating your account by email, you should have access to your Okta instance. Sign in to Okta
+After activating your account by email, you should have access to your Okta instance. Sign in to Okta.
 
-## Manage group and user
+## Manage groups and users
 
-1. Create a group which will contain ODM administrators. It will be referenced as *OKTA_ODM_GROUP* later in this article:
+1. Create a group which will contain ODM administrators. It is referenced as *OKTA_ODM_GROUP* later in this article:
 
     In Menu **Directory** / **Groups**:
       * Click **Add Group** button
@@ -113,7 +113,7 @@ After activating your account by email, you should have access to your Okta inst
 
     Repeat this step for each user you want to add.
 
-## Setup an application
+## Set up an application
 
 1. Create the *ODM application*
 
@@ -136,19 +136,19 @@ After activating your account by email, you should have access to your Okta inst
       * Under **Controlled access**:
         * Check **Limit access to selected groups**
       * Fill the **Selected group(s)** : ***odm-admin***
-    * Click **Save** button
+    * Click **Save** 
 
     ![New Web Application](/images/Okta/NewWebAppIntegration.png)
 
 ## Configure the *default* Authorization Server
 
-In this step we will augment the token with meta-information required by the ODM OpenID configuration so ODM can manage both authentication and authorization mechanisms.
+In this step, we augment the token with meta-information that is required by the ODM OpenID configuration so that ODM can manage both authentication and authorization mechanisms.
 
 1. In Menu **Security** / **API**, select the **default** authorization server
 
 2. Add the *odmapiusers* scope
 
-    To be more secured, we will use the client credential flow for the ODM Rest API call. This requires to create a specific restricted scope (named *OKTA_API_SCOPE* later in this article).
+    To be more secure, we will use the client credentials flow for the ODM Rest API call. This requires to create a specific restricted scope (named *OKTA_API_SCOPE* later in this article).
 
     In the **Scopes** tab, click **Add Scope** Button
       - Name : *odmapiusers*
@@ -156,17 +156,17 @@ In this step we will augment the token with meta-information required by the ODM
 
 3. Add the identifier and group claims
 
-    We need to augment the tokens by the user identifier and group properties that will be used for the ODM authentication (in ID tokens) and authorization (in access tokens) mechanisms.
+    We need to augment the tokens with the user identifier and group properties that are used for the ODM authentication (in ID tokens) and authorization (in access tokens) mechanisms.
 
     In **Claims** tab, create the following claims:
 
-    * Click **Add claim** button
+    * Click **Add claim** 
       * Name: *loginName*
       * Include in token type: *Access Token*
       * Value: `(appuser != null) ? appuser.userName : app.clientId`
       * Click **Create** Button  
 
-    Similarly create:
+    Similarly, create:
     * *loginName - Id Token* claim:
       * Name: *loginName*
       * Include in token type: *Id Token*
@@ -195,7 +195,7 @@ In this step we will augment the token with meta-information required by the ODM
       *  Scopes: *odmapiusers*
       * Click the **Preview Token** button
 
-    As a result payload should contains:
+    As a result, the payload should contain:
 
     ```
     ...
@@ -209,11 +209,11 @@ In this step we will augment the token with meta-information required by the ODM
 
 >Note:  The discovery endpoint can be found in **Security** / **API** / **default** / **Settings** in **Metadata URI**.
 
-# Deploy ODM on container configured with Okta Server (Part 2)
+# Deploy ODM on a container configured with Okta Server (Part 2)
 
 ## Prepare your environment for the ODM installation
 
-### Create a secret to use the Entitled registry
+### Create a secret to use the Entitled Registry
 
 1. Log in to [MyIBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary) with the IBMid and password that are associated with the entitled software to get your entitlement key.
 
@@ -236,7 +236,7 @@ In this step we will augment the token with meta-information required by the ODM
 
     > Note: The **cp.icr.io** value for the docker-server parameter is the only registry domain name that contains the images. You must set the *docker-username* to **cp** to use an entitlement key as *docker-password*.
 
-3. Make a note of the secret name so that you can set it for the **image.pullSecrets** parameter when you run a helm install of your containers. The image.repository parameter will later be set to *cp.icr.io/cp/cp4a/odm*.
+3. Make a note of the secret name so that you can set it for the **image.pullSecrets** parameter when you run a helm install of your containers. The image.repository parameter is later set to *cp.icr.io/cp/cp4a/odm*.
 
 ### Create secrets to configure ODM with Okta
 
@@ -248,7 +248,7 @@ In this step we will augment the token with meta-information required by the ODM
 2. Create a secret with the Okta Server certificate
 
     To allow ODM services to access Okta Server, it is mandatory to provide the Okta Server certificate.
-    You can create the secret as follow:
+    You can create the secret as follows:
 
     ```
     keytool -printcert -sslserver <OKTA_SERVER_NAME> -rfc > okta.crt
@@ -257,8 +257,8 @@ In this step we will augment the token with meta-information required by the ODM
 
 3. Generate the ODM configuration file for Okta
 
-    We provide a [script](generateTemplate.sh) allowing to generate the needed configuration files.
-    You can download the [okta-odm-script.zip](okta-odm-script.zip) zip file in your machine. This zip file contains the [script](generateTemplate.sh) and the content of the [templates](templates) directory.
+    The [script](generateTemplate.sh) allows you to generate the necessary configuration files.
+    You can download the [okta-odm-script.zip](okta-odm-script.zip) .zip file to your machine. This .zip file contains the [script](generateTemplate.sh) and the content of the [templates](templates) directory.
 
     Generate the files with the following command:
     ```
@@ -271,7 +271,7 @@ In this step we will augment the token with meta-information required by the ODM
     - Both *OKTA_CLIENT_ID* and *OKTA_CLIENT_SECRET* are listed in your ODM Application, section **General** / **Client Credentials**
     - *OKTA_ODM_GROUP* is the ODM Admin group we created in a [previous step](#manage-group-and-user) (*odm-admin*)
 
-    The files will be generated in the `output` directory.
+    The files are generated to the `output` directory.
 
 4. Create the Okta authentication secret
 
@@ -292,7 +292,7 @@ In this step we will augment the token with meta-information required by the ODM
     helm repo update
     ```
 
-2. Check you can access ODM's chart:
+2. Check that you can access the ODM chart:
 
     ```
     helm search repo ibm-odm-prod
@@ -313,7 +313,7 @@ In this step we will augment the token with meta-information required by the ODM
           --set customization.authSecretRef=okta-auth-secret
     ```
 
-    > Note: On OpenShift, you have to add the following parameters due to security context constraint:
+    > Note: On OpenShift, you have to add the following parameters due to security context constraints:
     > ```
     > --set internalDatabase.runAsUser='' --set customization.runAsUser='' --set service.enableRoute=true
     > ```
@@ -331,7 +331,7 @@ In this step we will augment the token with meta-information required by the ODM
     kubectl get routes --no-headers --output custom-columns=":metadata.name,:spec.host"
     ```
 
-    You will get the following hosts:
+    You get the following hosts:
     ```
     my-odm-release-odm-dc-route           <DC_HOST>
     my-odm-release-odm-dr-route           <DR_HOST>
@@ -341,7 +341,7 @@ In this step we will augment the token with meta-information required by the ODM
 
 2. Register the redirect URIs into your Okta application:
 
-    The redirect URIs are built this way:
+    The redirect URIs are built the following way:
 
       - Decision Center redirect URI:  `https://<DC_HOST>/decisioncenter/openid/redirect/odm`
       - Decision Runner redirect URI:  `https://<DR_HOST>/DecisionRunner/openid/redirect/odm`
@@ -352,8 +352,8 @@ In this step we will augment the token with meta-information required by the ODM
     In **Applications** / **Applications**:
       - Select **ODM Application**.
       - In the **General** tab, click **Edit** on the **General Settings** section.
-      - In the **LOGIN** section, click on **+ Add URI** in the **Sign-in redirect URIs** section and add the Decision Center redirect URI you got earlier (`https://<DC_HOST>/decisioncenter/openid/redirect/odm` -- don't forget to replace <DC_HOST> by your actual host name!)
-      - Repeat the previous step for all other three redirect URIs.
+      - In the **LOGIN** section, click **+ Add URI** in the **Sign-in redirect URIs** section and add the Decision Center redirect URI you got earlier (`https://<DC_HOST>/decisioncenter/openid/redirect/odm` -- don't forget to replace <DC_HOST> by your actual host name!)
+      - Repeat the previous step for all other redirect URIs.
       - Click **Save** at the bottom of the LOGIN section.
 
     ![Sign-in redirect URIs](/images/Okta/Sign-in_redirect_URIs.png)
@@ -362,9 +362,9 @@ In this step we will augment the token with meta-information required by the ODM
 
 Well done!  You can now connect to ODM using the endpoints you got [earlier](#register-the-odm-redirect-url) and log in as an ODM admin with the account you created in [the first step](#manage-group-and-user).
 
->Note:  Logout in ODM components using Okta authentication raises an error for the time being.  This is a known issue.  We recommend to use a private window in your browser to log in, so that logout is done just by closing this window.
+>Note:  Loging out in ODM components using Okta authentication raises an error for the time being.  This is a known issue.  We recommend to use a private window in your browser to log in, so that logout is done just by closing this window.
 
-### Setup Rule Designer
+### Set up Rule Designer
 
 To be able to securely connect your Rule Designer to the Decision Server and Decision Center services that are running in Certified Kubernetes, you need to establish a TLS connection through a security certificate as well as the OpenID configuration.
 
@@ -375,7 +375,7 @@ To be able to securely connect your Rule Designer to the Decision Server and Dec
 
 2. Copy the `truststore.jks` and `OdmOidcProvidersRD.json` files to your Rule Designer installation directory next to the `eclipse.ini` file
 
-3. Edit your `eclipse.ini` file and add this following lines at the end:
+3. Edit your `eclipse.ini` file and add the following lines at the end:
     ```
     -Djavax.net.ssl.trustStore=<ECLIPSEINITDIR>/truststore.jks
     -Djavax.net.ssl.trustStorePassword=changeit
