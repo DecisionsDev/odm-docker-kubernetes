@@ -7,8 +7,6 @@ Here is the home page of Google Cloud: https://cloud.google.com
 
 <img width="1000" height="560" src='./images/architecture.png'/>
 
-The ODM Docker material is available in Passport Advantage. It includes Docker container images and Helm chart descriptors.
-
 ## Included components
 
 The project comes with the following components:
