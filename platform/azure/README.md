@@ -3,9 +3,9 @@
 This project demonstrates how to deploy an IBM® Operational Decision Manager (ODM) clustered topology on the Azure Kubernetes Service (AKS) cloud service. This deployment implements Kubernetes and Docker technologies.
 Here is the home page of Microsoft Azure: https://portal.azure.com/#home
 
-<img width="800" height="560" src='./images/aks-schema.jpg'/>
+![AKS schema](images/aks-schema.png)
 
-The ODM Docker material is available in Passport Advantage. It includes Docker container images and Helm chart descriptors.
+The ODM on Kubernetes material is available in [IBM Entitled Registry](https://www.ibm.com/cloud/container-registry) for the Docker images, and the [IBM Helm charts repository](https://github.com/IBM/charts) for the ODM Helm chart.
 
 ## Included components
 
@@ -23,8 +23,8 @@ The commands and tools have been tested on macOS and Linux.
 ## Prerequisites
 First, install the following software on your machine:
 
-* [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)
-* [Helm v3](https://github.com/helm/helm/releases)
+- [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)
+- [Helm v3](https://github.com/helm/helm/releases)
 
 Then [create an Azure account and pay as you go](https://azure.microsoft.com/en-us/pricing/purchase-options/pay-as-you-go/).
 
@@ -231,7 +231,7 @@ az postgres server firewall-rule create --resource-group <resourcegroup> --serve
 
 To get access to the ODM material, you must have an IBM entitlement registry key to pull the images from the IBM Entitled registry.
 
-(If you prefer to install ODM from Azure Container Registry instead, you can a look at [this dedicated page](README_PPA.md).)
+(If you prefer to install ODM from Azure Container Registry, you can have a look at [this dedicated page](README_PPA.md).)
 
 ### Using the IBM Entitled registry with your IBMid (10 min)
 
@@ -265,7 +265,7 @@ helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo
 helm repo update
 ```
 
-Check you can access ODM's charts:
+Check that you can access the ODM charts:
 
 ```
 helm search repo ibm-odm-prod --versions                  
@@ -276,7 +276,7 @@ ibmcharts/ibm-odm-prod	21.1.0       	8.10.5.0   	IBM Operational Decision Manage
 ibmcharts/ibm-odm-prod	20.3.0       	8.10.5.0   	IBM Operational Decision Manager
 ```
 
-You can now proceed to the [datasource secret's creation](#create-the-datasource-secrets-for-azure-postgresql).
+You can now proceed to the [creation of the datasource secrets](#create-the-datasource-secrets-for-azure-postgresql).
 
 ### Create the datasource secrets for Azure PostgreSQL
 
@@ -300,7 +300,7 @@ It should be something like in the following extract:
   serverName="<postgresqlserver>.postgres.database.azure.com" />
 ```
 
-Create a secret with this two modified files
+Create a secret with these two modified files
 
 ```
 kubectl create secret generic <customdatasourcesecret> \
@@ -309,16 +309,19 @@ kubectl create secret generic <customdatasourcesecret> \
 
 ### Manage a digital certificate (10 min)
 
-1. (Optional) Generate a self-signed certificate
+1. (Optional) Generate a self-signed certificate.
 
 If you do not have a trusted certificate, you can use OpenSSL and other cryptography and certificate management libraries to generate a certificate file and a private key, to define the domain name, and to set the expiration date. The following command creates a self-signed certificate (.crt file) and a private key (.key file) that accept the domain name *mycompany.com*. The expiration is set to 1000 days:
 
 ```
 openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mycompany.key \
-        -out mycompany.crt -subj "/CN=mycompany.com/OU=it/O=mycompany/L=Paris/C=FR"
+        -out mycompany.crt -subj "/CN=mycompany.com/OU=it/O=mycompany/L=Paris/C=FR" \
+        -addext "subjectAltName = DNS:mycompany.com"
 ```
 
-2. Generate a JKS version of the certificate to be used in the ODM container 
+>Note:  You can use -addext only with actual OpenSSL, not LibreSSL (yet).
+
+2. Generate a JKS version of the certificate to be used in the ODM container. 
 
 ```
 openssl pkcs12 -export -passout pass:password -passin pass:password \
@@ -330,7 +333,7 @@ keytool -import -v -trustcacerts -alias mycompany -file mycompany.crt \
       -keystore truststore.jks -storepass password -storetype jks -noprompt
 ```
 
-3. Create a Kubernetes secret with the certificate
+3. Create a Kubernetes secret with the certificate.
 
 ```
 kubectl create secret generic <mycompanystore> --from-file=keystore.jks=mycompany.jks \
@@ -397,13 +400,13 @@ This section explains how to track ODM usage with the IBM License Service.
 
 ### Create a NGINX Ingress controller
 
-1. Add the official stable repository
+1. Add the official stable repository.
 
     ```
     helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
     ```
 
-2. Use Helm to deploy an NGINX Ingress controller
+2. Use Helm to deploy an NGINX Ingress controller.
 
     ```
     helm install nginx-ingress ingress-nginx/ingress-nginx \
@@ -412,7 +415,7 @@ This section explains how to track ODM usage with the IBM License Service.
       --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux
     ```
 
-3. Get the Ingress controller external IP address
+3. Get the Ingress controller external IP address.
 
     ```
     kubectl get service -l app.kubernetes.io/name=ingress-nginx
@@ -423,7 +426,7 @@ This section explains how to track ODM usage with the IBM License Service.
 
 ### Install the IBM License Service
 
-Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://github.com/IBM/ibm-licensing-operator/blob/latest/docs/Content/Install_without_OLM.md), make sure you don't follow the instantiation part!
+Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://github.com/IBM/ibm-licensing-operator/blob/latest/docs/Content/Install_without_OLM.md). Do not follow the instantiation part!
 
 ### Create the Licensing instance
 
@@ -461,4 +464,4 @@ If your ODM instances are not running properly, please refer to [our dedicated t
 
 # License
 
-[Apache 2.0](../LICENSE)
+[Apache 2.0](/LICENSE)

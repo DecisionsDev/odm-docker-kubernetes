@@ -1,6 +1,7 @@
 # Install an ODM Helm release and expose it with a NGINX Ingress controller (15 min)
 
-This section explains how to expose the ODM services to Internet connectivity with Ingress. For reference, see the Microsoft Azure documentation https://docs.microsoft.com/en-US/azure/aks/ingress-own-tls.
+This section explains how to expose the ODM services to Internet connectivity with Ingress.
+For reference, see the Google Cloud documentation https://cloud.google.com/community/tutorials/nginx-ingress-gke
 
 <!-- TOC titleSize:2 tabSpaces:2 depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 skip:0 title:1 charForUnorderedList:* -->
 ## Table of Contents
@@ -17,8 +18,6 @@ NGINX has been installed while deploying IBM License Manager, see [README.md](RE
 
 ## Create a Kubernetes secret for the TLS certificate
 
-For more informations see https://docs.microsoft.com/en-US/azure/aks/ingress-own-tls#create-kubernetes-secret-for-the-tls-certificate
-
 1. (Optional) Generate a self-signed certificate
 
 If you do not have a trusted certificate, you can use OpenSSL and other cryptography and certificate management libraries to generate a certificate file and a private key, to define the domain name, and to set the expiration date. The following command creates a self-signed certificate (.crt file) and a private key (.key file) that accept the domain name *mycompany.com*. The expiration is set to 1000 days:
@@ -26,10 +25,10 @@ If you do not have a trusted certificate, you can use OpenSSL and other cryptogr
 ```
 openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mycompany.key \
         -out mycompany.crt -subj "/CN=mycompany.com/OU=it/O=mycompany/L=Paris/C=FR" \
-        -addext "subjectAltName = DNS:mycompany.com"
+        -addext "subjectAltName=DNS:mycompany.com"
 ```
 
->Note:  You can use -addext only with actual OpenSSL, not LibreSSL (yet).
+>Pay attention to use a real OpenSSL version and not LibreSSL.
 
 2. Create the according Kubernetes secret that contains the certificate
 
@@ -41,14 +40,16 @@ kubectl create secret tls <mycompanytlssecret> --key mycompany.key --cert mycomp
 
 You can now install the product:
 
+The ODM instance is using the externalCustomDatabase parameters to import the PostgreSQL datasource and driver. The ODM services will be exposed through NGINX thanks to the dedicated Ingress annotation (kubernetes.io/ingress.class: nginx).
+The secured HTTPS communication is managed by the NGINX ingress controller. So, we disable TLS at container level
+
 ```
-helm install <release> ibmcharts/ibm-odm-prod --version 21.3.0 \
+helm install <release> ibmcharts/ibm-odm-prod \
         --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=<registrysecret> \
-        --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.11.0.0} \
-        --set externalCustomDatabase.datasourceRef=<customdatasourcesecret> \
-        --set service.ingress.enabled=true --set service.ingress.tlsSecretRef=<mycompanytlssecret> \
-        --set service.ingress.tlsHosts={mycompany.com} --set service.ingress.host=mycompany.com \
-        --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"\,"nginx.ingress.kubernetes.io/backend-protocol: HTTPS"\,"nginx.ingress.kubernetes.io/affinity: cookie"}
+        --set externalCustomDatabase.datasourceRef=<customdatasourcesecret> --set externalCustomDatabase.driverPvc=customdatasource-pvc \
+        --set service.enableTLS=false --set service.ingress.tlsSecretRef=<mycompanytlssecret> \
+        --set service.ingress.enabled=true --set service.ingress.host=mycompany.com --set service.ingress.tlsHosts={"mycompany.com"} \
+        --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"}
 ```
 
 ## Edit your /etc/hosts
@@ -90,3 +91,4 @@ If your ODM instances are not running properly, please refer to [our dedicated t
 # License
 
 [Apache 2.0](../LICENSE)
+

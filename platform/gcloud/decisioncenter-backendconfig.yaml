@@ -1,0 +1,7 @@
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: dc-backendconfig
+spec:
+  sessionAffinity:
+    affinityType: "CLIENT_IP"
