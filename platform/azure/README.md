@@ -5,7 +5,7 @@ Here is the home page of Microsoft Azure: https://portal.azure.com/#home
 
 <img width="800" height="560" src='./images/aks-schema.jpg'/>
 
-The ODM Docker material is available in Passport Advantage. It includes Docker container images and Helm chart descriptors.
+The ODM on Kubernetes material is available in [IBM Entitled Registry](https://www.ibm.com/cloud/container-registry) for the Docker images, and the [IBM Helm charts repository](https://github.com/IBM/charts) for the ODM Helm chart.
 
 ## Included components
 
