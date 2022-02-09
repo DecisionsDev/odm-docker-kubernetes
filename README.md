@@ -32,7 +32,7 @@ The ODM Docker material is used here, which is available in the [odm-ondocker](h
 - [Minikube](platform/minikube/README.md)
 
 ### Contributions to customize the deployment
-
+- [Configure ODM witn an OpenID Okta service](authentication/Okta/README.md)
 - [Configure user access with external OIDC providers](contrib/authentication/openid/README.md)
 - [Scope the Decision Server Console to a dedicated node with `kustomize`](contrib/kustomize/ds-console-dedicated-node/README.md)
 
@@ -40,9 +40,8 @@ The ODM Docker material is used here, which is available in the [odm-ondocker](h
 
 For issues relating specifically to the Dockerfiles and scripts, please use the [GitHub issue tracker](https://github.com/ODMDev/odm-docker-kubernetes/issues). For more general issue relating to IBM Operational Decision Manager you can [get help](https://developer.ibm.com/odm/home/connect/) through the ODMDev community or, if you have production licenses for Operational Decision Manager, via the usual support channels. We welcome contributions following [our guidelines](https://github.com/ODMDev/odm-docker-kubernetes/blob/master/CONTRIBUTING.md).
 
-
-## Notice
-© Copyright IBM Corporation 2021.
+# Notice
+© Copyright IBM Corporation 2022.
 
 ## License
 ```text
