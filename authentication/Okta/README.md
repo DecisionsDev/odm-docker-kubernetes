@@ -186,7 +186,7 @@ In this step, we augment the token with meta-information that is required by the
 
 4. Verify the content of the token.
 
-    Check that the login name and groups are available in the ID token using the authorization flow which the flow used by ODM???.
+    Check that the login name and groups meta-information are available in the ID token.
 
     In the **Token Preview** tab:
       *  OAuth/OIDC client: *ODM Application*
