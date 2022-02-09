@@ -1,0 +1,20 @@
+apiVersion: operator.ibm.com/v1alpha1
+kind: IBMLicensing
+metadata:
+  name: instance
+spec:
+  apiSecretToken: ibm-licensing-token
+  datasource: datacollector
+  httpsEnable: false
+  ingressEnabled: true
+  ingressOptions:
+    annotations:
+      alb.ingress.kubernetes.io/scheme: internet-facing
+      alb.ingress.kubernetes.io/target-type: ip
+      kubernetes.io/ingress.class: alb
+    path: /*
+  instanceNamespace: ibm-common-services
+  resources: {}
+  usageContainer:
+    resources: {}
+  version: 1.10.0
