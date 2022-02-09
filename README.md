@@ -29,6 +29,7 @@ The ODM Docker material is used here, which is available in the [odm-ondocker](h
 
 - [Amazon EKS](platform/eks/README.md)
 - [Azure AKS](platform/azure/README.md)
+- [Google Cloud GKE](platform/gcloud/README.md)
 - [Minikube](platform/minikube/README.md)
 
 ### Contributions to customize the deployment
