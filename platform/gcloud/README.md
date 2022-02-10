@@ -320,8 +320,8 @@ You can now install the ODM product.
 
 The ODM instance uses the externalCustomDatabase parameters to import the PostgreSQL datasource and driver.
 The ODM services are exposed with an Ingress that uses the previously created mycompany certificate.
-It??? automatically creates an HTTPS GKE loadbalancer. Therefore, you can disable the ODM internal TLS as it is not needed.
-You will use a kustomize as post-rendering??? to change the Decision Server readiness because the GKE loadbalancer uses it to create service healthCheck that requires 200 as response code (ODM default is 301).
+The Ingress automatically creates an HTTPS GKE loadbalancer. Therefore, you can disable the ODM internal TLS as it is not needed.
+The helm install command executes a kustomize as post-rendering step to change the Decision Server readiness, because the GKE loadbalancer uses it to create a service healthCheck that requires 200 as response code (ODM default is 301).
 
 ```
 helm install <release> ibmcharts/ibm-odm-prod \
@@ -383,7 +383,7 @@ kubectl apply -f decisioncenter-backendconfig.yaml
 kubectl annotate service <release>-odm-decisioncenter cloud.google.com/backend-config="{\"ports\": {\"9453\":\"dc-backendconfig\"}}"
 ```
 
-As soon as GKE manages the Decision Center session affinity at the loadbalancer level, you can check the ClientIP availability below the Decision Center Network Endpoint Group configuration from the Google Cloud Platform in the Load Balancer details???.
+As soon as GKE manages the Decision Center session affinity at the loadbalancer level, you can check the ClientIP availability under the Decision Center Network Endpoint Group configuration in the Load Balancer details panel of the Google Cloud Platform.
 
 <img width="1000" height="353" src='./images/dc_sessionaffinity.png'/>
 
