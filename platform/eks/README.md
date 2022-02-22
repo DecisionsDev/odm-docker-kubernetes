@@ -3,18 +3,19 @@
 This project demonstrates how to deploy an IBM® Operational Decision Manager (ODM) clustered topology on the Amazon Elastic Kubernetes Service (EKS) cloud service. This deployment implements Kubernetes and Docker technologies.
 
 <img src="./images/eks-schema.jpg" alt="Flow" width="2050" height="600" />
-The ODM Docker material is available in Passport Advantage. It includes Docker container images and Helm chart descriptors.
+
+The ODM on Kubernetes material is available in [IBM Entitled Registry](https://www.ibm.com/cloud/container-registry) for the Docker images, and the [IBM Helm charts repository](https://github.com/IBM/charts) for the ODM Helm chart.
 
 ## Included components
 The project uses the following components:
-- [IBM Operational Decision Manager](https://www.ibm.com/support/knowledgecenter/en/SSQP76_8.10.x/com.ibm.odm.kube/kc_welcome_odm_kube.html)
+- [IBM Operational Decision Manager](https://www.ibm.com/docs/en/odm/8.11.0)
 - [Amazon Elastic Kubernetes Service (Amazon EKS)](https://aws.amazon.com/eks/)
-- [Amazon Elastic Container Registry (Amazon ECR) ](https://aws.amazon.com/ecr/)
-- [Amazon Relational Database Service (Amazon RDS) ](https://aws.amazon.com/rds/)
-- [Amazon Application Load Balancer(ALB)](https://aws.amazon.com/elasticloadbalancing/?nc=sn&loc=0)
+- [Amazon Elastic Container Registry (Amazon ECR)](https://aws.amazon.com/ecr/)
+- [Amazon Relational Database Service (Amazon RDS)](https://aws.amazon.com/rds/)
+- [Amazon Elastic Load Balancing (Amazon ELB)](https://aws.amazon.com/elasticloadbalancing/)
 
 ## Tested environment
-The commands and tools have been tested on MacOS and linux.
+The commands and tools have been tested on Linux and macOS.
 
 ## Prerequisites
 First, install the following software on your machine:

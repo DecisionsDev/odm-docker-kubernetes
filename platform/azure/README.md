@@ -24,7 +24,7 @@ The commands and tools have been tested on macOS and Linux.
 First, install the following software on your machine:
 
 - [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)
-- [Helm v3](https://github.com/helm/helm/releases)
+- [Helm v3](https://helm.sh/docs/intro/install/)
 
 Then [create an Azure account and pay as you go](https://azure.microsoft.com/en-us/pricing/purchase-options/pay-as-you-go/).
 
