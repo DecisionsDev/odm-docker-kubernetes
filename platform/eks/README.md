@@ -12,7 +12,7 @@ The project uses the following components:
 - [Amazon Elastic Kubernetes Service (Amazon EKS)](https://aws.amazon.com/eks/)
 - [Amazon Elastic Container Registry (Amazon ECR)](https://aws.amazon.com/ecr/)
 - [Amazon Relational Database Service (Amazon RDS)](https://aws.amazon.com/rds/)
-- [Amazon Elastic Load Balancing (Amazon ELB)](https://aws.amazon.com/elasticloadbalancing/)
+- [AWS Application Load Balancer (ALB)](https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html)
 
 ## Tested environment
 The commands and tools have been tested on Linux and macOS.
@@ -20,10 +20,10 @@ The commands and tools have been tested on Linux and macOS.
 ## Prerequisites
 First, install the following software on your machine:
 * [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html)
-* [Helm](https://github.com/helm/helm/releases)
-* [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
+* [Helm v3](https://helm.sh/docs/intro/install/)
+* [Kubectl](https://kubernetes.io/docs/tasks/tools/)
 
-Then, create an [AWS Account](https://aws.amazon.com/getting-started/?sc_icontent=awssm-evergreen-getting_started&sc_iplace=2up&trk=ha_awssm-evergreen-getting_started&sc_ichannel=ha&sc_icampaign=evergreen-getting_started)
+Then, create an [AWS Account](https://aws.amazon.com/getting-started/).
 
 ## Steps to deploy ODM on Kubernetes from Amazon EKS
 
@@ -37,8 +37,8 @@ Then, create an [AWS Account](https://aws.amazon.com/getting-started/?sc_iconten
 
 For more information, see [Getting started with Amazon EKS](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html)
 
-
 ### 1. Prepare your environment (40 min)
+
 #### a. Create an EKS cluster (30 min)
 
 Create an EKS cluster following [this documentation](https://docs.aws.amazon.com/eks/latest/userguide/create-cluster.html)
