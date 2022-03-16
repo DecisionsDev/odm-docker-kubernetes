@@ -210,7 +210,7 @@ ibmcharts/ibm-odm-prod	21.3.0       	8.11.0.0   	IBM Operational Decision Manage
 
 The Google Cloud SQL PostgreSQL connection will be done using [Cloud SQL Connector for Java](https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory#cloud-sql-connector-for-java).
 
-If you don't want to build the driver, you can get the last [driver](https://storage.googleapis.com/cloud-sql-java-connector/) named postgres-socket-factory-X.X.X-jar-with-driver-and-dependencies.jar.
+If you don't want to build the driver, you can get the last [driver](https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory/releases) named postgres-socket-factory-X.X.X-jar-with-driver-and-dependencies.jar.
 
 We realised the test with the driver version [postgres-socket-factory-1.4.2-jar-with-driver-and-dependencies.jar](https://storage.googleapis.com/cloud-sql-java-connector/v1.4.2/postgres-socket-factory-1.4.2-jar-with-driver-and-dependencies.jar).
 
@@ -223,7 +223,7 @@ Replace the following placeholders:
 - CONNECTION_NAME: The database connection name
 - DBNAME: The database name (default is postgres)
 - USERNAME: The database username (default is postgres)
-- PASSWORD: The database password (Set the <PASSWORD> of your Posgresql instance.)
+- PASSWORD: The database password (PASSWORD enter in the step [Create the Google Cloud SQL PostgreSQL instance](#create-the-datasource-secrets-for-google-cloud-sql-postgresql))
 
 It should be something like in the following extract:
 
@@ -250,7 +250,7 @@ kubectl create secret generic <customdatasourcesecret> \
 
 1. Generate a self-signed certificate
 
-In this step, you will generate a certificate used by  GKE loadbalancer.  
+In this step, you will generate a certificate used by the GKE loadbalancer.  
 If you do not have a trusted certificate, you can use OpenSSL and other cryptography and certificate management libraries to generate a certificate file and a private key, to define the domain name, and to set the expiration date. The following command creates a self-signed certificate (.crt file) and a private key (.key file) that accepts the domain name *mycompany.com*. The expiration is set to 1000 days:
 
 ```
@@ -295,7 +295,7 @@ kubectl apply -f filestore-example.yaml
 ```
 kubectl apply -f customdatasource-pvc.yaml
 ```
-This take some time until the PVC is ready. Wait until the PVC is ready before moving to the next step. You can very the status by using this command line.
+This take some time until the PVC is ready. Wait until the PVC is ready before moving to the next step. You can verify the status by using this command line.
 
 ```
 kubectl get pvc
