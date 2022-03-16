@@ -323,6 +323,7 @@ kubectl patch pv $PV_NAME -p '{"spec":{"accessModes":["ReadOnlyMany"]}}'
 ```
 
 7. Clean up
+  
 You can now delete the nginx pods used to copy the PostgreSQL driver.
 ```
 kubectl delete -f nginx.yaml
