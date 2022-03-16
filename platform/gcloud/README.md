@@ -46,35 +46,35 @@ Without the relevant billing level, some Google Cloud resources will not be crea
 ## Steps to deploy ODM on Kubernetes from Google GKE
 
 <!-- TOC titleSize:2 tabSpaces:2 depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 skip:0 title:0 charForUnorderedList:* -->
-* [Deploying IBM Operational Decision Manager on Google GKE](#deploying-ibm-operational-decision-manager-on-google-gke)
-  * [Included components](#included-components)
-  * [Tested environment](#tested-environment)
-  * [Prerequisites](#prerequisites)
-  * [Steps to deploy ODM on Kubernetes from Google GKE](#steps-to-deploy-odm-on-kubernetes-from-google-gke)
-  * [Prepare your GKE instance (30 min)](#prepare-your-gke-instance-30-min)
-    * [Log into Google Cloud](#log-into-google-cloud)
-    * [Create a GKE cluster](#create-a-gke-cluster)
-    * [Set up your environment to this cluster](#set-up-your-environment-to-this-cluster)
-  * [Create the Google Cloud SQL PostgreSQL instance (10 min)](#create-the-google-cloud-sql-postgresql-instance-10-min)
-  * [Prepare your environment for the ODM installation](#prepare-your-environment-for-the-odm-installation)
-    * [Using the IBM Entitled registry with your IBMid (10 min)](#using-the-ibm-entitled-registry-with-your-ibmid-10-min)
-    * [Create the datasource secrets for Google Cloud SQL PostgreSQL](#create-the-datasource-secrets-for-google-cloud-sql-postgresql)
-    * [Manage a digital certificate (2 min)](#manage-a-digital-certificate-2-min)
-  * [Install an ODM Helm release using the GKE loadbalancer (10 min)](#install-an-odm-helm-release-using-the-gke-loadbalancer-10-min)
-    * [Manage a PV containing the JDBC driver](#manage-a-pv-containing-the-jdbc-driver)
-    * [Install the ODM release](#install-the-odm-release)
-    * [Check the topology](#check-the-topology)
-    * [Check the Ingress and GKE LoadBalancer](#check-the-ingress-and-gke-loadbalancer)
-    * [Create a Backend Configuration for the Decision Center Service](#create-a-backend-configuration-for-the-decision-center-service)
-    * [Access ODM services](#access-odm-services)
-  * [Install the IBM License Service and retrieve license usage](#install-the-ibm-license-service-and-retrieve-license-usage)
-    * [Create a NGINX Ingress controller](#create-a-nginx-ingress-controller)
-    * [Install the IBM License Service](#install-the-ibm-license-service)
-    * [Create the Licensing instance](#create-the-licensing-instance)
-    * [Retrieving license usage](#retrieving-license-usage)
-  * [Optional steps](#optional-steps)
-  * [Troubleshooting](#troubleshooting)
-* [License](#license)
+- [Deploying IBM Operational Decision Manager on Google GKE](#deploying-ibm-operational-decision-manager-on-google-gke)
+  - [Included components](#included-components)
+  - [Tested environment](#tested-environment)
+  - [Prerequisites](#prerequisites)
+  - [Steps to deploy ODM on Kubernetes from Google GKE](#steps-to-deploy-odm-on-kubernetes-from-google-gke)
+  - [Prepare your GKE instance (30 min)](#prepare-your-gke-instance-30-min)
+    - [Log into Google Cloud](#log-into-google-cloud)
+    - [Create a GKE cluster](#create-a-gke-cluster)
+    - [Set up your environment to this cluster](#set-up-your-environment-to-this-cluster)
+  - [Create the Google Cloud SQL PostgreSQL instance (10 min)](#create-the-google-cloud-sql-postgresql-instance-10-min)
+  - [Prepare your environment for the ODM installation](#prepare-your-environment-for-the-odm-installation)
+    - [Using the IBM Entitled registry with your IBMid (10 min)](#using-the-ibm-entitled-registry-with-your-ibmid-10-min)
+    - [Create the datasource secrets for Google Cloud SQL PostgreSQL](#create-the-datasource-secrets-for-google-cloud-sql-postgresql)
+    - [Manage a digital certificate (2 min)](#manage-a-digital-certificate-2-min)
+  - [Install an ODM Helm release using the GKE loadbalancer (10 min)](#install-an-odm-helm-release-using-the-gke-loadbalancer-10-min)
+    - [Manage a PV containing the JDBC driver](#manage-a-pv-containing-the-jdbc-driver)
+    - [Install the ODM release](#install-the-odm-release)
+    - [Check the topology](#check-the-topology)
+    - [Check the Ingress and GKE LoadBalancer](#check-the-ingress-and-gke-loadbalancer)
+    - [Create a Backend Configuration for the Decision Center Service](#create-a-backend-configuration-for-the-decision-center-service)
+    - [Access ODM services](#access-odm-services)
+  - [Install the IBM License Service and retrieve license usage](#install-the-ibm-license-service-and-retrieve-license-usage)
+    - [Create a NGINX Ingress controller](#create-a-nginx-ingress-controller)
+    - [Install the IBM License Service](#install-the-ibm-license-service)
+    - [Create the Licensing instance](#create-the-licensing-instance)
+    - [Retrieving license usage](#retrieving-license-usage)
+  - [Optional steps](#optional-steps)
+  - [Troubleshooting](#troubleshooting)
+- [License](#license)
 <!-- /TOC -->
 
 ## Prepare your GKE instance (30 min)
@@ -98,7 +98,7 @@ In this article we chose to create a [regional cluster](https://cloud.google.com
 Set the project (associated to a billing account):
 
 ```
-gcloud config set project [PROJECT_NAME]
+gcloud config set project [PROJECT_ID]
 ```
 
 Set the zone:
@@ -110,13 +110,13 @@ gcloud config set compute/zone [ZONE (ex: europe-west1-b)]
 Set the region:
 
 ```
-gcloud config set compute/region [REGION (ex: europe-west1-b)]
+gcloud config set compute/region [REGION (ex: europe-west1)]
 ```
 
 Create a cluster and enable autoscaling. Here, we start with 4 nodes (with 16 max):
 
 ```
-gcloud container clusters create [CLUSTER_NAME] --num-nodes 4 --enable-autoscaling --min-nodes 1 --max-nodes 16
+gcloud container clusters create [CLUSTER_NAME] --num-nodes 6 --enable-autoscaling --min-nodes 1 --max-nodes 16
 ```
 
 You can also create your cluster from the Google Cloud Platform using the Kubernetes Engine Clusters panel, by clicking on the Create button
@@ -146,11 +146,13 @@ We will use the Google Cloud Console to create this instance:
 
 - Go on the [SQL context](https://console.cloud.google.com/sql) and click on the "CREATE INSTANCE" button
 - Choose PostgreSQL
+  - Instance ID : Chosse a name for your instance.
+  - Password : <PASSWORD> (Take a note of this password. You need it in the "Create the datasource secrets for Google Cloud SQL PostgreSQL" section)
   - Take "PostgreSQL 13" as database version
   - Choose a region similar to the cluster. So, the communication is optimal between the database and the ODM instance
   - Keep "Multiple zones" for Zonal availability to the highest availability
   - Expand "Customize your instance" and Expand "Connections"
-  - As Public IP is selected by default, click on the "ADD NETWORK" button, put a name and add "0.0.0.0/0" for Network, then click on "DONE"
+  - As Public IP is selected by default, click on the "ADD NETWORK" button, put a name and add "0.0.0.0/0" for Network, then click on "DONE". It's not recommended to use plublic IP. In production environment, you should use private IP.
 
 When created, you can drill on the SQL instance overview to retrieve needed information to connect to this instance like the IP adress and the connection name:
 
@@ -204,8 +206,6 @@ NAME                  	CHART VERSION	APP VERSION	DESCRIPTION
 ibmcharts/ibm-odm-prod	21.3.0       	8.11.0.0   	IBM Operational Decision Manager
 ```
 
-You can now proceed to the [datasource secret's creation](#create-the-datasource-secrets-for-azure-postgresql).
-
 ### Create the datasource secrets for Google Cloud SQL PostgreSQL
 
 The Google Cloud SQL PostgreSQL connection will be done using [Cloud SQL Connector for Java](https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory#cloud-sql-connector-for-java).
@@ -214,7 +214,7 @@ If you don't want to build the driver, you can get the last [driver](https://sto
 
 We realised the test with the driver version [postgres-socket-factory-1.4.2-jar-with-driver-and-dependencies.jar](https://storage.googleapis.com/cloud-sql-java-connector/v1.4.2/postgres-socket-factory-1.4.2-jar-with-driver-and-dependencies.jar).
 
-Copy the files [datasource-dc.xml.template](datasource-dc.xml.template) and [datasource-ds.xml.template](datasource-ds.xml.template) to your local machine and rename them `datasource-dc.xml` and `datasource-ds.xml`.
+Copy the files [datasource-dc.xml](datasource-dc.xml) and [datasource-ds.xml](datasource-ds.xml) to your local machine.
 
 Replace the following placeholders:
 
@@ -223,7 +223,7 @@ Replace the following placeholders:
 - CONNECTION_NAME: The database connection name
 - DBNAME: The database name (default is postgres)
 - USERNAME: The database username (default is postgres)
-- PASSWORD: The database password
+- PASSWORD: The database password (Set the <PASSWORD> of your Posgresql instance.)
 
 It should be something like in the following extract:
 
@@ -250,6 +250,7 @@ kubectl create secret generic <customdatasourcesecret> \
 
 1. Generate a self-signed certificate
 
+In this step, you will generate a certificate used by  GKE loadbalancer.  
 If you do not have a trusted certificate, you can use OpenSSL and other cryptography and certificate management libraries to generate a certificate file and a private key, to define the domain name, and to set the expiration date. The following command creates a self-signed certificate (.crt file) and a private key (.key file) that accepts the domain name *mycompany.com*. The expiration is set to 1000 days:
 
 ```
@@ -281,6 +282,7 @@ To workaround this issue, we will use a ReadWriteOnce PV used by an NGINX pod th
 Then, we will change the PV permission to ReadOnlyMany before to launch the ODM release in order to be able to install ODM on many nodes.
 
 1. [Enable the SCI FileStore Driver](https://cloud.google.com/kubernetes-engine/docs/how-to/persistent-volumes/filestore-csi-driver#console_1).
+The cluster will restart. This take several minutes until the cluster is ready.
 
 2. Create the [filestore-example](filestore-example.yaml) storageClass:
 
@@ -293,6 +295,11 @@ kubectl apply -f filestore-example.yaml
 ```
 kubectl apply -f customdatasource-pvc.yaml
 ```
+This take some time until the PVC is ready. Wait until the PVC is ready before moving to the next step. You can very the status by using this command line.
+
+```
+kubectl get pvc
+```
 
 4. Create a [nginx](nginx.yaml) pod using this PVC that will be used only to copy the driver because this container is accessible as root:
 
@@ -300,11 +307,12 @@ kubectl apply -f customdatasource-pvc.yaml
 kubectl apply -f nginx.yaml
 ```
 
+
 5. Copy the Google Cloud PostgresSQL driver on the nginx pod:
 
 ```
 export NGINX_COPY_POD=$(kubectl get pod | grep nginx-driver-copy)
-kubectl cp postgres-socket-factory-<X.X.X>-jar-with-driver-and-dependencies.jar $(NGINX_COPY_POD):/usr/share/nginx/html
+kubectl cp postgres-socket-factory-<X.X.X>-jar-with-driver-and-dependencies.jar ${NGINX_COPY_POD}:/usr/share/nginx/html
 ```
 
 6. Change the PV accessmode to ReadOnlyMany; this way, all ODM containers will be able to access the PV as readonly and scheduled on several node:
@@ -312,6 +320,12 @@ kubectl cp postgres-socket-factory-<X.X.X>-jar-with-driver-and-dependencies.jar 
 ```
 export PV_NAME=$(kubectl get pvc customdatasource-pvc -o jsonpath={.spec.volumeName})
 kubectl patch pv $PV_NAME -p '{"spec":{"accessModes":["ReadOnlyMany"]}}'
+```
+
+7. Clean up
+You can now delete the nginx pods used to copy the PostgreSQL driver.
+```
+kubectl delete -f nginx.yaml
 ```
 
 ### Install the ODM release
@@ -397,7 +411,7 @@ We just have to manage a configuration to simulate the mycompany.com access.
 You can get the EXTERNAL-IP using the command line:
 
 ```
-kubectl get ingress <release>-odm-ingress -o json | jq -r '.status.loadBalancer.ingress[].ip'
+kubectl get ingress <release>-odm-ingress -o jsonpath='{.status.loadBalancer.ingress[].ip}'
 ```
 
 So, to access ODM services, you have to edit your /etc/hosts file and add the following entry:
@@ -430,6 +444,7 @@ This section explains how to track ODM usage with the IBM License Service.
 
     ```
     helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+    helm repo update
     ```
 
 2. Use Helm to deploy an NGINX Ingress controller:

@@ -18,6 +18,6 @@
 		javax.sql.ConnectionPoolDataSource="org.postgresql.ds.PGConnectionPoolDataSource"/>
 	<properties URL="jdbc:postgresql://<IP>/<DBNAME>?cloudSqlInstance=<CONNECTION_NAME>;socketFactory=com.google.cloud.sql.postgres.SocketFactory"
 		user="postgres"
-		password="postgres"/>
+		password="PASSWORD"/>
   </dataSource>
 </server>
