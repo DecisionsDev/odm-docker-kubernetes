@@ -5,13 +5,14 @@ For reference, see the Google Cloud documentation https://cloud.google.com/commu
 
 <!-- TOC titleSize:2 tabSpaces:2 depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 skip:0 title:1 charForUnorderedList:* -->
 ## Table of Contents
-* [Install an ODM Helm release and expose it with a NGINX Ingress controller (15 min)](#install-an-odm-helm-release-and-expose-it-with-a-nginx-ingress-controller-15-min)
-  * [Create a Kubernetes secret for the TLS certificate](#create-a-kubernetes-secret-for-the-tls-certificate)
-  * [Install the ODM release](#install-the-odm-release)
-  * [Edit your /etc/hosts](#edit-your-etchosts)
-  * [Access the ODM services](#access-the-odm-services)
-  * [Troubleshooting](#troubleshooting)
-* [License](#license)
+- [Install an ODM Helm release and expose it with a NGINX Ingress controller (15 min)](#install-an-odm-helm-release-and-expose-it-with-a-nginx-ingress-controller-15-min)
+  - [Table of Contents](#table-of-contents)
+  - [Create a Kubernetes secret for the TLS certificate](#create-a-kubernetes-secret-for-the-tls-certificate)
+  - [Install the ODM release](#install-the-odm-release)
+  - [Edit your /etc/hosts](#edit-your-etchosts)
+  - [Access the ODM services](#access-the-odm-services)
+  - [Troubleshooting](#troubleshooting)
+- [License](#license)
 <!-- /TOC -->
 
 NGINX has been installed while deploying IBM License Manager, see [README.md](README.md#create-a-nginx-ingress-controller).
@@ -28,7 +29,7 @@ openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mycompany.key \
         -addext "subjectAltName=DNS:mycompany.com"
 ```
 
->Pay attention to use a real OpenSSL version and not LibreSSL.
+>By default on mac osx, the default Openssl (LibreSSL version) does not have the -addtext option. You need to install the "Official" OpenSSL implementation.  
 
 2. Create the according Kubernetes secret that contains the certificate
 
