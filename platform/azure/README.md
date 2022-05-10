@@ -84,7 +84,7 @@ A Web browser opens where you can connect with your Azure credentials.
 An Azure resource group is a logical group in which Azure resources are deployed and managed. When you create a resource group, you are asked to specify a location. This location is where resource group metadata is stored. It is also where your resources run in Azure, if you don't specify another region during resource creation. Create a resource group by running the `az group create` command.
 
 ```
-az group create --name <resourcegroup> --location <azurelocation> [--tags Owner=<email> Team=DBA Usage=demo Usage_desc="Azure customers support" Delete_date=2022-02-15]
+az group create --name <resourcegroup> --location <azurelocation> [--tags Owner=<email> Team=DBA Usage=demo Usage_desc="Azure customers support" Delete_date=2022-12-31]
 ```
 
 The following example output shows that the resource group has been created successfully:
@@ -106,7 +106,7 @@ The following example output shows that the resource group has been created succ
 
 Use the `az aks create` command to create an AKS cluster. The following example creates a cluster named <cluster> with two nodes. Azure Monitor for containers is also enabled using the `--enable-addons monitoring` parameter.  The operation takes several minutes to complete.
 
-> Note:  During the creation of the AKS cluster, a second resource group is automatically created to store the AKS resources. For more information, see [Why are two resource groups created with AKS](https://docs.microsoft.com/en-us/answers/questions/25725/why-are-two-resource-groups-created-with-aks.html).
+> Note:  During the creation of the AKS cluster, a second resource group is automatically created to store the AKS resources. For more information, see [Why are two resource groups created with AKS](https://docs.microsoft.com/en-us/azure/aks/faq#why-are-two-resource-groups-created-with-aks).
 
 ```
 az aks create --name <cluster> --resource-group <resourcegroup> --node-count 2 \
@@ -117,7 +117,7 @@ After a few minutes, the command completes and returns JSON-formatted informatio
 
 ```
 az group update --name <noderesourcegroup> \
-    --tags Owner=<email> Team=DBA Usage=demo Usage_desc="Azure customers support" Delete_date=2022-02-15
+    --tags Owner=<email> Team=DBA Usage=demo Usage_desc="Azure customers support" Delete_date=2022-12-31
 ```
        
 ### Set up your environment to this cluster
@@ -143,9 +143,9 @@ kubectl get nodes
 The following example output shows the single node created in the previous steps. Make sure that the status of the node is Ready.
 
 ```
-NAME                                STATUS   ROLES   AGE   VERSION
-aks-nodepool1-32774531-vmss000000   Ready    agent   33m   v1.21.7
-aks-nodepool1-32774531-vmss000001   Ready    agent   33m   v1.21.7
+NAME                                STATUS   ROLES   AGE    VERSION
+aks-nodepool1-13340043-vmss000000   Ready    agent   6m4s   v1.22.6
+aks-nodepool1-13340043-vmss000001   Ready    agent   6m6s   v1.22.6
 ```
 
 To further debug and diagnose cluster problems, run the following command:
@@ -269,14 +269,13 @@ Check that you can access the ODM charts:
 
 ```
 helm search repo ibm-odm-prod --versions                  
-NAME                  	CHART VERSION	APP VERSION	DESCRIPTION                     
+NAME                  	CHART VERSION	APP VERSION	DESCRIPTION
+ibmcharts/ibm-odm-prod	22.1.0       	8.11.0.1   	IBM Operational Decision Manager
 ibmcharts/ibm-odm-prod	21.3.0       	8.11.0.0   	IBM Operational Decision Manager
 ibmcharts/ibm-odm-prod	21.2.0       	8.10.5.1   	IBM Operational Decision Manager
 ibmcharts/ibm-odm-prod	21.1.0       	8.10.5.0   	IBM Operational Decision Manager
 ibmcharts/ibm-odm-prod	20.3.0       	8.10.5.0   	IBM Operational Decision Manager
 ```
-
-You can now proceed to the [creation of the datasource secrets](#create-the-datasource-secrets-for-azure-postgresql).
 
 ### Create the datasource secrets for Azure PostgreSQL
 
@@ -321,28 +320,13 @@ openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mycompany.key \
 
 >Note:  You can use -addext only with actual OpenSSL, not LibreSSL (yet).
 
-2. Generate a JKS version of the certificate to be used in the ODM container. 
+2. Create a Kubernetes secret with the certificate.
 
 ```
-openssl pkcs12 -export -passout pass:password -passin pass:password \
-      -inkey mycompany.key -in mycompany.crt -name mycompany -out mycompany.p12
-keytool -importkeystore -srckeystore mycompany.p12 -srcstoretype PKCS12 \
-      -srcstorepass password -destkeystore mycompany.jks \
-      -deststoretype JKS -deststorepass password
-keytool -import -v -trustcacerts -alias mycompany -file mycompany.crt \
-      -keystore truststore.jks -storepass password -storetype jks -noprompt
+kubectl create secret generic <mycompanystore> --from-file=tls.crt=mycompany.crt --from-file=tls.key=mycompany.key
 ```
 
-3. Create a Kubernetes secret with the certificate.
-
-```
-kubectl create secret generic <mycompanystore> --from-file=keystore.jks=mycompany.jks \
-                                               --from-file=truststore.jks=truststore.jks \
-                                               --from-literal=keystore_password=password \
-                                               --from-literal=truststore_password=password
-```
-
-The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://www.ibm.com/docs/en/odm/8.11.0?topic=servers-server-certificates) and [Working with certificates and SSL](https://docs.oracle.com/cd/E19830-01/819-4712/ablqw/index.html).
+The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://www.ibm.com/docs/en/odm/8.11.0?topic=servers-server-certificates).
 
 ## Install an ODM Helm release and expose it with the service type LoadBalancer (10 min)
 
@@ -361,8 +345,13 @@ helm install <release> ibmcharts/ibm-odm-prod --version 21.3.0 \
         --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=<registrysecret> \
         --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.11.0.0} --set service.type=LoadBalancer \
         --set externalCustomDatabase.datasourceRef=<customdatasourcesecret> \
-        --set customization.securitySecretRef=<mycompanystore>
+        --set customization.securitySecretRef=<mycompanystore> \
+        --set license=true --set usersPassword=<password>
 ```
+
+where:
+
+* \<password\> is the password that will be used for standard users odmAdmin, resAdmin and rtsAdmin.
 
 ### Check the topology
 
