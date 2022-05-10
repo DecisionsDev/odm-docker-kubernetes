@@ -2,10 +2,10 @@
 <server>
 
   <dataSource id="resdatasource"
-    jndiName="jdbc/resdatasource"
     jdbcDriverRef="postgresql-driver"
-    validationTimeout="0"
+    jndiName="jdbc/resdatasource"
     type="javax.sql.ConnectionPoolDataSource">
+    validationTimeout="0"
 
     <connectionManager
       maxPoolSize="25"
@@ -27,7 +27,7 @@
   <jdbcDriver id="postgresql-driver"
     javax.sql.ConnectionPoolDataSource="org.postgresql.ds.PGConnectionPoolDataSource"
     javax.sql.XADataSource="org.postgresql.xa.PGXADataSource"
-    libraryRef="postgresql-library"/>
+    libraryRef="postgresql-library" />
 
   <library id="postgresql-library">
     <fileset id="postgresql-fileset" dir="${server.config.dir}/resources" />
