@@ -48,7 +48,7 @@ Then [create an Azure account and pay as you go](https://azure.microsoft.com/en-
     * [Create a firewall rule that allows access from Azure services](#create-a-firewall-rule-that-allows-access-from-azure-services)
   * [Prepare your environment for the ODM installation](#prepare-your-environment-for-the-odm-installation)
     * [Using the IBM Entitled registry with your IBMid (10 min)](#using-the-ibm-entitled-registry-with-your-ibmid-10-min)
-    * [Create the datasource secrets for Azure PostgreSQL](#create-the-datasource-secrets-for-azure-postgresql)
+    * [Create the database credentials secret for Azure PostgreSQL](#create-the-database-credentials-secret-for-azure-postgresql)
     * [Manage a digital certificate (10 min)](#manage-a-digital-certificate-10-min)
   * [Install an ODM Helm release and expose it with the service type LoadBalancer (10 min)](#install-an-odm-helm-release-and-expose-it-with-the-service-type-loadbalancer-10-min)
     * [Allocate public IP addresses](#allocate-public-ip-addresses)
@@ -219,7 +219,7 @@ Result:
 }
 ```
 
-Make a note of the server name that is displayed in the JSON output (e.g.: "fullyQualifiedDomainName": "<postgresqlserver>.postgres.database.azure.com") as it will be used [later](#create-the-datasource-secrets-for-azure-postgresql).
+Make a note of the server name that is displayed in the JSON output (e.g.: "fullyQualifiedDomainName": "<postgresqlserver>.postgres.database.azure.com") as it will be used later while deploying ODM with "helm install".
 
 ###  Create a firewall rule that allows access from Azure services
 
@@ -280,33 +280,14 @@ ibmcharts/ibm-odm-prod	21.1.0       	8.10.5.0   	IBM Operational Decision Manage
 ibmcharts/ibm-odm-prod	20.3.0       	8.10.5.0   	IBM Operational Decision Manager
 ```
 
-### Create the datasource secrets for Azure PostgreSQL
+### Create the database credentials secret for Azure PostgreSQL
 
-Copy the files [ds-bc.xml.template](ds-bc.xml.template) and [ds-res.xml.template](ds-res.xml.template) on your local machine and rename them to `ds-bc.xml` and `ds-res.xml`.
-
-Replace the following placeholers:
-- DBNAME: The database name
-- USERNAME: The database username 
-- PASSWORD: The database password
-- SERVERNAME: The name of the database server
-
-It should be something like in the following extract:
-
-```xml
- <properties
-  databaseName="postgres"
-  user="myadmin@<postgresqlserver>"
-  password="passw0rd!"
-  portNumber="5432"
-  sslMode="require"
-  serverName="<postgresqlserver>.postgres.database.azure.com" />
-```
-
-Create a secret with these two modified files
+To secure access to the database, you must create a secret that encrypts the database user and password before you install the Helm release.
 
 ```
-kubectl create secret generic <customdatasourcesecret> \
-        --from-file datasource-ds.xml=ds-res.xml --from-file datasource-dc.xml=ds-bc.xml
+kubectl create secret generic <odmdbsecret> \
+  --from-literal=db-user=myadmin@<postgresqlserver> \
+  --from-literal=db-password='passw0rd!'
 ```
 
 ### Manage a digital certificate (10 min)
@@ -347,7 +328,11 @@ You can now install the product:
 helm install <release> ibmcharts/ibm-odm-prod --version 22.1.0 \
         --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=<registrysecret> \
         --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.11.0.1} --set service.type=LoadBalancer \
-        --set externalCustomDatabase.datasourceRef=<customdatasourcesecret> \
+        --set externalDatabase.type=postgres \
+        --set externalDatabase.serverName=<postgresqlserver>.postgres.database.azure.com \
+        --set externalDatabase.databaseName=postgres \
+        --set externalDatabase.port=5432 \
+        --set externalDatabase.secretCredentials=<odmdbsecret> \
         --set customization.securitySecretRef=<mycompanytlssecret> \
         --set license=true --set usersPassword=<password>
 ```
@@ -426,7 +411,11 @@ You can reuse the secret with TLS certificate created [above](#manage-a-digital-
 helm install <release> ibmcharts/ibm-odm-prod --version 22.1.0 \
         --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=<registrysecret> \
         --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.11.0.1} \
-        --set externalCustomDatabase.datasourceRef=<customdatasourcesecret> \
+        --set externalDatabase.type=postgres \
+        --set externalDatabase.serverName=<postgresqlserver>.postgres.database.azure.com \
+        --set externalDatabase.databaseName=postgres \
+        --set externalDatabase.port=5432 \
+        --set externalDatabase.secretCredentials=<odmdbsecret> \
         --set service.ingress.enabled=true --set service.ingress.tlsSecretRef=<mycompanytlssecret> \
         --set service.ingress.tlsHosts={mycompany.com} --set service.ingress.host=mycompany.com \
         --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"\,"nginx.ingress.kubernetes.io/backend-protocol: HTTPS"\,"nginx.ingress.kubernetes.io/affinity: cookie"} \
