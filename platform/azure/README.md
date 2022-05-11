@@ -56,7 +56,7 @@ Then [create an Azure account and pay as you go](https://azure.microsoft.com/en-
     * [Check the topology](#check-the-topology)
     * [Access ODM services](#access-odm-services)
   * [Create a NGINX Ingress controller](#create-a-nginx-ingress-controller)
-  * [Optional step:  Install an ODM Helm release and expose it with the NGINX Ingress controller (10 min)](#optional-step--install-an-odm-helm-release-and-expose-it-with-the-nginx-ingress-controller-10-min)
+  * [(Optional) Install an ODM Helm release and expose it with the NGINX Ingress controller (10 min)](#optional-install-an-odm-helm-release-and-expose-it-with-the-nginx-ingress-controller-10-min)
     * [Install the product](#install-the-product)
     * [Edit your /etc/hosts](#edit-your-etchosts)
     * [Access the ODM services](#access-the-odm-services)
@@ -370,7 +370,7 @@ NAME                                                   READY   STATUS    RESTART
 
 ### Access ODM services
 
-By setting `service.type=LoadBalancer`, the services are exposed with a public IP to be accessed with the following command:
+By setting `service.type=LoadBalancer`, the services are exposed with public IPs to be accessed with the following command:
 
 ```
 kubectl get services
@@ -413,7 +413,7 @@ Installing a NGINX Ingress controller will allow you to access ODM components th
     nginx-ingress-ingress-nginx-controller-admission   ClusterIP      10.0.214.250   <none>         443/TCP                      3m8s
     ```
 
-## Optional step:  Install an ODM Helm release and expose it with the NGINX Ingress controller (10 min)
+## (Optional) Install an ODM Helm release and expose it with the NGINX Ingress controller (10 min)
 
 You may want to access ODM components through a single external IP address.
 
@@ -428,7 +428,8 @@ helm install <release> ibmcharts/ibm-odm-prod --version 22.1.0 \
         --set externalCustomDatabase.datasourceRef=<customdatasourcesecret> \
         --set service.ingress.enabled=true --set service.ingress.tlsSecretRef=<mycompanytlssecret> \
         --set service.ingress.tlsHosts={mycompany.com} --set service.ingress.host=mycompany.com \
-        --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"\,"nginx.ingress.kubernetes.io/backend-protocol: HTTPS"\,"nginx.ingress.kubernetes.io/affinity: cookie"}
+        --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"\,"nginx.ingress.kubernetes.io/backend-protocol: HTTPS"\,"nginx.ingress.kubernetes.io/affinity: cookie"} \
+        --set license=true --set usersPassword=<password>
 ```
 
 ### Edit your /etc/hosts
