@@ -112,6 +112,7 @@ Use the `az aks create` command to create an AKS cluster. The following example 
 
 ```
 az aks create --name <cluster> --resource-group <resourcegroup> --node-count 2 \
+          --enable-cluster-autoscaler --min-count 2 --max-count 4 \
           --enable-addons monitoring --generate-ssh-keys [--location <azurelocation>]
 ```
 
