@@ -55,12 +55,14 @@ Then [create an Azure account and pay as you go](https://azure.microsoft.com/en-
     * [Install the ODM release](#install-the-odm-release)
     * [Check the topology](#check-the-topology)
     * [Access ODM services](#access-odm-services)
+  * [Create a NGINX Ingress controller](#create-a-nginx-ingress-controller)
+  * [Optional step:  Install an ODM Helm release and expose it with the NGINX Ingress controller (10 min)](#optional-step--install-an-odm-helm-release-and-expose-it-with-the-nginx-ingress-controller-10-min)
+  * [Install the product](#install-the-product)
+    * [Edit your /etc/hosts](#edit-your-etchosts)
+    * [Access the ODM services](#access-the-odm-services)
   * [Install the IBM License Service and retrieve license usage](#install-the-ibm-license-service-and-retrieve-license-usage)
-    * [Create a NGINX Ingress controller](#create-a-nginx-ingress-controller)
-    * [Install the IBM License Service](#install-the-ibm-license-service)
     * [Create the Licensing instance](#create-the-licensing-instance)
-    * [Retrieving license usage](#retrieving-license-usage)
-  * [Optional steps](#optional-steps)
+    * [Retrieve license usage](#retrieve-license-usage)
   * [Troubleshooting](#troubleshooting)
 * [License](#license)
 <!-- /TOC -->
@@ -323,7 +325,7 @@ openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mycompany.key \
 2. Create a Kubernetes secret with the certificate.
 
 ```
-kubectl create secret generic <mycompanystore> --from-file=tls.crt=mycompany.crt --from-file=tls.key=mycompany.key
+kubectl create secret generic <mycompanytlssecret> --from-file=tls.crt=mycompany.crt --from-file=tls.key=mycompany.key
 ```
 
 The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://www.ibm.com/docs/en/odm/8.11.0?topic=servers-server-certificates).
@@ -341,11 +343,11 @@ az aks update --name <cluster> --resource-group <resourcegroup> --load-balancer-
 You can now install the product:
 
 ```
-helm install <release> ibmcharts/ibm-odm-prod --version 21.3.0 \
+helm install <release> ibmcharts/ibm-odm-prod --version 22.1.0 \
         --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=<registrysecret> \
-        --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.11.0.0} --set service.type=LoadBalancer \
+        --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.11.0.1} --set service.type=LoadBalancer \
         --set externalCustomDatabase.datasourceRef=<customdatasourcesecret> \
-        --set customization.securitySecretRef=<mycompanystore> \
+        --set customization.securitySecretRef=<mycompanytlssecret> \
         --set license=true --set usersPassword=<password>
 ```
 
@@ -383,11 +385,9 @@ kubernetes                                  ClusterIP      10.0.0.1       <none>
 
 You can then open a browser on https://xxx.xxx.xxx.xxx:9443 to access Decision Server console, Decision Server Runtime, and Decision Runner, and on https://xxx.xxx.xxx.xxx:9453 to access Decision Center.
 
-## Install the IBM License Service and retrieve license usage
+## Create a NGINX Ingress controller
 
-This section explains how to track ODM usage with the IBM License Service.
-
-### Create a NGINX Ingress controller
+Installing a NGINX Ingress controller will allow you to access ODM components through a single external IP address instead of the different IP addresses as seen above.  It is also mandatory when retrieving license usage through IBM License Service.
 
 1. Add the official stable repository.
 
@@ -413,7 +413,59 @@ This section explains how to track ODM usage with the IBM License Service.
     nginx-ingress-ingress-nginx-controller-admission   ClusterIP      10.0.214.250   <none>         443/TCP                      3m8s
     ```
 
-### Install the IBM License Service
+## Optional step:  Install an ODM Helm release and expose it with the NGINX Ingress controller (10 min)
+
+You may want to access ODM components through a single external IP address.
+
+## Install the product
+
+You can reuse the secret with TLS certificate created [above](#manage-a-digital-certificate-10-min):
+
+```
+helm install <release> ibmcharts/ibm-odm-prod --version 22.1.0 \
+        --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=<registrysecret> \
+        --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.11.0.1} \
+        --set externalCustomDatabase.datasourceRef=<customdatasourcesecret> \
+        --set service.ingress.enabled=true --set service.ingress.tlsSecretRef=<mycompanytlssecret> \
+        --set service.ingress.tlsHosts={mycompany.com} --set service.ingress.host=mycompany.com \
+        --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"\,"nginx.ingress.kubernetes.io/backend-protocol: HTTPS"\,"nginx.ingress.kubernetes.io/affinity: cookie"}
+```
+
+### Edit your /etc/hosts
+
+```
+# vi /etc/hosts
+<externalip> mycompany.com
+```
+
+### Access the ODM services
+
+Check that ODM services are in NodePort type:
+
+```
+kubectl get services
+NAME                                               TYPE           CLUSTER-IP     EXTERNAL-IP    PORT(S)                      AGE
+mycompany-odm-decisioncenter                       NodePort       10.0.178.43    <none>         9453:32720/TCP               16m
+mycompany-odm-decisionrunner                       NodePort       10.0.171.46    <none>         9443:30223/TCP               16m
+mycompany-odm-decisionserverconsole                NodePort       10.0.106.222   <none>         9443:30280/TCP               16m
+mycompany-odm-decisionserverconsole-notif          ClusterIP      10.0.115.118   <none>         1883/TCP                     16m
+mycompany-odm-decisionserverruntime                NodePort       10.0.232.212   <none>         9443:30082/TCP               16m
+nginx-ingress-ingress-nginx-controller             LoadBalancer   10.0.191.246   51.103.3.254   80:30222/TCP,443:31103/TCP   3d
+nginx-ingress-ingress-nginx-controller-admission   ClusterIP      10.0.214.250   <none>         443/TCP                      3d
+```
+
+ODM services are available through the following URLs:
+
+| SERVICE NAME | URL | USERNAME/PASSWORD
+| --- | --- | ---
+| Decision Server Console | https://mycompany.com/res | odmAdmin/odmAdmin
+| Decision Center | https://mycompany.com/decisioncenter | odmAdmin/odmAdmin
+| Decision Server Runtime | https://mycompany.com/DecisionService | odmAdmin/odmAdmin
+| Decision Runner | https://mycompany.com/DecisionRunner | odmAdmin/odmAdmin
+
+## Install the IBM License Service and retrieve license usage
+
+This section explains how to track ODM usage with the IBM License Service.
 
 Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://github.com/IBM/ibm-licensing-operator/blob/latest/docs/Content/Install_without_OLM.md). Do not follow the instantiation part!
 
@@ -427,7 +479,7 @@ kubectl create -f licensing-instance.yml
 
 (More information and use cases on [this page](https://github.com/IBM/ibm-licensing-operator/blob/latest/docs/Content/Configuration.md#configuring-ingress).)
 
-### Retrieving license usage
+### Retrieve license usage
 
 After a couple of minutes, the NGINX load balancer reflects the Ingress configuration and you will be able to access the IBM License Service by retrieving the URL with this command:
 
@@ -442,10 +494,6 @@ curl -v "http://${LICENSING_URL}/snapshot?token=${TOKEN}" --output report.zip
 ```
 
 If your IBM License Service instance is not running properly, please refer to this [troubleshooting page](https://github.com/IBM/ibm-licensing-operator/blob/latest/docs/Content/Troubleshooting.md).
-
-## Optional steps
-
-You may prefer to access ODM components through NGINX Ingress controller instead of directly from these different IP addresses.  If so, please follow [these instructions](README_NGINX.md).
 
 ## Troubleshooting
 
