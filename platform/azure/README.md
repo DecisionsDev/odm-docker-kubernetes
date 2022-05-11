@@ -57,7 +57,7 @@ Then [create an Azure account and pay as you go](https://azure.microsoft.com/en-
     * [Access ODM services](#access-odm-services)
   * [Create a NGINX Ingress controller](#create-a-nginx-ingress-controller)
   * [Optional step:  Install an ODM Helm release and expose it with the NGINX Ingress controller (10 min)](#optional-step--install-an-odm-helm-release-and-expose-it-with-the-nginx-ingress-controller-10-min)
-  * [Install the product](#install-the-product)
+    * [Install the product](#install-the-product)
     * [Edit your /etc/hosts](#edit-your-etchosts)
     * [Access the ODM services](#access-the-odm-services)
   * [Install the IBM License Service and retrieve license usage](#install-the-ibm-license-service-and-retrieve-license-usage)
@@ -417,7 +417,7 @@ Installing a NGINX Ingress controller will allow you to access ODM components th
 
 You may want to access ODM components through a single external IP address.
 
-## Install the product
+### Install the product
 
 You can reuse the secret with TLS certificate created [above](#manage-a-digital-certificate-10-min):
 
