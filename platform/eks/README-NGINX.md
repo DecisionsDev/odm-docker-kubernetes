@@ -39,7 +39,7 @@ You just have to replace during the helm install **eks-values.yaml** by **eks-ng
 `kubernetes.io/ingress.class: nginx` and `nginx.ingress.kubernetes.io/backend-protocol: https`
 
 ```bash
-helm install mycompany ibmcharts/ibm-odm-prod --version 21.3.0 \
+helm install mycompany ibmcharts/ibm-odm-prod --version 22.1.0 \
              --set image.repository=cp.icr.io/cp/cp4a/odm \
              -f eks-nginx-values.yaml
 ```

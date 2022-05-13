@@ -138,7 +138,7 @@ helm repo update
 ```console
 helm search repo ibm-odm-prod
 NAME                  	CHART VERSION	APP VERSION	DESCRIPTION                     
-ibmcharts/ibm-odm-prod	21.3.0       	8.11.0.0   	IBM Operational Decision Manager
+ibmcharts/ibm-odm-prod	22.1.0       	8.11.0.1   	IBM Operational Decision Manager
 ```
 
 You can now proceed to the [Create an RDS database (20 min)](#3-create-an-rds-database-20-min).
@@ -183,12 +183,12 @@ aws ecr create-repository --repository-name odm-decisionserverconsole --image-sc
     $ mkdir ODM-PPA
     $ cd ODM-PPA
     $ tar zxvf PPA_NAME.tar.gz
-    charts/ibm-odm-prod-21.3.0.tgz
-    images/odm-decisionserverconsole_8.11.0.0-amd64.tar.gz
-    images/odm-decisionserverruntime_8.11.0.0-amd64.tar.gz
-    images/odm-decisionrunner_8.11.0.0-amd64.tar.gz
-    images/odm-decisioncenter_8.11.0.0-amd64.tar.gz
-    images/dbserver_8.11.0.0-amd64.tar.gz
+    charts/ibm-odm-prod-22.1.0.tgz
+    images/odm-decisionserverconsole_8.11.0.1-amd64.tar.gz
+    images/odm-decisionserverruntime_8.11.0.1-amd64.tar.gz
+    images/odm-decisionrunner_8.11.0.1-amd64.tar.gz
+    images/odm-decisioncenter_8.11.0.1-amd64.tar.gz
+    images/dbserver_8.11.0.1-amd64.tar.gz
     manifest.json
     manifest.yaml
     ```
@@ -215,10 +215,10 @@ aws ecr create-repository --repository-name odm-decisionserverconsole --image-sc
     ```bash
     export REGION=<region>
     export AWSACCOUNTID=<AWS-AccountId>
-    docker tag odm-decisioncenter:8.11.0.0-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisioncenter:8.11.0.0-amd64
-    docker tag odm-decisionserverruntime:8.11.0.0-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionserverruntime:8.11.0.0-amd64
-    docker tag odm-decisionserverconsole:8.11.0.0-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionserverconsole:8.11.0.0-amd64
-    docker tag odm-decisionrunner:8.11.0.0-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionrunner:8.11.0.0-amd64
+    docker tag odm-decisioncenter:8.11.0.1-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisioncenter:8.11.0.1-amd64
+    docker tag odm-decisionserverruntime:8.11.0.1-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionserverruntime:8.11.0.1-amd64
+    docker tag odm-decisionserverconsole:8.11.0.1-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionserverconsole:8.11.0.1-amd64
+    docker tag odm-decisionrunner:8.11.0.1-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionrunner:8.11.0.1-amd64
     ```
 
 - Push the images to the ECR registry
@@ -321,7 +321,7 @@ Install a Kubernetes release with the default configuration and a name of `mycom
 - If you choose to use Entitled Registry for images and to download the Helm chart from IBM's public Helm charts repository [(option A above)](#option-a-using-the-ibm-entitled-registry-with-your-ibmid):
 
     ```bash
-    helm install mycompany ibmcharts/ibm-odm-prod --version 21.3.0 \
+    helm install mycompany ibmcharts/ibm-odm-prod --version 22.1.0 \
                  --set image.repository=cp.icr.io/cp/cp4a/odm \
                  -f eks-values.yaml
     ```
@@ -329,7 +329,7 @@ Install a Kubernetes release with the default configuration and a name of `mycom
 - If you downloaded the PPA archive and prefer to use the Helm chart archive from it [(option B above)](#option-b-push-the-odm-images-from-the-ppa-to-the-ecr):
 
     ```bash
-    helm install mycompany charts/ibm-odm-prod-21.3.0.tgz \
+    helm install mycompany charts/ibm-odm-prod-22.1.0.tgz \
                  --set image.repository=<AWS-AccountId>.dkr.ecr.<region>.amazonaws.com \
                  -f eks-values.yaml
     ```
