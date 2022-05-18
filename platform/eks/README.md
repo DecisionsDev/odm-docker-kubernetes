@@ -245,6 +245,8 @@ This project uses PostgreSQL but the procedure is valid for any database support
 To set up the database, follow the procedure described here [RDS PostgreSQL database](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_CreateDBInstance.html).
 
 > NOTE:  Make sure to:
+> - Create the RDS database in the same cluster region for performance reason (mainly for Decision Center schema creation time)
+> - Take a PostgreSQL v13.X version (tutorial was realized with v13.6)
 > - Set up incoming traffic to allow connection from EKS (set vpc inboud rule to anywhere)
 > - Create a database instance by setting an *Initial database name*
 > - Set a database *Master password*
