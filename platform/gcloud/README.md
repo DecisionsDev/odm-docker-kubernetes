@@ -1,6 +1,7 @@
 # Deploying IBM Operational Decision Manager on Google GKE
 
-This project demonstrates how to deploy an IBM® Operational Decision Manager (ODM) clustered topology thanks to the [container-native load balancer of GKE](https://cloud.google.com/blog/products/containers-kubernetes/container-native-load-balancing-on-gke-now-generally-available).
+This project demonstrates how to deploy an IBM® Operational Decision Manager (ODM) clustered topology using the [container-native load balancer of GKE](https://cloud.google.com/blog/products/containers-kubernetes/container-native-load-balancing-on-gke-now-generally-available).
+
 The ODM services will be exposed using the Ingress provided by ODM on k8s Helm chart.
 This deployment implements Kubernetes and Docker technologies.
 Here is the home page of Google Cloud: https://cloud.google.com
@@ -13,7 +14,15 @@ The ODM on Kubernetes material is available in [IBM Entitled Registry](https://m
 
 The project comes with the following components:
 
-- [IBM Operational Decision Manager](https://www.ibm.com/docs/en/odm/8.11.0)
+- [IBM Operational Decision Manager](https://www.ibm.com/docs/en/odm/8.11.0)The project comes with the following components:
+
+- [IBM Operational Decision Manager](https://www.ibm.com/docs/en/odm/8.11.0?topic=operational-decision-manager-certified-kubernetes-8110)
+- [Google Cloud SQL for PostgreSQL](https://cloud.google.com/sql)
+- [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine)
+- [Google Cloud SQL for PostgreSQL](https://cloud.google.com/sql)
+- [IBM License Service](https://github.com/IBM/ibm-licensing-operator)
+
+## Tested environment
 - [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine)
 - [Google Cloud SQL for PostgreSQL](https://cloud.google.com/sql)
 - [IBM License Service](https://github.com/IBM/ibm-licensing-operator)
@@ -43,26 +52,25 @@ Without the relevant billing level, some Google Cloud resources will not be crea
 
 ## Steps to deploy ODM on Kubernetes from Google GKE
 
-1. [Prepare your GKE instance (30 min)](#prepare-your-gke-instance-30-min)
-2. [Create the Google Cloud SQL PostgreSQL instance (10 min)](#create-the-google-cloud-sql-postgresql-instance-10-min)
-3. [Prepare your environment for the ODM installation (10 min)](#prepare-your-environment-for-the-odm-installation-10-min)
+1. [Prepare your GKE instance (30 min)](#1-prepare-your-gke-instance-30-min)
+2. [Create the Google Cloud SQL PostgreSQL instance (10 min)](#2-create-the-google-cloud-sql-postgresql-instance-10-min)
+3. [Prepare your environment for the ODM installation (10 min)](#3-prepare-your-environment-for-the-odm-installation-10-min)
 4. [Manage a  digital certificate (10 min)](#4-manage-a-digital-certificate-10-min)
 5. [Install an ODM release (10 min)](#5-install-an-ibm-operational-decision-manager-release-10-min)
-6. [Access ODM services](#access-odm-services)
+6. [Access ODM services](#6-access-odm-services)
 7. [Track ODM usage with the IBM License Service](#7-track-odm-usage-with-the-ibm-license-service)
 
 ### 1. Prepare your GKE instance (30 min)
 
-Source: https://cloud.google.com/kubernetes-engine/docs/quickstart
+You can refer to the [GKE quickstart](https://cloud.google.com/kubernetes-engine/docs/quickstart) for more information.
 
 #### a. Log into Google Cloud
 
-After installing the gcloud tool, use the following command line:
+After installing the `gcloud` tool, use the following command line:
 
 ```
-gcloud auth login [ACCOUNT]
+gcloud auth login <ACCOUNT>
 ```
-https://cloud.google.com/sdk/gcloud/reference/auth/login
 
 #### b. Create a GKE cluster
 
@@ -72,25 +80,25 @@ In this article we chose to create a [regional cluster](https://cloud.google.com
 - Set the project (associated to a billing account):
 
   ```
-  gcloud config set project [PROJECT_ID]
+  gcloud config set project <PROJECT_ID>
   ```
 
 - Set the zone:
 
   ```
-  gcloud config set compute/zone [ZONE (ex: europe-west1-b)]
+  gcloud config set compute/zone <ZONE (ex: europe-west1-b)>
   ```
 
 - Set the region:
 
   ```
-  gcloud config set compute/region [REGION (ex: europe-west1)]
+  gcloud config set compute/region <REGION (ex: europe-west1)>
   ```
 
 - Create a cluster and enable autoscaling. Here, we start with 6 nodes (with 16 max):
 
   ```
-  gcloud container clusters create [CLUSTER_NAME] --num-nodes 6 --enable-autoscaling --min-nodes 1 --max-nodes 16
+  gcloud container clusters create <CLUSTER_NAME> --num-nodes 6 --enable-autoscaling --min-nodes 1 --max-nodes 16
   ```
 
   > NOTE: You can also create your cluster from the Google Cloud Platform using the Kubernetes Engine Clusters panel, by clicking on the Create button
@@ -100,7 +108,7 @@ In this article we chose to create a [regional cluster](https://cloud.google.com
 
 - Create a kubeconfig to connect to your cluster
   ```
-  gcloud container clusters get-credentials [CLUSTER_NAME]
+  gcloud container clusters get-credentials <CLUSTER_NAME>
   ```
 
   > NOTE: You can also retrieve the command line to configure kubectl by going on the Google Cloud Console in the Kubernetes Engine>Cluster panel, by selecting "Connect" on the dedicated cluster.
@@ -118,14 +126,15 @@ In this article we chose to create a [regional cluster](https://cloud.google.com
 We will use the Google Cloud Console to create this instance:
 
 - Go on the [SQL context](https://console.cloud.google.com/sql) and click on the **CREATE INSTANCE** button
-- Choose **PostgreSQL**
-  - Instance ID : Chosse a name for your instance.
-  - Password : <PASSWORD> (Take a note of this password. You need it in the "Create the datasource secrets for Google Cloud SQL PostgreSQL" section)
-  - Take "PostgreSQL 13" as database version
-  - Choose a region similar to the cluster. So, the communication is optimal between the database and the ODM instance
-  - Keep "Multiple zones" for Zonal availability to the highest availability
-  - Expand "Customize your instance" and Expand "Connections"
-  - As Public IP is selected by default, click on the "ADD NETWORK" button, put a name and add "0.0.0.0/0" for Network, then click on "DONE". It's not recommended to use plublic IP. In production environment, you should use private IP.
+- Click on **Choose PostgreSQL**
+  - Instance ID: ``<YourInstanceName>``
+  - Password: ``<PASSWORD>`` (Take a note of this password. You need it in the "Create the datasource secrets for Google Cloud SQL PostgreSQL" section)
+  - Database version: *PostgreSQL 13*
+  - Region: ``<REGION>`` (must be similar to the cluster for the communication is optimal between the database and the ODM instance)
+  - Keep **Multiple zones** for Zonal availability to the highest availability
+  - Expand **Show customization option** and expand **Connections**
+  - As *Public IP* is selected by default, click on the **ADD NETWORK** button, put a name and add *0.0.0.0/0* for Network, then click on **DONE**.
+  > NOTE: It's not recommended to use plublic IP. In production environment, you should use private IP.
 
 When created, you can drill on the SQL instance overview to retrieve needed information to connect to this instance like the IP adress and the connection name:
 
@@ -146,7 +155,7 @@ To get access to the ODM material, you must have an IBM entitlement registry key
 #### b. Create a pull secret by running a kubectl create secret command.
 
 ```
-kubectl create secret docker-registry <registrysecret> \
+kubectl create secret docker-registry <REGISTRY_SECRET> \
         --docker-server=cp.icr.io \
         --docker-username=cp \
         --docker-password="<API_KEY_GENERATED>" \
@@ -155,11 +164,11 @@ kubectl create secret docker-registry <registrysecret> \
 
 where:
 
-* <REGISTRY_SECRET> is the secret name
-* <API_KEY_GENERATED> is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
-* <USER_EMAIL> is the email address associated with your IBMid.
+* `<REGISTRY_SECRET>`: the secret name
+* `<API_KEY_GENERATED>`: the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
+* `<USER_EMAIL>`: the email address associated with your IBMid.
 
-> NOTE:  The cp.icr.io value for the docker-server parameter is the only registry domain name that contains the images. You must set the docker-username to cp to use an entitlement key as docker-password.
+> NOTE:  The `cp.icr.io` value for the docker-server parameter is the only registry domain name that contains the images. You must set the docker-username to `cp` to use an entitlement key as docker-password.
 
 Take a note of the secret name so that you can set it for the `image.pullSecrets` parameter when you run a helm install of your containers.  The `image.repository` parameter will later be set to `cp.icr.io/cp/cp4a/odm`.
 
@@ -214,8 +223,9 @@ The certificate must be the same as the one you used to enable TLS connections i
   ```
 
   Where:
-  - USERNAME: The database username (default is postgres)
-  - PASSWORD: The database password (PASSWORD enter in the step [Create the Google Cloud SQL PostgreSQL instance](#create-the-datasource-secrets-for-google-cloud-sql-postgresql))
+  - `<ODM_DB_SECRET>`: the secret name
+  - `<USERNAME>`: the database username (default is postgres)
+  - `<PASSWORD>`: the database password (PASSWORD enter in the step [Create the Google Cloud SQL PostgreSQL instance](#create-the-datasource-secrets-for-google-cloud-sql-postgresql))
 
 
   DB_DRIVER
@@ -232,16 +242,15 @@ The ODM services will be exposed with an Ingress using the previously created `m
 It will create automatically an HTTPS GKE loadbalancer. So, we disable the ODM internal TLS as it's not needed.
 
 - Get the [gcp-values.yaml](./gcp-values.yaml) file and replace the following keys:
-  - `<REGISTRY_SECRET>` is the name of the secret containing the IBM Entitled registry key
-  - `<DB_ENDPOINT>` is your database server endpoint (of the form: `db-server-name-1.********.<region>.rds.amazonaws.com`)
+  - `<REGISTRY_SECRET>`: the name of the secret containing the IBM Entitled registry key
+  - `<DB_ENDPOINT>`: your database ip
   - `<DATABASE_NAME>` is the initial database name defined when creating the RDS database
-  - `<DRIVER_URL>` The Google Cloud SQL PostgreSQL connection will be done using [Cloud SQL Connector for Java](https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory#cloud-sql-connector-for-java) or you can get the last [driver](https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory/releases) named postgres-socket-factory-X.X.X-jar-with-driver-and-dependencies.jar.
+  - `<DRIVER_URL>`: the Google Cloud SQL PostgreSQL connection will be done using [Cloud SQL Connector for Java](https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory#cloud-sql-connector-for-java) or you can get the last [driver](https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory/releases) named postgres-socket-factory-X.X.X-jar-with-driver-and-dependencies.jar.
 
 - Install the chart from IBM's public Helm charts repository:
 
     ```
     helm install mycompany ibmcharts/ibm-odm-prod --version 22.1.0 \
-                 --set image.repository=cp.icr.io/cp/cp4a/odm \
                  -f gcp-values.yaml
     ```
 
