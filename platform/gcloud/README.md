@@ -14,10 +14,7 @@ The ODM on Kubernetes material is available in [IBM Entitled Registry](https://m
 
 The project comes with the following components:
 
-- [IBM Operational Decision Manager](https://www.ibm.com/docs/en/odm/8.11.0)The project comes with the following components:
-
 - [IBM Operational Decision Manager](https://www.ibm.com/docs/en/odm/8.11.0?topic=operational-decision-manager-certified-kubernetes-8110)
-- [Google Cloud SQL for PostgreSQL](https://cloud.google.com/sql)
 - [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine)
 - [Google Cloud SQL for PostgreSQL](https://cloud.google.com/sql)
 - [IBM License Service](https://github.com/IBM/ibm-licensing-operator)
@@ -55,7 +52,7 @@ Without the relevant billing level, some Google Cloud resources will not be crea
 1. [Prepare your GKE instance (30 min)](#1-prepare-your-gke-instance-30-min)
 2. [Create the Google Cloud SQL PostgreSQL instance (10 min)](#2-create-the-google-cloud-sql-postgresql-instance-10-min)
 3. [Prepare your environment for the ODM installation (10 min)](#3-prepare-your-environment-for-the-odm-installation-10-min)
-4. [Manage a  digital certificate (10 min)](#4-manage-a-digital-certificate-10-min)
+4. [Manage a digital certificate (10 min)](#4-manage-a-digital-certificate-2-min)
 5. [Install an ODM release (10 min)](#5-install-an-ibm-operational-decision-manager-release-10-min)
 6. [Access ODM services](#6-access-odm-services)
 7. [Track ODM usage with the IBM License Service](#7-track-odm-usage-with-the-ibm-license-service)
@@ -148,9 +145,10 @@ When created, you can drill on the SQL instance overview to retrieve needed info
 To get access to the ODM material, you must have an IBM entitlement registry key to pull the images from the IBM Entitled registry.
 
 #### a. Retrieve your entitled registry key
-  - Log in to [MyIBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary) with the IBMid and password that are associated with the entitled software.
 
-  - In the Container software library tile, verify your entitlement on the View library page, and then go to *Get entitlement key* to retrieve the key.
+- Log in to [MyIBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary) with the IBMid and password that are associated with the entitled software.
+
+- In the Container software library tile, verify your entitlement on the View library page, and then go to *Get entitlement key* to retrieve the key.
 
 #### b. Create a pull secret by running a kubectl create secret command.
 
@@ -184,7 +182,7 @@ helm repo update
 ```
 helm search repo ibm-odm-prod
 NAME                  	CHART VERSION	APP VERSION	DESCRIPTION                     
-ibmcharts/ibm-odm-prod	21.3.0       	8.11.0.0   	IBM Operational Decision Manager
+ibmcharts/ibm-odm-prod	22.1.0       	8.11.0.1   	IBM Operational Decision Manager
 ```
 
 ### 4. Manage a digital certificate (2 min)
@@ -208,7 +206,7 @@ kubectl create secret tls mycompany-crt-secret --key mycompany.key --cert mycomp
 
 The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://www.ibm.com/docs/en/odm/8.11.0?topic=servers-server-certificates) and [Working with certificates and SSL](https://docs.oracle.com/cd/E19830-01/819-4712/ablqw/index.html).
 
-### 5. Install the ODM release  (10 min)
+### 5. Install the ODM release (10 min)
 
 #### a. Prerequisites
 
@@ -227,15 +225,6 @@ The certificate must be the same as the one you used to enable TLS connections i
   - `<USERNAME>`: the database username (default is postgres)
   - `<PASSWORD>`: the database password (PASSWORD enter in the step [Create the Google Cloud SQL PostgreSQL instance](#create-the-datasource-secrets-for-google-cloud-sql-postgresql))
 
-
-  DB_DRIVER
-    The Google Cloud SQL PostgreSQL connection will be done using [Cloud SQL Connector for Java](https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory#cloud-sql-connector-for-java).
-
-    If you don't want to build the driver, you can get the last [driver](https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory/releases) named postgres-socket-factory-X.X.X-jar-with-driver-and-dependencies.jar.
-
-    We realised the test with the driver version [postgres-socket-factory-1.4.2-jar-with-driver-and-dependencies.jar](https://storage.googleapis.com/cloud-sql-java-connector/v1.4.2/postgres-socket-factory-1.4.2-jar-with-driver-and-dependencies.jar).
-
-
 #### b. Install an ODM Helm release
 
 The ODM services will be exposed with an Ingress using the previously created `mycompany` certificate.
@@ -243,9 +232,9 @@ It will create automatically an HTTPS GKE loadbalancer. So, we disable the ODM i
 
 - Get the [gcp-values.yaml](./gcp-values.yaml) file and replace the following keys:
   - `<REGISTRY_SECRET>`: the name of the secret containing the IBM Entitled registry key
-  - `<DB_ENDPOINT>`: your database ip
-  - `<DATABASE_NAME>` is the initial database name defined when creating the RDS database
-  - `<DRIVER_URL>`: the Google Cloud SQL PostgreSQL connection will be done using [Cloud SQL Connector for Java](https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory#cloud-sql-connector-for-java) or you can get the last [driver](https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory/releases) named postgres-socket-factory-X.X.X-jar-with-driver-and-dependencies.jar.
+  - `<DB_ENDPOINT>`: the database ip
+  - `<DATABASE_NAME>`: the database name (default is postgres)
+  - `<DRIVER_URL>`: the url of the Google Cloud SQL PostgreSQL driver. You can get the last [driver](https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory/releases) (for example: https://storage.googleapis.com/cloud-sql-java-connector/v1.6.0/postgres-socket-factory-1.6.0-jar-with-driver-and-dependencies.jar). For more information, refer to the [Cloud SQL Connector for Java](https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory#cloud-sql-connector-for-java) documentation.
 
 - Install the chart from IBM's public Helm charts repository:
 
@@ -270,7 +259,7 @@ NAME                                                   READY   STATUS    RESTART
 #### d  Check the Ingress and GKE LoadBalancer
 
 To get a status on the current deployment, you can go in the console to the [Kubernetes Engine/Services & Ingress Panel](https://console.cloud.google.com/kubernetes/ingresses).
-The ingress is remaining in the "ingress creating" state several minutes until the pods are up and ready, and that the backend is getting an healthy state.
+The ingress is remaining in the *ingress creating* state several minutes until the pods are up and ready, and that the backend is getting an healthy state.
 
 <img width="1000" height="308" src='./images/ingress_creating.png'/>
 
@@ -279,7 +268,7 @@ It provides information about the backend using the service health check.
 
 <img width="1000" height="352" src='./images/loadbalancer.png'/>
 
-Entering inside the Ingress details, you should get an HEALTHY state on all backends.
+Entering inside the Ingress details, you should get an *HEALTHY* state on all backends.
 This panel is also providing some logs on the loadbalancer activity.
 When the Ingress is showing an OK status, all ODM services can be accessed.
 
@@ -302,7 +291,8 @@ A configuration using [BackendConfig](https://cloud.google.com/kubernetes-engine
 - Annotate the Decision Center Service with this GKE Backend Config:
 
   ```
-  kubectl annotate service <release>-odm-decisioncenter cloud.google.com/backend-config="{\"ports\": {\"9453\":\"dc-backendconfig\"}}"
+  kubectl annotate service <release>-odm-decisioncenter \
+          cloud.google.com/backend-config="{\"ports\": {\"9453\":\"dc-backendconfig\"}}"
   ```
 
   As soon as GKE has managed the Decision Center session affinity at the loadbalancer level, you can check the ClientIP availability below the Decision Center Network Endpoint Group configuration from the Google Cloud Console in the Load Balancer details:
@@ -342,20 +332,20 @@ You can also click on the Ingress routes accessible from the Google Cloud consol
 
 <img width="1000" height="532" src='./images/ingress_routes.png'/>
 
-## Install the IBM License Service and retrieve license usage
+### 7. Track ODM usage with the IBM License Service
 
 This section explains how to track ODM usage with the IBM License Service.
 
-### Create a NGINX Ingress controller
+#### a. Create a NGINX Ingress controller
 
-1. Add the official stable repository:
+- Add the official stable repository:
 
     ```
     helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
     helm repo update
     ```
 
-2. Use Helm to deploy an NGINX Ingress controller:
+- Use Helm to deploy an NGINX Ingress controller:
 
     ```
     helm install nginx-ingress ingress-nginx/ingress-nginx \
@@ -364,7 +354,7 @@ This section explains how to track ODM usage with the IBM License Service.
       --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux
     ```
 
-3. Get the Ingress controller external IP address:
+- Get the Ingress controller external IP address:
 
     ```
     kubectl get service -l app.kubernetes.io/name=ingress-nginx
@@ -373,31 +363,30 @@ This section explains how to track ODM usage with the IBM License Service.
     nginx-ingress-ingress-nginx-controller-admission   ClusterIP      10.0.214.250   <none>         443/TCP                      3m8s
     ```
 
-### 7. Track ODM usage with the IBM License Service
 
-#### a. Install the IBM License Service
+#### b. Install the IBM License Service
 
 Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://github.com/IBM/ibm-licensing-operator/blob/latest/docs/Content/Install_without_OLM.md)
 
 > NOTE: Make sure you don't follow the instantiation part!
 
-#### b. Create the IBM Licensing instance
+#### c. Create the IBM Licensing instance
 
 Get the [licensing-instance.yaml](./licensing-instance.yaml) file and execute the command :
 
 ```
-kubectl create -f licensing-instance.yml
+kubectl create -f licensing-instance.yaml
 ```
 
 > NOTE: You can find more information and use cases on [this page](https://github.com/IBM/ibm-licensing-operator/blob/latest/docs/Content/Configuration.md#configuring-ingress).
 
-#### c. Retrieving license usage
+#### d. Retrieving license usage
 
 After a couple of minutes, the NGINX load balancer reflects the Ingress configuration and you will be able to access the IBM License Service by retrieving the URL with this command:
 
 ```
 export LICENSING_URL=$(kubectl get ingress ibm-licensing-service-instance -n ibm-common-services |awk '{print $4}' |tail -1)/ibm-licensing-service-instance
-export TOKEN=$(oc get secret ibm-licensing-token -o jsonpath={.data.token} -n ibm-common-services |base64 -d)
+export TOKEN=$(kubectl get secret ibm-licensing-token -o jsonpath={.data.token} -n ibm-common-services |base64 -d)
 ```
 
 You can access the `http://${LICENSING_URL}/status?token=${TOKEN}` url to view the licensing usage or retrieve the licensing report zip file by running:
