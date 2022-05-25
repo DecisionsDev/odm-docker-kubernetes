@@ -29,7 +29,7 @@ Then, create an [AWS Account](https://aws.amazon.com/getting-started/).
 
 1. [Prepare your environment (40 min)](#1-prepare-your-environment-40-min)
 2. [Prepare your environment for the ODM installation (25 min)](#2-prepare-your-environment-for-the-odm-installation-25-min)
-3. [Create an RDS database (20 min)](#3-create-an-rds-database-20-min)
+3. [(Optional) Create an RDS database (Optional 20 min)](#3-optional-create-an-rds-database-20-min)
 4. [Manage a  digital certificate (10 min)](#4-manage-a-digital-certificate-10-min)
 5. [Install an ODM release (10 min)](#5-install-an-ibm-operational-decision-manager-release-10-min)
 6. [Access the ODM services](#6-access-the-odm-services)
@@ -120,7 +120,7 @@ where:
 
 > Note: The `cp.icr.io` value for the docker-server parameter is the only registry domain name that contains the images. You must set the docker-username to `cp` to use an entitlement key as docker-password.
 
-Take a note of the secret name so that you can set it for the `image.pullSecrets` parameter when you run a helm install of your containers. The `image.repository` parameter will later be set to `cp.icr.io/cp/cp4a/odm`.
+The my-odm-docker-registry secret name is already used for the `image.pullSecrets` parameter when you run a helm install of your containers. The `image.repository` parameter is also set by default to `cp.icr.io/cp/cp4a/odm`.
 
 #### c. Add the public IBM Helm charts repository:
 
@@ -218,7 +218,7 @@ If you want to install ODM as a demo mode with the ODM postgreSQL internal data 
 helm install mycompany ibmcharts/ibm-odm-prod --version 22.1.0 -f eks-values.yaml
 ```
 
-If you want to install ODM with the AWS RDS postgreSQL database created in step 3 :
+If you want to install ODM with the AWS RDS postgreSQL database created in [step 3](#3-optional-create-an-rds-database-20-min) :
 
 - Get the [eks-rds-values.yaml](./eks-rds-values.yaml) file and replace the following keys:
   - `<AWS-AccountId>` is your AWS Account Id
