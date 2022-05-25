@@ -18,3 +18,12 @@ externalDatabase:
   port: 5432
   serverName: <RDS_DB_ENDPOINT>
   databaseName: <RDS_DATABASE_NAME>
+
+# As an alternative to the RDS postgres externalDatabase
+# You can use the postgreSQL internalDatabase
+# Remove/Comment previous externalDatabase section and uncomment internalDatabase section
+#internalDatabase:
+#  populateSampleData: true
+#  persistence:
+#    enabled: false
+#    useDynamicProvisioning: true
