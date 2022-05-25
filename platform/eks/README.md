@@ -214,6 +214,9 @@ Install a Kubernetes release with the default configuration and a name of `mycom
 
 If you want to install ODM as a demo mode with the ODM postgreSQL internal data base :
 
+- Get the [eks-values.yaml](./eks-values.yaml) file and replace the following keys:
+  - `<AWS-AccountId>` is your AWS Account Id
+
 ```bash
 helm install mycompany ibmcharts/ibm-odm-prod --version 22.1.0 -f eks-values.yaml
 ```
