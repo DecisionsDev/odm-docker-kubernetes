@@ -40,8 +40,7 @@ You just have to replace during the helm install **eks-values.yaml** by **eks-ng
 
 If you want to install ODM as a demo mode with the ODM postgreSQL internal data base :
 
-- Get the [eks-nginx-values.yaml](./eks-nginx-values.yaml) file and replace the following keys:
-  - `<AWS-AccountId>` is your AWS Account Id
+- Get the [eks-nginx-values.yaml](./eks-nginx-values.yaml) file :
 
 ```bash
 helm install mycompany ibmcharts/ibm-odm-prod --version 22.1.0 -f eks-nginx-values.yaml
@@ -50,7 +49,6 @@ helm install mycompany ibmcharts/ibm-odm-prod --version 22.1.0 -f eks-nginx-valu
 If you want to install ODM with the AWS RDS postgreSQL database created in [step 3](#3-optional-create-an-rds-database-20-min) :
 
 - Get the [eks-rds-nginx-values.yaml](./eks-rds-nginx-values.yaml) file and replace the following keys:
-  - `<AWS-AccountId>` is your AWS Account Id
   - `<RDS_DB_ENDPOINT>` is your database server endpoint (of the form: `db-server-name-1.********.<region>.rds.amazonaws.com`)
   - `<RDS_DATABASE_NAME>` is the initial database name defined when creating the RDS database
 
