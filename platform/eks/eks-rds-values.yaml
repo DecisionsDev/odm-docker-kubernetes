@@ -15,8 +15,9 @@ service:
       alb.ingress.kubernetes.io/backend-protocol: "HTTPS"
       alb.ingress.kubernetes.io/certificate-arn: "arn:aws:iam::<AWS-AccountId>:server-certificate/mycompany"
 
-internalDatabase:
-  populateSampleData: true
-  persistence:
-    enabled: false
-    useDynamicProvisioning: true
+externalDatabase:
+  type: postgres
+  secretCredentials: odm-db-secret
+  port: 5432
+  serverName: <RDS_DB_ENDPOINT>
+  databaseName: <RDS_DATABASE_NAME>

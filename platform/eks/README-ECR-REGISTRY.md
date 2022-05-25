@@ -48,193 +48,10 @@ aws ecr create-repository --repository-name odm-decisionserverconsole --image-sc
     manifest.yaml
     ```
 
-    > NOTE: This example will set up an external database so the dbserver image won't be needed.
-
 - Check that you can run a docker command.
     ```bash
     docker ps
     ```
-
-- Load the images to your local registry.
-
-    ```bash
-    for name in images/*.tar.gz; do echo $name && docker image load --input $name; done
-    ```
-
-   For more information, refer to the [ODM knowledge center](hhttps://www.ibm.com/docs/en/odm/8.11.0?topic=production-installing-helm-release-odm).
-
-#### d. Tag and push the images to the ECR registry
-
-- Tag the images to the ECR registry previously created
-
-    ```bash
-    export REGION=<region>
-    export AWSACCOUNTID=<AWS-AccountId>
-    docker tag odm-decisioncenter:8.11.0.1-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisioncenter:8.11.0.1-amd64
-    docker tag odm-decisionserverruntime:8.11.0.1-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionserverruntime:8.11.0.1-amd64
-    docker tag odm-decisionserverconsole:8.11.0.1-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionserverconsole:8.11.0.1-amd64
-    docker tag odm-decisionrunner:8.11.0.1-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionrunner:8.11.0.1-amd64
-    ```
-
-- Push the images to the ECR registry
-
-    ```bash
-    docker push $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisioncenter:8.11.0.0-amd64
-    docker push $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionserverconsole:8.11.0.0-amd64
-    docker push $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionserverruntime:8.11.0.0-amd64
-    docker push $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionrunner:8.11.0.0-amd64
-    ```
-
-#### e. Create a pull secret for the ECR registry
-
-```bash
-kubectl create secret docker-registry ecrodm --docker-server=<AWS-AccountId>.dkr.ecr.<region>.amazonaws.com --docker-username=AWS --docker-password=$(aws ecr get-login-password --region <region>)
-```
-    images/odm-decisioncenter_8.11.0.1-amd64.tar.gz
-    images/dbserver_8.11.0.1-amd64.tar.gz
-    manifest.json
-    manifest.yaml
-    ```
-
-    > NOTE: This example will set up an external database so the dbserver image won't be needed.
-
-- Check that you can run a docker command.
-    ```bash
-    docker ps
-    ```
-
-- Load the images to your local registry.
-
-    ```bash
-    for name in images/*.tar.gz; do echo $name && docker image load --input $name; done
-    ```
-
-   For more information, refer to the [ODM knowledge center](hhttps://www.ibm.com/docs/en/odm/8.11.0?topic=production-installing-helm-release-odm).
-
-#### d. Tag and push the images to the ECR registry
-
-- Tag the images to the ECR registry previously created
-
-    ```bash
-    export REGION=<region>
-    export AWSACCOUNTID=<AWS-AccountId>
-    docker tag odm-decisioncenter:8.11.0.1-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisioncenter:8.11.0.1-amd64
-    docker tag odm-decisionserverruntime:8.11.0.1-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionserverruntime:8.11.0.1-amd64
-    docker tag odm-decisionserverconsole:8.11.0.1-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionserverconsole:8.11.0.1-amd64
-    docker tag odm-decisionrunner:8.11.0.1-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionrunner:8.11.0.1-amd64
-    ```
-
-- Push the images to the ECR registry
-
-    ```bash
-    docker push $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisioncenter:8.11.0.0-amd64
-    docker push $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionserverconsole:8.11.0.0-amd64
-    docker push $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionserverruntime:8.11.0.0-amd64
-    docker push $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionrunner:8.11.0.0-amd64
-    ```
-
-#### e. Create a pull secret for the ECR registry
-
-```bash
-kubectl create secret docker-registry ecrodm --docker-server=<AWS-AccountId>.dkr.ecr.<region>.amazonaws.com --docker-username=AWS --docker-password=$(aws ecr get-login-password --region <region>)
-```
-    images/odm-decisionserverruntime_8.11.0.1-amd64.tar.gz
-    images/odm-decisionrunner_8.11.0.1-amd64.tar.gz
-    images/odm-decisioncenter_8.11.0.1-amd64.tar.gz
-    images/dbserver_8.11.0.1-amd64.tar.gz
-    manifest.json
-    manifest.yaml
-    ```
-
-    > NOTE: This example will set up an external database so the dbserver image won't be needed.
-
-- Check that you can run a docker command.
-    ```bash
-    docker ps
-    ```
-
-- Load the images to your local registry.
-
-    ```bash
-    for name in images/*.tar.gz; do echo $name && docker image load --input $name; done
-    ```
-
-   For more information, refer to the [ODM knowledge center](hhttps://www.ibm.com/docs/en/odm/8.11.0?topic=production-installing-helm-release-odm).
-
-#### d. Tag and push the images to the ECR registry
-
-- Tag the images to the ECR registry previously created
-
-    ```bash
-    export REGION=<region>
-    export AWSACCOUNTID=<AWS-AccountId>
-    docker tag odm-decisioncenter:8.11.0.1-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisioncenter:8.11.0.1-amd64
-    docker tag odm-decisionserverruntime:8.11.0.1-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionserverruntime:8.11.0.1-amd64
-    docker tag odm-decisionserverconsole:8.11.0.1-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionserverconsole:8.11.0.1-amd64
-    docker tag odm-decisionrunner:8.11.0.1-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionrunner:8.11.0.1-amd64
-    ```
-
-- Push the images to the ECR registry
-
-    ```bash
-    docker push $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisioncenter:8.11.0.0-amd64
-    docker push $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionserverconsole:8.11.0.0-amd64
-    docker push $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionserverruntime:8.11.0.0-amd64
-    docker push $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionrunner:8.11.0.0-amd64
-    ```
-
-#### e. Create a pull secret for the ECR registry
-
-```bash
-kubectl create secret docker-registry ecrodm --docker-server=<AWS-AccountId>.dkr.ecr.<region>.amazonaws.com --docker-username=AWS --docker-password=$(aws ecr get-login-password --region <region>)
-```
-    charts/ibm-odm-prod-22.1.0.tgz
-    images/odm-decisionserverconsole_8.11.0.1-amd64.tar.gz
-    images/odm-decisionserverruntime_8.11.0.1-amd64.tar.gz
-    images/odm-decisionrunner_8.11.0.1-amd64.tar.gz
-    images/odm-decisioncenter_8.11.0.1-amd64.tar.gz
-    images/dbserver_8.11.0.1-amd64.tar.gz
-    manifest.json
-    manifest.yaml
-    ```
-
-    > NOTE: This example will set up an external database so the dbserver image won't be needed.
-
-- Check that you can run a docker command.
-    ```bash
-    docker ps
-    ```
-
-- Load the images to your local registry.
-
-    ```bash
-    for name in images/*.tar.gz; do echo $name && docker image load --input $name; done
-    ```
-
-#### d. Tag and push the images to the ECR registry
-
-- Tag the images to the ECR registry previously created
-
-    ```bash
-    export REGION=<region>
-    export AWSACCOUNTID=<AWS-AccountId>
-    docker tag odm-decisioncenter:8.11.0.1-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisioncenter:8.11.0.1-amd64
-    docker tag odm-decisionserverruntime:8.11.0.1-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionserverruntime:8.11.0.1-amd64
-    docker tag odm-decisionserverconsole:8.11.0.1-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionserverconsole:8.11.0.1-amd64
-    docker tag odm-decisionrunner:8.11.0.1-amd64 $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionrunner:8.11.0.1-amd64
-    ```
-
-- Push the images to the ECR registry
-
-    ```bash
-    docker push $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisioncenter:8.11.0.0-amd64
-    docker push $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionserverconsole:8.11.0.0-amd64
-    docker push $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionserverruntime:8.11.0.0-amd64
-    docker push $AWSACCOUNTID.dkr.ecr.$REGION.amazonaws.com/odm-decisionrunner:8.11.0.0-amd64
-    ```
-
-#### e. Create a pull secret for the ECR registry
-
 
 - Load the images to your local registry.
 
@@ -272,3 +89,12 @@ kubectl create secret docker-registry ecrodm --docker-server=<AWS-AccountId>.dkr
 kubectl create secret docker-registry ecrodm --docker-server=<AWS-AccountId>.dkr.ecr.<region>.amazonaws.com --docker-username=AWS --docker-password=$(aws ecr get-login-password --region <region>)
 ```
 > NOTE: `ecrodm` is the name of the secret that will be used to pull the images in EKS.
+
+#### f. Install ODM with the following parameters
+  
+```bash
+helm install mycompany charts/ibm-odm-prod-22.1.0.tgz \
+             --set image.pullSecrets=ecrodm \
+             --set image.repository=<AWS-AccountId>.dkr.ecr.<region>.amazonaws.com \
+             -f eks-values.yaml
+```

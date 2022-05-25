@@ -100,13 +100,7 @@ The AWS Load Balancer Controller creates Application Load Balancers (ALBs) and t
 To get access to the ODM material, you must have an IBM entitlement registry key to pull the images from the IBM Entitled registry. 
 It's what will be used in the next step of this tutorial.
 
-But, you can also download the ODM on Kubernetes package (.tgz file) from Passport Advantage® (PPA) and then push the contained images to the EKS Container Registry (ECR). If yu prefer to manage ODM images this way, find the explanation [here](README-ECR-REGISTRY.md) 
-
-* To access the images from IBM entitlement registry, follow the instructions in the section [Using the IBM Entitled registry with your IBMid](#option-a-using-the-ibm-entitled-registry-with-your-ibmid)
-
-* To download the PPA and push the images in the EKS Container Registry, follow the instructions in the section [Push the ODM images from the PPA to the ECR](#option-b-push-the-odm-images-from-the-ppa-to-the-ecr)
-kubectl create secret docker-registry--docker-server=cp.icr.io
-#### Option A: Using the IBM Entitled registry with your IBMid
+But, you can also download the ODM on Kubernetes package (.tgz file) from Passport Advantage® (PPA) and then push the contained images to the EKS Container Registry (ECR). If you prefer to manage ODM images this way, find the explanation [here](README-ECR-REGISTRY.md) 
 
 #### a. Retrieve your entitled registry key
   - Log in to [MyIBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary) with the IBMid and password that are associated with the entitled software.
@@ -116,12 +110,11 @@ kubectl create secret docker-registry--docker-server=cp.icr.io
 #### b. Create a pull secret by running a kubectl create secret command.
 
 ```console
-kubectl create secret docker-registry <REGISTRY_SECRET> --docker-server=cp.icr.io \
+kubectl create secret docker-registry my-odm-docker-registry --docker-server=cp.icr.io \
     --docker-username=cp --docker-password="<API_KEY_GENERATED>" --docker-email=<USER_EMAIL>
 ```
 
 where:
-* <REGISTRY_SECRET> is the secret name
 * <API_KEY_GENERATED> is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
 * <USER_EMAIL> is the email address associated with your IBMid.
 
@@ -144,11 +137,14 @@ NAME                  	CHART VERSION	APP VERSION	DESCRIPTION
 ibmcharts/ibm-odm-prod	22.1.0       	8.11.0.1   	IBM Operational Decision Manager
 ```
 
-You can now proceed to the [Create an RDS database (20 min)](#3-create-an-rds-database-20-min).
+### 3. (Optional) Create an RDS database (20 min)
 
-### 3. Create an RDS database (20 min)
+ODM on K8s is provided with a ready to use internal database based on PostgreSQL that can be used empty or with pre-populated samples.
+If you want to install an ODM demo quickly, you can use this internal database.
 
-This project uses PostgreSQL but the procedure is valid for any database supported by ODM.
+But, if you prefer to be more on a entreprise mode, follow the next step explaining how to use an AWS RDS database.   
+
+This following step is using PostgreSQL but the procedure is valid for any database supported by ODM.
 
 To set up the database, follow the procedure described here [RDS PostgreSQL database](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_CreateDBInstance.html).
 
@@ -160,6 +156,21 @@ To set up the database, follow the procedure described here [RDS PostgreSQL data
 > - Set a database *Master password*
 
 Once the RDS PostgreSQL database is available, take a note of the database endpoint. It will be referred as `RDS_POSTGRESQL_SERVERNAME` in the next sections.
+
+To secure access to the database, you must create a secret that encrypts the database user and password before you install the Helm release.
+
+```bash
+kubectl create secret generic <odm-db-secret> \
+--from-literal=db-user=<rds-postgresql-user-name> \
+--from-literal=db-password=<rds-postgresql-password>
+```
+
+Example:
+```
+kubectl create secret generic odm-db-secret \
+--from-literal=db-user=postgres \
+--from-literal=db-password=postgres
+```
 
 ### 4. Manage a  digital certificate (10 min)
 
@@ -199,50 +210,25 @@ The output of the command is:
 
 ### 5. Install an IBM Operational Decision Manager release (10 min)
 
-#### a. Prerequisites
-
-- Create a database secret
-
-    To secure access to the database, you must create a secret that encrypts the database user and password before you install the Helm release.
-
-    ```bash
-    kubectl create secret generic <odm-db-secret> \
-      --from-literal=db-user=<rds-postgresql-user-name> \
-      --from-literal=db-password=<rds-postgresql-password> 
-    ```
-
-    Example:
-    ```
-    kubectl create secret generic odm-db-secret \
-      --from-literal=db-user=postgres \
-      --from-literal=db-password=postgres
-    ```
-
-#### b. Install an ODM Helm release
-
 Install a Kubernetes release with the default configuration and a name of `mycompany`.  
 
-- Get the [eks-values.yaml](./eks-values.yaml) file and replace the following keys:
-  - `<REGISTRY_SECRET>` is the name of the secret containing the IBM Entitled registry key
+If you want to install ODM as a demo mode with the ODM postgreSQL internal data base :
+
+```bash
+helm install mycompany ibmcharts/ibm-odm-prod --version 22.1.0 -f eks-values.yaml
+```
+
+If you want to install ODM with the AWS RDS postgreSQL database created in step 3 :
+
+- Get the [eks-rds-values.yaml](./eks-rds-values.yaml) file and replace the following keys:
   - `<AWS-AccountId>` is your AWS Account Id
   - `<RDS_DB_ENDPOINT>` is your database server endpoint (of the form: `db-server-name-1.********.<region>.rds.amazonaws.com`)
   - `<RDS_DATABASE_NAME>` is the initial database name defined when creating the RDS database
 
-- If you choose to use Entitled Registry for images and to download the Helm chart from IBM's public Helm charts repository [(option A above)](#option-a-using-the-ibm-entitled-registry-with-your-ibmid):
 
-    ```bash
-    helm install mycompany ibmcharts/ibm-odm-prod --version 22.1.0 \
-                 --set image.repository=cp.icr.io/cp/cp4a/odm \
-                 -f eks-values.yaml
-    ```
-
-- If you downloaded the PPA archive and prefer to use the Helm chart archive from it [(option B above)](#option-b-push-the-odm-images-from-the-ppa-to-the-ecr):
-
-    ```bash
-    helm install mycompany charts/ibm-odm-prod-22.1.0.tgz \
-                 --set image.repository=<AWS-AccountId>.dkr.ecr.<region>.amazonaws.com \
-                 -f eks-values.yaml
-    ```
+```bash
+helm install mycompany ibmcharts/ibm-odm-prod --version 22.1.0 -f eks-rds-values.yaml
+```
 
 > NOTE: If you choose to use the NGINX Ingress Controller, refer to [Install an ODM release with NGINX Ingress Controller](README-NGINX.md#install-an-odm-release-with-nginx-ingress-controller).
 

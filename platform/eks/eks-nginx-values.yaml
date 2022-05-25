@@ -3,7 +3,7 @@ usersPassword: "odmAdmin"
 
 image:
   pullSecrets:
-  - <REGISTRY_SECRET>
+  - my-odm-docker-registry
 
 service:
   ingress:
@@ -12,18 +12,8 @@ service:
       kubernetes.io/ingress.class: nginx
       nginx.ingress.kubernetes.io/backend-protocol: https
 
-externalDatabase:
-  type: postgres
-  secretCredentials: odm-db-secret
-  port: 5432
-  serverName: <RDS_DB_ENDPOINT>
-  databaseName: <RDS_DATABASE_NAME>
-
-# As an alternative to the RDS postgres externalDatabase
-# You can use the postgreSQL internalDatabase
-# Remove/Comment previous externalDatabase section and uncomment internalDatabase section
-#internalDatabase:
-#  populateSampleData: true
-#  persistence:
-#    enabled: false
-#    useDynamicProvisioning: true
+internalDatabase:
+  populateSampleData: true
+  persistence:
+    enabled: false
+    useDynamicProvisioning: true
