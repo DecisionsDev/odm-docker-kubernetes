@@ -92,8 +92,10 @@ kubectl create secret docker-registry ecrodm --docker-server=<AWS-AccountId>.dkr
 
 #### f. Install ODM with the following parameters
   
+When reaching the step [Install an IBM Operational Decision Manager release](README.md#5-install-an-ibm-operational-decision-manager-release-10-min), to change the ODM pull images from the IBM Entitled Registry by the ECR registry, choose the relevant yaml file provided according if you want to try NGINX or ALB ingress controller, internal or RDS postgreSQL database, and you just have to override the image.pullSecrets and image.repository properties when installing the helm chart like :
+
 ```bash
-helm install mycompany charts/ibm-odm-prod-22.1.0.tgz \
+helm install mycompany ibmcharts/ibm-odm-prod --version 22.1.0 \
              --set image.pullSecrets=ecrodm \
              --set image.repository=<AWS-AccountId>.dkr.ecr.<region>.amazonaws.com \
              -f eks-values.yaml
