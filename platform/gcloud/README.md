@@ -48,7 +48,7 @@ Without the relevant billing level, some Google Cloud resources will not be crea
 2. [Create the Google Cloud SQL PostgreSQL instance (10 min)](#2-create-the-google-cloud-sql-postgresql-instance-10-min)
 3. [Prepare your environment for the ODM installation (10 min)](#3-prepare-your-environment-for-the-odm-installation-10-min)
 4. [Manage a digital certificate (10 min)](#4-manage-a-digital-certificate-2-min)
-5. [Install an ODM release (10 min)](#5-install-an-ibm-operational-decision-manager-release-10-min)
+5. [Install an ODM release (10 min)](#5-install-an-odm-release-10-min)
 6. [Access ODM services](#6-access-odm-services)
 7. [Track ODM usage with the IBM License Service](#7-track-odm-usage-with-the-ibm-license-service)
 
@@ -347,7 +347,6 @@ Follow the **Installation** section of the [Manual installation without the Oper
 - Use Helm to deploy an NGINX Ingress controller:
 
     ```
-
     helm install nginx-ingress ingress-nginx/ingress-nginx \
       --set controller.replicaCount=2 \
       --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux \
