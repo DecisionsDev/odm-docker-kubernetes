@@ -48,7 +48,7 @@ Without the relevant billing level, some Google Cloud resources will not be crea
 2. [Create the Google Cloud SQL PostgreSQL instance (10 min)](#2-create-the-google-cloud-sql-postgresql-instance-10-min)
 3. [Prepare your environment for the ODM installation (10 min)](#3-prepare-your-environment-for-the-odm-installation-10-min)
 4. [Manage a digital certificate (10 min)](#4-manage-a-digital-certificate-2-min)
-5. [Install an ODM release (10 min)](#5-install-an-odm-release-10-min)
+5. [Install the ODM release (10 min)](#5-install-the-odm-release-10-min)
 6. [Access ODM services](#6-access-odm-services)
 7. [Track ODM usage with the IBM License Service](#7-track-odm-usage-with-the-ibm-license-service)
 
@@ -202,7 +202,7 @@ kubectl create secret tls mycompany-crt-secret --key mycompany.key --cert mycomp
 
 The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://www.ibm.com/docs/en/odm/8.11.0?topic=servers-server-certificates) and [Working with certificates and SSL](https://docs.oracle.com/cd/E19830-01/819-4712/ablqw/index.html).
 
-### 5. Install an ODM release (10 min)
+### 5. Install the ODM release (10 min)
 
 #### a. Create the database secret for Google Cloud SQL PostgreSQL
 
@@ -236,6 +236,8 @@ It will create automatically an HTTPS GKE loadbalancer. So, we disable the ODM i
     helm install mycompany ibmcharts/ibm-odm-prod --version 22.1.0 \
                  -f gcp-values.yaml
     ```
+
+  > NOTE: you can use the [gcp-values-nginx.yaml](./gcp-values-nginx.yaml) to
 
 #### c. Check the topology
 
@@ -300,42 +302,36 @@ In a real enterprise use-case, to access the mycompany.com domain name, you will
 In this trial, we are using a self-signed certificate. So, there is no extra charge like certificate and domain purchase.
 We just have to manage a configuration to simulate the mycompany.com access.
 
-You can get the EXTERNAL-IP using the command line:
+- Get the EXTERNAL-IP using the command line:
 
-```
-kubectl get ingress <release>-odm-ingress -o jsonpath='{.status.loadBalancer.ingress[].ip}'
-```
+  ```
+  kubectl get ingress <release>-odm-ingress -o jsonpath='{.status.loadBalancer.ingress[].ip}'
+  ```
 
-So, to access ODM services, you have to edit your /etc/hosts file and add the following entry:
+- Edit your /etc/hosts file and add the following entry:
 
-```
-<EXTERNAL-IP> mycompany.com
-```
+  ```
+  <EXTERNAL-IP> mycompany.com
+  ```
 
-Now, you can access all ODM services with the following URLs:
+- You can now access all ODM services with the following URLs:
 
-| SERVICE NAME | URL | USERNAME/PASSWORD
-| --- | --- | ---
-| Decision Server Console | https://mycompany.com/res | odmAdmin/odmAdmin
-| Decision Center | https://mycompany.com/decisioncenter | odmAdmin/odmAdmin
-| Decision Center REST-API | https://mycompany.com/decisioncenter-api | odmAdmin/odmAdmin
-| Decision Server Runtime | https://mycompany.com/DecisionService | odmAdmin/odmAdmin
-| Decision Runner | https://mycompany.com/DecisionRunner | odmAdmin/odmAdmin
+  | SERVICE NAME | URL | USERNAME/PASSWORD
+  | --- | --- | ---
+  | Decision Server Console | https://mycompany.com/res | odmAdmin/odmAdmin
+  | Decision Center | https://mycompany.com/decisioncenter | odmAdmin/odmAdmin
+  | Decision Center REST-API | https://mycompany.com/decisioncenter-api | odmAdmin/odmAdmin
+  | Decision Server Runtime | https://mycompany.com/DecisionService | odmAdmin/odmAdmin
+  | Decision Runner | https://mycompany.com/DecisionRunner | odmAdmin/odmAdmin
 
-> NOTE:You can also click on the Ingress routes accessible from the Google Cloud console below the [Kubernetes Engine/Services & Ingress Details Panel](https://console.cloud.google.com/kubernetes/ingresses):
-> <img width="1000" height="532" src='./images/ingress_routes.png'/>
+  > NOTE:You can also click on the Ingress routes accessible from the Google Cloud console below the [Kubernetes Engine/Services & Ingress Details Panel](https://console.cloud.google.com/kubernetes/ingresses):
+  > <img width="1000" height="532" src='./images/ingress_routes.png'/>
 
 ### 7. Track ODM usage with the IBM License Service
 
 This section explains how to track ODM usage with the IBM License Service.
 
-#### a. Install the IBM License Service
-
-Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://github.com/IBM/ibm-licensing-operator/blob/latest/docs/Content/Install_without_OLM.md)
-
-> NOTE: Make sure you don't follow the instantiation part!
-
-#### b. Create a NGINX Ingress controller
+#### a. Create a NGINX Ingress controller
 
 - Add the official stable repository:
 
@@ -352,6 +348,12 @@ Follow the **Installation** section of the [Manual installation without the Oper
       --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux \
       --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux
     ```
+
+#### b. Install the IBM License Service
+
+Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://github.com/IBM/ibm-licensing-operator/blob/latest/docs/Content/Install_without_OLM.md)
+
+> NOTE: Make sure you don't follow the instantiation part!
 
 #### c. Create the IBM Licensing instance
 
@@ -382,7 +384,7 @@ If your IBM License Service instance is not running properly, please refer to th
 
 ## Optional steps
 
-You may prefer to access ODM components through NGINX Ingress controller instead of directly from these different IP addresses.  If so, please follow [these instructions](README_NGINX.md).
+You may prefer to access ODM components through NGINX Ingress controller instead of using the IP addresses. If so, please follow [these instructions](README_NGINX.md).
 
 ## Troubleshooting
 
