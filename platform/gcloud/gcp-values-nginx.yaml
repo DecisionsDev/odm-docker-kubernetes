@@ -1,0 +1,27 @@
+license: true
+usersPassword: "odmAdmin"
+
+image:
+  repository: cp.icr.io/cp/cp4a/odm
+  pullSecrets:
+  - <REGISTRY_SECRET>
+
+service:
+  enableTLS: false
+  ingress:
+    enabled: true
+    tlsSecretRef: mycompany-crt-secret
+    host: mycompany.com
+    tlsHosts:
+    - mycompany.com
+    annotations:
+      kubernetes.io/ingress.class: nginx
+
+externalDatabase:
+  type: postgres
+  secretCredentials: <odm-db-secret>
+  port: 5432
+  serverName: <DB_ENDPOINT>
+  databaseName: <DATABASE_NAME>
+  driversUrl:
+  - <DRIVER_URL>
