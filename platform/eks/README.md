@@ -29,7 +29,7 @@ Then, create an [AWS Account](https://aws.amazon.com/getting-started/).
 
 1. [Prepare your environment (40 min)](#1-prepare-your-environment-40-min)
 2. [Prepare your environment for the ODM installation (25 min)](#2-prepare-your-environment-for-the-odm-installation-25-min)
-3. [(Optional) Create an RDS database (Optional 20 min)](#3-optional-create-an-rds-database-20-min)
+3. [Create an RDS database (Optional 20 min)](#3-create-an-rds-database-20-min)
 4. [Manage a  digital certificate (10 min)](#4-manage-a-digital-certificate-10-min)
 5. [Install an ODM release (10 min)](#5-install-an-ibm-operational-decision-manager-release-10-min)
 6. [Access the ODM services](#6-access-the-odm-services)
@@ -137,12 +137,7 @@ NAME                  	CHART VERSION	APP VERSION	DESCRIPTION
 ibmcharts/ibm-odm-prod	22.1.0       	8.11.0.1   	IBM Operational Decision Manager
 ```
 
-### 3. (Optional) Create an RDS database (20 min)
-
-ODM on K8s is provided with a ready to use internal database based on PostgreSQL that can be used empty or with pre-populated samples.
-If you want to install an ODM demo quickly, you can use this internal database.
-
-But, if you prefer to be more on a entreprise mode, follow the next step explaining how to use an AWS RDS database.   
+### 3. Create an RDS database (20 min)
 
 This following step is using PostgreSQL but the procedure is valid for any database supported by ODM.
 
@@ -171,6 +166,9 @@ kubectl create secret generic odm-db-secret \
 --from-literal=db-user=postgres \
 --from-literal=db-password=postgres
 ```
+
+> NOTE: ODM on K8s is provided with a ready to use internal database based on PostgreSQL that can be used empty or with pre-populated samples.
+If you want to install an ODM demo quickly, you can use this internal database. This internal database is dedicated to prototyping, not for production. 
 
 ### 4. Manage a  digital certificate (10 min)
 
@@ -212,26 +210,25 @@ The output of the command is:
 
 Install a Kubernetes release with the default configuration and a name of `mycompany`.  
 
-If you want to install ODM as a demo mode with the ODM postgreSQL internal data base :
-
-- Get the [eks-values.yaml](./eks-values.yaml) file and replace the following keys:
-  - `<AWS-AccountId>` is your AWS Account Id
-
-```bash
-helm install mycompany ibmcharts/ibm-odm-prod --version 22.1.0 -f eks-values.yaml
-```
-
-If you want to install ODM with the AWS RDS postgreSQL database created in [step 3](#3-optional-create-an-rds-database-20-min) :
+To install ODM with the AWS RDS postgreSQL database created in [step 3](#3-optional-create-an-rds-database-20-min) :
 
 - Get the [eks-rds-values.yaml](./eks-rds-values.yaml) file and replace the following keys:
   - `<AWS-AccountId>` is your AWS Account Id
   - `<RDS_DB_ENDPOINT>` is your database server endpoint (of the form: `db-server-name-1.********.<region>.rds.amazonaws.com`)
   - `<RDS_DATABASE_NAME>` is the initial database name defined when creating the RDS database
 
-
 ```bash
 helm install mycompany ibmcharts/ibm-odm-prod --version 22.1.0 -f eks-rds-values.yaml
 ```
+
+> NOTE: If you prefer to install ODM to prototype (not for production purpose) with the ODM PostgreSQL internal database :
+>
+> - Get the [eks-values.yaml](./eks-values.yaml) file and replace the following keys:
+>   - `<AWS-AccountId>` is your AWS Account Id
+>
+>```bash
+>helm install mycompany ibmcharts/ibm-odm-prod --version 22.1.0 -f eks-values.yaml
+>```
 
 > NOTE: If you choose to use the NGINX Ingress Controller, refer to [Install an ODM release with NGINX Ingress Controller](README-NGINX.md#install-an-odm-release-with-nginx-ingress-controller).
 
