@@ -210,7 +210,7 @@ The output of the command is:
 
 Install a Kubernetes release with the default configuration and a name of `mycompany`.  
 
-To install ODM with the AWS RDS postgreSQL database created in [step 3](#3-optional-create-an-rds-database-20-min) :
+To install ODM with the AWS RDS postgreSQL database created in [step 3](#3-create-an-rds-database-20-min) :
 
 - Get the [eks-rds-values.yaml](./eks-rds-values.yaml) file and replace the following keys:
   - `<AWS-AccountId>` is your AWS Account Id
