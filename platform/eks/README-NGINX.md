@@ -38,15 +38,7 @@ You can then go back to the [main documentation](README.md#2-prepare-your-enviro
 You just have to replace during the helm install **eks-values.yaml** by **eks-nginx-values.yaml** that contains the relevant ingress annotations :
 `kubernetes.io/ingress.class: nginx` and `nginx.ingress.kubernetes.io/backend-protocol: https`
 
-If you want to install ODM as a demo mode with the ODM postgreSQL internal data base :
-
-- Get the [eks-nginx-values.yaml](./eks-nginx-values.yaml) file :
-
-```bash
-helm install mycompany ibmcharts/ibm-odm-prod --version 22.1.0 -f eks-nginx-values.yaml
-```
-
-If you want to install ODM with the AWS RDS postgreSQL database created in [step 3](#3-optional-create-an-rds-database-20-min) :
+To install ODM with the AWS RDS postgreSQL database created in [step 3](#3-optional-create-an-rds-database-20-min) :
 
 - Get the [eks-rds-nginx-values.yaml](./eks-rds-nginx-values.yaml) file and replace the following keys:
   - `<RDS_DB_ENDPOINT>` is your database server endpoint (of the form: `db-server-name-1.********.<region>.rds.amazonaws.com`)
@@ -56,3 +48,10 @@ If you want to install ODM with the AWS RDS postgreSQL database created in [step
 ```bash
 helm install mycompany ibmcharts/ibm-odm-prod --version 22.1.0 -f eks-rds-nginx-values.yaml
 ```
+>NOTE: If you prefer to install ODM to prototype (not for production) with the ODM PostgreSQL internal database :
+>
+>- Get the [eks-nginx-values.yaml](./eks-nginx-values.yaml) file :
+>
+>```bash
+>helm install mycompany ibmcharts/ibm-odm-prod --version 22.1.0 -f eks-nginx-values.yaml
+>```
