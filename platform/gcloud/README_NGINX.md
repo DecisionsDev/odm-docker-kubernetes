@@ -24,7 +24,7 @@ Replace the placeholders in the [gcp-values.yaml](./gcp-values.yaml) file and in
 
 ```
 helm install mycompany ibmcharts/ibm-odm-prod --version 22.1.0 \
-             -f gcp-values-nginx.yaml \
+             -f gcp-values.yaml \
              --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"}
 ```
 
