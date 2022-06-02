@@ -32,37 +32,19 @@ Then [create an Azure account and pay as you go](https://azure.microsoft.com/en-
 
 ## Steps to deploy ODM on Kubernetes from Azure AKS
 
-<!-- TOC titleSize:2 tabSpaces:2 depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 skip:0 title:0 charForUnorderedList:* -->
+<!-- TOC titleSize:2 tabSpaces:2 depthFrom:1 depthTo:2 withLinks:1 updateOnSave:1 orderedList:0 skip:0 title:0 charForUnorderedList:* -->
 * [Deploying IBM Operational Decision Manager on Azure AKS](#deploying-ibm-operational-decision-manager-on-azure-aks)
   * [Included components](#included-components)
   * [Tested environment](#tested-environment)
   * [Prerequisites](#prerequisites)
   * [Steps to deploy ODM on Kubernetes from Azure AKS](#steps-to-deploy-odm-on-kubernetes-from-azure-aks)
   * [Prepare your AKS instance (30 min)](#prepare-your-aks-instance-30-min)
-    * [Log into Azure](#log-into-azure)
-    * [Create a resource group](#create-a-resource-group)
-    * [Create an AKS cluster](#create-an-aks-cluster)
-    * [Set up your environment to this cluster](#set-up-your-environment-to-this-cluster)
   * [Create the PostgreSQL Azure instance (10 min)](#create-the-postgresql-azure-instance-10-min)
-    * [Create an Azure Database for PostgreSQL](#create-an-azure-database-for-postgresql)
-    * [Create a firewall rule that allows access from Azure services](#create-a-firewall-rule-that-allows-access-from-azure-services)
   * [Prepare your environment for the ODM installation](#prepare-your-environment-for-the-odm-installation)
-    * [Using the IBM Entitled registry with your IBMid (10 min)](#using-the-ibm-entitled-registry-with-your-ibmid-10-min)
-    * [Create the database credentials secret for Azure PostgreSQL](#create-the-database-credentials-secret-for-azure-postgresql)
-    * [Manage a digital certificate (10 min)](#manage-a-digital-certificate-10-min)
   * [Install an ODM Helm release and expose it with the service type LoadBalancer (10 min)](#install-an-odm-helm-release-and-expose-it-with-the-service-type-loadbalancer-10-min)
-    * [Allocate public IP addresses](#allocate-public-ip-addresses)
-    * [Install the ODM release](#install-the-odm-release)
-    * [Check the topology](#check-the-topology)
-    * [Access ODM services](#access-odm-services)
   * [Create a NGINX Ingress controller](#create-a-nginx-ingress-controller)
   * [(Optional) Install an ODM Helm release and expose it with the NGINX Ingress controller (10 min)](#optional-install-an-odm-helm-release-and-expose-it-with-the-nginx-ingress-controller-10-min)
-    * [Install the product](#install-the-product)
-    * [Edit your /etc/hosts](#edit-your-etchosts)
-    * [Access the ODM services](#access-the-odm-services)
   * [Install the IBM License Service and retrieve license usage](#install-the-ibm-license-service-and-retrieve-license-usage)
-    * [Create the Licensing instance](#create-the-licensing-instance)
-    * [Retrieve license usage](#retrieve-license-usage)
   * [Troubleshooting](#troubleshooting)
 * [License](#license)
 <!-- /TOC -->
