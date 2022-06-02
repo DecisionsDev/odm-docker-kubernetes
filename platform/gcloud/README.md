@@ -32,7 +32,7 @@ First, install the following software on your machine:
 
 Then, manage the following tasks:
 
-1. [Create a Google Cloud account](https://cloud.google.com/apigee/docs/hybrid/v1.6/precog-gcpaccount)
+1. Create a Google Cloud account by connecting to the Google Cloud Platform [console](https://console.cloud.google.com/). When prompted to sign in, create a new account by clicking **Create account**.
 
 2. [Create a Google Cloud project](https://cloud.google.com/resource-manager/docs/creating-managing-projects)
 
