@@ -30,23 +30,21 @@ Then [create an Azure account and pay as you go](https://azure.microsoft.com/en-
 
 > Note:  Prerequisites and software supported by ODM 8.11 are listed on [the Detailed System Requirements page](https://www.ibm.com/software/reports/compatibility/clarity-reports/report/html/softwareReqsForProduct?deliverableId=2D28A510507B11EBBBEA1195F7E6DF31&osPlatforms=AIX%7CLinux%7CMac%20OS%7CWindows&duComponentIds=D002%7CS003%7CS006%7CS005%7CC006&mandatoryCapIds=30%7C1%7C13%7C25%7C26&optionalCapIds=341%7C47%7C9%7C1%7C15).
 
-## Steps to deploy ODM on Kubernetes from Azure AKS
+## Steps to deploy ODM on Kubernetes to Azure AKS
 
-<!-- TOC titleSize:2 tabSpaces:2 depthFrom:1 depthTo:2 withLinks:1 updateOnSave:1 orderedList:0 skip:0 title:0 charForUnorderedList:* -->
-* [Deploying IBM Operational Decision Manager on Azure AKS](#deploying-ibm-operational-decision-manager-on-azure-aks)
-  * [Included components](#included-components)
-  * [Tested environment](#tested-environment)
-  * [Prerequisites](#prerequisites)
-  * [Steps to deploy ODM on Kubernetes from Azure AKS](#steps-to-deploy-odm-on-kubernetes-from-azure-aks)
-  * [Prepare your AKS instance (30 min)](#prepare-your-aks-instance-30-min)
-  * [Create the PostgreSQL Azure instance (10 min)](#create-the-postgresql-azure-instance-10-min)
-  * [Prepare your environment for the ODM installation](#prepare-your-environment-for-the-odm-installation)
-  * [Install an ODM Helm release and expose it with the service type LoadBalancer (10 min)](#install-an-odm-helm-release-and-expose-it-with-the-service-type-loadbalancer-10-min)
-  * [Create a NGINX Ingress controller](#create-a-nginx-ingress-controller)
-  * [(Optional) Install an ODM Helm release and expose it with the NGINX Ingress controller (10 min)](#optional-install-an-odm-helm-release-and-expose-it-with-the-nginx-ingress-controller-10-min)
-  * [Install the IBM License Service and retrieve license usage](#install-the-ibm-license-service-and-retrieve-license-usage)
-  * [Troubleshooting](#troubleshooting)
-* [License](#license)
+<!-- TOC titleSize:2 tabSpaces:2 depthFrom:2 depthTo:2 withLinks:1 updateOnSave:1 orderedList:0 skip:0 title:0 charForUnorderedList:* -->
+* [Included components](#included-components)
+* [Tested environment](#tested-environment)
+* [Prerequisites](#prerequisites)
+* [Steps to deploy ODM on Kubernetes to Azure AKS](#steps-to-deploy-odm-on-kubernetes-to-azure-aks)
+* [Prepare your AKS instance (30 min)](#prepare-your-aks-instance-30-min)
+* [Create the PostgreSQL Azure instance (10 min)](#create-the-postgresql-azure-instance-10-min)
+* [Prepare your environment for the ODM installation](#prepare-your-environment-for-the-odm-installation)
+* [Install an ODM Helm release and expose it with the service type LoadBalancer (10 min)](#install-an-odm-helm-release-and-expose-it-with-the-service-type-loadbalancer-10-min)
+* [Create a NGINX Ingress controller](#create-a-nginx-ingress-controller)
+* [(Optional) Install an ODM Helm release and expose it with the NGINX Ingress controller (10 min)](#optional-install-an-odm-helm-release-and-expose-it-with-the-nginx-ingress-controller-10-min)
+* [Install the IBM License Service and retrieve license usage](#install-the-ibm-license-service-and-retrieve-license-usage)
+* [Troubleshooting](#troubleshooting)
 <!-- /TOC -->
 
 ## Prepare your AKS instance (30 min)
