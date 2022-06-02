@@ -20,11 +20,12 @@ You can install the product using the dedicated Ingress annotation `kubernetes.i
 The ODM services will be exposed through NGINX.
 The secured HTTPS communication is managed by the NGINX ingress controller. So, we disable TLS at container level.
 
-Replace the placeholders in the [gcp-values-nginx.yaml](./gcp-values-nginx.yaml) file and install the chart:
+Replace the placeholders in the [gcp-values.yaml](./gcp-values.yaml) file and install the chart:
 
 ```
 helm install mycompany ibmcharts/ibm-odm-prod --version 22.1.0 \
-             -f gcp-values-nginx.yaml
+             -f gcp-values-nginx.yaml \
+             --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"}
 ```
 
 ### 3. Check the deployment and access ODM services
