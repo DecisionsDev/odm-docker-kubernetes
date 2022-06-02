@@ -115,12 +115,14 @@ In this article we chose to create a [regional cluster](https://cloud.google.com
 
 ### 2. Create the Google Cloud SQL PostgreSQL instance (10 min)
 
+#### a. Create the database instance
+
 We will use the Google Cloud Console to create this instance:
 
 - Go on the [SQL context](https://console.cloud.google.com/sql) and click on the **CREATE INSTANCE** button
 - Click on **Choose PostgreSQL**
   - Instance ID: ``<YourInstanceName>``
-  - Password: ``<PASSWORD>`` (Take a note of this password. You will need it for the [Create the datasource secrets for Google Cloud SQL PostgreSQL](#a-create-the-database-secret-for-google-cloud-sql-postgresql) section)
+  - Password: ``<PASSWORD>`` - Take a note of this password.
   - Database version: `PostgreSQL 13`
   - Region: ``<REGION>`` (must be similar to the cluster for the communication is optimal between the database and the ODM instance)
   - Keep **Multiple zones** for Zonal availability to the highest availability
@@ -135,6 +137,21 @@ When created, you can drill on the SQL instance overview to retrieve needed info
 
 > NOTE: A default *postgres* database is created with a default *postgres* user. You can change the password of the postgres user by using the **Users** panel, selecting the *postgres* user, and using the **Change password** menu:
 > <img width="1000" height="360" src='./images/database_changepassword.png'/>
+
+#### b. Create the database secret for Google Cloud SQL PostgreSQL
+
+To secure access to the database, you must create a secret that encrypts the database user and password before you install the Helm release.
+
+```
+kubectl create secret generic <odm-db-secret> \
+  --from-literal=db-user=<USERNAME> \
+  --from-literal=db-password=<PASSWORD> 
+```
+
+Where:
+- `<ODM_DB_SECRET>`: the secret name
+- `<USERNAME>`: the database username (default is *postgres*)
+- `<PASSWORD>`: the database password (PASSWORD set in the [previous step](#2-create-the-google-cloud-sql-postgresql-instance-10-min))
 
 ### 3. Prepare your environment for the ODM installation (10 min)
 
@@ -204,22 +221,7 @@ The certificate must be the same as the one you used to enable TLS connections i
 
 ### 5. Install the ODM release (10 min)
 
-#### a. Create the database secret for Google Cloud SQL PostgreSQL
-
-To secure access to the database, you must create a secret that encrypts the database user and password before you install the Helm release.
-
-```
-kubectl create secret generic <odm-db-secret> \
-  --from-literal=db-user=<USERNAME> \
-  --from-literal=db-password=<PASSWORD> 
-```
-
-Where:
-- `<ODM_DB_SECRET>`: the secret name
-- `<USERNAME>`: the database username (default is *postgres*)
-- `<PASSWORD>`: the database password (PASSWORD enter in the step [Create the Google Cloud SQL PostgreSQL instance](#2-create-the-google-cloud-sql-postgresql-instance-10-min))
-
-#### b. Install an ODM Helm release
+#### a. Install an ODM Helm release
 
 The ODM services will be exposed with an Ingress using the previously created `mycompany` certificate.
 It will create automatically an HTTPS GKE loadbalancer. So, we disable the ODM internal TLS as it's not needed.
@@ -228,7 +230,8 @@ It will create automatically an HTTPS GKE loadbalancer. So, we disable the ODM i
   - `<REGISTRY_SECRET>`: the name of the secret containing the IBM Entitled registry key
   - `<DB_ENDPOINT>`: the database ip
   - `<DATABASE_NAME>`: the database name (default is postgres)
-  - `<DRIVER_URL>`: the url of the Google Cloud SQL PostgreSQL driver. You can get the last [driver](https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory/releases) (for example: https://storage.googleapis.com/cloud-sql-java-connector/v1.6.0/postgres-socket-factory-1.6.0-jar-with-driver-and-dependencies.jar). For more information, refer to the [Cloud SQL Connector for Java](https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory#cloud-sql-connector-for-java) documentation.
+
+  > NOTE: You can configure the driversUrl parameter to point to the appropriate version of the Google Cloud SQL PostgreSQL driver. For more information, refer to the [Cloud SQL Connector for Java](https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory#cloud-sql-connector-for-java) documentation.
 
 - Install the chart from IBM's public Helm charts repository:
 
@@ -237,9 +240,9 @@ It will create automatically an HTTPS GKE loadbalancer. So, we disable the ODM i
                  -f gcp-values.yaml
     ```
 
-  > NOTE: you can use the [gcp-values-nginx.yaml](./gcp-values-nginx.yaml) to
+  > NOTE: You may prefer to access ODM components through NGINX Ingress controller instead of using the IP addresses. If so, please follow [these instructions](README_NGINX.md).
 
-#### c. Check the topology
+#### b. Check the topology
 
 Run the following command to check the status of the pods that have been created:
 
@@ -252,7 +255,7 @@ NAME                                                   READY   STATUS    RESTART
 <release>-odm-decisionserverruntime-***                1/1     Running   0          20m
 ```
 
-#### d. Check the Ingress and GKE LoadBalancer
+#### c. Check the Ingress and GKE LoadBalancer
 
 To get a status on the current deployment, you can go in the console to the [Kubernetes Engine/Services & Ingress Panel](https://console.cloud.google.com/kubernetes/ingresses).
 The ingress is remaining in the *Creating ingress* state several minutes until the pods are up and ready, and that the backend is getting an healthy state.
@@ -270,7 +273,7 @@ When the Ingress is showing an OK status, all ODM services can be accessed.
 
 <img width="1000" height="517" src='./images/ingress_details.png'/>
 
-#### e. Create a Backend Configuration for the Decision Center Service
+#### d. Create a Backend Configuration for the Decision Center Service
 
 Sticky session is needed for Decision Center. The browser contains a cookie identifying the user session that will be linked to a unique container.
 The ODM on k8s helm chart has [clientIP](https://kubernetes.io/docs/concepts/services-networking/service/#proxy-mode-ipvs) for the Decision Center session affinity. Unfortunately, GKE doesn't use it automatically.
@@ -381,10 +384,6 @@ curl -v "http://${LICENSING_URL}/snapshot?token=${TOKEN}" --output report.zip
 ```
 
 If your IBM License Service instance is not running properly, please refer to this [troubleshooting page](https://github.com/IBM/ibm-licensing-operator/blob/latest/docs/Content/Troubleshooting.md).
-
-## Optional steps
-
-You may prefer to access ODM components through NGINX Ingress controller instead of using the IP addresses. If so, please follow [these instructions](README_NGINX.md).
 
 ## Troubleshooting
 
