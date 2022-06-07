@@ -1,7 +1,7 @@
 <!-- TOC titleSize:2 tabSpaces:2 depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 skip:0 title:1 charForUnorderedList:- -->
 ## Table of Contents
 - [Introduction](#introduction)
-  - [What is Okta?](#what-is-okta)
+  - [What is Azure AD ?](#what-is-azure-ad-)
   - [About this task](#about-this-task)
   - [ODM OpenID flows](#odm-openid-flows)
   - [Prerequisites](#prerequisites)
@@ -10,11 +10,10 @@
   - [Log into the Azure AD instance](#log-into-the-azure-ad-instance)
   - [Manage groups and users](#manage-groups-and-users)
   - [Set up an application](#set-up-an-application)
-  - [Configure the *default* Authorization Server](#configure-the-default-authorization-server)
-- [Deploy ODM on a container configured with Okta Server (Part 2)](#deploy-odm-on-a-container-configured-with-okta-server-part-2)
+- [Deploy ODM on a container configured with Azure AD (Part 2)](#deploy-odm-on-a-container-configured-with-azure-ad-part-2)
   - [Prepare your environment for the ODM installation](#prepare-your-environment-for-the-odm-installation)
     - [Create a secret to use the Entitled Registry](#create-a-secret-to-use-the-entitled-registry)
-    - [Create secrets to configure ODM with Okta](#create-secrets-to-configure-odm-with-okta)
+    - [Create secrets to configure ODM with Azure AD](#create-secrets-to-configure-odm-with-azure-ad)
   - [Install your ODM Helm release](#install-your-odm-helm-release)
   - [Complete post-deployment tasks](#complete-post-deployment-tasks)
     - [Register the ODM redirect URL](#register-the-odm-redirect-url)
@@ -27,7 +26,7 @@
 
 In the context of the ODM on Certified Kubernetes offering, Operational Decision Manager for production can be configured with an external OpenID Connect server (OIDC provider) such as the Azure AD cloud service.
 
-## What is Okta?
+## What is Azure AD ?
 
 Azure Active Directory ([Azure AD](https://azure.microsoft.com/en-us/services/active-directory/#overview)),  is an enterprise identity service that provides single sign-on, multifactor authentication, and conditional access. This is the service that we use in this article.
 
@@ -76,7 +75,7 @@ First, install the following software on your machine:
 
 ### Create an Azure AD account
 
-You can sign up for a [free Okta developer account](https://azure.microsoft.com/en-us/services/active-directory/) if you don't own an Azure AD account already.
+You can sign up for a [free Azure AD developer account](https://azure.microsoft.com/en-us/services/active-directory/) if you don't own an Azure AD account already.
 
 # Configure an Okta instance for ODM (Part 1)
 
@@ -103,21 +102,22 @@ After activating your account by email, you should have access to your Aure AD i
         * Click **Create**
   
 
-    ![Add Group](/images/zureAd/NewGroup.png)
+    ![Add Group](/images/AzureAd/NewGroup.png)
 
 2. Create at least one user that belongs to this new group.
 
     In Menu **Directory** / **Users**:
       * Click **New User** button
-        * User type: *User*
+        * User name: *myodmuser*@YOURDOMAIN
+        * Name: ``myodmuser``
+        * Name: ``<YourEmailAddress>``
         * First name: ``<YourFirstName>``
         * Last name: ``<YourLastName>``
-        * Username: ``<YourEmailAddress>``
-        * Primary email: ``<YourEmailAddress>``
+        * Password: ``My2ODMPassword?``
         * Groups (optional): ***odm-admin***
         * Click **Create**
 
-    ![Add Person](/images/Okta/add_person.png)
+    ![New User](/images/AzureAd/NewUser.png)
 
     Repeat this step for each user you want to add.
 
@@ -125,99 +125,27 @@ After activating your account by email, you should have access to your Aure AD i
 
 1. Create the *ODM application*.
 
-    In Menu **Applications** / **Applications**, click **Create an App Integration**:
-      * Select **OIDC - OpenID Connect**
-      * Select **Web Application**
-      * Click **Next**
+    In Menu **Directory** / **App Registration**, click **New Registration**:
+       * Name: **ODM Application**
+       * Who can use this application : 	Accounts in this organizational directory only (ibmodmdev only - Single tenant)
+       * Click **Register** 
 
-    ![Add Application](/images/Okta/AddApplication.png)
+    ![New Web Application](/images/AzureAd/RegisterApp.png)
 
-2. Configure the new web app integration.
+2. Generate an OpenID client ID/Secrets
+   
+    In Menu **Directory** / **App Registration**, click **ODM Application**:
+        * Click Client credentials : Add a certificate or secret (link)
+        * Click +New Client Secret
+          * Description: ``For ODM integration``
+          * Click Add
+        * Take a notes of the **Value**. This will be referenced as ``<Client Secret>`` in the next steps.
+        * Take a notes of the **Secret ID**. This will be referenced as ``<Client ID>`` in the next steps.
+3. Add Claims 
 
-    * Fill the **App integration name**: *ODM Application*
-    * In **Grant type**:
-      * Check **Client Credentials**
-      * Check **Refresh Token**
-      * Check **Implicit (hybrid)**
-    * Leave the default **Sign-in redirect URIs** and **Sign-out redirect URIs** and leave blank the **Base URIs**
-    * In **Assignments**:
-      * Under **Controlled access**:
-        * Check **Limit access to selected groups**
-      * Fill the **Selected group(s)** : ***odm-admin***
-    * Click **Save** 
+TODO
 
-    ![New Web Application](/images/Okta/NewWebAppIntegration.png)
-
-## Configure the *default* Authorization Server
-
-In this step, we augment the token with meta-information that is required by the ODM OpenID configuration so that ODM can manage both authentication and authorization mechanisms.
-
-1. In Menu **Security** / **API**, select the **default** authorization server.
-
-2. Add the *odmapiusers* scope.
-
-    To be more secure, we will use the client credentials flow for the ODM Rest API call. This requires to create a specific restricted scope (named *OKTA_API_SCOPE* later in this article).
-
-    In the **Scopes** tab, click **Add Scope** 
-      - Name : *odmapiusers*
-      - Click **Create** 
-
-3. Add the identifier and group claims.
-
-    We need to augment the tokens with the user identifier and group properties that are used for the ODM authentication (in ID tokens) and authorization (in access tokens) mechanisms.
-
-    In **Claims** tab, create the following claims:
-
-    * Click **Add claim** 
-      * Name: *loginName*
-      * Include in token type: *Access Token*
-      * Value: `(appuser != null) ? appuser.userName : app.clientId`
-      * Click **Create**   
-
-    Similarly, create:
-    * *loginName - Id Token* claim:
-      * Name: *loginName*
-      * Include in token type: *Id Token*
-      * Value: `(appuser != null) ? appuser.userName : app.clientId`
-    * *groups - Access Token* claim:
-      * Name: *groups*
-      * Include in token type: *Access Token*
-      * Value type: *Groups*
-      * Filter: **Equals**: *odm-admin*
-    * *groups - Id Token* claim:
-      * Name: *groups*
-      * Include in token type: *Id Token*
-      * Value type: *Groups*
-      * Filter: **Equals**: odm-admin
-
-    ![Add Claim Result](/images/Okta/ResultAddClaims.png)
-
-4. Verify the content of the token.
-
-    Check that the login name and groups meta-information are available in the ID token.
-
-    In the **Token Preview** tab:
-      *  OAuth/OIDC client: *ODM Application*
-      *  Grant type: *Authorization Code*
-      *  User: ``<YourEmailAddress>``
-      *  Scopes: *odmapiusers*
-      * Click **Preview Token**
-
-    As a result, the payload should contain:
-
-    ```
-    ...
-    "loginName": "<YourEmailAddress>",
-    "groups": [
-      "odm-admin"
-    ]
-    ```
-
-    ![Token Preview](/images/Okta/TokenPreview.png)
-
->Note:  The discovery endpoint can be found in **Security** / **API** / **default** / **Settings** in **Metadata URI**.
-
-# Deploy ODM on a container configured with Okta Server (Part 2)
+# Deploy ODM on a container configured with Azure AD (Part 2)
 
 ## Prepare your environment for the ODM installation
 
@@ -246,21 +174,24 @@ In this step, we augment the token with meta-information that is required by the
 
 3. Make a note of the secret name so that you can set it for the **image.pullSecrets** parameter when you run a helm install of your containers. The image.repository parameter is later set to *cp.icr.io/cp/cp4a/odm*.
 
-### Create secrets to configure ODM with Okta
+### Create secrets to configure ODM with Azure AD
 
-1. Retrieve Okta Server information.
+1. Retrieve Azure AD Server information.
 
-    From the Okta console, in **Application** / **Application** / **ODM Application**:
-    - Note the *OKTA_SERVER_NAME* which is the **Okta domain** in the **General Settings** (similar to *\<shortname\>.okta.com*).
+    From the Azure console, in **Directory** / **Application** / **ODM Application**:
+    - Click Overview 
+    - Directory (tenant) ID: **Your Tenant ID**. This will be referenced as ``<YourTenantID>`` in the next steps.
 
-2. Create a secret with the Okta Server certificate.
+    ![Tenant ID](/images/AzureAd/GetTenantID.png)
 
-    To allow ODM services to access the Okta Server, it is mandatory to provide the Okta Server certificate.
+2. Create a secret with the Azure AD Server certificate.
+
+    To allow ODM services to access the Azure AD Server, it is mandatory to provide the Azure AD Server certificate.
     You can create the secret as follows:
 
     ```
-    keytool -printcert -sslserver <OKTA_SERVER_NAME> -rfc > okta.crt
-    kubectl create secret generic okta-secret --from-file=tls.crt=okta.crt
+    keytool -printcert -sslserver login.microsoftonline.com -rfc > microsoft.crt
+    kubectl create secret generic ms-secret --from-file=tls.crt=microsoft.crt
     ```
 
 3. Generate the ODM configuration file for Okta.
@@ -305,7 +236,7 @@ In this step, we augment the token with meta-information that is required by the
     ```
     helm search repo ibm-odm-prod
     NAME                  	CHART VERSION	APP VERSION	DESCRIPTION                     
-    ibmcharts/ibm-odm-prod	21.3.0       	8.11.0.0   	IBM Operational Decision Manager
+    ibmcharts/ibm-odm-prod	22.1.0       	8.11.0.1   	IBM Operational Decision Manager
     ```
 
 3. Run the `helm install` command.
