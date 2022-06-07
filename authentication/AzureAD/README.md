@@ -91,26 +91,31 @@ After activating your account by email, you should have access to your Aure AD i
 
 ## Manage groups and users
 
-1. Create a group for ODM administrators. It is referenced as *OKTA_ODM_GROUP* later in this article.
+1. Create a group for ODM administrators. It is referenced as *AZURE_ODM_GROUP* later in this article.
 
     In Menu **Directory** / **Groups**:
-      * Click **Add Group** button
+      * Click **New Group** button
+        * Group Type: Security
         * Name: *odm-admin*
         * Group Description: *ODM Admin group*
+        * Azure AD roles can be assigned to the group: No
+        * Member Ship: Assgned
+        * Click **Create**
+  
 
-    ![Add Group](/images/Okta/AddGroup.png)
+    ![Add Group](/images/zureAd/NewGroup.png)
 
 2. Create at least one user that belongs to this new group.
 
-    In Menu **Directory** / **People**:
-      * Click **Add Person** button
+    In Menu **Directory** / **Users**:
+      * Click **New User** button
         * User type: *User*
         * First name: ``<YourFirstName>``
         * Last name: ``<YourLastName>``
         * Username: ``<YourEmailAddress>``
         * Primary email: ``<YourEmailAddress>``
         * Groups (optional): ***odm-admin***
-        * Click **Save**
+        * Click **Create**
 
     ![Add Person](/images/Okta/add_person.png)
 
