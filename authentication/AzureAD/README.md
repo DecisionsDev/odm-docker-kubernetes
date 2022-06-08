@@ -102,7 +102,7 @@ After activating your account by email, you should have access to your Aure AD i
         * Click **Create**
   
 
-    ![Add Group](/images/AzureAd/NewGroup.png)
+    ![Add Group](/images/AzureAD/NewGroup.png)
 
 2. Create at least one user that belongs to this new group.
 
@@ -117,7 +117,7 @@ After activating your account by email, you should have access to your Aure AD i
         * Groups (optional): ***odm-admin***
         * Click **Create**
 
-    ![New User](/images/AzureAd/NewUser.png)
+    ![New User](/images/AzureAD/NewUser.png)
 
     Repeat this step for each user you want to add.
 
@@ -130,7 +130,7 @@ After activating your account by email, you should have access to your Aure AD i
        * Who can use this application : 	Accounts in this organizational directory only (ibmodmdev only - Single tenant)
        * Click **Register** 
 
-    ![New Web Application](/images/AzureAd/RegisterApp.png)
+    ![New Web Application](/images/AzureAD/RegisterApp.png)
 
 2. Generate an OpenID client ID/Secrets
    
@@ -182,7 +182,7 @@ TODO
     - Click Overview 
     - Directory (tenant) ID: **Your Tenant ID**. This will be referenced as ``<YourTenantID>`` in the next steps.
 
-    ![Tenant ID](/images/AzureAd/GetTenantID.png)
+    ![Tenant ID](/images/AzureAD/GetTenantID.png)
 
 2. Create a secret with the Azure AD Server certificate.
 
@@ -293,14 +293,15 @@ TODO
    From the Azure console, in **Directory** / **App Registrations** / **ODM Application**:
     - Click`Redirect URIs link`
 
-    ![Redirect URI](/images/AzureAd/RedirectURL.png)
+    ![Redirect URI](/images/AzureAD/RedirectURL.png)
 
     - Click Add URI Link
       - click **+ Add URI** and add the Decision Center redirect URI you got earlier (`https://<DC_HOST>/decisioncenter/openid/redirect/odm` -- don't forget to replace <DC_HOST> by your actual host name!)
       - Repeat the previous step for all other redirect URIs.
 
       - Click **Save** at the bottom of the page.
-    ![Add URI](/images/AzureAd/AddURI.png)
+    ![Add URI](/images/AzureAD/AddURI.png)
+    
 
 ### Access the ODM services
 
