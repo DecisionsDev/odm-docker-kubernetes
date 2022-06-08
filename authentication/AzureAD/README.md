@@ -6,7 +6,7 @@
   - [ODM OpenID flows](#odm-openid-flows)
   - [Prerequisites](#prerequisites)
     - [Create an Azure AD account](#create-an-azure-ad-account)
-- [Configure an Okta instance for ODM (Part 1)](#configure-an-okta-instance-for-odm-part-1)
+- [Configure an Azure AD instance for ODM (Part 1)](#configure-an-azure-ad-instance-for-odm-part-1)
   - [Log into the Azure AD instance](#log-into-the-azure-ad-instance)
   - [Manage groups and users](#manage-groups-and-users)
   - [Set up an application](#set-up-an-application)
@@ -45,9 +45,9 @@ OpenID Connect is an authentication standard built on top of OAuth 2.0. It adds 
 
 Terminology:
 
-- The **OpenID provider** — The authorization server that issues the ID token. In this case, Okta is the OpenID provider.
+- The **OpenID provider** — The authorization server that issues the ID token. In this case, Azure AD is the OpenID provider.
 - The **end user** — The end user whose information is contained in the ID token.
-- The **relying party** — The client application that requests the ID token from Okta.
+- The **relying party** — The client application that requests the ID token from Azure AD.
 - The **ID token** — The token that is issued by the OpenID provider and contains information about the end user in the form of claims.
 - A **claim** — A piece of information about the end user.
 
@@ -71,13 +71,13 @@ First, install the following software on your machine:
 - [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl)
 - Access to an Operational Decision Manager product
 - A CNCF Kubernetes cluster
-- An admin Okta account
+- An admin Azure AD account
 
 ### Create an Azure AD account
 
 You can sign up for a [free Azure AD developer account](https://azure.microsoft.com/en-us/services/active-directory/) if you don't own an Azure AD account already.
 
-# Configure an Okta instance for ODM (Part 1)
+# Configure an Azure AD instance for ODM (Part 1)
 
 In this section, we explain how to:
 
@@ -194,7 +194,7 @@ TODO
     kubectl create secret generic ms-secret --from-file=tls.crt=microsoft.crt
     ```
 
-3. Generate the ODM configuration file for Okta.
+3. Generate the ODM configuration file for Azure AD.
 
     The [script](generateTemplate.sh) allows you to generate the necessary configuration files.
     You can download the [azuread-odm-script.zip](azuread-odm-script.zip) .zip file to your machine. This .zip file contains the [script](generateTemplate.sh) and the content of the [templates](templates) directory.
@@ -205,16 +205,16 @@ TODO
     ```
 
     Where:
-    - *TENANT_ID* has been obtained from [previous step](#retrieve-okta-server-information)
+    - *TENANT_ID* has been obtained from [previous step](#retrieve-azuread-server-information)
     - Both *CLIENT_ID* and *CLIENT_SECRET* are listed in your ODM Application, section **General** / **Client Credentials**
     - *GROUP_GUID* is the ODM Admin group we created in a [previous step](#manage-group-and-user) (*odm-admin*)
 
     The files are generated into the `output` directory.
 
-4. Create the Okta authentication secret.
+4. Create the Azure AD authentication secret.
 
     ```
-    kubectl create secret generic okta-auth-secret \
+    kubectl create secret generic azuread-auth-secret \
         --from-file=OdmOidcProviders.json=./output/OdmOidcProviders.json \
         --from-file=openIdParameters.properties=./output/openIdParameters.properties \
         --from-file=openIdWebSecurity.xml=./output/openIdWebSecurity.xml \
@@ -247,8 +247,8 @@ TODO
           --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
           --set oidc.enabled=true \
           --set internalDatabase.persistence.enabled=false \
-          --set customization.trustedCertificateList={"okta-secret"} \
-          --set customization.authSecretRef=okta-auth-secret
+          --set customization.trustedCertificateList={"ms-secret"} \
+          --set customization.authSecretRef=azuread-auth-secret
     ```
 
     > Note: On OpenShift, you have to add the following parameters due to security context constraints.
@@ -280,7 +280,7 @@ TODO
     my-odm-release-odm-ds-runtime-route   <DS_RUNTIME_HOST>
     ```
 
-2. Register the redirect URIs into your Okta application.
+2. Register the redirect URIs into your Azure AD application.
 
     The redirect URIs are built the following way:
 
@@ -306,7 +306,7 @@ TODO
 
 Well done!  You can now connect to ODM using the endpoints you got [earlier](#register-the-odm-redirect-url) and log in as an ODM admin with the account you created in [the first step](#manage-group-and-user).
 
->Note:  Logout in ODM components using Okta authentication raises an error for the time being.  This is a known issue.  We recommend to use a private window in your browser to log in, so that logout is done just by closing this window.
+>Note:  Logout in ODM components using Azure AD authentication raises an error for the time being.  This is a known issue.  We recommend to use a private window in your browser to log in, so that logout is done just by closing this window.
 
 ### Set up Rule Designer
 
