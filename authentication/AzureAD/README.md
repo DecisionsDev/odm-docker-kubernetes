@@ -104,7 +104,7 @@ After activating your account by email, you should have access to your Aure AD i
 
     ![Add Group](/images/AzureAD/NewGroup.png)
 
-    In Menu **Directory** / **Groups** take a notes of the Ojbect ID. It will referenced as *GROUP_GUID* later in this tutorial.
+    In Menu **Directory** / **Groups** take a notes of the Ojbect ID. It will referenced as ``GROUP_GUID`` later in this tutorial.
 
     ![GroupID](/images/AzureAD/GroupGUID.png)
 
@@ -136,7 +136,11 @@ After activating your account by email, you should have access to your Aure AD i
 
     ![New Web Application](/images/AzureAD/RegisterApp.png)
 
-2. Generate an OpenID client Secrets
+Take a notes of the Application (client) ID.  It will referenced as ``CLIENT_ID`` later in this tutorial.
+
+    ![New Web Application](/images/AzureAD/ClientID.png)
+
+1. Generate an OpenID client Secrets
    
     In Menu **Directory** / **App Registration**, click **ODM Application**:
     * Click Client credentials : Add a certificate or secret (link)
@@ -145,7 +149,7 @@ After activating your account by email, you should have access to your Aure AD i
       * Click Add
    * Take a notes of the **Value**. This will be referenced as ``CLIENT_SECRET`` in the next steps.
   
-3. Add Claims 
+2. Add Claims 
 
 TODO
 
