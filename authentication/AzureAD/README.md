@@ -130,9 +130,9 @@ After activating your account by email, you should have access to your Aure AD i
 1. Create the *ODM application*.
 
     In Menu **Directory** / **App Registration**, click **New Registration**:
-       * Name: **ODM Application**
-       * Who can use this application : 	Accounts in this organizational directory only (ibmodmdev only - Single tenant)
-       * Click **Register** 
+    * Name: **ODM Application**
+    * Who can use this application : 	Accounts in this organizational directory only (ibmodmdev only - Single tenant)
+    * Click **Register** 
 
     ![New Web Application](/images/AzureAD/RegisterApp.png)
 
