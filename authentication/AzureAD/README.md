@@ -90,7 +90,7 @@ After activating your account by email, you should have access to your Aure AD i
 
 ## Manage groups and users
 
-1. Create a group for ODM administrators. It is referenced as *AZURE_ODM_GROUP* later in this article.
+1. Create a group for ODM administrators.
 
     In Menu **Directory** / **Groups**:
       * Click **New Group** button
@@ -103,6 +103,10 @@ After activating your account by email, you should have access to your Aure AD i
   
 
     ![Add Group](/images/AzureAD/NewGroup.png)
+
+    In Menu **Directory** / **Groups** take a notes of the Ojbect ID. It will referenced as *GROUP_GUID* later in this tutorial.
+
+    ![GroupID](/images/AzureAD/GroupGUID.png)
 
 2. Create at least one user that belongs to this new group.
 
@@ -139,7 +143,7 @@ After activating your account by email, you should have access to your Aure AD i
        * Click +New Client Secret
           * Description: ``For ODM integration``
           * Click Add
-        * Take a notes of the **Value**. This will be referenced as ``<Client Secret>`` in the next steps.
+        * Take a notes of the **Value**. This will be referenced as ``CLIENT_SECRET`` in the next steps.
   
 3. Add Claims 
 
