@@ -136,11 +136,8 @@ After activating your account by email, you should have access to your Aure AD i
 
     ![New Web Application](/images/AzureAD/RegisterApp.png)
 
-Take a notes of the Application (client) ID.  It will referenced as ``CLIENT_ID`` later in this tutorial.
 
-![New Web Application](/images/AzureAD/ClientID.png)
-
-1. Generate an OpenID client Secrets
+2. Generate an OpenID client Secrets
    
     In Menu **Directory** / **App Registration**, click **ODM Application**:
     * Click Client credentials : Add a certificate or secret (link)
@@ -149,10 +146,25 @@ Take a notes of the Application (client) ID.  It will referenced as ``CLIENT_ID`
       * Click Add
    * Take a notes of the **Value**. This will be referenced as ``CLIENT_SECRET`` in the next steps.
   
-2. Add Claims 
+3. Add Claims 
 
-TODO
+    In Menu **Directory** / **App Registration**, click **ODM Application**, click **Token Configuration** :
 
+    * Click +Add optional claim 
+    * Select ID
+    * Check Email
+    * Click Add
+    * Check Turn on the Microsoft Graph email permission 
+    * Click Add
+
+    * Click +Add groups claim
+    * Check Security Groups
+    * Ckick Save
+  
+4. API Permissions
+    In Menu **Directory** / **App Registration**, click **ODM Application**, click **API Permissions**.
+    * Click Grant Admin Consent for <YourOrg>
+  
 # Deploy ODM on a container configured with Azure AD (Part 2)
 
 ## Prepare your environment for the ODM installation
@@ -184,15 +196,9 @@ TODO
 
 ### Create secrets to configure ODM with Azure AD
 
-1. Retrieve Azure AD Server information.
 
-    From the Azure console, in **Directory** / **App Registrations** / **ODM Application**:
-    - Click Overview 
-    - Directory (tenant) ID: **Your Tenant ID**. This will be referenced as ``<YourTenantID>`` in the next steps.
 
-    ![Tenant ID](/images/AzureAD/GetTenantID.png)
-
-2. Create a secret with the Azure AD Server certificate.
+1. Create a secret with the Azure AD Server certificate.
 
     To allow ODM services to access the Azure AD Server, it is mandatory to provide the Azure AD Server certificate.
     You can create the secret as follows:
@@ -201,7 +207,14 @@ TODO
     keytool -printcert -sslserver login.microsoftonline.com -rfc > microsoft.crt
     kubectl create secret generic ms-secret --from-file=tls.crt=microsoft.crt
     ```
+2. Retrieve Tenant and Client informations.
 
+    From the Azure console, in **Directory** / **App Registrations** / **ODM Application**:
+    - Click Overview 
+    - Directory (tenant) ID: **Your Tenant ID**. This will be referenced as `TENANT_ID`` in the next steps.
+    - Application (client) ID: **Client ID**. This will be referenced as `CLIENT_ID`` in the next steps.
+
+    ![Tenant ID](/images/AzureAD/GetTenantID.png)
 3. Generate the ODM configuration file for Azure AD.
 
     The [script](generateTemplate.sh) allows you to generate the necessary configuration files.
@@ -213,8 +226,8 @@ TODO
     ```
 
     Where:
-    - *TENANT_ID* has been obtained from [previous step](#retrieve-azuread-server-information)
-    - Both *CLIENT_ID* and *CLIENT_SECRET* are listed in your ODM Application, section **General** / **Client Credentials**
+    - Both *TENANT_ID* and *CLIENT_ID* has been obtained from [previous step](#retrieve-tenant-and-client-informations)
+    - *CLIENT_SECRET* are listed in your ODM Application, section **General** / **Client Credentials**
     - *GROUP_GUID* is the ODM Admin group we created in a [previous step](#manage-group-and-user) (*odm-admin*)
 
     The files are generated into the `output` directory.
@@ -270,8 +283,6 @@ TODO
 ### Register the ODM redirect URL
 
     
-
-
 1. Get the ODM endpoints.
     You can refer to the [documentation](https://www.ibm.com/docs/en/odm/8.11.0?topic=production-configuring-external-access) to retrieve the ODM endpoints.
     For example, on OpenShift you can get the route names and hosts with:
@@ -299,15 +310,19 @@ TODO
       - Rule Designer redirect URI: `https://127.0.0.1:9081/oidcCallback`
 
    From the Azure console, in **Directory** / **App Registrations** / **ODM Application**:
-    - Click`Redirect URIs link`
+  
+    - Click`Add Redirect URIs link`
+    - Click `Add Platform`
+    - Select `Web`
+    - `Redirect URIs` Add the Decision Center redirect URI you got earlier (`https://<DC_HOST>/decisioncenter/openid/redirect/odm` -- don't forget to replace <DC_HOST> by your actual host name!)
+    - Check Access Token and ID Token 
+    - Click Configure
 
-    ![Redirect URI](/images/AzureAD/RedirectURL.png)
 
     - Click Add URI Link
-      - click **+ Add URI** and add the Decision Center redirect URI you got earlier (`https://<DC_HOST>/decisioncenter/openid/redirect/odm` -- don't forget to replace <DC_HOST> by your actual host name!)
       - Repeat the previous step for all other redirect URIs.
 
-      - Click **Save** at the bottom of the page.
+    - Click **Save** at the bottom of the page.
     ![Add URI](/images/AzureAD/AddURI.png)
     
 
