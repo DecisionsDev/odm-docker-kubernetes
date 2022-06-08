@@ -178,7 +178,7 @@ TODO
 
 1. Retrieve Azure AD Server information.
 
-    From the Azure console, in **Directory** / **Application** / **ODM Application**:
+    From the Azure console, in **Directory** / **App Registrations** / **ODM Application**:
     - Click Overview 
     - Directory (tenant) ID: **Your Tenant ID**. This will be referenced as ``<YourTenantID>`` in the next steps.
 
@@ -197,18 +197,17 @@ TODO
 3. Generate the ODM configuration file for Okta.
 
     The [script](generateTemplate.sh) allows you to generate the necessary configuration files.
-    You can download the [okta-odm-script.zip](okta-odm-script.zip) .zip file to your machine. This .zip file contains the [script](generateTemplate.sh) and the content of the [templates](templates) directory.
+    You can download the [azuread-odm-script.zip](azuread-odm-script.zip) .zip file to your machine. This .zip file contains the [script](generateTemplate.sh) and the content of the [templates](templates) directory.
 
     Generate the files with the following command:
     ```
-    ./generateTemplate.sh -i <OKTA_CLIENT_ID> -x <OKTA_CLIENT_SECRET> -n <OKTA_SERVER_NAME> -g <OKTA_ODM_GROUP> -s <OKTA_API_SCOPE>
+    ./generateTemplate.sh -i <CLIENT_ID> -x <CLIENT_SECRET> -n <TENANT_ID> -g <GROUP_GUID>
     ```
 
     Where:
-    - *OKTA_API_SCOPE* has been defined [above](#configure-the-default-authorization-server)
-    - *OKTA_SERVER_NAME* has been obtained from [previous step](#retrieve-okta-server-information)
-    - Both *OKTA_CLIENT_ID* and *OKTA_CLIENT_SECRET* are listed in your ODM Application, section **General** / **Client Credentials**
-    - *OKTA_ODM_GROUP* is the ODM Admin group we created in a [previous step](#manage-group-and-user) (*odm-admin*)
+    - *TENANT_ID* has been obtained from [previous step](#retrieve-okta-server-information)
+    - Both *CLIENT_ID* and *CLIENT_SECRET* are listed in your ODM Application, section **General** / **Client Credentials**
+    - *GROUP_GUID* is the ODM Admin group we created in a [previous step](#manage-group-and-user) (*odm-admin*)
 
     The files are generated into the `output` directory.
 
@@ -262,6 +261,9 @@ TODO
 
 ### Register the ODM redirect URL
 
+    
+
+
 1. Get the ODM endpoints.
     You can refer to the [documentation](https://www.ibm.com/docs/en/odm/8.11.0?topic=production-configuring-external-access) to retrieve the ODM endpoints.
     For example, on OpenShift you can get the route names and hosts with:
@@ -288,14 +290,17 @@ TODO
       - Decision Server Runtime redirect URI:  `https://<DS_RUNTIME_HOST>/DecisionService/openid/redirect/odm`
       - Rule Designer redirect URI: `https://127.0.0.1:9081/oidcCallback`
 
-    In **Applications** / **Applications**:
-      - Select **ODM Application**.
-      - In the **General** tab, click **Edit** on the **General Settings** section.
-      - In the **LOGIN** section, click **+ Add URI** in the **Sign-in redirect URIs** section and add the Decision Center redirect URI you got earlier (`https://<DC_HOST>/decisioncenter/openid/redirect/odm` -- don't forget to replace <DC_HOST> by your actual host name!)
-      - Repeat the previous step for all other redirect URIs.
-      - Click **Save** at the bottom of the LOGIN section.
+   From the Azure console, in **Directory** / **App Registrations** / **ODM Application**:
+    - Click`Redirect URIs link`
 
-    ![Sign-in redirect URIs](/images/Okta/Sign-in_redirect_URIs.png)
+    ![Redirect URI](/images/AzureAd/RedirectURL.png)
+
+    - Click Add URI Link
+      - click **+ Add URI** and add the Decision Center redirect URI you got earlier (`https://<DC_HOST>/decisioncenter/openid/redirect/odm` -- don't forget to replace <DC_HOST> by your actual host name!)
+      - Repeat the previous step for all other redirect URIs.
+
+      - Click **Save** at the bottom of the page.
+    ![Add URI](/images/AzureAd/AddURI.png)
 
 ### Access the ODM services
 
