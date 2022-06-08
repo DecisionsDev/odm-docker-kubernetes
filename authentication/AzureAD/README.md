@@ -139,11 +139,11 @@ After activating your account by email, you should have access to your Aure AD i
 2. Generate an OpenID client Secrets
    
     In Menu **Directory** / **App Registration**, click **ODM Application**:
-       * Click Client credentials : Add a certificate or secret (link)
-       * Click +New Client Secret
-          * Description: ``For ODM integration``
-          * Click Add
-        * Take a notes of the **Value**. This will be referenced as ``CLIENT_SECRET`` in the next steps.
+    * Click Client credentials : Add a certificate or secret (link)
+    * Click +New Client Secret
+      * Description: ``For ODM integration``
+      * Click Add
+   * Take a notes of the **Value**. This will be referenced as ``CLIENT_SECRET`` in the next steps.
   
 3. Add Claims 
 
