@@ -138,7 +138,7 @@ After activating your account by email, you should have access to your Aure AD i
 
 Take a notes of the Application (client) ID.  It will referenced as ``CLIENT_ID`` later in this tutorial.
 
-    ![New Web Application](/images/AzureAD/ClientID.png)
+![New Web Application](/images/AzureAD/ClientID.png)
 
 1. Generate an OpenID client Secrets
    
