@@ -92,7 +92,7 @@ After activating your account by email, you should have access to your Aure AD i
 
 1. Create a group for ODM administrators.
 
-    In Menu **Directory** / **Groups**:
+    In Menu **Azure Active Directory** / **Groups**:
       * Click **New Group** button
         * Group Type: Security
         * Name: *odm-admin*
@@ -104,13 +104,13 @@ After activating your account by email, you should have access to your Aure AD i
 
     ![Add Group](/images/AzureAD/NewGroup.png)
 
-    In Menu **Directory** / **Groups** take a notes of the Ojbect ID. It will referenced as ``GROUP_GUID`` later in this tutorial.
+    In Menu **Azure Active Directory** / **Groups** take a notes of the Ojbect ID. It will referenced as ``GROUP_GUID`` later in this tutorial.
 
     ![GroupID](/images/AzureAD/GroupGUID.png)
 
 2. Create at least one user that belongs to this new group.
 
-    In Menu **Directory** / **Users**:
+    In Menu **Azure Active Directory** / **Users**:
       * Click **New User** button
         * User name: *myodmuser*@YOURDOMAIN
         * Name: ``myodmuser``
@@ -129,7 +129,7 @@ After activating your account by email, you should have access to your Aure AD i
 
 1. Create the *ODM application*.
 
-    In Menu **Directory** / **App Registration**, click **New Registration**:
+    In Menu **Azure Active Directory** / **App Registration**, click **New Registration**:
     * Name: **ODM Application**
     * Who can use this application : 	Accounts in this organizational directory only (ibmodmdev only - Single tenant)
     * Click **Register** 
@@ -139,7 +139,7 @@ After activating your account by email, you should have access to your Aure AD i
 
 2. Generate an OpenID client Secrets
    
-    In Menu **Directory** / **App Registration**, click **ODM Application**:
+    In Menu **Azure Active Directory** / **App Registration**, click **ODM Application**:
     * Click Client credentials : Add a certificate or secret (link)
     * Click +New Client Secret
       * Description: ``For ODM integration``
@@ -148,7 +148,7 @@ After activating your account by email, you should have access to your Aure AD i
   
 3. Add Claims 
 
-    In Menu **Directory** / **App Registration**, click **ODM Application**, click **Token Configuration** :
+    In Menu **Azure Active Directory** / **App Registration**, click **ODM Application**, click **Token Configuration** :
 
     * Click +Add optional claim 
     * Select ID
@@ -162,7 +162,7 @@ After activating your account by email, you should have access to your Aure AD i
     * Ckick Save
   
 4. API Permissions
-    In Menu **Directory** / **App Registration**, click **ODM Application**, click **API Permissions**.
+    In Menu **Azure Active Directory** / **App Registration**, click **ODM Application**, click **API Permissions**.
     * Click Grant Admin Consent for <YourOrg>
   
 # Deploy ODM on a container configured with Azure AD (Part 2)
@@ -209,7 +209,7 @@ After activating your account by email, you should have access to your Aure AD i
     ```
 2. Retrieve Tenant and Client informations.
 
-    From the Azure console, in **Directory** / **App Registrations** / **ODM Application**:
+    From the Azure console, in **Azure Active Directory** / **App Registrations** / **ODM Application**:
     - Click Overview 
     - Directory (tenant) ID: **Your Tenant ID**. This will be referenced as `TENANT_ID`` in the next steps.
     - Application (client) ID: **Client ID**. This will be referenced as `CLIENT_ID`` in the next steps.
@@ -309,7 +309,7 @@ After activating your account by email, you should have access to your Aure AD i
       - Decision Server Runtime redirect URI:  `https://<DS_RUNTIME_HOST>/DecisionService/openid/redirect/odm`
       - Rule Designer redirect URI: `https://127.0.0.1:9081/oidcCallback`
 
-   From the Azure console, in **Directory** / **App Registrations** / **ODM Application**:
+   From the Azure console, in **Azure Active Directory** / **App Registrations** / **ODM Application**:
   
     - Click`Add Redirect URIs link`
     - Click `Add Platform`
