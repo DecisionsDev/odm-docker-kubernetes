@@ -13,8 +13,9 @@ service:
       kubernetes.io/ingress.class: nginx
       nginx.ingress.kubernetes.io/backend-protocol: https
 
-internalDatabase:
-  populateSampleData: true
-  persistence:
-    enabled: false
-    useDynamicProvisioning: true
+externalDatabase:
+  type: postgres
+  secretCredentials: odm-db-secret
+  port: 5432
+  serverName: <RDS_DB_ENDPOINT>
+  databaseName: <RDS_DATABASE_NAME>
