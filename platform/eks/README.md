@@ -29,7 +29,7 @@ Then, create an [AWS Account](https://aws.amazon.com/getting-started/).
 
 1. [Prepare your environment (40 min)](#1-prepare-your-environment-40-min)
 2. [Prepare your environment for the ODM installation (25 min)](#2-prepare-your-environment-for-the-odm-installation-25-min)
-3. [Create an RDS database (Optional 20 min)](#3-create-an-rds-database-20-min)
+3. [Create an RDS database (20 min)](#3-create-an-rds-database-20-min)
 4. [Manage a  digital certificate (10 min)](#4-manage-a-digital-certificate-10-min)
 5. [Install an ODM release (10 min)](#5-install-an-ibm-operational-decision-manager-release-10-min)
 6. [Access the ODM services](#6-access-the-odm-services)
