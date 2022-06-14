@@ -162,8 +162,16 @@ After activating your account by email, you should have access to your Aure AD i
     * Ckick Save
   
 4. API Permissions
+
     In Menu **Azure Active Directory** / **App Registration**, click **ODM Application**, click **API Permissions**.
     * Click Grant Admin Consent for <YourOrg>
+  
+5. Manifest change
+  
+    In Menu **Azure Active Directory** / **App Registration**, click **ODM Application**, click **Manifest**.
+    
+    As explained in [accessTokenAcceptedVersion attribute explanation](  https://docs.microsoft.com/en-us/azure/active-directory/develop/reference-app-manifest#accesstokenacceptedversion-attribute
+), change the value to 2 and click Save. ODM liberty configuration needs the version 2.  
   
 # Deploy ODM on a container configured with Azure AD (Part 2)
 
