@@ -14,10 +14,9 @@ Options:
 -g : AZUREAD ODM Group ID
 -i : Client ID
 -n : AZUREAD domain (AZUREAD server name)
--s : API scope
 -x : Cient Secret
 
-Usage example: $0 -i AzureADClientId -x AzureADClientSecret -s odmapiusers -n <Application ID (GUID)> -g <GROUP ID (GUID)>"
+Usage example: $0 -i AzureADClientId -x AzureADClientSecret -n <Application ID (GUID)> -g <GROUP ID (GUID)>"
 EOF
 }
 
@@ -26,7 +25,6 @@ while getopts "x:i:n:s:g:h" option; do
         g) AZUREAD_ODM_GROUP_ID=${OPTARG};;
         i) AZUREAD_CLIENT_ID=${OPTARG};;
         n) AZUREAD_SERVER_NAME=${OPTARG};;
-        s) AZUREAD_API_SCOPE=${OPTARG};;
         x) AZUREAD_CLIENT_SECRET=${OPTARG};;
         h) usage; exit 0;;
         *) usage; exit 1;;
@@ -45,10 +43,6 @@ if [[ -z ${AZUREAD_SERVER_NAME} ]]; then
   echo "AZUREAD_SERVER_NAME has to be provided, either as in environment or with -n."
   exit 1
 fi
-if [[ -z ${AZUREAD_API_SCOPE} ]]; then
-  echo "AZUREAD_API_SCOPE has to be provided, either as in environment or with -s."
-  exit 1
-fi
 if [[ -z ${AZUREAD_CLIENT_SECRET} ]]; then
   echo "AZUREAD_CLIENT_SECRET has to be provided, either as in environment or with -x."
   exit 1
@@ -61,7 +55,6 @@ fi
 
 mkdir -p $OUTPUT_DIR && cp $TEMPLATE_DIR/* $OUTPUT_DIR
 echo "Generating files for AZUREAD"
-sed -i.bak 's|AZUREAD_API_SCOPE|'$AZUREAD_API_SCOPE'|g' $OUTPUT_DIR/*
 sed -i.bak 's|AZUREAD_CLIENT_ID|'$AZUREAD_CLIENT_ID'|g' $OUTPUT_DIR/*
 sed -i.bak 's|AZUREAD_CLIENT_SECRET|'$AZUREAD_CLIENT_SECRET'|g' $OUTPUT_DIR/*
 sed -i.bak 's|AZUREAD_ODM_GROUP_ID|'$AZUREAD_ODM_GROUP_ID'|g' $OUTPUT_DIR/*

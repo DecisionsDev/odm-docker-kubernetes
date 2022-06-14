@@ -22,5 +22,11 @@
 <variable name="odm.resMonitors.group1" value="${group1}"/>
 <variable name="odm.resExecutors.group1" value="${group1}"/>
 
+<!-- user mapping to authorize CLIENT_CREDENTIALS using CLIENT_ID -->
+<variable name="user1" value="user:AZUREAD_SERVER_URL/v2.0/AZUREAD_CLIENT_ID"/>
+
+<variable name="odm.rtsAdministrators.user1" value="${user1}"/>
+<variable name="odm.resAdministrators.user1" value="${user1}"/>
+
 
 </server>
