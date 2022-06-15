@@ -252,14 +252,14 @@ After activating your account by email, you should have access to your Aure AD i
 
 ## Install your ODM Helm release
 
-1. Add the public IBM Helm charts repository.
+### 1. Add the public IBM Helm charts repository.
 
     ```
     helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo/entitled
     helm repo update
     ```
 
-2. Check that you can access the ODM chart.
+### 2. Check that you can access the ODM chart.
 
     ```
     helm search repo ibm-odm-prod
@@ -267,24 +267,43 @@ After activating your account by email, you should have access to your Aure AD i
     ibmcharts/ibm-odm-prod	22.1.0       	8.11.0.1   	IBM Operational Decision Manager
     ```
 
-3. Run the `helm install` command.
+### 3. Run the `helm install` command.
 
     You can now install the product. We will use the PostgreSQL internal database and disable the data persistence (`internalDatabase.persistence.enabled=false`) to avoid any platform complexity concerning persistent volume allocation.
 
+#### a. Installation on OpenShift using Routes
+  
+  See [Preparing to install](https://www.ibm.com/docs/en/odm/8.11.0?topic=production-preparing-install-operational-decision-manager) documentation topic for additional information.
+  
     ```
     helm install my-odm-release ibmcharts/ibm-odm-prod \
           --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
           --set oidc.enabled=true \
           --set internalDatabase.persistence.enabled=false \
           --set customization.trustedCertificateList={"ms-secret"} \
-          --set customization.authSecretRef=azuread-auth-secret
+          --set customization.authSecretRef=azuread-auth-secret \
+          --set internalDatabase.runAsUser='' --set customization.runAsUser='' --set service.enableRoute=true
     ```
 
-    > Note: On OpenShift, you have to add the following parameters due to security context constraints.
-    > ```
-    > --set internalDatabase.runAsUser='' --set customization.runAsUser='' --set service.enableRoute=true
-    > ```
-    > See [Preparing to install](https://www.ibm.com/docs/en/odm/8.11.0?topic=production-preparing-install-operational-decision-manager) documentation topic for additional information.
+#### b. Installation using Ingress
+  
+  You can refer to our existing documentation explaining how to install an NGINX Ingress Controller on :
+  - [Microsoft Azure Kubernetes Service](../../platform/azure/README.md#create-a-nginx-ingress-controller)
+  - [Amazon Elastic Kubernetes Service](../../platform/eks/README-NGINX.md)
+  - [Google Kubernetes Engine](../../platform/gcloud/README_NGINX.md)
+  
+  When the NGINX Ingress Controller is ready, you can install the ODM release with:
+  
+    ```
+    helm install my-odm-release ibmcharts/ibm-odm-prod \
+          --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
+          --set oidc.enabled=true \
+          --set internalDatabase.persistence.enabled=false \
+          --set customization.trustedCertificateList={"ms-secret"} \
+          --set customization.authSecretRef=azuread-auth-secret \
+          --set service.ingress.enabled=true \
+          --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"\,"nginx.ingress.kubernetes.io/backend-protocol: HTTPS"\,"nginx.ingress.kubernetes.io/affinity: cookie"}
+    ```
 
 ## Complete post-deployment tasks
 
@@ -306,15 +325,35 @@ After activating your account by email, you should have access to your Aure AD i
     my-odm-release-odm-ds-console-route   <DS_CONSOLE_HOST>
     my-odm-release-odm-ds-runtime-route   <DS_RUNTIME_HOST>
     ```
+   
+    Using an Ingress, the endpoint is the address of the ODM ingress and is the same for all components, you can get it with:
+  
+    ```
+    kubectl get ingress my-odm-release-odm-ingress
+    ```
+  
+   You get the following ingress address:
+    ```
+    NAME                       CLASS    HOSTS   ADDRESS          PORTS   AGE
+    my-odm-release-odm-ingress <none>   *       <INGRESS_ADDRESS>   80      14d
+    ```
 
 2. Register the redirect URIs into your Azure AD application.
 
     The redirect URIs are built the following way:
 
+      Using Routes:
       - Decision Center redirect URI:  `https://<DC_HOST>/decisioncenter/openid/redirect/odm`
       - Decision Runner redirect URI:  `https://<DR_HOST>/DecisionRunner/openid/redirect/odm`
       - Decision Server Console redirect URI:  `https://<DS_CONSOLE_HOST>/res/openid/redirect/odm`
       - Decision Server Runtime redirect URI:  `https://<DS_RUNTIME_HOST>/DecisionService/openid/redirect/odm`
+      - Rule Designer redirect URI: `https://127.0.0.1:9081/oidcCallback`
+  
+      Using Ingress:
+      - Decision Center redirect URI:  `https://<INGRESS_ADDRESS>/decisioncenter/openid/redirect/odm`
+      - Decision Runner redirect URI:  `https://<INGRESS_ADDRESS>/DecisionRunner/openid/redirect/odm`
+      - Decision Server Console redirect URI:  `https://<INGRESS_ADDRESS>/res/openid/redirect/odm`
+      - Decision Server Runtime redirect URI:  `https://<INGRESS_ADDRESS>/DecisionService/openid/redirect/odm`
       - Rule Designer redirect URI: `https://127.0.0.1:9081/oidcCallback`
 
    From the Azure console, in **Azure Active Directory** / **App Registrations** / **ODM Application**:
