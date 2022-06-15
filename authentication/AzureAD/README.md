@@ -19,6 +19,7 @@
     - [Register the ODM redirect URL](#register-the-odm-redirect-url)
     - [Access the ODM services](#access-the-odm-services)
     - [Set up Rule Designer](#set-up-rule-designer)
+    - [Calling the ODM Runtime Service](#calling-the-odm-runtime-service)
 - [License](#license)
 <!-- /TOC -->
 
@@ -432,7 +433,37 @@ To be able to securely connect your Rule Designer to the Decision Server and Dec
 4. Restart Rule Designer.
 
 For more information, refer to the [documentation](https://www.ibm.com/docs/en/odm/8.11.0?topic=designer-importing-security-certificate-in-rule).
+  
+### Calling the ODM Runtime Service
+  
+As explained in the ODM on K8s documentation [Configuring user access with OpenID](https://www.ibm.com/docs/en/odm/8.11.0?topic=access-configuring-user-openid), we advise to use basic authentication for ODM runtime call for performance reason and to avoid issue on token expiration and revokation.
 
+You can realize a basic authentication ODM runtime call this way :
+  
+   ```
+  $ curl -H "Content-Type: application/json" -k --data @payload.json \
+         -H "Authorization: Basic b2RtQWRtaW46b2RtQWRtaW4=" \
+        https://<DS_RUNTIME_HOST>/DecisionService/rest/LoanValidationDS/1.0/loan_validation_with_score_and_grade/1.0
+  ```
+  
+  Where b2RtQWRtaW46b2RtQWRtaW4= is the base64 encoding of the current username:password odmAdmin:odmAdmin
+
+But, if you want to execute a bearer authentication ODM runtime call using the Client Credentials flow, you have to get a bearer access token :
+  
+  ```
+  $ curl -X POST -H "Content-Type: application/x-www-form-urlencoded" \
+      -d 'client_id=<CLIENT_ID>&scope=<CLIENT_ID>%2F.default&client_secret=<CLIENT_SECRET>&grant_type=client_credentials' \
+      'https://login.microsoftonline.com/<TENANT_ID>/oauth2/v2.0/token'
+  ```
+  
+ And use the retrieved access token this way:
+  
+   ```
+  $ curl -H "Content-Type: application/json" -k --data @payload.json \
+         -H "Authorization: Bearer <ACCESS_TOKEN>" \
+         https://<DS_RUNTIME_HOST>/DecisionService/rest/LoanValidationDS/1.0/loan_validation_with_score_and_grade/1.0
+  ```
+  
 # License
 
 [Apache 2.0](/LICENSE)
