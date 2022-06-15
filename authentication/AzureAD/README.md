@@ -307,15 +307,15 @@ After activating your account by email, you should have access to your Aure AD i
   
   See [Preparing to install](https://www.ibm.com/docs/en/odm/8.11.0?topic=production-preparing-install-operational-decision-manager) documentation topic for additional information.
   
-    ```
-    helm install my-odm-release ibmcharts/ibm-odm-prod \
+  ```
+  helm install my-odm-release ibmcharts/ibm-odm-prod \
           --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
           --set oidc.enabled=true \
           --set internalDatabase.persistence.enabled=false \
           --set customization.trustedCertificateList={"ms-secret"} \
           --set customization.authSecretRef=azuread-auth-secret \
           --set internalDatabase.runAsUser='' --set customization.runAsUser='' --set service.enableRoute=true
-    ```
+  ```
 
 #### b. Installation using Ingress
   
@@ -326,8 +326,8 @@ After activating your account by email, you should have access to your Aure AD i
   
   When the NGINX Ingress Controller is ready, you can install the ODM release with:
   
-    ```
-    helm install my-odm-release ibmcharts/ibm-odm-prod \
+  ```
+  helm install my-odm-release ibmcharts/ibm-odm-prod \
           --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
           --set oidc.enabled=true \
           --set internalDatabase.persistence.enabled=false \
@@ -335,7 +335,7 @@ After activating your account by email, you should have access to your Aure AD i
           --set customization.authSecretRef=azuread-auth-secret \
           --set service.ingress.enabled=true \
           --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"\,"nginx.ingress.kubernetes.io/backend-protocol: HTTPS"\,"nginx.ingress.kubernetes.io/affinity: cookie"}
-    ```
+  ```
 
 ## Complete post-deployment tasks
 
