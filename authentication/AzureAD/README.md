@@ -171,7 +171,36 @@ After activating your account by email, you should have access to your Aure AD i
     In Menu **Azure Active Directory** / **App Registration**, click **ODM Application**, click **Manifest**.
     
     As explained in [accessTokenAcceptedVersion attribute explanation](  https://docs.microsoft.com/en-us/azure/active-directory/develop/reference-app-manifest#accesstokenacceptedversion-attribute
-), change the value to 2 and click Save. ODM liberty configuration needs the version 2.  
+), change the value to 2 and click Save.
+  ODM OpenId liberty configuration needs the version 2.0 for the issuerIdentifier. See the [openIdWebSecurity.xml](templates/openIdWebSecurity.xml) file.
+  
+    To check that it has been correctly taken into account, you can request an access token using the Client-Credentials flow :
+  
+    ```
+    $ curl -X POST -H "Content-Type: application/x-www-form-urlencoded" \
+      -d 'client_id=<CLIENT_ID>&scope=<CLIENT_ID>%2F.default&client_secret=<CLIENT_SECRET>&grant_type=client_credentials' \
+      'https://login.microsoftonline.com/<TENANT_ID>/oauth2/v2.0/token'
+    ```
+  
+    Where:
+  
+    - Both *TENANT_ID* and *CLIENT_ID* has been obtained from [step](#retrieve-tenant-and-client-informations)
+    - *CLIENT_SECRET* are listed in your ODM Application, section **General** / **Client Credentials**
+  
+    and introspect it with [https://jwt.ms](https://jwt.ms). You should get :
+    
+    ```
+    {
+    "typ": "JWT",
+    "alg": "RS256",
+    "kid": "jS1Xo1OWDj_52vbwGNgvQO2VzMc"
+    }.{
+    "aud": "<CLIENT_ID",
+    "iss": "https://login.microsoftonline.com/<TENANT_ID>/v2.0",
+    ...
+    "ver": "2.0"
+    }
+    ```
   
 # Deploy ODM on a container configured with Azure AD (Part 2)
 
