@@ -22,15 +22,18 @@
 <variable name="odm.resMonitors.group1" value="${group1}"/>
 <variable name="odm.resExecutors.group1" value="${group1}"/>
 
+<!-- OPTIONAL: The following section concerning mapping and authfilter override is only necessary for the Client Credentials flow
+     that is used for :
+     - DC to RES deployment (requestUrl id="res3") 
+     - Runtime execution Rest-Api call (requestUrl id="ds1"). When set, DecisionService UI is only accessible using Basic authentication. 
+  If basic authentication is used instead, then the following section can be removed -->
+
 <!-- user mapping to authorize CLIENT_CREDENTIALS using CLIENT_ID -->
 <variable name="user1" value="user:AZUREAD_SERVER_URL/v2.0/AZUREAD_CLIENT_ID"/>
 
 <variable name="odm.rtsAdministrators.user1" value="${user1}"/>
 <variable name="odm.resAdministrators.user1" value="${user1}"/>
-<variable name="odm.resExecutors.user1" value="${user1}"/>
-
-<!-- OPTIONAL: Override of OpenId filters to use CLIENT_CREDENTIALS for DC to RES deployment (requestUrl id="res3") 
-     and for Runtime execution call (requestUrl id="ds1"). When set, DecisionService UI is only accessible using Basic authentication. Here using odmAdmin/odmAdmin -->
+<variable name="odm.resExecutors.user1" value="${user1}"/>  
 
 <authFilter id="browserAuthFilter">
         <requestHeader id="allowBasicAuth" matchType="notContain" name="Authorization" value="Basic" />
