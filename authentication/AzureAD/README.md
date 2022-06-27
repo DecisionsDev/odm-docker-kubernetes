@@ -305,7 +305,7 @@ After activating your account by email, you should have access to your Aure AD i
 
 #### a. Installation on OpenShift using Routes
   
-  See [Preparing to install](https://www.ibm.com/docs/en/odm/8.11.0?topic=production-preparing-install-operational-decision-manager) documentation topic for additional information.
+  See the [Preparing to install](https://www.ibm.com/docs/en/odm/8.11.0?topic=production-preparing-install-operational-decision-manager) documentation for additional information.
   
   ```
   helm install my-odm-release ibmcharts/ibm-odm-prod \
@@ -319,7 +319,7 @@ After activating your account by email, you should have access to your Aure AD i
 
 #### b. Installation using Ingress
   
-  You can refer to our existing documentation explaining how to install an NGINX Ingress Controller on :
+  Refer to the following documentation to install an NGINX Ingress Controller on:
   - [Microsoft Azure Kubernetes Service](../../platform/azure/README.md#create-a-nginx-ingress-controller)
   - [Amazon Elastic Kubernetes Service](../../platform/eks/README-NGINX.md)
   - [Google Kubernetes Engine](../../platform/gcloud/README_NGINX.md)
@@ -343,7 +343,7 @@ After activating your account by email, you should have access to your Aure AD i
 
     
 1. Get the ODM endpoints.
-    You can refer to the [documentation](https://www.ibm.com/docs/en/odm/8.11.0?topic=production-configuring-external-access) to retrieve the ODM endpoints.
+    Refer to the [documentation](https://www.ibm.com/docs/en/odm/8.11.0?topic=production-configuring-external-access) to retrieve the endpoints.
     For example, on OpenShift you can get the route names and hosts with:
 
     ```
@@ -358,7 +358,7 @@ After activating your account by email, you should have access to your Aure AD i
     my-odm-release-odm-ds-runtime-route   <DS_RUNTIME_HOST>
     ```
    
-    Using an Ingress, the endpoint is the address of the ODM ingress and is the same for all components, you can get it with:
+    Using an Ingress, the endpoint is the address of the ODM ingress and is the same for all components. You can get it with:
   
     ```
     kubectl get ingress my-odm-release-odm-ingress
