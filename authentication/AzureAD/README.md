@@ -393,13 +393,13 @@ After activating your account by email, you should have access to your Aure AD i
     - Click`Add Redirect URIs link`
     - Click `Add Platform`
     - Select `Web`
-    - `Redirect URIs` Add the Decision Center redirect URI you got earlier (`https://<DC_HOST>/decisioncenter/openid/redirect/odm` -- don't forget to replace <DC_HOST> by your actual host name!)
+    - `Redirect URIs` Add the Decision Center redirect URI that you got earlier (`https://<DC_HOST>/decisioncenter/openid/redirect/odm` -- don't forget to replace <DC_HOST> with your actual host name!)
     - Check Access Token and ID Token 
     - Click Configure
 
 
     - Click Add URI Link
-      - Repeat the previous step for all other redirect URIs.
+      - Repeat the previous steps for all other redirect URIs.
 
     - Click **Save** at the bottom of the page.
     ![Add URI](/images/AzureAD/AddURI.png)
@@ -438,9 +438,9 @@ For more information, refer to the [documentation](https://www.ibm.com/docs/en/o
   
 ### Calling the ODM Runtime Service
   
-As explained in the ODM on K8s documentation [Configuring user access with OpenID](https://www.ibm.com/docs/en/odm/8.11.0?topic=access-configuring-user-openid), we advise to use basic authentication for ODM runtime call for performance reason and to avoid issue on token expiration and revokation.
+As explained in the ODM on Certified Kubernetes documentation [Configuring user access with OpenID](https://www.ibm.com/docs/en/odm/8.11.0?topic=access-configuring-user-openid), we advise to use basic authentication for the ODM runtime call for performance reasons and to avoid the issue of token expiration and revocation.
 
-You can realize a basic authentication ODM runtime call this way :
+You can realize a basic authentication ODM runtime call the following way:
   
    ```
   $ curl -H "Content-Type: application/json" -k --data @payload.json \
@@ -450,7 +450,7 @@ You can realize a basic authentication ODM runtime call this way :
   
   Where b2RtQWRtaW46b2RtQWRtaW4= is the base64 encoding of the current username:password odmAdmin:odmAdmin
 
-But, if you want to execute a bearer authentication ODM runtime call using the Client Credentials flow, you have to get a bearer access token :
+But if you want to execute a bearer authentication ODM runtime call using the Client Credentials flow, you have to get a bearer access token:
   
   ```
   $ curl -X POST -H "Content-Type: application/x-www-form-urlencoded" \
@@ -458,7 +458,7 @@ But, if you want to execute a bearer authentication ODM runtime call using the C
       'https://login.microsoftonline.com/<TENANT_ID>/oauth2/v2.0/token'
   ```
   
- And use the retrieved access token this way:
+ And use the retrieved access token in the following way:
   
    ```
   $ curl -H "Content-Type: application/json" -k --data @payload.json \
