@@ -114,10 +114,10 @@ After activating your account by email, you should have access to your Aure AD i
 2. Create at least one user that belongs to this new group.
 
     In Menu **Azure Active Directory** / **Users**:
-      * Click **New User** button
+      * Click **New User** 
         * User name: *myodmuser*@YOURDOMAIN
         * Name: ``myodmuser``
-        * Name: ``<YourEmailAddress>``
+        * Name??: ``<YourEmailAddress>``
         * First name: ``<YourFirstName>``
         * Last name: ``<YourLastName>``
         * Password: ``My2ODMPassword?``
@@ -134,24 +134,24 @@ After activating your account by email, you should have access to your Aure AD i
 
     In Menu **Azure Active Directory** / **App Registration**, click **New Registration**:
     * Name: **ODM Application**
-    * Who can use this application : 	Accounts in this organizational directory only (ibmodmdev only - Single tenant)
+    * Who can use this application or access this API: 	Accounts in this organizational directory only (ibmodmdev only - Single tenant)
     * Click **Register** 
 
     ![New Web Application](/images/AzureAD/RegisterApp.png)
 
 
-2. Generate an OpenID client Secrets
+2. Generate an OpenID client secret
    
     In Menu **Azure Active Directory** / **App Registration**, click **ODM Application**:
-    * Click Client credentials : Add a certificate or secret (link)
+    * Click Client credentials: Add a certificate or secret (link)
     * Click +New Client Secret
       * Description: ``For ODM integration``
       * Click Add
-   * Take a notes of the **Value**. This will be referenced as ``CLIENT_SECRET`` in the next steps.
+   * Take a note of the **Value**. It will be referenced as ``CLIENT_SECRET`` in the next steps.
   
 3. Add Claims 
 
-    In Menu **Azure Active Directory** / **App Registration**, click **ODM Application**, click **Token Configuration** :
+    In Menu **Azure Active Directory** / **App Registration**, click **ODM Application**, click **Token Configuration**:
 
     * Click +Add optional claim 
     * Select ID
@@ -162,7 +162,7 @@ After activating your account by email, you should have access to your Aure AD i
 
     * Click +Add groups claim
     * Check Security Groups
-    * Ckick Save
+    * Click Save
   
 4. API Permissions
 
@@ -175,9 +175,9 @@ After activating your account by email, you should have access to your Aure AD i
     
     As explained in [accessTokenAcceptedVersion attribute explanation](  https://docs.microsoft.com/en-us/azure/active-directory/develop/reference-app-manifest#accesstokenacceptedversion-attribute
 ), change the value to 2 and click Save.
-  ODM OpenId liberty configuration needs the version 2.0 for the issuerIdentifier. See the [openIdWebSecurity.xml](templates/openIdWebSecurity.xml) file.
+  ODM OpenID Liberty configuration needs version 2.0 for the issuerIdentifier. See the [openIdWebSecurity.xml](templates/openIdWebSecurity.xml) file.
   
-    To check that it has been correctly taken into account, you can request an access token using the Client-Credentials flow :
+    To check that it has been correctly taken into account, you can request an access token using the Client-Credentials flow:
   
     ```
     $ curl -X POST -H "Content-Type: application/x-www-form-urlencoded" \
@@ -187,10 +187,10 @@ After activating your account by email, you should have access to your Aure AD i
   
     Where:
   
-    - Both *TENANT_ID* and *CLIENT_ID* has been obtained from [step](#retrieve-tenant-and-client-informations)
-    - *CLIENT_SECRET* are listed in your ODM Application, section **General** / **Client Credentials**
+    - *TENANT_ID* and *CLIENT_ID* have been obtained from [step](#retrieve-tenant-and-client-informations)
+    - *CLIENT_SECRET* is listed in your ODM Application, section **General** / **Client Credentials**
   
-    and introspect it with [https://jwt.ms](https://jwt.ms). You should get :
+    and introspect it?? with [https://jwt.ms](https://jwt.ms). You should get:
     
     ```
     {
