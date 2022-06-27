@@ -33,7 +33,7 @@ Azure Active Directory ([Azure AD](https://azure.microsoft.com/en-us/services/ac
 
 ## About this task
 
-You need to create a number of secrets before you can install an ODM instance with an external OIDC provider such as the Azure AD service and use web application single sign-on (SSO). The following diagram shows the ODM services with an external OIDC provider after a successful installation.
+You need to create a number of secrets before you can install an ODM instance with an external OIDC provider such as the Azure AD service and use web application single sign-on (SSO). The following diagram (missing??) shows the ODM services with an external OIDC provider after a successful installation.
 
 The following procedure describes how to manually configure ODM with an Azure AD service.
 
