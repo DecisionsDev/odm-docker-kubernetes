@@ -72,13 +72,13 @@ First, install the following software on your machine:
 
 - [Helm v3](https://helm.sh/docs/intro/install/)
 - [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl)
-- Access to an Operational Decision Manager product
-- A CNCF Kubernetes cluster
+- Access to an Operational Decision Manager product (on the user's machine??)
+- A CNCF Kubernetes cluster (on the user's machine??)
 - An admin Azure AD account
 
 ### Create an Azure AD account
 
-You can sign up for a [free Azure AD developer account](https://azure.microsoft.com/en-us/services/active-directory/) if you don't own an Azure AD account already.
+If you do not own an Azure AD account, you can sign up for a [free Azure AD developer account](https://azure.microsoft.com/en-us/services/active-directory/) 
 
 # Configure an Azure AD instance for ODM (Part 1)
 
