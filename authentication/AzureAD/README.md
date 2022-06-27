@@ -211,9 +211,9 @@ After activating your account by email, you should have access to your Aure AD i
 
 ### Create a secret to use the Entitled Registry
 
-1. Log in to [MyIBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary) with the IBMid and password that are associated with the entitled software to get your entitlement key.
+1. To get your entitlement key, log in to [MyIBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary) with the IBMid and password that are associated with the entitled software .
 
-    In the **Container software library** tile, verify your entitlement on the **View library** page, and then go to **Get entitlement** key to retrieve the key.
+    In the **Container software library** tile, verify your entitlement on the **View library** page, and then go to **Get entitlement key**  to retrieve the key.
 
 2. Create a pull secret by running a `kubectl create secret` command.
 
@@ -232,7 +232,7 @@ After activating your account by email, you should have access to your Aure AD i
 
     > Note: The **cp.icr.io** value for the docker-server parameter is the only registry domain name that contains the images. You must set the *docker-username* to **cp** to use an entitlement key as *docker-password*.
 
-3. Make a note of the secret name so that you can set it for the **image.pullSecrets** parameter when you run a helm install of your containers. The image.repository parameter is later set to *cp.icr.io/cp/cp4a/odm*.
+3. Make a note of the secret name so that you can set it for the **image.pullSecrets** parameter when you run a helm install of your containers. The **image.repository** parameter is later set to *cp.icr.io/cp/cp4a/odm*.
 
 ### Create secrets to configure ODM with Azure AD
 
@@ -247,18 +247,18 @@ After activating your account by email, you should have access to your Aure AD i
     keytool -printcert -sslserver login.microsoftonline.com -rfc > microsoft.crt
     kubectl create secret generic ms-secret --from-file=tls.crt=microsoft.crt
     ```
-2. Retrieve Tenant and Client informations.
+2. Retrieve Tenant and Client information.
 
     From the Azure console, in **Azure Active Directory** / **App Registrations** / **ODM Application**:
     - Click Overview 
-    - Directory (tenant) ID: **Your Tenant ID**. This will be referenced as `TENANT_ID`` in the next steps.
-    - Application (client) ID: **Client ID**. This will be referenced as `CLIENT_ID`` in the next steps.
+    - Directory (tenant) ID: **Your Tenant ID**. It will be referenced as `TENANT_ID` in the next steps.
+    - Application (client) ID: **Client ID**. It will be referenced as `CLIENT_ID` in the next steps.
 
     ![Tenant ID](/images/AzureAD/GetTenantID.png)
 3. Generate the ODM configuration file for Azure AD.
 
     The [script](generateTemplate.sh) allows you to generate the necessary configuration files.
-    You can download the [azuread-odm-script.zip](azuread-odm-script.zip) .zip file to your machine. This .zip file contains the [script](generateTemplate.sh) and the content of the [templates](templates) directory.
+    Download the [azuread-odm-script.zip](azuread-odm-script.zip) file to your machine. This .zip file contains the [script](generateTemplate.sh) and the content of the [templates](templates) directory.
 
     Generate the files with the following command:
     ```
@@ -266,9 +266,9 @@ After activating your account by email, you should have access to your Aure AD i
     ```
 
     Where:
-    - Both *TENANT_ID* and *CLIENT_ID* has been obtained from [previous step](#retrieve-tenant-and-client-informations)
-    - *CLIENT_SECRET* are listed in your ODM Application, section **General** / **Client Credentials**
-    - *GROUP_GUID* is the ODM Admin group we created in a [previous step](#manage-group-and-user) (*odm-admin*)
+    - *TENANT_ID* and *CLIENT_ID* have been obtained from [previous step](#retrieve-tenant-and-client-information)
+    - *CLIENT_SECRET* is listed in your ODM Application, section **General** / **Client Credentials**
+    - *GROUP_GUID* is the ODM Admin group created in a [previous step](#manage-group-and-user) (*odm-admin*)
 
     The files are generated into the `output` directory.
 
