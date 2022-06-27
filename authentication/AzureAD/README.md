@@ -96,18 +96,18 @@ After activating your account by email, you should have access to your Aure AD i
 1. Create a group for ODM administrators.
 
     In Menu **Azure Active Directory** / **Groups**:
-      * Click **New Group** button
-        * Group Type: Security
-        * Name: *odm-admin*
-        * Group Description: *ODM Admin group*
+      * Click **New Group** 
+        * Group type: Security
+        * Group name: *odm-admin*
+        * Group description: *ODM Admin group*
         * Azure AD roles can be assigned to the group: No
-        * Member Ship: Assgned
+        * Membership type: Assigned
         * Click **Create**
   
 
     ![Add Group](/images/AzureAD/NewGroup.png)
 
-    In Menu **Azure Active Directory** / **Groups** take a notes of the Ojbect ID. It will referenced as ``GROUP_GUID`` later in this tutorial.
+    In Menu **Azure Active Directory** / **Groups** take a note of the Object ID. It will be referenced as ``GROUP_GUID`` later in this tutorial.
 
     ![GroupID](/images/AzureAD/GroupGUID.png)
 
