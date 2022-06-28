@@ -1,7 +1,7 @@
 <!-- TOC titleSize:2 tabSpaces:2 depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 skip:0 title:1 charForUnorderedList:- -->
 ## Table of Contents
 - [Introduction](#introduction)
-  - [What is Azure AD?](#what-is-azure-ad?-)
+  - [What is Azure AD?](#what-is-azure-ad)
   - [About this task](#about-this-task)
   - [ODM OpenID flows](#odm-openid-flows)
   - [Prerequisites](#prerequisites)
