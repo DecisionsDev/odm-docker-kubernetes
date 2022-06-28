@@ -274,7 +274,7 @@ After activating your account by email, you should have access to your Aure AD i
   
     Where:
   
-    - *TENANT_ID* and *CLIENT_ID* have been obtained from [step](#retrieve-tenant-and-client-informations)(broken link??)
+    - *TENANT_ID* and *CLIENT_ID* have been obtained from 'Retrieve Tenant and Client information' section.
     - *CLIENT_SECRET* is listed in your ODM Application, section **General** / **Client Credentials**
   
     and introspect this token with this online tool [https://jwt.ms](https://jwt.ms). You should get:
