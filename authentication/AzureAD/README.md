@@ -301,7 +301,7 @@ After activating your account by email, you should have access to your Aure AD i
     helm repo update
     ```
 
-### 2. Check that you can access the ODM chart.
+### 2. Check that you can access the ODM chart
 
     ```
     helm search repo ibm-odm-prod
@@ -309,7 +309,7 @@ After activating your account by email, you should have access to your Aure AD i
     ibmcharts/ibm-odm-prod	22.1.0       	8.11.0.1   	IBM Operational Decision Manager
     ```
 
-### 3. Run the `helm install` command.
+### 3. Run the `helm install` command
 
     You can now install the product. We will use the PostgreSQL internal database and disable the data persistence (`internalDatabase.persistence.enabled=false`) to avoid any platform complexity concerning persistent volume allocation.
 
