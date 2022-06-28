@@ -183,33 +183,6 @@ After activating your account by email, you should have access to your Aure AD i
 ), change the value to 2 and click Save.
   ODM OpenID Liberty configuration needs version 2.0 for the issuerIdentifier. See the [openIdWebSecurity.xml](templates/openIdWebSecurity.xml) file.
   
-    To check that it has been correctly taken into account, you can request an access token using the Client-Credentials flow:
-  
-    ```
-    $ curl -X POST -H "Content-Type: application/x-www-form-urlencoded" \
-      -d 'client_id=<CLIENT_ID>&scope=<CLIENT_ID>%2F.default&client_secret=<CLIENT_SECRET>&grant_type=client_credentials' \
-      'https://login.microsoftonline.com/<TENANT_ID>/oauth2/v2.0/token'
-    ```
-  
-    Where:
-  
-    - *TENANT_ID* and *CLIENT_ID* have been obtained from [step](#retrieve-tenant-and-client-informations)(broken link??)
-    - *CLIENT_SECRET* is listed in your ODM Application, section **General** / **Client Credentials**
-  
-    and introspect this token with this online tool [https://jwt.ms](https://jwt.ms). You should get:
-    
-    ```
-    {
-    "typ": "JWT",
-    "alg": "RS256",
-    "kid": "jS1Xo1OWDj_52vbwGNgvQO2VzMc"
-    }.{
-    "aud": "<CLIENT_ID",
-    "iss": "https://login.microsoftonline.com/<TENANT_ID>/v2.0",
-    ...
-    "ver": "2.0"
-    }
-    ```
   
 # Deploy ODM on a container configured with Azure AD (Part 2)
 
@@ -288,6 +261,35 @@ After activating your account by email, you should have access to your Aure AD i
         --from-file=webSecurity.xml=./output/webSecurity.xml
     ```
 
+5. Check the Token format
+   To check that it has been correctly taken into account, you can request an access token using the Client-Credentials flow:
+  
+    ```
+    $ curl -X POST -H "Content-Type: application/x-www-form-urlencoded" \
+      -d 'client_id=<CLIENT_ID>&scope=<CLIENT_ID>%2F.default&client_secret=<CLIENT_SECRET>&grant_type=client_credentials' \
+      'https://login.microsoftonline.com/<TENANT_ID>/oauth2/v2.0/token'
+    ```
+  
+    Where:
+  
+    - *TENANT_ID* and *CLIENT_ID* have been obtained from [step](#retrieve-tenant-and-client-informations)(broken link??)
+    - *CLIENT_SECRET* is listed in your ODM Application, section **General** / **Client Credentials**
+  
+    and introspect this token with this online tool [https://jwt.ms](https://jwt.ms). You should get:
+    
+    ```
+    {
+    "typ": "JWT",
+    "alg": "RS256",
+    "kid": "jS1Xo1OWDj_52vbwGNgvQO2VzMc"
+    }.{
+    "aud": "<CLIENT_ID",
+    "iss": "https://login.microsoftonline.com/<TENANT_ID>/v2.0",
+    ...
+    "ver": "2.0"
+    }
+    ```
+  
 ## Install your ODM Helm release
 
 ### 1. Add the public IBM Helm charts repository.
