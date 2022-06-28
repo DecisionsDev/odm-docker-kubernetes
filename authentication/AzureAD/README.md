@@ -75,12 +75,12 @@ The Microsoft identity platform supports the OAuth 2.0 Resource Owner Password C
 
 ## Prerequisites
 
-First, install the following software on your machine:
+You need the following elements:
 
 - [Helm v3](https://helm.sh/docs/intro/install/)
 - [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl)
 - Access to an Operational Decision Manager product 
-- A CNCF Kubernetes cluster 
+- Access to a CNCF Kubernetes cluster 
 - An admin Azure AD account
 
 ### Create an Azure AD account
