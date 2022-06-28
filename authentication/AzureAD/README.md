@@ -15,6 +15,11 @@
     - [Create a secret to use the Entitled Registry](#create-a-secret-to-use-the-entitled-registry)
     - [Create secrets to configure ODM with Azure AD](#create-secrets-to-configure-odm-with-azure-ad)
   - [Install your ODM Helm release](#install-your-odm-helm-release)
+    - [1. Add the public IBM Helm charts repository.](#1-add-the-public-ibm-helm-charts-repository)
+    - [2. Check that you can access the ODM chart.](#2-check-that-you-can-access-the-odm-chart)
+    - [3. Run the `helm install` command.](#3-run-the-helm-install-command)
+      - [a. Installation on OpenShift using Routes](#a-installation-on-openshift-using-routes)
+      - [b. Installation using Ingress](#b-installation-using-ingress)
   - [Complete post-deployment tasks](#complete-post-deployment-tasks)
     - [Register the ODM redirect URL](#register-the-odm-redirect-url)
     - [Access the ODM services](#access-the-odm-services)
@@ -31,9 +36,12 @@ In the context of the Operational Decision Manager (ODM) on Certified Kubernetes
 
 Azure Active Directory ([Azure AD](https://azure.microsoft.com/en-us/services/active-directory/#overview)),  is an enterprise identity service that provides single sign-on, multifactor authentication, and conditional access. This is the service that we use in this article.
 
+
 ## About this task
 
-You need to create a number of secrets before you can install an ODM instance with an external OIDC provider such as the Azure AD service and use web application single sign-on (SSO). The following diagram (missing??) shows the ODM services with an external OIDC provider after a successful installation.
+You need to create a number of secrets before you can install an ODM instance with an external OIDC provider such as the Azure AD service and use web application single sign-on (SSO). The following diagram shows the ODM services with an external OIDC provider after a successful installation.
+
+![ODM web application SSO](/images/AzureAD/diag_azuread_interaction.jpg)
 
 The following procedure describes how to manually configure ODM with an Azure AD service.
 
@@ -51,7 +59,6 @@ Terminology:
 
 The Authorization Code flow is best used by server-side apps where the source code is not publicly exposed. The apps must be server-side because the request that exchanges the authorization code for a token requires a client secret, which has to be stored in your client. However, the server-side app requires an end user because it relies on interactions with the end user's web browser, which redirects the user and then receives the authorization code.
 
-Auth Code flow width??:
 
 ![Authentication flow](/images/AzureAD/AuthenticationFlow.png) (© Microsoft) 
 
@@ -72,8 +79,8 @@ First, install the following software on your machine:
 
 - [Helm v3](https://helm.sh/docs/intro/install/)
 - [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl)
-- Access to an Operational Decision Manager product (on the user's machine??)
-- A CNCF Kubernetes cluster (on the user's machine??)
+- Access to an Operational Decision Manager product 
+- A CNCF Kubernetes cluster 
 - An admin Azure AD account
 
 ### Create an Azure AD account
@@ -117,7 +124,6 @@ After activating your account by email, you should have access to your Aure AD i
       * Click **New User** 
         * User name: *myodmuser*@YOURDOMAIN
         * Name: ``myodmuser``
-        * Name??: ``<YourEmailAddress>``
         * First name: ``<YourFirstName>``
         * Last name: ``<YourLastName>``
         * Password: ``My2ODMPassword?``
@@ -190,7 +196,7 @@ After activating your account by email, you should have access to your Aure AD i
     - *TENANT_ID* and *CLIENT_ID* have been obtained from [step](#retrieve-tenant-and-client-informations)(broken link??)
     - *CLIENT_SECRET* is listed in your ODM Application, section **General** / **Client Credentials**
   
-    and introspect it(what??) with [https://jwt.ms](https://jwt.ms). You should get:
+    and introspect this token with this online tool [https://jwt.ms](https://jwt.ms). You should get:
     
     ```
     {
