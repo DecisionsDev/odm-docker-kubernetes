@@ -294,7 +294,7 @@ After activating your account by email, you should have access to your Aure AD i
   
 ## Install your ODM Helm release
 
-### 1. Add the public IBM Helm charts repository.
+### 1. Add the public IBM Helm charts repository
 
     ```
     helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo/entitled
