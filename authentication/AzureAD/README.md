@@ -262,6 +262,8 @@ After activating your account by email, you should have access to your Aure AD i
     ```
 
 5. Check the Token format
+  
+  
    To check that it has been correctly taken into account, you can request an access token using the Client-Credentials flow:
   
     ```
