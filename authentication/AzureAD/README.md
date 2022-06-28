@@ -1,7 +1,7 @@
 <!-- TOC titleSize:2 tabSpaces:2 depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 skip:0 title:1 charForUnorderedList:- -->
 ## Table of Contents
 - [Introduction](#introduction)
-  - [What is Azure AD ?](#what-is-azure-ad-)
+  - [What is Azure AD?](#what-is-azure-ad-)
   - [About this task](#about-this-task)
   - [ODM OpenID flows](#odm-openid-flows)
   - [Prerequisites](#prerequisites)
@@ -15,9 +15,9 @@
     - [Create a secret to use the Entitled Registry](#create-a-secret-to-use-the-entitled-registry)
     - [Create secrets to configure ODM with Azure AD](#create-secrets-to-configure-odm-with-azure-ad)
   - [Install your ODM Helm release](#install-your-odm-helm-release)
-    - [1. Add the public IBM Helm charts repository.](#1-add-the-public-ibm-helm-charts-repository)
-    - [2. Check that you can access the ODM chart.](#2-check-that-you-can-access-the-odm-chart)
-    - [3. Run the `helm install` command.](#3-run-the-helm-install-command)
+    - [1. Add the public IBM Helm charts repository](#1-add-the-public-ibm-helm-charts-repository)
+    - [2. Check that you can access the ODM chart](#2-check-that-you-can-access-the-odm-chart)
+    - [3. Run the `helm install` command](#3-run-the-helm-install-command)
       - [a. Installation on OpenShift using Routes](#a-installation-on-openshift-using-routes)
       - [b. Installation using Ingress](#b-installation-using-ingress)
   - [Complete post-deployment tasks](#complete-post-deployment-tasks)
@@ -32,7 +32,7 @@
 
 In the context of the Operational Decision Manager (ODM) on Certified Kubernetes offering, ODM for production can be configured with an external OpenID Connect server (OIDC provider) such as the Azure AD cloud service.
 
-## What is Azure AD ?
+## What is Azure AD?
 
 Azure Active Directory ([Azure AD](https://azure.microsoft.com/en-us/services/active-directory/#overview)),  is an enterprise identity service that provides single sign-on, multifactor authentication, and conditional access. This is the service that we use in this article.
 
@@ -217,7 +217,7 @@ After activating your account by email, you should have access to your Aure AD i
 
 
 
-1. Create a secret with the Azure AD Server certificate.
+1. Create a secret with the Azure AD Server certificate
 
     To allow ODM services to access the Azure AD Server, it is mandatory to provide the Azure AD Server certificate.
     You can create the secret as follows:
@@ -226,7 +226,7 @@ After activating your account by email, you should have access to your Aure AD i
     keytool -printcert -sslserver login.microsoftonline.com -rfc > microsoft.crt
     kubectl create secret generic ms-secret --from-file=tls.crt=microsoft.crt
     ```
-2. Retrieve Tenant and Client information.
+2. Retrieve Tenant and Client information
 
     From the Azure console, in **Azure Active Directory** / **App Registrations** / **ODM Application**:
     - Click Overview 
@@ -234,7 +234,7 @@ After activating your account by email, you should have access to your Aure AD i
     - Application (client) ID: **Client ID**. It will be referenced as `CLIENT_ID` in the next steps.
 
     ![Tenant ID](/images/AzureAD/GetTenantID.png)
-3. Generate the ODM configuration file for Azure AD.
+3. Generate the ODM configuration file for Azure AD
 
     The [script](generateTemplate.sh) allows you to generate the necessary configuration files.
     Download the [azuread-odm-script.zip](azuread-odm-script.zip) file to your machine. This .zip file contains the [script](generateTemplate.sh) and the content of the [templates](templates) directory.
@@ -251,7 +251,7 @@ After activating your account by email, you should have access to your Aure AD i
 
     The files are generated into the `output` directory.
 
-4. Create the Azure AD authentication secret.
+4. Create the Azure AD authentication secret
 
     ```
     kubectl create secret generic azuread-auth-secret \
