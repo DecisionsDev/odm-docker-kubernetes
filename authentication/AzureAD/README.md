@@ -249,7 +249,16 @@ After activating your account by email, you should have access to your Aure AD i
     - *CLIENT_SECRET* is listed in your ODM Application, section **General** / **Client Credentials**
     - *GROUP_GUID* is the ODM Admin group created in a [previous step](#manage-group-and-user) (*odm-admin*)
 
-    The files are generated into the `output` directory.
+    The following 4 files are generated into the `output` directory :
+    
+    - webSecurity.xml is containing the mapping between liberty J2EE ODM roles and Azure AD groups and users :
+      * All ODM roles are given to the GROUP_GUID group
+      * rtsAdministrators/resAdministrators/resExecutors ODM roles are given to the CLIENT_ID (which is seen as a user) to manage the client-credentials flow  
+    - openIdWebSecurity.xml is containing 2 openIdConnectClient liberty configuration :
+      * for the web access to Decision Center an Decision Server consoles using userIdentifier="email" with the Authorization Code flow
+      * for the rest-api call using userIdentifier="aud" with the client-credentials flow
+    - openIdParameters.properties is configuring several features like allowed domains, logout and some internal ODM openid features
+    - OdmOidcProviders.json is configuring the client-credentials OpenId provider used by the Decision Center Server configuration to connect Decision Center to the RES Console and Decision Center to the Decision Runner  
 
 4. Create the Azure AD authentication secret
 
