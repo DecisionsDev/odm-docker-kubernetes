@@ -173,7 +173,7 @@ After activating your account by email, you should have access to your Aure AD i
 4. API Permissions
 
     In Menu **Azure Active Directory** / **App Registration**, click **ODM Application**, click **API Permissions**.
-    * Click Grant Admin Consent for <YourOrg>
+    * Click Grant Admin Consent for **YourOrg**
   
 5. Manifest change
   
