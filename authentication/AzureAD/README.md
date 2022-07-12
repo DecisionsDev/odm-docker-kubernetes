@@ -459,7 +459,7 @@ To be able to securely connect your Rule Designer to the Decision Server and Dec
     -Dcom.ibm.rules.authentication.oidcconfig=<ECLIPSEINITDIR>/OdmOidcProvidersRD.json
     ```
     Where:
-    - *changeit* is the fixed password to be used for the default truststore.jks file.
+    - *changeme* is the fixed password to be used for the default truststore.jks file.
     - *ECLIPSEINITDIR* is the Rule Designer installation directory next to the eclipse.ini file.
 
 4. Restart Rule Designer.
