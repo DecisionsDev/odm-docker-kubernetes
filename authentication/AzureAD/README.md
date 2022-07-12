@@ -163,6 +163,12 @@ After activating your account by email, you should have access to your Aure AD i
     * Select ID
     * Check Email
     * Click Add
+    
+    * Click +Add optional claim 
+    * Select Access
+    * Check Email
+    * Click Add
+    
     * Check Turn on the Microsoft Graph email permission 
     * Click Add
 
