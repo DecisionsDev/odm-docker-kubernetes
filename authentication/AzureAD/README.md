@@ -377,7 +377,7 @@ After activating your account by email, you should have access to your Aure AD i
           --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
           --set oidc.enabled=true \
           --set internalDatabase.persistence.enabled=false \
-          --set customization.trustedCertificateList={"ms-secret"} \
+          --set customization.trustedCertificateList={"ms-secret","digicert-secret"} \
           --set customization.authSecretRef=azuread-auth-secret \
           --set service.ingress.enabled=true \
           --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"\,"nginx.ingress.kubernetes.io/backend-protocol: HTTPS"\,"nginx.ingress.kubernetes.io/affinity: cookie"}
