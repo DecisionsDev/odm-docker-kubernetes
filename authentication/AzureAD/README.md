@@ -232,6 +232,16 @@ After activating your account by email, you should have access to your Aure AD i
     keytool -printcert -sslserver login.microsoftonline.com -rfc > microsoft.crt
     kubectl create secret generic ms-secret --from-file=tls.crt=microsoft.crt
     ```
+    
+    Introspecting the Azure AD login.microsoftonline.com certificate. You can see it has been signed by the Digicert Root CA authorithy
+    So, we will also add the www.digicert.com certificate  :
+    
+    ```
+    keytool -printcert -sslserver www.digicert.com -rfc > digicert.crt
+    kubectl create secret generic digicert-secret --from-file=tls.crt=digicert.crt
+    ```
+    
+    
 2. Retrieve Tenant and Client information
 
     From the Azure console, in **Azure Active Directory** / **App Registrations** / **ODM Application**:
@@ -348,7 +358,7 @@ After activating your account by email, you should have access to your Aure AD i
           --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
           --set oidc.enabled=true \
           --set internalDatabase.persistence.enabled=false \
-          --set customization.trustedCertificateList={"ms-secret"} \
+          --set customization.trustedCertificateList={"ms-secret","digicert-secret"} \
           --set customization.authSecretRef=azuread-auth-secret \
           --set internalDatabase.runAsUser='' --set customization.runAsUser='' --set service.enableRoute=true
   ```
@@ -460,6 +470,8 @@ To be able to securely connect your Rule Designer to the Decision Server and Dec
 
 3. Edit your `eclipse.ini` file and add the following lines at the end.
     ```
+    -Dcom.ibm.rules.studio.oidc.synchro.scopes=<TENANT_ID>/.default
+    -Dcom.ibm.rules.studio.oidc.res.scopes=<TENANT_ID>/.default
     -Djavax.net.ssl.trustStore=<ECLIPSEINITDIR>/truststore.jks
     -Djavax.net.ssl.trustStorePassword=changeme
     -Dcom.ibm.rules.authentication.oidcconfig=<ECLIPSEINITDIR>/OdmOidcProvidersRD.json
