@@ -470,8 +470,8 @@ To be able to securely connect your Rule Designer to the Decision Server and Dec
 
 3. Edit your `eclipse.ini` file and add the following lines at the end.
     ```
-    -Dcom.ibm.rules.studio.oidc.synchro.scopes=<TENANT_ID>/.default
-    -Dcom.ibm.rules.studio.oidc.res.scopes=<TENANT_ID>/.default
+    -Dcom.ibm.rules.studio.oidc.synchro.scopes=<CLIENT_ID>/.default
+    -Dcom.ibm.rules.studio.oidc.res.scopes=<CLIENT_ID>/.default
     -Djavax.net.ssl.trustStore=<ECLIPSEINITDIR>/truststore.jks
     -Djavax.net.ssl.trustStorePassword=changeme
     -Dcom.ibm.rules.authentication.oidcconfig=<ECLIPSEINITDIR>/OdmOidcProvidersRD.json
