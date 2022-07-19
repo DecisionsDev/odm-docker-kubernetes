@@ -357,7 +357,6 @@ After activating your account by email, you should have access to your Aure AD i
           --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
           --set oidc.enabled=true \
           --set internalDatabase.persistence.enabled=false \
-          --set internalDatabase.populateSampleData=true \
           --set customization.trustedCertificateList={"ms-secret","digicert-secret"} \
           --set customization.authSecretRef=azuread-auth-secret \
           --set internalDatabase.runAsUser='' --set customization.runAsUser='' --set service.enableRoute=true
@@ -377,7 +376,6 @@ After activating your account by email, you should have access to your Aure AD i
           --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
           --set oidc.enabled=true \
           --set internalDatabase.persistence.enabled=false \
-          --set internalDatabase.populateSampleData=true \
           --set customization.trustedCertificateList={"ms-secret","digicert-secret"} \
           --set customization.authSecretRef=azuread-auth-secret \
           --set service.ingress.enabled=true \
