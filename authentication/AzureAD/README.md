@@ -357,6 +357,7 @@ After activating your account by email, you should have access to your Aure AD i
           --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
           --set oidc.enabled=true \
           --set internalDatabase.persistence.enabled=false \
+          --set internalDatabase.populateSampleData=true \
           --set customization.trustedCertificateList={"ms-secret","digicert-secret"} \
           --set customization.authSecretRef=azuread-auth-secret \
           --set internalDatabase.runAsUser='' --set customization.runAsUser='' --set service.enableRoute=true
@@ -376,6 +377,7 @@ After activating your account by email, you should have access to your Aure AD i
           --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
           --set oidc.enabled=true \
           --set internalDatabase.persistence.enabled=false \
+          --set internalDatabase.populateSampleData=true \
           --set customization.trustedCertificateList={"ms-secret","digicert-secret"} \
           --set customization.authSecretRef=azuread-auth-secret \
           --set service.ingress.enabled=true \
@@ -492,7 +494,7 @@ You can realize a basic authentication ODM runtime call the following way:
    ```
   $ curl -H "Content-Type: application/json" -k --data @payload.json \
          -H "Authorization: Basic b2RtQWRtaW46b2RtQWRtaW4=" \
-        https://<DS_RUNTIME_HOST>/DecisionService/rest/LoanValidationDS/1.0/loan_validation_with_score_and_grade/1.0
+        https://<DS_RUNTIME_HOST>/DecisionService/rest/production_deployment/1.0/loan_validation_production/1.0
   ```
   
   Where b2RtQWRtaW46b2RtQWRtaW4= is the base64 encoding of the current username:password odmAdmin:odmAdmin
@@ -510,7 +512,7 @@ But if you want to execute a bearer authentication ODM runtime call using the Cl
    ```
   $ curl -H "Content-Type: application/json" -k --data @payload.json \
          -H "Authorization: Bearer <ACCESS_TOKEN>" \
-         https://<DS_RUNTIME_HOST>/DecisionService/rest/LoanValidationDS/1.0/loan_validation_with_score_and_grade/1.0
+         https://<DS_RUNTIME_HOST>/DecisionService/rest/production_deployment/1.0/loan_validation_production/1.0
   ```
   
 # License
