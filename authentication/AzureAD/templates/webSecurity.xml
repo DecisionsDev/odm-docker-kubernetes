@@ -6,7 +6,6 @@
       <member name="odmAdmin" />
     </group>
 </basicRegistry>
-<ssl id="odmDefaultSSLConfig" keyStoreRef="odmDefaultKeyStore" trustStoreRef="odmDefaultTrustStore" sslProtocol="TLSv1.2" clientAuthenticationSupported="false" trustDefaultCerts="true" enabledCiphers="TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384 TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256 TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 TLS_RSA_WITH_AES_256_GCM_SHA384 TLS_RSA_WITH_AES_128_GCM_SHA256" />
 <variable name="odm.resAdministrators.group2" value="group:basic/basicAdministrators"/>
 <variable name="odm.resExecutors.group2" value="group:basic/basicAdministrators"/>
 <variable name="odm.rtsAdministrators.group2" value="group:basic/basicAdministrators"/>
