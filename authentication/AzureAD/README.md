@@ -234,10 +234,9 @@ After activating your account by email, you should have access to your Aure AD i
     ```
     
     Introspecting the Azure AD login.microsoftonline.com certificate. You can see it has been signed by the Digicert Root CA authorithy
-    So, we will also add the www.digicert.com certificate  :
+    So, we will also add the [Digicert Root CA certificate](resources/digicert.crt) :
     
     ```
-    keytool -printcert -sslserver www.digicert.com -rfc > digicert.crt
     kubectl create secret generic digicert-secret --from-file=tls.crt=digicert.crt
     ```
     
