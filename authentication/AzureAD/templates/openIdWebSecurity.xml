@@ -1,0 +1,26 @@
+
+<server>
+
+  <variable name="ServerHost" value="AZUREAD_SERVER_URL"/>
+
+  <!-- Open ID Connect -->
+  <!-- Client with inbound propagation set to supported -->
+  <openidConnectClient authFilterRef="browserAuthFilter" id="odm" scope="openid" accessTokenInLtpaCookie="true"
+                       clientId="AZUREAD_CLIENT_ID" clientSecret="AZUREAD_CLIENT_SECRET"
+                       signatureAlgorithm="RS256" inboundPropagation="supported"
+                       jwkEndpointUrl="${ServerHost}/discovery/v2.0/keys"
+                       issuerIdentifier="${ServerHost}/v2.0"
+                       authorizationEndpointUrl="${ServerHost}/oauth2/v2.0/authorize"
+                       tokenEndpointUrl="${ServerHost}/oauth2/v2.0/token"
+                       userIdentifier="email" groupIdentifier="groups" audiences="ALL_AUDIENCES"/>
+
+  <!-- Client with inbound propagation set to required -->
+  <openidConnectClient authFilterRef="apiAuthFilter" id="odmapi" scope="openid"
+                       clientId="AZUREAD_CLIENT_ID" clientSecret="AZUREAD_CLIENT_SECRET"
+                       signatureAlgorithm="RS256" inboundPropagation="required"
+                       jwkEndpointUrl="${ServerHost}/discovery/v2.0/keys"
+                       issuerIdentifier="${ServerHost}/v2.0"
+                       authorizationEndpointUrl="${ServerHost}/oauth2/v2.0/authorize"
+                       tokenEndpointUrl="${ServerHost}/oauth2/v2.0/token"
+                       userIdentifier="aud" groupIdentifier="groups" audiences="ALL_AUDIENCES"/>
+</server>
