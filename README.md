@@ -1,5 +1,5 @@
 # IBM-ODM-Kubernetes
-IBM Operational Decision Manager on Kubernetes
+IBM Operational Decision Manager on Certified Kubernetes
 
 
 [![GitHub release](https://img.shields.io/github/release/ODMDev/odm-docker-kubernetes.svg)](https://github.com/ODMDev/odm-docker-kubernetes/releases)
@@ -14,9 +14,9 @@ IBM Operational Decision Manager on Kubernetes
   </a>
 </p>
 
-##  Deploying IBM Operational Decision Manager on a Kubernetes Cluster
+##  Deploying IBM Operational Decision Manager on a Certified Kubernetes Cluster
 
-This repository centralizes materials to deploy [IBM® Operational Decision Manager](https://www.ibm.com/support/knowledgecenter/SSQP76_8.9.0/welcome/kc_welcome_odmV.html) ODM in Kubernetes. It is deployed in a clustered topology that uses WebSphere® Application Server Liberty on a Kubernetes cluster.
+This repository centralizes materials to deploy [IBM® Operational Decision Manager](https://www.ibm.com/support/knowledgecenter/SSQP76_8.9.0/welcome/kc_welcome_odmV.html) ODM on Certified Kubernetes. It is deployed in a clustered topology that uses WebSphere® Application Server Liberty on a Kubernetes cluster.
 
 ODM is a decisioning platform to automate your business policies. Business rules are used at the heart of the platform to implement decision logic on a business vocabulary and run it as web decision services.
 
