@@ -174,7 +174,7 @@ After activating your account by email, you should have access to your Aure AD i
 
     * Click +Add groups claim
     * Check Security Groups
-    * Click Save
+    * Click Add
   
 4. API Permissions
 
