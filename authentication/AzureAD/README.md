@@ -163,14 +163,17 @@ After activating your account by email, you should have access to your Aure AD i
     * Select ID
     * Check Email
     * Click Add
-    
+
+
     * Click +Add optional claim 
     * Select Access
     * Check Email
     * Click Add
-    
+
+
     * Check Turn on the Microsoft Graph email permission 
     * Click Add
+
 
     * Click +Add groups claim
     * Check Security Groups
@@ -341,7 +344,7 @@ After activating your account by email, you should have access to your Aure AD i
     ```
     helm search repo ibm-odm-prod
     NAME                  	CHART VERSION	APP VERSION	DESCRIPTION                     
-    ibmcharts/ibm-odm-prod	22.1.0       	8.11.0.1   	IBM Operational Decision Manager
+    ibmcharts/ibm-odm-prod	22.2.0       	8.11.1.0   	IBM Operational Decision Manager
     ```
 
 ### 3. Run the `helm install` command
@@ -356,8 +359,9 @@ After activating your account by email, you should have access to your Aure AD i
   helm install my-odm-release ibmcharts/ibm-odm-prod \
           --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
           --set oidc.enabled=true \
+          --set license=accept \
           --set internalDatabase.persistence.enabled=false \
-          --set customization.trustedCertificateList={"ms-secret","digicert-secret"} \
+          --set customization.trustedCertificateList='{ms-secret,digicert-secret}' \
           --set customization.authSecretRef=azuread-auth-secret \
           --set internalDatabase.runAsUser='' --set customization.runAsUser='' --set service.enableRoute=true
   ```
@@ -375,8 +379,9 @@ After activating your account by email, you should have access to your Aure AD i
   helm install my-odm-release ibmcharts/ibm-odm-prod \
           --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
           --set oidc.enabled=true \
+          --set license=true \
           --set internalDatabase.persistence.enabled=false \
-          --set customization.trustedCertificateList={"ms-secret","digicert-secret"} \
+          --set customization.trustedCertificateList='{ms-secret,digicert-secret}' \
           --set customization.authSecretRef=azuread-auth-secret \
           --set service.ingress.enabled=true \
           --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"\,"nginx.ingress.kubernetes.io/backend-protocol: HTTPS"\,"nginx.ingress.kubernetes.io/affinity: cookie"}
