@@ -207,7 +207,11 @@ After activating your account by email, you should have access to your Aure AD i
     
 7. Check the configuration
   
+     Download the [azuread-odm-script.zip](azuread-odm-script.zip) file to your machine and unzip it in your working directory. This .zip file contains scripts and template to verify and setup ODM.
+     
     7.1 Verify the Client Credential Token 
+   
+   
    
      You can request an access token using the Client-Credentials flow to verify the token's format.
      This token is used for the deployment between Decision Cennter and the Decision Server Console: 
@@ -331,9 +335,9 @@ After activating your account by email, you should have access to your Aure AD i
     
 2. Generate the ODM configuration file for Azure AD
 
+   
+    If you have not yet done so, download the [azuread-odm-script.zip](azuread-odm-script.zip) file to your machine. This .zip file contains the [script](generateTemplate.sh) and the content of the [templates](templates) directory. 
     The [script](generateTemplate.sh) allows you to generate the necessary configuration files.
-    Download the [azuread-odm-script.zip](azuread-odm-script.zip) file to your machine. This .zip file contains the [script](generateTemplate.sh) and the content of the [templates](templates) directory.
-
     Generate the files with the following command:
     ```
     ./generateTemplate.sh -i <CLIENT_ID> -x <CLIENT_SECRET> -n <TENANT_ID> -g <GROUP_GUID> [-a <SSO_DOMAIN>]
