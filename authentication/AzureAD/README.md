@@ -196,10 +196,18 @@ After activating your account by email, you should have access to your Aure AD i
 ), change the value to 2 and click Save.
   ODM OpenID Liberty configuration needs version 2.0 for the issuerIdentifier. See the [openIdWebSecurity.xml](templates/openIdWebSecurity.xml) file.
   
+6. Retrieve Tenant and Client information
+
+    From the Azure console, in **Azure Active Directory** / **App Registrations** / **ODM Application**:
+    - Click Overview 
+    - Directory (tenant) ID: **Your Tenant ID**. It will be referenced as `TENANT_ID` in the next steps.
+    - Application (client) ID: **Client ID**. It will be referenced as `CLIENT_ID` in the next steps.
+
+    ![Tenant ID](/images/AzureAD/GetTenantID.png)
+    
+7. Check the configuration
   
-6. Check the configuration
-  
-    6.1 Verify the Client Credential Token 
+    7.1 Verify the Client Credential Token 
    
      You can request an access token using the Client-Credentials flow to verify the token's format.
      This token is used for the deployment between Decision Cennter and the Decision Server Console: 
@@ -231,7 +239,7 @@ After activating your account by email, you should have access to your Aure AD i
     - *aud* : Should be your CLIENT_ID
     - *iss* : Should be end by 2.0. Unless you should verify the previous step **Manifest change**
     
-    6.2 Verify the Client Password Token 
+    7.2 Verify the Client Password Token 
 
 
    To check that it has been correctly taken into account, you can request an access token using the Client password flow.
@@ -321,15 +329,7 @@ After activating your account by email, you should have access to your Aure AD i
     ```
     
     
-2. Retrieve Tenant and Client information
-
-    From the Azure console, in **Azure Active Directory** / **App Registrations** / **ODM Application**:
-    - Click Overview 
-    - Directory (tenant) ID: **Your Tenant ID**. It will be referenced as `TENANT_ID` in the next steps.
-    - Application (client) ID: **Client ID**. It will be referenced as `CLIENT_ID` in the next steps.
-
-    ![Tenant ID](/images/AzureAD/GetTenantID.png)
-3. Generate the ODM configuration file for Azure AD
+2. Generate the ODM configuration file for Azure AD
 
     The [script](generateTemplate.sh) allows you to generate the necessary configuration files.
     Download the [azuread-odm-script.zip](azuread-odm-script.zip) file to your machine. This .zip file contains the [script](generateTemplate.sh) and the content of the [templates](templates) directory.
@@ -356,7 +356,7 @@ After activating your account by email, you should have access to your Aure AD i
     - openIdParameters.properties is configuring several features like allowed domains, logout and some internal ODM openid features
     - OdmOidcProviders.json is configuring the client-credentials OpenId provider used by the Decision Center Server configuration to connect Decision Center to the RES Console and Decision Center to the Decision Runner  
 
-4. Create the Azure AD authentication secret
+3. Create the Azure AD authentication secret
 
     ```
     kubectl create secret generic azuread-auth-secret \
