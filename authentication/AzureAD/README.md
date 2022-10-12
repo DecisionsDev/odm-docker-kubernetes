@@ -193,6 +193,79 @@ After activating your account by email, you should have access to your Aure AD i
   ODM OpenID Liberty configuration needs version 2.0 for the issuerIdentifier. See the [openIdWebSecurity.xml](templates/openIdWebSecurity.xml) file.
   
   
+6. Check the configuration
+  
+    6.1 Verify the Client Credential Token 
+   
+     You can request an access token using the Client-Credentials flow to verify the token's format.
+     This token is used for the deployment between Decision Cennter and the Decision Server Console: 
+     
+    ```shell
+    $ ./get-client-credential-token.sh -i <CLIENT_ID> -x <CLIENT_SECRET> -n <TENANT_ID>
+    ```
+  
+    Where:
+  
+    - *TENANT_ID* and *CLIENT_ID* have been obtained from 'Retrieve Tenant and Client information' section.
+    - *CLIENT_SECRET* is listed in your ODM Application, section **General** / **Client Credentials**
+    
+    You should get a token and by introspecting the value with this online tool [https://jwt.ms](https://jwt.ms). You should get:
+    
+    ```
+    {
+    "typ": "JWT",
+    "alg": "RS256",
+    "kid": "jS1Xo1OWDj_52vbwGNgvQO2VzMc"
+    }.{
+    "aud": "<CLIENT_ID>",
+    "iss": "https://login.microsoftonline.com/<TENANT_ID>/v2.0",
+    ...
+    "ver": "2.0"
+    }
+    ```
+    - *ver* : Should be 2.0. Unless you should verify the previous step **Manifest change**
+    - *aud* : Should be your CLIENT_ID
+    - *iss* : Should be end by 2.0. Unless you should verify the previous step **Manifest change**
+    
+    6.2 Verify the Client Password Token 
+
+
+   To check that it has been correctly taken into account, you can request an access token using the Client password flow.
+   This token is used for the invocation of the ODM components such as the Decision Center, Decision Servcer console and the invocation of the Decision Server Runtime REST API.
+   
+    ```shell
+    $ ./get-client-user-password-token.sh -i <CLIENT_ID> -x <CLIENT_SECRET> -n <TENANT_ID> -u <USERNAME> -p <PASSWORD> 
+    ```
+   
+   Where:
+  
+    - *TENANT_ID* and *CLIENT_ID* have been obtained from 'Retrieve Tenant and Client information' section.
+    - *CLIENT_SECRET* is listed in your ODM Application, section **General** / **Client Credentials**
+    - *USERNAME* *PASSWORD* have been created from 'Create at least one user that belongs to this new group.' section.
+    
+     by introspecting the id_token value with this online tool [https://jwt.ms](https://jwt.ms). You should get:
+     You should get :
+     
+    ```
+    {
+      ..
+      "iss": "https://login.microsoftonline.com/<TENANT_ID>/v2.0",
+     ....
+      "email": "<USERNAME>",
+      "groups": [
+        "<GROUP>"
+      ],
+      ...
+      "ver": "2.0"
+   }
+    ```
+    
+    Verfiy :
+    - *email* : Should be present. Unless you should verify the creation of your user and fill the Email field.
+    - * : Should be present. Unless you should verify the creation of your user and fill the Email field. 
+    - *ver* : Should be 2.0. Unless you should verify the previous step **Manifest change**
+    - *aud* : Should be your CLIENT_ID
+    - *iss* : Should be end by 2.0. Unless you should verify the previous step **Manifest change**
 # Deploy ODM on a container configured with Azure AD (Part 2)
 
 ## Prepare your environment for the ODM installation
@@ -259,13 +332,14 @@ After activating your account by email, you should have access to your Aure AD i
 
     Generate the files with the following command:
     ```
-    ./generateTemplate.sh -i <CLIENT_ID> -x <CLIENT_SECRET> -n <TENANT_ID> -g <GROUP_GUID>
+    ./generateTemplate.sh -i <CLIENT_ID> -x <CLIENT_SECRET> -n <TENANT_ID> -g <GROUP_GUID> [-a <SSO_DOMAIN>]
     ```
 
     Where:
     - *TENANT_ID* and *CLIENT_ID* have been obtained from [previous step](#retrieve-tenant-and-client-information)
     - *CLIENT_SECRET* is listed in your ODM Application, section **General** / **Client Credentials**
     - *GROUP_GUID* is the ODM Admin group created in a [previous step](#manage-group-and-user) (*odm-admin*)
+    - *SSO_DOMAIN* is the domain name of your sso. If your AzureAD is connected to another SSO you should add the SSO domain name in this parameter. If you're user has been declared as explain in step **Create at least one user that belongs to this new group** you can omitt this parameter.
 
     The following 4 files are generated into the `output` directory :
     
@@ -288,48 +362,7 @@ After activating your account by email, you should have access to your Aure AD i
         --from-file=webSecurity.xml=./output/webSecurity.xml
     ```
 
-5. Check the Token format
-  
-  
-   To check that it has been correctly taken into account, you can request an access token using the Client-Credentials flow:
-  
-    ```
-    $ curl -X POST -H "Content-Type: application/x-www-form-urlencoded" \
-      -d 'client_id=<CLIENT_ID>&scope=<CLIENT_ID>%2F.default&client_secret=<CLIENT_SECRET>&grant_type=client_credentials' \
-      'https://login.microsoftonline.com/<TENANT_ID>/oauth2/v2.0/token'
-    ```
-  
-    Where:
-  
-    - *TENANT_ID* and *CLIENT_ID* have been obtained from 'Retrieve Tenant and Client information' section.
-    - *CLIENT_SECRET* is listed in your ODM Application, section **General** / **Client Credentials**
-    
-    You should get :
-    
-    ```
-    {
-    "token_type": "Bearer",
-    "expires_in": 3599,
-    "ext_expires_in": 3599,
-    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IjJaUXBKM1VwYm...n4dJxbZXIvT6MssIh908IxTg"
-    }
-    ```
-    
-    and by introspecting the access_token value with this online tool [https://jwt.ms](https://jwt.ms). You should get:
-    
-    ```
-    {
-    "typ": "JWT",
-    "alg": "RS256",
-    "kid": "jS1Xo1OWDj_52vbwGNgvQO2VzMc"
-    }.{
-    "aud": "<CLIENT_ID",
-    "iss": "https://login.microsoftonline.com/<TENANT_ID>/v2.0",
-    ...
-    "ver": "2.0"
-    }
-    ```
-  
+
 ## Install your ODM Helm release
 
 ### 1. Add the public IBM Helm charts repository
