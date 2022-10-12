@@ -8,7 +8,9 @@
           "introspectionURL": "OKTA_SERVER_URL/oauth2/default/v1/introspect",
           "scope": "OKTA_API_SCOPE",
           "clientId": "OKTA_CLIENT_ID",
-          "clientSecret": "OKTA_CLIENT_SECRET"
+          "clientSecret": "OKTA_CLIENT_SECRET",
+          "logoutURL": "OKTA_SERVER_URL/oauth2/default/v1/logout",
+          "logoutTokenParam": "id_token_hint"
       }
     ]
 }
