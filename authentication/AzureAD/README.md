@@ -129,9 +129,13 @@ After activating your account by email, you should have access to your Aure AD i
         * Password: ``My2ODMPassword?``
         * Groups (optional): ***odm-admin***
         * Click **Create**
-
-    ![New User](/images/AzureAD/NewUser.png)
-
+      ![New User](/images/AzureAD/NewUser.png)
+      
+      * Click the **myodmuser** user previously created
+        * Edit properties
+        * Fill the email field with *myodmuser*@YOURDOMAIN
+    
+    
     Repeat this step for each user you want to add.
 
 ## Set up an application
