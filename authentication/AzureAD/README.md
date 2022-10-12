@@ -159,22 +159,22 @@ After activating your account by email, you should have access to your Aure AD i
 
     In Menu **Azure Active Directory** / **App Registration**, click **ODM Application**, click **Token Configuration**:
 
+  * Add Optional Email ID Claim
     * Click +Add optional claim 
     * Select ID
     * Check Email
     * Click Add
 
-
+  * Add Optional Email Access Claim
     * Click +Add optional claim 
     * Select Access
     * Check Email
     * Click Add
 
-
+  * Turno Microsoft Graph email permission 
     * Check Turn on the Microsoft Graph email permission 
     * Click Add
-
-
+  * Add Group Claim
     * Click +Add groups claim
     * Check Security Groups
     * Click Add
