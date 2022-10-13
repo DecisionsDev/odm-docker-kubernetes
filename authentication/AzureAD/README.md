@@ -375,18 +375,18 @@ After activating your account by email, you should have access to your Aure AD i
 
 ### 1. Add the public IBM Helm charts repository
 
-    ```
-    helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo/entitled
-    helm repo update
-    ```
+  ```shell
+  helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo/entitled
+  helm repo update
+  ```
 
 ### 2. Check that you can access the ODM chart
 
-    ```
-    helm search repo ibm-odm-prod
-    NAME                  	CHART VERSION	APP VERSION	DESCRIPTION                     
-    ibmcharts/ibm-odm-prod	22.2.0       	8.11.1.0   	IBM Operational Decision Manager
-    ```
+  ```shell
+  helm search repo ibm-odm-prod
+  NAME                  	CHART VERSION	APP VERSION	DESCRIPTION                     
+  ibmcharts/ibm-odm-prod	22.2.0       	8.11.1.0   	IBM Operational Decision Manager
+  ```
 
 ### 3. Run the `helm install` command
 
@@ -396,7 +396,7 @@ After activating your account by email, you should have access to your Aure AD i
   
   See the [Preparing to install](https://www.ibm.com/docs/en/odm/8.11.0?topic=production-preparing-install-operational-decision-manager) documentation for additional information.
   
-  ```
+  ```shell
   helm install my-odm-release ibmcharts/ibm-odm-prod \
           --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
           --set oidc.enabled=true \
