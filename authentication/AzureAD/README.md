@@ -135,7 +135,9 @@ After activating your account by email, you should have access to your Aure AD i
         * Edit properties
         * Fill the email field with *myodmuser*@YOURDOMAIN
     
-    
+      * Try to login to the [azure portal](https://portal.azure.com/) with the user.
+       This may require to enable 2FA and/or change the password for the first time. 
+       
     Repeat this step for each user you want to add.
 
 ## Set up an application
@@ -250,7 +252,7 @@ After activating your account by email, you should have access to your Aure AD i
    This token is used for the invocation of the ODM components such as the Decision Center, Decision Servcer console and the invocation of the Decision Server Runtime REST API.
    
     ```shell
-    $ ./get-client-user-password-token.sh -i <CLIENT_ID> -x <CLIENT_SECRET> -n <TENANT_ID> -u <USERNAME> -p <PASSWORD> 
+    $ ./get-user-password-token.sh -i <CLIENT_ID> -x <CLIENT_SECRET> -n <TENANT_ID> -u <USERNAME> -p <PASSWORD> 
     ```
    
    Where:
@@ -282,6 +284,8 @@ After activating your account by email, you should have access to your Aure AD i
     - *ver* : Should be 2.0. Unless you should verify the previous step **Manifest change**
     - *aud* : Should be your CLIENT_ID
     - *iss* : Should be end by 2.0. Unless you should verify the previous step **Manifest change**
+
+  > If this command failed try to login to the [Azure Portal](https://portal.azure.com/). You may require to enable 2FA and/or change the password for the first time. 
 # Deploy ODM on a container configured with Azure AD (Part 2)
 
 ## Prepare your environment for the ODM installation
