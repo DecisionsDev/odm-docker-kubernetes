@@ -98,7 +98,7 @@ In this section, we explain how to:
 
 When, it's done, you should be able to access the Keycloak Admin Console using the following URL with the **admin** username and **admin** password:
 
-    ```shell
+    ```
     KEYCLOAK_URL=https://$(oc get route keycloak --template='{{ .spec.host }}') &&
     echo "" &&
     echo "Keycloak Admin Console:   $KEYCLOAK_URL/admin" &&
@@ -114,21 +114,21 @@ All the following configuration will be done inside this Admin Console.
       * Click **Create group** 
         * Name: *odm-admin*
 
-    ![Add Group](/images/Keycloak/NewGroup.png)
+    ![Create Group](/images/Keycloak/CreateGroup.png)
 
 2. Create at least one user that belongs to this new group.
 
     In Menu **Manage** / **Users**:
       * Click **Add user** 
-        * Email: ``myodmuser``
+        * Email: ``johndoe@mycompany.com``
 	* Email Verified: ON
-        * First name: ``<YourFirstName>``
-        * Last name: ``<YourLastName>``
+        * First name: ``John``
+        * Last name: ``Doe``
         * Enabled: ON
 	* Required user actions: nothing
         * Groups : Click on **Join Groups** , select ***odm-admin*** and click **Join**
         * Click **Create**
-      ![New User](/images/AzureAD/NewUser.png)
+      ![Create User](/images/Keycloak/CreateUser.png)
       
       * In User Details, select the **Credentials** tab 
         * Click on **Set password**
@@ -147,16 +147,21 @@ All the following configuration will be done inside this Admin Console.
     * Client ID: **odm**
     * Name: **ODM Application**
     * Always display in console: On
+
+    ![Create Client](/images/Keycloak/CreateClient1.png)
+    
     * Click **Next**
+    * Client Authentication: On 
+    * Authorization: On
+    * Click *Save*
 
-	* Client Authentication: On 
-	* Authorization: On
-	* Click *Save*
-
-    ![New Web Application](/images/AzureAD/RegisterApp.png)
+    ![Set Client Flow](/images/Keycloak/CreateClient2.png)
 
     * Click on **Credentials** tab
     * Take a note of the **Value**. It will be referenced as ``CLIENT_SECRET`` in the next steps.
+    
+    ![Get Client Secret](/images/Keycloak/GetClientSecret.png)
+
   
 3. Add Group in Claims 
 
