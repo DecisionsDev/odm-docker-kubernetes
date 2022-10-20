@@ -562,7 +562,12 @@ But if you want to execute a bearer authentication ODM runtime call using the Cl
          -H "Authorization: Bearer <ACCESS_TOKEN>" \
          https://<DS_RUNTIME_HOST>/DecisionService/rest/production_deployment/1.0/loan_validation_production/1.0
   ```
-  
+### Getting Started with IBM Operational Decision Manager for Containers
+
+Get hands-on experience with IBM Operational Decision Manager in a container environment by following this [Getting started tutorial](https://github.com/DecisionsDev/odm-for-container-getting-started/blob/master/README.md).
+
+
+
 # License
 
 [Apache 2.0](/LICENSE)
