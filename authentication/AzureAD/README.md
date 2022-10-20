@@ -15,9 +15,9 @@
     - [Create a secret to use the Entitled Registry](#create-a-secret-to-use-the-entitled-registry)
     - [Create secrets to configure ODM with Azure AD](#create-secrets-to-configure-odm-with-azure-ad)
   - [Install your ODM Helm release](#install-your-odm-helm-release)
-    - [1. Add the public IBM Helm charts repository](#1-add-the-public-ibm-helm-charts-repository)
-    - [2. Check that you can access the ODM chart](#2-check-that-you-can-access-the-odm-chart)
-    - [3. Run the `helm install` command](#3-run-the-helm-install-command)
+    - [Add the public IBM Helm charts repository](#add-the-public-ibm-helm-charts-repository)
+    - [Check that you can access the ODM chart](#check-that-you-can-access-the-odm-chart)
+    - [Run the `helm install` command](#run-the-helm-install-command)
       - [a. Installation on OpenShift using Routes](#a-installation-on-openshift-using-routes)
       - [b. Installation using Ingress](#b-installation-using-ingress)
   - [Complete post-deployment tasks](#complete-post-deployment-tasks)
@@ -25,6 +25,7 @@
     - [Access the ODM services](#access-the-odm-services)
     - [Set up Rule Designer](#set-up-rule-designer)
     - [Calling the ODM Runtime Service](#calling-the-odm-runtime-service)
+    - [Getting Started with IBM Operational Decision Manager for Containers](#getting-started-with-ibm-operational-decision-manager-for-containers)
 - [License](#license)
 <!-- /TOC -->
 
@@ -286,6 +287,7 @@ After activating your account by email, you should have access to your Aure AD i
     - *iss* : Should be end by 2.0. Unless you should verify the previous step **Manifest change**
 
   > If this command failed try to login to the [Azure Portal](https://portal.azure.com/). You may require to enable 2FA and/or change the password for the first time. 
+
 # Deploy ODM on a container configured with Azure AD (Part 2)
 
 ## Prepare your environment for the ODM installation
@@ -377,14 +379,14 @@ After activating your account by email, you should have access to your Aure AD i
 
 ## Install your ODM Helm release
 
-### 1. Add the public IBM Helm charts repository
+### Add the public IBM Helm charts repository
 
   ```shell
   helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo/entitled
   helm repo update
   ```
 
-### 2. Check that you can access the ODM chart
+### Check that you can access the ODM chart
 
   ```shell
   helm search repo ibm-odm-prod
@@ -392,7 +394,7 @@ After activating your account by email, you should have access to your Aure AD i
   ibmcharts/ibm-odm-prod	22.2.0       	8.11.1.0   	IBM Operational Decision Manager
   ```
 
-### 3. Run the `helm install` command
+### Run the `helm install` command
 
     You can now install the product. We will use the PostgreSQL internal database and disable the data persistence (`internalDatabase.persistence.enabled=false`) to avoid any platform complexity concerning persistent volume allocation.
 
@@ -562,6 +564,7 @@ But if you want to execute a bearer authentication ODM runtime call using the Cl
          -H "Authorization: Bearer <ACCESS_TOKEN>" \
          https://<DS_RUNTIME_HOST>/DecisionService/rest/production_deployment/1.0/loan_validation_production/1.0
   ```
+
 ### Getting Started with IBM Operational Decision Manager for Containers
 
 Get hands-on experience with IBM Operational Decision Manager in a container environment by following this [Getting started tutorial](https://github.com/DecisionsDev/odm-for-container-getting-started/blob/master/README.md).
