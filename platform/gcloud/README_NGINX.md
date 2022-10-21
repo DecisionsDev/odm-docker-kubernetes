@@ -1,6 +1,7 @@
 # Install an ODM Helm release and expose it with a NGINX Ingress controller (15 min)
 
-This section explains how to expose the ODM services to Internet connectivity with Ingress.
+This section explains how to expose the ODM services to Internet connectivity with a NGINX Ingress controller instead of the standard Google Cloud load balancer.
+
 For reference, see the Google Cloud documentation https://cloud.google.com/community/tutorials/nginx-ingress-gke
 
 ## Table of Contents
@@ -23,9 +24,9 @@ The secured HTTPS communication is managed by the NGINX ingress controller. So, 
 Replace the placeholders in the [gcp-values.yaml](./gcp-values.yaml) file and install the chart:
 
 ```
-helm install mycompany ibmcharts/ibm-odm-prod --version 22.1.0 \
-             -f gcp-values.yaml \
-             --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"}
+helm install mycompany ibmcharts/ibm-odm-prod --version 22.2.0 \
+    -f gcp-values.yaml \
+    --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"}
 ```
 
 ### 3. Check the deployment and access ODM services
