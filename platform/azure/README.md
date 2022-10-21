@@ -32,7 +32,8 @@ Then [create an Azure account and pay as you go](https://azure.microsoft.com/en-
 
 ## Steps to deploy ODM on Kubernetes to Azure AKS
 
-<!-- TOC titleSize:2 tabSpaces:2 depthFrom:2 depthTo:2 withLinks:1 updateOnSave:1 orderedList:0 skip:0 title:0 charForUnorderedList:* -->
+<!-- TOC depthFrom:2 depthTo:2 -->
+
 * [Included components](#included-components)
 * [Tested environment](#tested-environment)
 * [Prerequisites](#prerequisites)
@@ -45,6 +46,7 @@ Then [create an Azure account and pay as you go](https://azure.microsoft.com/en-
 * [(Optional) Install an ODM Helm release and expose it with the NGINX Ingress controller (10 min)](#optional-install-an-odm-helm-release-and-expose-it-with-the-nginx-ingress-controller-10-min)
 * [Install the IBM License Service and retrieve license usage](#install-the-ibm-license-service-and-retrieve-license-usage)
 * [Troubleshooting](#troubleshooting)
+
 <!-- /TOC -->
 
 ## Prepare your AKS instance (30 min)
@@ -259,7 +261,7 @@ helm repo update
 Check that you can access the ODM charts:
 
 ```
-helm search repo ibm-odm-prod --versions                  
+helm search repo ibm-odm-prod --versions
 NAME                  	CHART VERSION	APP VERSION	DESCRIPTION
 ibmcharts/ibm-odm-prod  22.2.0          8.11.1.0        IBM Operational Decision Manager
 ibmcharts/ibm-odm-prod	22.1.0       	8.11.0.1   	IBM Operational Decision Manager
