@@ -17,11 +17,11 @@ service:
 
 externalDatabase:
   type: postgres
-  secretCredentials: <odm-db-secret>
+  secretCredentials: <ODM_DB_SECRET>
   port: 5432
   serverName: <DB_ENDPOINT>
   databaseName: <DATABASE_NAME>
-  # You can get the last Google Cloud SQL PostgreSQL driver version 
+  # You can get the last Google Cloud SQL PostgreSQL driver version
   # at https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory/releases
   driversUrl:
-  - https://storage.googleapis.com/cloud-sql-java-connector/v1.6.0/postgres-socket-factory-1.6.0-jar-with-driver-and-dependencies.jar
+  - https://storage.googleapis.com/cloud-sql-java-connector/v1.7.1/postgres-socket-factory-1.7.1-jar-with-driver-and-dependencies.jar
