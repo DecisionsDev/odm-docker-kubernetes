@@ -65,6 +65,13 @@ A Web browser opens where you can connect with your Azure credentials.
 
 An Azure resource group is a logical group in which Azure resources are deployed and managed. When you create a resource group, you are asked to specify a location. This location is where resource group metadata is stored. It is also where your resources run in Azure, if you don't specify another region during resource creation. Create a resource group by running the `az group create` command.
 
+To get a list of available location, you can run :
+```
+az account list-locations -o table
+```
+
+
+Then, you can create the resource group :
 ```
 az group create --name <resourcegroup> --location <azurelocation> [--tags Owner=<email> Team=DBA Usage=demo Usage_desc="Azure customers support" Delete_date=2022-12-31]
 ```
@@ -142,6 +149,7 @@ kubectl cluster-info dump
 ### Create an Azure Database for PostgreSQL
 
 Create an Azure Database for PostgreSQL server by running the `az postgres server create` command. A server can contain multiple databases.
+You have to choose the same location for the PostgreSQL server than for the AKS cluster to have a good bandwidth between ODM containers and the database.
 
 ```
 az postgres server create --name <postgresqlserver> --resource-group <resourcegroup> \
@@ -305,9 +313,9 @@ az aks update --name <cluster> --resource-group <resourcegroup> --load-balancer-
 You can now install the product:
 
 ```
-helm install <release> ibmcharts/ibm-odm-prod --version 22.1.0 \
+helm install <release> ibmcharts/ibm-odm-prod --version 22.2.0 \
         --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=<registrysecret> \
-        --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.11.0.1} --set service.type=LoadBalancer \
+        --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.11.1} --set service.type=LoadBalancer \
         --set externalDatabase.type=postgres \
         --set externalDatabase.serverName=<postgresqlserver>.postgres.database.azure.com \
         --set externalDatabase.databaseName=postgres \
@@ -399,7 +407,7 @@ helm install <release> ibmcharts/ibm-odm-prod --version 22.1.0 \
         --set service.ingress.enabled=true --set service.ingress.tlsSecretRef=<mycompanytlssecret> \
         --set service.ingress.tlsHosts={mycompany.com} --set service.ingress.host=mycompany.com \
         --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"\,"nginx.ingress.kubernetes.io/backend-protocol: HTTPS"\,"nginx.ingress.kubernetes.io/affinity: cookie"} \
-        --set license=true --set usersPassword=<password>
+        --set license=true --set usersPassword=odmAdmin
 ```
 
 ### Edit your /etc/hosts
