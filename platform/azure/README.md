@@ -456,7 +456,7 @@ Just run:
 kubectl create -f licensing-instance.yml
 ```
 
-(More information and use cases on [this page](https://github.com/IBM/ibm-licensing-operator/blob/latest/docs/Content/Configuration.md#configuring-ingress).)
+(More information and use cases on [this page](https://www.ibm.com/docs/en/cpfs?topic=software-configuration).)
 
 ### Retrieve license usage
 
@@ -472,7 +472,7 @@ You can access the `http://${LICENSING_URL}/status?token=${TOKEN}` URL to view t
 curl -v "http://${LICENSING_URL}/snapshot?token=${TOKEN}" --output report.zip
 ```
 
-If your IBM License Service instance is not running properly, please refer to this [troubleshooting page](https://github.com/IBM/ibm-licensing-operator/blob/latest/docs/Content/Troubleshooting.md).
+If your IBM License Service instance is not running properly, please refer to this [troubleshooting page](https://www.ibm.com/docs/en/cpfs?topic=software-troubleshooting).
 
 ## Troubleshooting
 
