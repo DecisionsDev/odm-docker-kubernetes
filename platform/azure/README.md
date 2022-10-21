@@ -11,7 +11,7 @@ The ODM on Kubernetes material is available in [IBM Entitled Registry](https://w
 
 The project comes with the following components:
 
-- [IBM Operational Decision Manager](https://www.ibm.com/docs/en/odm/8.11.0)
+- [IBM Operational Decision Manager](https://www.ibm.com/docs/en/odm/8.11.1)
 - [Azure Database for PostgreSQL](https://docs.microsoft.com/en-us/azure/postgresql/)
 - [Azure Kubernetes Service (AKS)](https://docs.microsoft.com/en-us/azure/aks/)
 - [Network concepts for applications in AKS](https://docs.microsoft.com/en-us/azure/aks/concepts-network)
@@ -261,6 +261,7 @@ Check that you can access the ODM charts:
 ```
 helm search repo ibm-odm-prod --versions                  
 NAME                  	CHART VERSION	APP VERSION	DESCRIPTION
+ibmcharts/ibm-odm-prod  22.2.0          8.11.1.0        IBM Operational Decision Manager
 ibmcharts/ibm-odm-prod	22.1.0       	8.11.0.1   	IBM Operational Decision Manager
 ibmcharts/ibm-odm-prod	21.3.0       	8.11.0.0   	IBM Operational Decision Manager
 ibmcharts/ibm-odm-prod	21.2.0       	8.10.5.1   	IBM Operational Decision Manager
@@ -315,7 +316,7 @@ You can now install the product:
 ```
 helm install <release> ibmcharts/ibm-odm-prod --version 22.2.0 \
         --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=<registrysecret> \
-        --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.11.1} --set service.type=LoadBalancer \
+        --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.11.1.0} --set service.type=LoadBalancer \
         --set externalDatabase.type=postgres \
         --set externalDatabase.serverName=<postgresqlserver>.postgres.database.azure.com \
         --set externalDatabase.databaseName=postgres \
@@ -372,10 +373,7 @@ Installing a NGINX Ingress controller will allow you to access ODM components th
 2. Use Helm to deploy an NGINX Ingress controller.
 
     ```
-    helm install nginx-ingress ingress-nginx/ingress-nginx \
-      --set controller.replicaCount=2 \
-      --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux \
-      --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux
+    helm install nginx-ingress ingress-nginx/ingress-nginx
     ```
 
 3. Get the Ingress controller external IP address.
@@ -407,7 +405,7 @@ helm install <release> ibmcharts/ibm-odm-prod --version 22.1.0 \
         --set service.ingress.enabled=true --set service.ingress.tlsSecretRef=<mycompanytlssecret> \
         --set service.ingress.tlsHosts={mycompany.com} --set service.ingress.host=mycompany.com \
         --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"\,"nginx.ingress.kubernetes.io/backend-protocol: HTTPS"\,"nginx.ingress.kubernetes.io/affinity: cookie"} \
-        --set license=true --set usersPassword=odmAdmin
+        --set license=true --set usersPassword=<password>
 ```
 
 ### Edit your /etc/hosts
@@ -437,16 +435,16 @@ ODM services are available through the following URLs:
 
 | SERVICE NAME | URL | USERNAME/PASSWORD
 | --- | --- | ---
-| Decision Server Console | https://mycompany.com/res | odmAdmin/odmAdmin
-| Decision Center | https://mycompany.com/decisioncenter | odmAdmin/odmAdmin
-| Decision Server Runtime | https://mycompany.com/DecisionService | odmAdmin/odmAdmin
-| Decision Runner | https://mycompany.com/DecisionRunner | odmAdmin/odmAdmin
+| Decision Server Console | https://mycompany.com/res | odmAdmin/<password>
+| Decision Center | https://mycompany.com/decisioncenter | odmAdmin/<password>
+| Decision Server Runtime | https://mycompany.com/DecisionService | odmAdmin/<password>
+| Decision Runner | https://mycompany.com/DecisionRunner | odmAdmin/<password>
 
 ## Install the IBM License Service and retrieve license usage
 
 This section explains how to track ODM usage with the IBM License Service.
 
-Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://github.com/IBM/ibm-licensing-operator/blob/latest/docs/Content/Install_without_OLM.md). Do not follow the instantiation part!
+Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cpfs?topic=software-manual-installation-without-operator-lifecycle-manager-olm). Do not follow the **Creating an IBM Licensing instance**  part!
 
 ### Create the Licensing instance
 
