@@ -438,10 +438,15 @@ ODM services are available through the following URLs:
 
 | SERVICE NAME | URL | USERNAME/PASSWORD
 | --- | --- | ---
-| Decision Server Console | https://mycompany.com/res | odmAdmin/<password>
-| Decision Center | https://mycompany.com/decisioncenter | odmAdmin/<password>
-| Decision Server Runtime | https://mycompany.com/DecisionService | odmAdmin/<password>
-| Decision Runner | https://mycompany.com/DecisionRunner | odmAdmin/<password>
+| Decision Server Console | https://mycompany.com/res | odmAdmin/\<password\>
+| Decision Center | https://mycompany.com/decisioncenter | odmAdmin/\<password\>
+| Decision Server Runtime | https://mycompany.com/DecisionService | odmAdmin/\<password\>
+| Decision Runner | https://mycompany.com/DecisionRunner | odmAdmin/\<password\>
+
+where:
+
+* \<password\> is the password provided to the **usersPassword** helm chart parameter
+
 
 ## Install the IBM License Service and retrieve license usage
 
