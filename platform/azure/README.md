@@ -46,6 +46,7 @@ Then [create an Azure account and pay as you go](https://azure.microsoft.com/en-
 * [(Optional) Install an ODM Helm release and expose it with the NGINX Ingress controller (10 min)](#optional-install-an-odm-helm-release-and-expose-it-with-the-nginx-ingress-controller-10-min)
 * [Install the IBM License Service and retrieve license usage](#install-the-ibm-license-service-and-retrieve-license-usage)
 * [Troubleshooting](#troubleshooting)
+* [Getting Started with IBM Operational Decision Manager for Containers](#getting-started-with-ibm-operational-decision-manager-for-containers)
 
 <!-- /TOC -->
 
@@ -477,6 +478,11 @@ If your IBM License Service instance is not running properly, please refer to th
 ## Troubleshooting
 
 If your ODM instances are not running properly, please refer to [our dedicated troubleshooting page](https://www.ibm.com/docs/en/odm/8.11.0?topic=8110-troubleshooting-support).
+
+## Getting Started with IBM Operational Decision Manager for Containers
+
+Get hands-on experience with IBM Operational Decision Manager in a container environment by following this [Getting started tutorial](https://github.com/DecisionsDev/odm-for-container-getting-started/blob/master/README.md).
+
 
 # License
 
