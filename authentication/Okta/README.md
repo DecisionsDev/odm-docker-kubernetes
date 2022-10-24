@@ -73,7 +73,7 @@ First, install the following software on your machine:
 
 ### Create an Okta account
 
-You can sign up for a [free Okta developer account](https://www.okta.com/free-trial/customer-identity/) if you don't own an Okta account already. Beware, Okta enforces [rate limits](https://developer.okta.com/docs/reference/rate-limits/) that are obviously lower for free developer accounts than for paid accounts but they should not be a problem for a demo.
+You can sign up for a [free trial Okta account](https://www.okta.com/free-trial/) if you don't own an Okta account already. Beware, Okta enforces [rate limits](https://developer.okta.com/docs/reference/rate-limits/) that are obviously lower for free developer accounts than for paid accounts but they should not be a problem for a demo.
 
 # Configure an Okta instance for ODM (Part 1)
 
