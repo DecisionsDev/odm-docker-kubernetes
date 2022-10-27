@@ -182,7 +182,7 @@ In this step, we augment the token with meta-information that is required by the
       *  OAuth/OIDC client: *ODM Application*
       *  Grant type: *Authorization Code*
       *  User: ``<YourEmailAddress>``
-      *  Scopes: *odmapiusers*
+      *  Scopes: *odmapiusers* *openid* *email*
       * Click **Preview Token**
 
     As a result, the payload should contain:
@@ -232,8 +232,8 @@ In this step, we augment the token with meta-information that is required by the
 
 1. Retrieve Okta Server information.
 
-    From the Okta console, in **Application** / **Application** / **ODM Application**:
-    - Note the *OKTA_SERVER_NAME* which is the **Okta domain** in the **General Settings** (similar to *\<shortname\>.okta.com*).
+    From the Okta console, in **Security** / **API** / **default** / **Settings** :
+    - Note the *OKTA_SERVER_NAME* which is the **Okta domain** in the **Issuer** (similar to *\<shortname\>.okta.com*).
 
 2. Create a secret with the Okta Server certificate.
 
