@@ -161,16 +161,6 @@ In this step, we augment the token with meta-information that is required by the
     In **Claims** tab, create the following claims:
 
     * Click **Add claim** 
-      * Name: *loginName*
-      * Include in token type: *Access Token*
-      * Value: `(appuser != null) ? appuser.userName : app.clientId`
-      * Click **Create**   
-
-    Similarly, create:
-    * *loginName - Id Token* claim:
-      * Name: *loginName*
-      * Include in token type: *Id Token*
-      * Value: `(appuser != null) ? appuser.userName : app.clientId`
     * *groups - Access Token* claim:
       * Name: *groups*
       * Include in token type: *Access Token*
