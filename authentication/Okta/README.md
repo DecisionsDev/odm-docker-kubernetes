@@ -369,7 +369,7 @@ To be able to securely connect your Rule Designer to the Decision Server and Dec
 3. Edit your `eclipse.ini` file and add the following lines at the end.
     ```
     -Djavax.net.ssl.trustStore=<ECLIPSEINITDIR>/truststore.jks
-    -Djavax.net.ssl.trustStorePassword=changeit
+    -Djavax.net.ssl.trustStorePassword=changeme
     -Dcom.ibm.rules.authentication.oidcconfig=<ECLIPSEINITDIR>/OdmOidcProvidersRD.json
     ```
     Where:
