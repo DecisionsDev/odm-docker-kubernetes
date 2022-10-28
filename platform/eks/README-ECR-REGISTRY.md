@@ -1,10 +1,10 @@
 The following steps are explaining how to download ODM images on Kubernetes package (.tgz file) from Passport Advantage® (PPA) and then push the contained images to the EKS Container Registry (ECR).
 
 Prerequisites:
+
 - Install Docker
 
-Here we are using the [ECR registry](https://docs.aws.amazon.com/AmazonECR/latest/userguide/what-is-ecr.html).
-If you use another public registry, skip this section and go to [step c](#c-load-the-odm-images-locally).
+Here we are using the [ECR registry](https://aws.amazon.com/ecr/).
 
 #### a. Log in to the [ECR registry](https://docs.aws.amazon.com/AmazonECR/latest/userguide/Registries.html)
 
@@ -91,7 +91,7 @@ kubectl create secret docker-registry ecrodm --docker-server=<AWS-AccountId>.dkr
 > NOTE: `ecrodm` is the name of the secret that will be used to pull the images in EKS.
 
 #### f. Install ODM with the following parameters
-  
+
 When reaching the step [Install an IBM Operational Decision Manager release](README.md#5-install-an-ibm-operational-decision-manager-release-10-min), to change the ODM pull images from the IBM Entitled Registry by the ECR registry, choose the relevant yaml file provided according if you want to try NGINX or ALB ingress controller, internal or RDS postgreSQL database, and you just have to override the image.pullSecrets and image.repository properties when installing the helm chart like :
 
 ```bash
