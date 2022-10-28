@@ -257,7 +257,7 @@ In this step, we augment the token with meta-information that is required by the
     ```
 
     Where:
-    - *OKTA_API_SCOPE* has been defined [above](#configure-the-default-authorization-server)
+    - *OKTA_API_SCOPE* has been defined [above](#configure-the-default-authorization-server) (*odmapiusers*)
     - *OKTA_SERVER_NAME* has been obtained from [previous step](#retrieve-okta-server-information)
     - Both *OKTA_CLIENT_ID* and *OKTA_CLIENT_SECRET* are listed in your ODM Application, section **General** / **Client Credentials**
     - *OKTA_ODM_GROUP* is the ODM Admin group we created in a [previous step](#manage-group-and-user) (*odm-admin*)
