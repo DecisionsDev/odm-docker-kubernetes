@@ -259,7 +259,7 @@ In this step, we augment the token with meta-information that is required by the
     Where:
     - *OKTA_API_SCOPE* has been defined [above](#configure-the-default-authorization-server) (*odmapiusers*)
     - *OKTA_SERVER_NAME* has been obtained from [previous step](#retrieve-okta-server-information)
-    - Both *OKTA_CLIENT_ID* and *OKTA_CLIENT_SECRET* are listed in your ODM Application, section **General** / **Client Credentials**
+    - Both *OKTA_CLIENT_ID* and *OKTA_CLIENT_SECRET* are listed in your ODM Application, section In Menu **Applications** / **Applications** / **ODM Application** / **General** / **Client Credentials**
     - *OKTA_ODM_GROUP* is the ODM Admin group we created in a [previous step](#manage-group-and-user) (*odm-admin*)
 
     The files are generated into the `output` directory.
@@ -288,7 +288,7 @@ In this step, we augment the token with meta-information that is required by the
     ```
     helm search repo ibm-odm-prod
     NAME                  	CHART VERSION	APP VERSION	DESCRIPTION                     
-    ibmcharts/ibm-odm-prod	21.3.0       	8.11.0.0   	IBM Operational Decision Manager
+    ibmcharts/ibm-odm-prod	22.2.0       	8.11.1.0   	IBM Operational Decision Manager
     ```
 
 3. Run the `helm install` command.
