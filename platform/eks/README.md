@@ -199,14 +199,14 @@ aws iam upload-server-certificate --server-certificate-name mycompany \
 The output of the command is:
 ```json
 {
-   "ServerCertificateMetadata": {
-      "Path": "/",
-      "ServerCertificateName": "mycompany",
-      "ServerCertificateId": "ASCA4GCFYJYN5C35DTU5X",
-      "Arn": "arn:aws:iam::<AWS-AccountId>:server-certificate/mycompany",
-      "UploadDate": "2020-04-08T13:52:49+00:00",
-      "Expiration": "2023-01-03T13:39:08+00:00"
-    }
+  "ServerCertificateMetadata": {
+    "Path": "/",
+    "ServerCertificateName": "mycompany",
+    "ServerCertificateId": "ASCA4GCFYJYN5C35DTU5X",
+    "Arn": "arn:aws:iam::<AWS-AccountId>:server-certificate/mycompany",
+    "UploadDate": "2020-04-08T13:52:49+00:00",
+    "Expiration": "2023-01-03T13:39:08+00:00"
+  }
 }
 ```
 
