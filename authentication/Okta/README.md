@@ -179,11 +179,12 @@ In this step, we augment the token with meta-information that is required by the
     Check that the login name and groups meta-information are available in the ID token.
 
     In the **Token Preview** tab:
-      *  OAuth/OIDC client: *ODM Application*
-      *  Grant type: *Authorization Code*
-      *  User: ``<YourEmailAddress>``
-      *  Scopes: *odmapiusers* *openid* *email*
+      * OAuth/OIDC client: *ODM Application*
+      * Grant type: *Authorization Code*
+      * User: ``<YourEmailAddress>``
+      * Scopes: *openid* *email*
       * Click **Preview Token**
+      * Select the *Token* tab 
 
     As a result, the payload should contain:
 
