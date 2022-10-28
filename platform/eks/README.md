@@ -280,29 +280,35 @@ The services are accessible from the following URLs:
 
 #### a. Install the IBM License Service
 
-Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://github.com/IBM/ibm-licensing-operator/blob/latest/docs/Content/Install_without_OLM.md)
+Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cpfs?topic=software-manual-installation-without-operator-lifecycle-manager-olm)
 
-> NOTE: The instance created in the documentation is configured to use ngnix and **will not work** in this example using ALB.
+> NOTE: Make sure you don't follow the instantiation part!
 
-#### b. Create an IBM Licensing instance using ALB
+#### b. Create the IBM Licensing instance
 
-Get the [alb-ibmlicensing-instance.yaml](./alb-ibmlicensing-instance.yaml) file and execute the command :
-```bash
-kubectl apply -f alb-ibmlicensing-instance.yaml
+Get the [licensing-instance.yaml](./licensing-instance.yaml) file and execute the command :
+
 ```
+kubectl create -f licensing-instance.yaml
+```
+
+> NOTE: You can find more information and use cases on [this page](https://www.ibm.com/docs/en/cpfs?topic=software-configuration).
 
 #### c. Retrieving license usage
 
 After a couple of minutes, the ALB reflects the ingress configuration and you will be able to access the IBM License Service by retrieving the URL with this command:
+
 ```bash
-export LICENSING_URL=$(kubectl get ingress ibm-licensing-service-instance -n ibm-common-services | awk '{print $4}' | tail -1)
-export TOKEN=$(oc get secret ibm-licensing-token -o jsonpath={.data.token} -n ibm-common-services | base64 -d)
+export LICENSING_URL=$(kubectl get ingress ibm-licensing-service-instance -n ibm-common-services --no-headers |awk '{print $4}')
+export TOKEN=$(kubectl get secret ibm-licensing-token -o jsonpath={.data.token} -n ibm-common-services |base64 -d)
 ```
+
 If LICENSING_URL is empty take a look the [troubleshooting](#troubleshooting) section.
 
-You can access the `http://$LICENSING_URL/status?token=$TOKEN` url to view the licensing usage or retrieve the licensing report zip file by running:
+You can access the `http://${LICENSING_URL}/status?token=${TOKEN}` url to view the licensing usage or retrieve the licensing report zip file by running:
+
 ```bash
-curl -v http://$LICENSING_URL/snapshot?token=$TOKEN --output report.zip
+curl "http://${LICENSING_URL}/snapshot?token=${TOKEN}" --output report.zip
 ```
 
 ## Troubleshooting
@@ -321,8 +327,7 @@ kubectl logs -n kube-system deployment.apps/aws-load-balancer-controller
 Check the ALB configuration if you get a message like :
 "msg"="Reconciler error" "error"="failed to reconcile ...
 
-## References
-https://aws.amazon.com/blogs/opensource/network-load-balancer-nginx-ingress-controller-eks/
+Reference: https://aws.amazon.com/blogs/opensource/network-load-balancer-nginx-ingress-controller-eks/
 
 # License
 [Apache 2.0](/LICENSE)
