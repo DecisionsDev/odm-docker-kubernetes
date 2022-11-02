@@ -24,57 +24,47 @@ Options:
 
 
 -i : Client ID
--n : AZUREAD domain (AZUREAD server name)
+-n : Keycloak Server URL
 -x : Cient Secret
--u : Username 
--p : Password
 
-Usage example: $0 -i AzureADClientId -x AzureADClientSecret -n <Application ID (GUID)> -u <USERNAME> -p <PASSWORD>"
+Usage example: $0 -i KeycloakClientId -x KeycloakClientSecret -n KeycloakServerURL"
 EOF
 }
 
 while getopts "x:i:n:s:h" option; do
     case "${option}" in
-        i) AZUREAD_CLIENT_ID=${OPTARG};;
-        n) AZUREAD_SERVER_NAME=${OPTARG};;
-        x) AZUREAD_CLIENT_SECRET=${OPTARG};;
+        i) KEYCLOAK_CLIENT_ID=${OPTARG};;
+        n) KEYCLOAK_SERVER_URL=${OPTARG};;
+        x) KEYCLOAK_CLIENT_SECRET=${OPTARG};;
         h) usage; exit 0;;
         *) usage; exit 1;;
     esac
 done
 
-if [[ -z ${AZUREAD_CLIENT_ID} ]]; then
-  echo "AZUREAD_CLIENT_ID has to be provided, either as in environment or with -i."
+if [[ -z ${KEYCLOAK_CLIENT_ID} ]]; then
+  echo "KEYCLOAK_CLIENT_ID has to be provided, either as in environment or with -i."
   exit 1
 fi
-if [[ -z ${AZUREAD_SERVER_NAME} ]]; then
-  echo "AZUREAD_SERVER_NAME has to be provided, either as in environment or with -n."
+if [[ -z ${KEYCLOAK_SERVER_URL} ]]; then
+  echo "KEYCLOAK_SERVER_URL has to be provided, either as in environment or with -n."
   exit 1
 fi
-if [[ -z ${AZUREAD_CLIENT_SECRET} ]]; then
-  echo "AZUREAD_CLIENT_SECRET has to be provided, either as in environment or with -x."
+if [[ -z ${KEYCLOAK_CLIENT_SECRET} ]]; then
+  echo "KEYCLOAK_CLIENT_SECRET has to be provided, either as in environment or with -x."
   exit 1
 fi
-if [[ ${AZUREAD_SERVER_NAME} != "https://.*" ]]; then
-  AZUREAD_SERVER_URL=https://login.microsoftonline.com/${AZUREAD_SERVER_NAME}
-else
-  AZUREAD_SERVER_URL=${AZUREAD_SERVER_NAME}
-fi
-echo "Use Authentication URL Server : $AZUREAD_SERVER_URL"
 
-
-RESULT=$(curl -X POST -H "Content-Type: application/x-www-form-urlencoded" \
-  -d "client_id=$AZUREAD_CLIENT_ID&scope=$AZUREAD_CLIENT_ID%2F.default&client_secret=$AZUREAD_CLIENT_SECRET&grant_type=client_credentials" \
-  "$AZUREAD_SERVER_URL/oauth2/v2.0/token")
+RESULT=$(curl -k -X POST -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "client_id=$KEYCLOAK_CLIENT_ID&scope=openid&client_secret=$KEYCLOAK_CLIENT_SECRET&grant_type=client_credentials" \
+  "$KEYCLOAK_SERVER_URL/protocol/openid-connect/token")
 
 
 echo "Retrieve this Token : $RESULT"
 echo "-------------------------------------------"  
-echo "Open a browser at this URL : https://jwt.ms"
+echo "Open a browser at this URL : https://jwt.io"
 echo "-------------------------------------------"
 echo " Copy paste the id_token : "
 echo $RESULT | sed "s/.*access_token\"://g"
 echo "====> "
-echo " Verify this fields exists in your Token :"
-echo " ver = should be 2.0. "
-echo " iss = should contains the v2.0 suffix"
+echo " Verify this field exists in your Token :"
+echo " preferred_username = service-account-<KEYCLOAK_CLIENT_ID> "
