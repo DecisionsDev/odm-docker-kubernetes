@@ -10,19 +10,17 @@
 <variable name="odm.resExecutors.group2" value="group:basic/basicAdministrators"/>
 <variable name="odm.rtsAdministrators.group2" value="group:basic/basicAdministrators"/>
 
-<!-- group mapping to authorize users of the KEYCLOAK_ADMIN_GROUP group -->
-<variable name="group1" value="group:KEYCLOAK_URL/realms/master/KEYCLOAK_ADMIN_GROUP"/>
-
-<variable name="odm.rtsAdministrators.group1" value="${group1}"/>
-<variable name="odm.rtsInstallers.group1" value="${group1}"/>
-<variable name="odm.rtsConfigManagers.group1" value="${group1}"/>
-<variable name="odm.resAdministrators.group1" value="${group1}"/>
-<variable name="odm.resDeployers.group1" value="${group1}"/>
-<variable name="odm.resMonitors.group1" value="${group1}"/>
-<variable name="odm.resExecutors.group1" value="${group1}"/>
+<!-- group mapping to authorize Keycloak users that have the relevant roles -->
+<variable name="odm.rtsAdministrators.group1" value="group:KEYCLOAK_SERVER_URL/rtsAdministrators"/>
+<variable name="odm.rtsInstallers.group1" value="group:KEYCLOAK_SERVER_URL/rtsInstallers"/>
+<variable name="odm.rtsConfigManagers.group1" value="group:KEYCLOAK_SERVER_URL/rtsConfigManagers"/>
+<variable name="odm.resAdministrators.group1" value="group:KEYCLOAK_SERVER_URL/resAdministrators"/>
+<variable name="odm.resDeployers.group1" value="group:KEYCLOAK_SERVER_URL/resDeployers"/>
+<variable name="odm.resMonitors.group1" value="group:KEYCLOAK_SERVER_URL/resMonitors"/>
+<variable name="odm.resExecutors.group1" value="group:KEYCLOAK_SERVER_URL/resExecutors"/>
 
 <!-- user mapping to authorize CLIENT_CREDENTIALS using CLIENT_ID -->
-<variable name="user1" value="user:KEYCLOAK_URL/realms/master/service-account-KEYCLOAK_CLIENT_ID"/>
+<variable name="user1" value="user:KEYCLOAK_SERVER_URL/service-account-KEYCLOAK_CLIENT_ID"/>
 
 <variable name="odm.rtsAdministrators.user1" value="${user1}"/>
 <variable name="odm.resAdministrators.user1" value="${user1}"/>

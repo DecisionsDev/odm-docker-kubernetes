@@ -90,7 +90,8 @@ For this tutorial, we followed the documented procedure explaining how to instal
 
 In this section, we explain how to:
 
-- Manage groups and users
+- Create a dedicated odm realm
+- Manage roles, groups and users
 - Set up an application
 - Configure the default Authorization server
 
@@ -106,9 +107,34 @@ When, it's done, you should be able to access the Keycloak Admin Console using t
     ```
 All the following configuration will be done inside this Admin Console.
 
-## Manage groups and users
+## Create a dedicated odm realm
 
-1. Create a group for ODM administrators.
+This step is not compulsory as you can realize all the following tasks in the default master realm.
+But, in order to avoid to mix all what will be configured with existing configurations, it's preferable to create a dedicated odm realm.
+
+   In Main page click on **Master**:  
+     * Click on **Create Realm** button
+       * Realm Name: *odm*
+       * Enabled: On
+       * Click **Create**
+
+## Manage roles, groups and users
+
+As you can read in [Keycloak documentation](https://www.keycloak.org/docs/latest/server_admin/index.html#assigning-permissions-using-roles-and-groups), roles and groups have a similar purpose, which is to give users access and permissions to use applications. Groups are a collection of users to which you apply roles and attributes. Roles define specific applications permissions and access control.
+To manage permissions inside the ODM application, the ID token and access token will contains a groups information. But, in reality, this information is using roles.
+So, you can create only roles. You can also create groups and realize a mapping between groups and roles. This way, adding a user in a group will also provide it the roles mapped to this group. 
+
+1. Create a role for ODM administrators.
+
+    In Menu **Manage** / **Realm roles**:
+      * Click **Create role**
+        * Role name: *rtsAdministrators*
+        * Click **Save**
+
+Do the same for all others ODM J2EE existing roles like : rtsConfigManagers,rtsInstallers,rtsUsers,resAdministrators,resMonitors,resDeployers,resExecutors
+For more details about ODM groups and roles, have a look at [ODM on k8s documentation](https://www.ibm.com/docs/en/odm/8.11.0?topic=access-user-roles-user-groups)
+
+2. Create a group for ODM administrators.
 
     In Menu **Manage** / **Groups**:
       * Click **Create group** 
@@ -116,15 +142,22 @@ All the following configuration will be done inside this Admin Console.
 
     ![Create Group](/images/Keycloak/CreateGroup.png)
 
-2. Create at least one user that belongs to this new group.
+    In Menu **Manage** / **Groups**:
+      * Click **Create odm-admin**
+      * Click the **Role mapping** tab
+        * Click **Assign role**
+          * Select all previously created ODM roles
+          * Click **Assign**
+
+3. Create at least one user that belongs to this new group.
 
     In Menu **Manage** / **Users**:
       * Click **Add user** 
         * Email: ``johndoe@mycompany.com``
-	* Email Verified: ON
+	* Email Verified: On
         * First name: ``John``
         * Last name: ``Doe``
-        * Enabled: ON
+        * Enabled: On
 	* Required user actions: nothing
         * Groups : Click on **Join Groups** , select ***odm-admin*** and click **Join**
         * Click **Create**
@@ -158,30 +191,27 @@ All the following configuration will be done inside this Admin Console.
     ![Set Client Flow](/images/Keycloak/CreateClient2.png)
 
     * Click on **Credentials** tab
-    * Take a note of the **Value**. It will be referenced as ``CLIENT_SECRET`` in the next steps.
+    * Take a note of the **Client secret** value. It will be referenced as ``CLIENT_SECRET`` in the next steps.
     
     ![Get Client Secret](/images/Keycloak/GetClientSecret.png)
 
   
-3. Add Group in Claims 
+2. Add the GROUPS predefined mapper on the ROLES client scope
 
-4. API Permissions
+    In Menu **Manage** / **Client scopes**, click on the existing **roles** scope:
+    * Select the **Mappers** tab
+    * Click **Add mapper>From predefined mappers**
+      * Between 11-20 predefined mapper, select **groups**
+      * Click *Save*
 
-    In Menu **Azure Active Directory** / **App Registration**, click **ODM Application**, click **API Permissions**.
-    * Click Grant Admin Consent for **YourOrg**
-  
-5. Retrieve Tenant and Client information
+3. Retrieve the Keycloak Server URL
 
-    From the Azure console, in **Azure Active Directory** / **App Registrations** / **ODM Application**:
-    - Click Overview 
-    - Directory (tenant) ID: **Your Tenant ID**. It will be referenced as `TENANT_ID` in the next steps.
-    - Application (client) ID: **Client ID**. It will be referenced as `CLIENT_ID` in the next steps.
-
-    ![Tenant ID](/images/AzureAD/GetTenantID.png)
+    In Menu **Configure**/**Realm settings**, in the **General** tab, click on **OpenID Endpoint Configuration** link
+    Take a note of the issuer URL. It will be referenced as ``KEYCLOAK_SERVER_URL`` in the next steps.
     
-7. Check the configuration
+4. Check the configuration
   
-     Download the [azuread-odm-script.zip](azuread-odm-script.zip) file to your machine and unzip it in your working directory. This .zip file contains scripts and template to verify and setup ODM.
+     Download the [keycloak-odm-script.zip](keycloak-odm-script.zip) file to your machine and unzip it in your working directory. This .zip file contains scripts and template to verify and setup ODM.
      
     7.1 Verify the Client Credential Token 
    
@@ -273,56 +303,42 @@ All the following configuration will be done inside this Admin Console.
 
 
 
-1. Create a secret with the Azure AD Server certificate
+1. Create a secret with the Keycloak Server certificate
 
-    To allow ODM services to access the Azure AD Server, it is mandatory to provide the Azure AD Server certificate.
+    To allow ODM services to access the Keycloak Server, it is mandatory to provide the Keycloak Server certificate.
     You can create the secret as follows:
 
     ```
-    keytool -printcert -sslserver login.microsoftonline.com -rfc > microsoft.crt
-    kubectl create secret generic ms-secret --from-file=tls.crt=microsoft.crt
+    keytool -printcert -sslserver <KEYCLOAK_SERVER_URL_WITHOUT_HTTPS> -rfc > keycloak.crt
+    kubectl create secret generic keycloak-secret --from-file=tls.crt=keycloak.crt
     ```
     
-    Introspecting the Azure AD login.microsoftonline.com certificate. You can see it has been signed by the Digicert Root CA authorithy
-    So, we will also add the [Digicert Root CA certificate](resources/digicert.crt) :
-    
-    ```
-    kubectl create secret generic digicert-secret --from-file=tls.crt=digicert.crt
-    ```
-    
-    
-2. Generate the ODM configuration file for Azure AD
+2. Generate the ODM configuration file for Keycloak
 
    
-    If you have not yet done so, download the [azuread-odm-script.zip](azuread-odm-script.zip) file to your machine. This .zip file contains the [script](generateTemplate.sh) and the content of the [templates](templates) directory. 
+    If you have not yet done so, download the [keycloak-odm-script.zip](keycloak-odm-script.zip) file to your machine. This .zip file contains the [script](generateTemplate.sh) and the content of the [templates](templates) directory. 
     The [script](generateTemplate.sh) allows you to generate the necessary configuration files.
     Generate the files with the following command:
     ```
-    ./generateTemplate.sh -i <CLIENT_ID> -x <CLIENT_SECRET> -n <TENANT_ID> -g <GROUP_GUID> [-a <SSO_DOMAIN>]
+    ./generateTemplate.sh -i <CLIENT_ID> -x <CLIENT_SECRET> -n <SERVER_URL> [-r <REALM_NAME> -u <USER_ID>]
     ```
 
     Where:
-    - *TENANT_ID* and *CLIENT_ID* have been obtained from [previous step](#retrieve-tenant-and-client-information)
     - *CLIENT_SECRET* is listed in your ODM Application, section **General** / **Client Credentials**
-    - *GROUP_GUID* is the ODM Admin group created in a [previous step](#manage-group-and-user) (*odm-admin*)
-    - *SSO_DOMAIN* is the domain name of your sso. If your AzureAD is connected to another SSO you should add the SSO domain name in this parameter. If you're user has been declared as explain in step **Create at least one user that belongs to this new group** you can omitt this parameter.
 
     The following 4 files are generated into the `output` directory :
     
     - webSecurity.xml is containing the mapping between liberty J2EE ODM roles and Azure AD groups and users :
-      * All ODM roles are given to the GROUP_GUID group
       * rtsAdministrators/resAdministrators/resExecutors ODM roles are given to the CLIENT_ID (which is seen as a user) to manage the client-credentials flow  
     - openIdWebSecurity.xml is containing 2 openIdConnectClient liberty configuration :
-      * for the web access to Decision Center an Decision Server consoles using userIdentifier="email" with the Authorization Code flow
-      * for the rest-api call using userIdentifier="aud" with the client-credentials flow
+      * for the web access to Decision Center an Decision Server consoles using userIdentifier="preferred_username" with the Authorization Code flow
+      * for the rest-api call using userIdentifier="preffered_username" with the client-credentials flow
     - openIdParameters.properties is configuring several features like allowed domains, logout and some internal ODM openid features
-    - OdmOidcProviders.json is configuring the client-credentials OpenId provider used by the Decision Center Server configuration to connect Decision Center to the RES Console and Decision Center to the Decision Runner  
 
-3. Create the Azure AD authentication secret
+3. Create the Keycloak authentication secret
 
     ```
-    kubectl create secret generic azuread-auth-secret \
-        --from-file=OdmOidcProviders.json=./output/OdmOidcProviders.json \
+    kubectl create secret generic keycloak-auth-secret \
         --from-file=openIdParameters.properties=./output/openIdParameters.properties \
         --from-file=openIdWebSecurity.xml=./output/openIdWebSecurity.xml \
         --from-file=webSecurity.xml=./output/webSecurity.xml
@@ -360,8 +376,8 @@ All the following configuration will be done inside this Admin Console.
           --set oidc.enabled=true \
           --set license=accept \
           --set internalDatabase.persistence.enabled=false \
-          --set customization.trustedCertificateList='{ms-secret,digicert-secret}' \
-          --set customization.authSecretRef=azuread-auth-secret \
+          --set customization.trustedCertificateList={"keycloak-secret"} \
+          --set customization.authSecretRef=keycloak-auth-secret \
           --set internalDatabase.runAsUser='' --set customization.runAsUser='' --set service.enableRoute=true
   ```
 

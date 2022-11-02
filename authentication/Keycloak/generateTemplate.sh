@@ -28,51 +28,52 @@ Options:
 -i : Client ID
 -n : KEYCLOAK URL (KEYCLOAK server name)
 -x : Cient Secret
--g : ODM Admin Group
--a : Allow others domains (Optional)
-Usage example: $0 -i KeycloakClientId -x KeycloakClientSecret [-g <ODM Admin Group> -a <domain name>]"
+-r : Realm Name 
+-u : UserID
+Usage example: $0 -i KeycloakClientId -x KeycloakClientSecret -n KeycloakURL [-r KeycloakRealm -u KeycloakUserID]"
 EOF
 }
 
-while getopts "x:i:n:g:ha:" option; do
+while getopts "x:i:n:r:u:ha:" option; do
     case "${option}" in
         i) KEYCLOAK_CLIENT_ID=${OPTARG};;
-        n) KEYCLOAK_URL=${OPTARG};;
+        n) KEYCLOAK_SERVER_URL=${OPTARG};;
         x) KEYCLOAK_CLIENT_SECRET=${OPTARG};;
-        g) KEYCLOAK_ADMIN_GROUP=${OPTARG};;
-        a) ALLOW_DOMAIN=${OPTARG};;
+        r) KEYCLOAK_REALM=${OPTARG};;
+        u) KEYCLOAK_USERID=${OPTARG};;
         h) usage; exit 0;;
         *) usage; exit 1;;
     esac
 done
 
 if [[ -z ${KEYCLOAK_CLIENT_ID} ]]; then
-  echo "KEYCLOAK_CLIENT_ID has to be provided, either as in environment or with -i."
+  echo "CLIENT_ID has to be provided, either as in environment or with -i."
   exit 1
 fi
-if [[ -z ${KEYCLOAK_URL} ]]; then
-  echo "KEYCLOAK_URL has to be provided, either as in environment or with -n."
+if [[ -z ${KEYCLOAK_SERVER_URL} ]]; then
+  echo "SERVER_URL has to be provided, either as in environment or with -n."
   exit 1
 fi
 if [[ -z ${KEYCLOAK_CLIENT_SECRET} ]]; then
-  echo "KEYCLOAK_CLIENT_SECRET has to be provided, either as in environment or with -x."
+  echo "CLIENT_SECRET has to be provided, either as in environment or with -x."
   exit 1
+fi
+if [[ -z ${KEYCLOAK_REALM} ]]; then
+  echo "REALM not provided, using odm as realm name."
+  KEYCLOAK_REALM=odm
+fi
+if [[ -z ${KEYCLOAK_USERID} ]]; then
+  echo "USERID not provided, using preferred_username as user_id."
+  KEYCLOAK_USERID=preferred_username
 fi
 
 mkdir -p $OUTPUT_DIR && cp $TEMPLATE_DIR/* $OUTPUT_DIR
 echo "Generating files for KEYCLOAK"
 sed -i.bak 's|KEYCLOAK_CLIENT_ID|'$KEYCLOAK_CLIENT_ID'|g' $OUTPUT_DIR/*
 sed -i.bak 's|KEYCLOAK_CLIENT_SECRET|'$KEYCLOAK_CLIENT_SECRET'|g' $OUTPUT_DIR/*
-if [ ! -z "$KEYCLOAK_ADMIN_GROUP" ]; then
-  sed -i.bak 's|KEYCLOAK_ADMIN_GROUP|'$KEYCLOAK_ADMIN_GROUP'|g' $OUTPUT_DIR/*
-else
-sed -i.bak 's|KEYCLOAK_ADMIN_GROUP|odm-admin|g' $OUTPUT_DIR/*
-fi
-sed -i.bak 's|KEYCLOAK_URL|'$KEYCLOAK_URL'|g' $OUTPUT_DIR/*
+sed -i.bak 's|KEYCLOAK_SERVER_URL|'$KEYCLOAK_SERVER_URL'|g' $OUTPUT_DIR/*
+sed -i.bak 's|KEYCLOAK_USERID|'$KEYCLOAK_USERID'|g' $OUTPUT_DIR/*
 # Claim replacement
-if [ ! -z "$ALLOW_DOMAIN" ]; then
-  sed -i.bak 's|KEYCLOAK_DOMAIN|'$ALLOW_DOMAIN'|g' $OUTPUT_DIR/*
-else
-
-fi
+ALLOW_DOMAIN=$(echo $KEYCLOAK_SERVER_URL | sed -e "s/\/realms\/$KEYCLOAK_REALM//" -e "s/https:\/\///")
+sed -i.bak 's|KEYCLOAK_DOMAIN|'$ALLOW_DOMAIN'|g' $OUTPUT_DIR/*
 rm -f $OUTPUT_DIR/*.bak

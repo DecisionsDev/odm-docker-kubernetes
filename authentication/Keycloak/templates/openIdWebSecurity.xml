@@ -1,6 +1,6 @@
 <server>
 
-  <variable name="ServerHost" value="KEYCLOAK_URL/realms/master"/>
+  <variable name="ServerHost" value="KEYCLOAK_SERVER_URL"/>
 
   <!-- Open ID Connect -->
   <!-- Client with inbound propagation set to supported -->
