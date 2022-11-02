@@ -396,8 +396,8 @@ For more details about ODM groups and roles, have a look at [ODM on k8s document
           --set oidc.enabled=true \
           --set license=true \
           --set internalDatabase.persistence.enabled=false \
-          --set customization.trustedCertificateList='{ms-secret,digicert-secret}' \
-          --set customization.authSecretRef=azuread-auth-secret \
+          --set customization.trustedCertificateList={"keycloak-secret"} \
+          --set customization.authSecretRef=keycloak-auth-secret \
           --set service.ingress.enabled=true \
           --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"\,"nginx.ingress.kubernetes.io/backend-protocol: HTTPS"\,"nginx.ingress.kubernetes.io/affinity: cookie"}
   ```
@@ -489,8 +489,6 @@ To be able to securely connect your Rule Designer to the Decision Server and Dec
 
 3. Edit your `eclipse.ini` file and add the following lines at the end.
     ```
-    -Dcom.ibm.rules.studio.oidc.synchro.scopes=<CLIENT_ID>/.default
-    -Dcom.ibm.rules.studio.oidc.res.scopes=<CLIENT_ID>/.default
     -Djavax.net.ssl.trustStore=<ECLIPSEINITDIR>/truststore.jks
     -Djavax.net.ssl.trustStorePassword=changeme
     -Dcom.ibm.rules.authentication.oidcconfig=<ECLIPSEINITDIR>/OdmOidcProvidersRD.json
@@ -521,8 +519,8 @@ But if you want to execute a bearer authentication ODM runtime call using the Cl
   
   ```
   $ curl -X POST -H "Content-Type: application/x-www-form-urlencoded" \
-      -d 'client_id=<CLIENT_ID>&scope=<CLIENT_ID>%2F.default&client_secret=<CLIENT_SECRET>&grant_type=client_credentials' \
-      'https://login.microsoftonline.com/<TENANT_ID>/oauth2/v2.0/token'
+      -d 'client_id=<CLIENT_ID>&scope=openid&client_secret=<CLIENT_SECRET>&grant_type=client_credentials' \
+      '<SERVER_URL>/protocol/openid-connect/token'
   ```
   
  And use the retrieved access token in the following way:
