@@ -163,7 +163,7 @@ Reference: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_CreateDBI
 > - Take a PostgreSQL v13.X version (the command above creates a PG 13.7 instance at the moment)
 > - Set up incoming traffic to allow connection from EKS (set vpc inboud rule to anywhere)
 
-Once the RDS PostgreSQL database is available, take a note of the database endpoint. It will be referred as `RDS_POSTGRESQL_SERVERNAME` in the next sections.
+Once the RDS PostgreSQL database is available, take a note of the database endpoint. It will be referred as `RDS_DB_ENDPOINT` in the next sections.
 
 To secure access to the database, you must create a secret that encrypts the database user and password before you install the Helm release.
 
@@ -270,11 +270,11 @@ The services are accessible from the following URLs:
 
 | *Component* | *URL* | *Username/Password* |
 |---|---|---|
-| Decision Center | https://$ROOTURL/decisioncenter | odmAdmin/odmAdmin |
-| Decision Center Swagger | https://$ROOTURL/decisioncenter-api | odmAdmin/odmAdmin |
-| Decision Server Console |https://$ROOTURL/res| odmAdmin/odmAdmin |
-| Decision Server Runtime | https://$ROOTURL/DecisionService | odmAdmin/odmAdmin |
-| Decision Runner | https://$ROOTURL/DecisionRunner | odmAdmin/odmAdmin |
+| Decision Center | https://${ROOTURL}/decisioncenter | odmAdmin/odmAdmin |
+| Decision Center Swagger | https://${ROOTURL}/decisioncenter-api | odmAdmin/odmAdmin |
+| Decision Server Console |https://${ROOTURL}/res| odmAdmin/odmAdmin |
+| Decision Server Runtime | https://${ROOTURL}/DecisionService | odmAdmin/odmAdmin |
+| Decision Runner | https://${ROOTURL}/DecisionRunner | odmAdmin/odmAdmin |
 
 ### 7. Track ODM usage with the IBM License Service
 
