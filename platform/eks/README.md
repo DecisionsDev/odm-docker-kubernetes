@@ -329,5 +329,9 @@ Check the ALB configuration if you get a message like :
 
 Reference: https://aws.amazon.com/blogs/opensource/network-load-balancer-nginx-ingress-controller-eks/
 
+## Getting Started with IBM Operational Decision Manager for Containers
+
+Get hands-on experience with IBM Operational Decision Manager in a container environment by following this [Getting started tutorial](https://github.com/DecisionsDev/odm-for-container-getting-started/blob/master/README.md).
+
 # License
 [Apache 2.0](/LICENSE)
