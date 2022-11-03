@@ -12,7 +12,7 @@
 - [Deploy ODM on a container configured with Keycloak (Part 2)](#deploy-odm-on-a-container-configured-with-keycloak-part-2)
   - [Prepare your environment for the ODM installation](#prepare-your-environment-for-the-odm-installation)
     - [Create a secret to use the Entitled Registry](#create-a-secret-to-use-the-entitled-registry)
-    - [Create secrets to configure ODM with Azure AD](#create-secrets-to-configure-odm-with-azure-ad)
+    - [Create secrets to configure ODM with Keycloak](#create-secrets-to-configure-odm-with-keycloak)
   - [Install your ODM Helm release](#install-your-odm-helm-release)
     - [1. Add the public IBM Helm charts repository](#1-add-the-public-ibm-helm-charts-repository)
     - [2. Check that you can access the ODM chart](#2-check-that-you-can-access-the-odm-chart)
@@ -135,6 +135,8 @@ But, in order to avoid to mix all what will be configured with existing configur
        * Enabled: On
        * Click **Create**
 
+    ![Create Realm](/images/Keycloak/create_realm.png)
+
 ## Manage roles, groups and users
 
 As you can read in [Keycloak documentation](https://www.keycloak.org/docs/latest/server_admin/index.html#assigning-permissions-using-roles-and-groups), roles and groups have a similar purpose, which is to give users access and permissions to use applications. Groups are a collection of users to which you apply roles and attributes. Roles define specific applications permissions and access control.
@@ -148,6 +150,8 @@ So, you can create only roles. You can also create groups and realize a mapping 
         * Role name: *rtsAdministrators*
         * Click **Save**
 
+    ![Create Roles](/images/Keycloak/create_roles.png)
+
 Do the same for all others ODM J2EE existing roles like : rtsConfigManagers,rtsInstallers,rtsUsers,resAdministrators,resMonitors,resDeployers,resExecutors
 For more details about ODM groups and roles, have a look at [ODM on k8s documentation](https://www.ibm.com/docs/en/odm/8.11.0?topic=access-user-roles-user-groups)
 
@@ -157,7 +161,7 @@ For more details about ODM groups and roles, have a look at [ODM on k8s document
       * Click **Create group** 
         * Name: *odm-admin*
 
-    ![Create Group](/images/Keycloak/CreateGroup.png)
+    ![Create Group](/images/Keycloak/create_group.png)
 
     In Menu **Manage** / **Groups**:
       * Click **Create odm-admin**
@@ -165,6 +169,8 @@ For more details about ODM groups and roles, have a look at [ODM on k8s document
         * Click **Assign role**
           * Select all previously created ODM roles
           * Click **Assign**
+
+    ![Assign Roles](/images/Keycloak/assign_roles.png)
 
 3. Create at least one user that belongs to this new group.
 
@@ -178,7 +184,8 @@ For more details about ODM groups and roles, have a look at [ODM on k8s document
 	* Required user actions: nothing
         * Groups : Click on **Join Groups** , select ***odm-admin*** and click **Join**
         * Click **Create**
-      ![Create User](/images/Keycloak/CreateUser.png)
+
+      ![Create User](/images/Keycloak/create_user.png)
       
       * In User Details, select the **Credentials** tab 
         * Click on **Set password**
@@ -198,19 +205,19 @@ For more details about ODM groups and roles, have a look at [ODM on k8s document
     * Name: **ODM Application**
     * Always display in console: On
 
-    ![Create Client](/images/Keycloak/CreateClient1.png)
+    ![Create Client 1](/images/Keycloak/create_client_1.png)
     
     * Click **Next**
     * Client Authentication: On 
     * Authorization: On
     * Click *Save*
 
-    ![Set Client Flow](/images/Keycloak/CreateClient2.png)
+    ![Create Client 2](/images/Keycloak/create_client_2.png)
 
     * Click on **Credentials** tab
     * Take a note of the **Client secret** value. It will be referenced as ``CLIENT_SECRET`` in the next steps.
     
-    ![Get Client Secret](/images/Keycloak/GetClientSecret.png)
+    ![Get Client Secret](/images/Keycloak/client_secret.png)
 
   
 2. Add the GROUPS predefined mapper on the ROLES client scope
@@ -220,6 +227,8 @@ For more details about ODM groups and roles, have a look at [ODM on k8s document
     * Click **Add mapper>From predefined mappers**
       * Between 11-20 predefined mapper, select **groups**
       * Click *Save*
+
+    ![Add group mapper](/images/Keycloak/add_group_mapper_to_role_scole.png)
 
 3. Retrieve the Keycloak Server URL
 
@@ -313,7 +322,7 @@ For more details about ODM groups and roles, have a look at [ODM on k8s document
 
 3. Make a note of the secret name so that you can set it for the **image.pullSecrets** parameter when you run a helm install of your containers. The **image.repository** parameter is later set to *cp.icr.io/cp/cp4a/odm*.
 
-### Create secrets to configure ODM with Azure AD
+### Create secrets to configure ODM with Keycloak
 
 
 
@@ -449,7 +458,7 @@ For more details about ODM groups and roles, have a look at [ODM on k8s document
     my-odm-release-odm-ingress <none>   *       <INGRESS_ADDRESS>   80      14d
     ```
 
-2. Register the redirect URIs into your Azure AD application.
+2. Register the redirect URIs into your Keycloak application.
 
     The redirect URIs are built the following way:
 
@@ -467,21 +476,13 @@ For more details about ODM groups and roles, have a look at [ODM on k8s document
       - Decision Server Runtime redirect URI:  `https://<INGRESS_ADDRESS>/DecisionService/openid/redirect/odm`
       - Rule Designer redirect URI: `https://127.0.0.1:9081/oidcCallback`
 
-   From the Azure console, in **Azure Active Directory** / **App Registrations** / **ODM Application**:
+   From the Keycloak admin console, in **Manage** / **Clients** / **Settings**:
   
-    - Click`Add Redirect URIs link`
-    - Click `Add Platform`
-    - Select `Web`
-    - `Redirect URIs` Add the Decision Center redirect URI that you got earlier (`https://<DC_HOST>/decisioncenter/openid/redirect/odm` -- don't forget to replace <DC_HOST> with your actual host name!)
-    - Check Access Token and ID Token 
-    - Click Configure
-
-
-    - Click Add URI Link
-      - Repeat the previous steps for all other redirect URIs.
-
+    - Add the redirect URIs in the **Valid redirect URIs** field
+      For example add the Decision Center redirect URI that you got earlier (`https://<DC_HOST>/decisioncenter/openid/redirect/odm` -- don't forget to replace <DC_HOST> with your actual host name!)
     - Click **Save** at the bottom of the page.
-    ![Add URI](/images/AzureAD/AddURI.png)
+
+    ![Add URI](/images/Keycloak/redirect_uris.png)
     
 
 ### Access the ODM services
