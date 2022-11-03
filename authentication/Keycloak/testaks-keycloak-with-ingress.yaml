@@ -1,0 +1,103 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      description: The web server's http port.
+    labels:
+      application: keycloak
+    name: keycloak
+  spec:
+    ports:
+    - port: 8080
+      targetPort: 8080
+    selector:
+      deploymentConfig: keycloak
+- apiVersion: networking.k8s.io/v1
+  kind: Ingress
+  metadata:
+    name: keycloak-ingress
+    annotations:
+      kubernetes.io/ingress.class: addon-http-application-routing
+  spec:
+    rules:
+    - host: keycloak.f720f13ef74445a0ba81.westeurope.aksapp.io   # f720f13ef74445a0ba81.westeurope.aksapp.io retreived on AKS using CLUSTER_DNS_ZONE=$(az aks show --resource-group myAKSResourceGroup --name myAKSCluster --query addonProfiles.httpApplicationRouting.config.HTTPApplicationRoutingZoneName -o tsv) see https://medium.com/microsoftazure/aks-different-load-balancing-options-for-a-single-cluster-when-to-use-what-abd2c22c2825
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: keycloak
+              port: 
+                number: 8080
+        - path: /auth
+          pathType: Prefix
+          backend:
+            service:
+              name: keycloak
+              port:
+                number: 8080
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    labels:
+      application: keycloak
+    name: keycloak
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        application: keycloak
+    strategy:
+      type: RollingUpdate
+      rollingUpdate:
+        maxSurge: 1
+        maxUnavailable: 0
+    template:
+      metadata:
+        labels:
+          application: keycloak
+          deploymentConfig: keycloak
+        name: keycloak
+      spec:
+        containers:
+        - args:
+          - start-dev
+          env:
+          - name: KEYCLOAK_ADMIN
+            value: admin
+          - name: KEYCLOAK_ADMIN_PASSWORD
+            value: admin
+          - name: KC_PROXY
+            value: edge
+          image: quay.io/keycloak/keycloak:19.0.3
+          livenessProbe:
+            failureThreshold: 100
+            httpGet:
+              path: /
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 60
+          name: keycloak
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 300
+            httpGet:
+              path: /
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 30
+          securityContext:
+            privileged: false
+          volumeMounts:
+          - mountPath: /opt/keycloak/data
+            name: empty
+        volumes:
+        - emptyDir: {}
+          name: empty
+kind: List
+metadata: {}
