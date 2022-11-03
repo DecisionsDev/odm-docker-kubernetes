@@ -6,9 +6,10 @@
   - [ODM OpenID flows](#odm-openid-flows)
   - [Prerequisites](#prerequisites)
 - [Configure a Keycloak instance for ODM (Part 1)](#configure-a-keycloak-instance-for-odm-part-1)
-  - [Log into the Keycloak instance](#log-into-the-keycloak-instance)
-  - [Manage groups and users](#manage-groups-and-users)
-  - [Set up an application](#set-up-an-application)
+  - [Log into the Keycloak Admin Console](#log-into-the-keycloak-admin-console)
+  - [Create a dedicated odm realm](#create-a-dedicated-odm-realm)
+  - [Manage roles, groups and users](#manage-roles-groups-and-users)
+  - [Set up the client](#set-up-the-client)
 - [Deploy ODM on a container configured with Keycloak (Part 2)](#deploy-odm-on-a-container-configured-with-keycloak-part-2)
   - [Prepare your environment for the ODM installation](#prepare-your-environment-for-the-odm-installation)
     - [Create a secret to use the Entitled Registry](#create-a-secret-to-use-the-entitled-registry)
@@ -31,9 +32,9 @@
 
 In the context of the Operational Decision Manager (ODM) on Certified Kubernetes offering, ODM for production can be configured with an external OpenID Connect server (OIDC provider) such as the Azure AD cloud service.
 
-## What is Keycloak ?
+## What is Keycloak?
 
-Keycloak ([Keycloak](https://www.keycloak.org/)), is an open source enterprise identity service that provides single sign-on, user federation, identity brokering and social login. This is the service that we use in this article, using the Keycloak SSO OpenID Connect([OpenID Connect](https://www.keycloak.org/docs/latest/server_admin/index.html#con-oidc_server_administration_guide))  capability.
+[Keycloak](https://www.keycloak.org/), is an open source enterprise identity service that provides single sign-on, user federation, identity brokering and social login. This is the service that we use in this article, using the Keycloak SSO [OpenID Connect](https://www.keycloak.org/docs/latest/server_admin/index.html#con-oidc_server_administration_guide) capability.
 
 
 ## About this task
@@ -50,27 +51,24 @@ OpenID Connect([OpenID Connect](https://www.keycloak.org/docs/latest/server_admi
 
 Terminology:
 
-- The **OpenID provider** — The authorization server that issues the ID token. In this case, Azure AD is the OpenID provider.
+- The **OpenID provider** — The authorization server that issues the ID token. In this case, Keycloak is the OpenID provider.
 - The **end user** — The end user whose information is contained in the ID token.
-- The **relying party** — The client application that requests the ID token from Azure AD.
+- The **relying party** — The client application that requests the ID token from Keycloak.
 - The **ID token** — The token that is issued by the OpenID provider and contains information about the end user in the form of claims.
 - A **claim** — A piece of information about the end user.
 
-The Authorization Code flow ([Authorization Code flow](https://www.keycloak.org/docs/latest/server_admin/index.html#_oidc-auth-flows-authorization)) is best used by server-side apps where the source code is not publicly exposed. The apps must be server-side because the request that exchanges the authorization code for a token requires a client secret, which has to be stored in your client. However, the server-side app requires an end user because it relies on interactions with the end user's web browser, which redirects the user and then receives the authorization code.
+The [Authorization Code flow](https://www.keycloak.org/docs/latest/server_admin/index.html#_oidc-auth-flows-authorization) is best used by server-side apps where the source code is not publicly exposed. The apps must be server-side because the request that exchanges the authorization code for a token requires a client secret, which has to be stored in your client. However, the server-side app requires an end user because it relies on interactions with the end user's web browser, which redirects the user and then receives the authorization code.
 
 
 ![Authentication flow](/images/AzureAD/AuthenticationFlow.png) (© Microsoft) 
 
-The Client Credentials flow ([Client Credentials flow](https://www.keycloak.org/docs/latest/server_admin/index.html#_client_credentials_grant) is intended for server-side (AKA "confidential") client applications with no end user, which normally describes machine-to-machine communication. The application must be server-side because it must be trusted with the client secret, and since the credentials are hard-coded, it cannot be used by an actual end user. It involves a single, authenticated request to the token endpoint, which returns an access token.
+The [Client Credentials flow](https://www.keycloak.org/docs/latest/server_admin/index.html#_client_credentials_grant) is intended for server-side (AKA "confidential") client applications with no end user, which normally describes machine-to-machine communication. The application must be server-side because it must be trusted with the client secret, and since the credentials are hard-coded, it cannot be used by an actual end user. It involves a single, authenticated request to the token endpoint, which returns an access token.
 
 ![Azure AD Client Credential Flow](/images/AzureAD/ClientCredential.png) (© Microsoft)
 
 The Microsoft identity platform supports the OAuth 2.0 Resource Owner Password Credentials (ROPC) grant, which allows an application to sign in the user by directly handling their password. Microsoft recommends you do not use the ROPC flow. In most scenarios, more secure alternatives are available and recommended. This flow requires a very high degree of trust in the application, and carries risks which are not present in other flows. You should only use this flow when other more secure flows cannot be used.
 
 ![Azure AD Password Flow](/images/AzureAD/PasswordFlow.png) (© Microsoft)
-
-
-
 
 ## Prerequisites
 
@@ -129,12 +127,14 @@ All the following configuration will be done inside this Admin Console.
 This step is not compulsory as you can realize all the following tasks in the default master realm.
 But, in order to avoid to mix all what will be configured with existing configurations, it's preferable to create a dedicated odm realm.
 
-   In Main page click on **Master**:  
+1. Create an odm realm
+
+   In Main page click on **Master**:
      * Click on **Create Realm** button
        * Realm Name: *odm*
        * Enabled: On
        * Click **Create**
-
+       
     ![Create Realm](/images/Keycloak/create_realm.png)
 
 ## Manage roles, groups and users
@@ -387,7 +387,7 @@ For more details about ODM groups and roles, have a look at [ODM on k8s document
 
 ### 3. Run the `helm install` command
 
-    You can now install the product. We will use the PostgreSQL internal database and disable the data persistence (`internalDatabase.persistence.enabled=false`) to avoid any platform complexity concerning persistent volume allocation.
+You can now install the product. We will use the PostgreSQL internal database and disable the data persistence (`internalDatabase.persistence.enabled=false`) to avoid any platform complexity concerning persistent volume allocation.
 
 #### a. Installation on OpenShift using Routes
   
@@ -489,8 +489,6 @@ For more details about ODM groups and roles, have a look at [ODM on k8s document
 
 Well done!  You can now connect to ODM using the endpoints you got [earlier](#register-the-odm-redirect-url) and log in as an ODM admin with the account you created in [the first step](#manage-group-and-user).
 
->Note:  Logout in ODM components using Azure AD authentication raises an error for the time being.  This is a known issue.  We recommend to use a private window in your browser to log in, so that logout is done just by closing this window.
-
 ### Set up Rule Designer
 
 To be able to securely connect your Rule Designer to the Decision Server and Decision Center services that are running in Certified Kubernetes, you need to establish a TLS connection through a security certificate in addition to the OpenID configuration.
@@ -535,7 +533,7 @@ But if you want to execute a bearer authentication ODM runtime call using the Cl
   ```
   $ curl -X POST -H "Content-Type: application/x-www-form-urlencoded" \
       -d 'client_id=<CLIENT_ID>&scope=openid&client_secret=<CLIENT_SECRET>&grant_type=client_credentials' \
-      '<SERVER_URL>/protocol/openid-connect/token'
+      '<KEYCLOAK_SERVER_URL>/protocol/openid-connect/token'
   ```
   
  And use the retrieved access token in the following way:
