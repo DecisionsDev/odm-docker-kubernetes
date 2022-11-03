@@ -33,7 +33,7 @@ In the context of the Operational Decision Manager (ODM) on Certified Kubernetes
 
 ## What is Keycloak ?
 
-Keycloak ([Keycloak](https://www.keycloak.org/)), is an enterprise identity service that provides single sign-on, user federation, identity brokering and social login. This is the service that we use in this article, using the Keycloak SSO OpenID Connect([OpenID Connect](https://www.keycloak.org/docs/latest/server_admin/index.html#con-oidc_server_administration_guide))  capability.
+Keycloak ([Keycloak](https://www.keycloak.org/)), is an open source enterprise identity service that provides single sign-on, user federation, identity brokering and social login. This is the service that we use in this article, using the Keycloak SSO OpenID Connect([OpenID Connect](https://www.keycloak.org/docs/latest/server_admin/index.html#con-oidc_server_administration_guide))  capability.
 
 
 ## About this task
@@ -85,11 +85,26 @@ You need the following elements:
 ### Install a Keycloak Instance
 
 For this tutorial, we followed the documented procedure explaining how to install Keycloak on OpenShift ([Keycloak on OpenShift](https://www.keycloak.org/getting-started/getting-started-openshift))
+We tested with the Keycloak version 19.0.3
+
+If you want to install with route on Openshift, you can also get keycloak-with-route.yaml and run:
+
+    ```
+    kubectl apply -f keycloak-with-route.yaml
+    ```
+
+If you prefer to install with ingress on any platform, you can also get keycloak-with-ingress.yaml
+Edit the Ingress <HOST_NAME> and <TLS_SECRET_NAME> and run:
+ 
+    ```
+    kubectl apply -f keycloak-with-ingress.yaml
+    ```
 
 # Configure a Keycloak instance for ODM (Part 1)
 
 In this section, we explain how to:
 
+- Log into the Keycloak Admin Console
 - Create a dedicated odm realm
 - Manage roles, groups and users
 - Set up an application
@@ -97,7 +112,7 @@ In this section, we explain how to:
 
 ## Log into the Keycloak Admin Console
 
-When, it's done, you should be able to access the Keycloak Admin Console using the following URL with the **admin** username and **admin** password:
+When, it's done,using routes you should be able to access the Keycloak Admin Console using the following URL with the **admin** username and **admin** password:
 
     ```
     KEYCLOAK_URL=https://$(oc get route keycloak --template='{{ .spec.host }}') &&
@@ -105,10 +120,12 @@ When, it's done, you should be able to access the Keycloak Admin Console using t
     echo "Keycloak Admin Console:   $KEYCLOAK_URL/admin" &&
     echo ""
     ```
+
+Using ingress, admin console is accessible at https://<HOST_NAME>/admin
+
 All the following configuration will be done inside this Admin Console.
 
 ## Create a dedicated odm realm
-
 This step is not compulsory as you can realize all the following tasks in the default master realm.
 But, in order to avoid to mix all what will be configured with existing configurations, it's preferable to create a dedicated odm realm.
 
@@ -215,19 +232,18 @@ For more details about ODM groups and roles, have a look at [ODM on k8s document
      
     7.1 Verify the Client Credential Token 
    
-   
-   
      You can request an access token using the Client-Credentials flow to verify the token's format.
      This token is used for the deployment between Decision Cennter and the Decision Server Console: 
      
     ```shell
-    $ ./get-client-credential-token.sh -i <CLIENT_ID> -x <CLIENT_SECRET> -n <TENANT_ID>
+    $ ./get-client-credential-token.sh -i <CLIENT_ID> -x <CLIENT_SECRET> -n <KEYCLOAK_SERVER_URL>
     ```
   
     Where:
   
-    - *TENANT_ID* and *CLIENT_ID* have been obtained from 'Retrieve Tenant and Client information' section.
-    - *CLIENT_SECRET* is listed in your ODM Application, section **General** / **Client Credentials**
+    - *CLIENT_ID* is your ODM Application, default is odm, can be retrieve in the **Manage** / **Clients** menu
+    - *CLIENT_SECRET* is listed in your ODM Application, in the **Credentials** tab
+    - *KEYCLOAK_SERVER_URL* is the issuer that can be retrieved using the **OpenID Endpoint Configuration** link of the **General** tab in the **Configure**/**Realm settings** menu
     
     7.2 Verify the Client Password Token 
 
@@ -236,41 +252,39 @@ For more details about ODM groups and roles, have a look at [ODM on k8s document
    This token is used for the invocation of the ODM components such as the Decision Center, Decision Servcer console and the invocation of the Decision Server Runtime REST API.
    
     ```shell
-    $ ./get-user-password-token.sh -i <CLIENT_ID> -x <CLIENT_SECRET> -n <TENANT_ID> -u <USERNAME> -p <PASSWORD> 
+    $ ./get-user-password-token.sh -i <CLIENT_ID> -x <CLIENT_SECRET> -n <KEYCLOAK_SERVER_URL> -u <USERNAME> -p <PASSWORD> 
     ```
    
    Where:
   
-    - *TENANT_ID* and *CLIENT_ID* have been obtained from 'Retrieve Tenant and Client information' section.
-    - *CLIENT_SECRET* is listed in your ODM Application, section **General** / **Client Credentials**
+    - *CLIENT_ID* is your ODM Application, default is odm, can be retrieve in the **Manage** / **Clients** menu
+    - *CLIENT_SECRET* is listed in your ODM Application, in the **Credentials** tab
+    - *KEYCLOAK_SERVER_URL* is the issuer that can be retrieved using the **OpenID Endpoint Configuration** link of the **General** tab in the **Configure**/**Realm settings** menu
     - *USERNAME* *PASSWORD* have been created from 'Create at least one user that belongs to this new group.' section.
     
-     by introspecting the id_token value with this online tool [https://jwt.ms](https://jwt.ms). You should get:
+     by introspecting the id_token value with this online tool [https://jwt.io](https://jwt.io). You should get:
      You should get :
      
     ```
     {
       ..
-      "iss": "https://login.microsoftonline.com/<TENANT_ID>/v2.0",
+      "iss": "<KEYCLOAK_SERVER_URL>",
      ....
-      "email": "<USERNAME>",
+      "preferred_username": "<USERNAME>",
       "groups": [
-        "<GROUP>"
+        "rtsAdministrators",
+        "rtsInstallers",
+        "rtsConfigManagers",
+        "resAdministrators",
+        "resDeployers",
+        "resMonitors",
+        "resExecutors"
       ],
       ...
-      "ver": "2.0"
    }
     ```
-    
-    Verfiy :
-    - *email* : Should be present. Unless you should verify the creation of your user and fill the Email field.
-    - * : Should be present. Unless you should verify the creation of your user and fill the Email field. 
-    - *ver* : Should be 2.0. Unless you should verify the previous step **Manifest change**
-    - *aud* : Should be your CLIENT_ID
-    - *iss* : Should be end by 2.0. Unless you should verify the previous step **Manifest change**
 
-  > If this command failed try to login to the [Azure Portal](https://portal.azure.com/). You may require to enable 2FA and/or change the password for the first time. 
-# Deploy ODM on a container configured with Azure AD (Part 2)
+# Deploy ODM on a container configured with Keycloak (Part 2)
 
 ## Prepare your environment for the ODM installation
 
@@ -332,7 +346,7 @@ For more details about ODM groups and roles, have a look at [ODM on k8s document
       * rtsAdministrators/resAdministrators/resExecutors ODM roles are given to the CLIENT_ID (which is seen as a user) to manage the client-credentials flow  
     - openIdWebSecurity.xml is containing 2 openIdConnectClient liberty configuration :
       * for the web access to Decision Center an Decision Server consoles using userIdentifier="preferred_username" with the Authorization Code flow
-      * for the rest-api call using userIdentifier="preffered_username" with the client-credentials flow
+      * for the rest-api call using userIdentifier="preferred_username" with the client-credentials flow
     - openIdParameters.properties is configuring several features like allowed domains, logout and some internal ODM openid features
 
 3. Create the Keycloak authentication secret

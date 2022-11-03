@@ -1,0 +1,107 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      description: The web server's http port.
+    labels:
+      application: keycloak
+    name: keycloak
+  spec:
+    ports:
+    - port: 8080
+      targetPort: 8080
+    selector:
+      deploymentConfig: keycloak
+- apiVersion: networking.k8s.io/v1
+  kind: Ingress
+  metadata:
+    name: keycloak-ingress
+    annotations:
+      kubernetes.io/tls-acme: "true"
+#      kubernetes.io/ingress.class: "nginx"
+      ingress.kubernetes.io/force-ssl-redirect: "true"
+  spec:
+    tls:
+    - hosts:
+      - <HOST_NAME>   # Example: keycloak.apps.ocp-psit-ado.cp.fyre.ibm.com
+      secretName: <TLS_SECRET_NAME> # Example on OpenShift create a copy in the current namespace of the router-certs-default secret in the openshift-ingress project 
+    rules:
+    - host: <HOST_NAME>   # Example: keycloak.apps.ocp-psit-ado.cp.fyre.ibm.com
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: keycloak
+              port: 
+                number: 8080
+        - path: /auth
+          pathType: Prefix
+          backend:
+            service:
+              name: keycloak
+              port:
+                number: 8080
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      application: keycloak
+    name: keycloak
+  spec:
+    replicas: 1
+    selector:
+      deploymentConfig: keycloak
+    strategy:
+      type: Recreate
+    template:
+      metadata:
+        labels:
+          application: keycloak
+          deploymentConfig: keycloak
+        name: keycloak
+      spec:
+        containers:
+        - args:
+          - start-dev
+          env:
+          - name: KEYCLOAK_ADMIN
+            value: admin
+          - name: KEYCLOAK_ADMIN_PASSWORD
+            value: admin
+          - name: KC_PROXY
+            value: edge
+          image: quay.io/keycloak/keycloak:19.0.3
+          livenessProbe:
+            failureThreshold: 100
+            httpGet:
+              path: /
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 60
+          name: keycloak
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 300
+            httpGet:
+              path: /
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 30
+          securityContext:
+            privileged: false
+          volumeMounts:
+          - mountPath: /opt/keycloak/data
+            name: empty
+        volumes:
+        - emptyDir: {}
+          name: empty
+    triggers:
+    - type: ConfigChange
+kind: List
+metadata: {}
