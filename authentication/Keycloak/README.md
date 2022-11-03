@@ -85,18 +85,14 @@ You need the following elements:
 For this tutorial, we followed the documented procedure explaining how to install Keycloak on OpenShift ([Keycloak on OpenShift](https://www.keycloak.org/getting-started/getting-started-openshift))
 We tested with the Keycloak version 19.0.3
 
-If you want to install with route on Openshift, you can also get keycloak-with-route.yaml and run:
+If you want to install with route on Openshift, you can also get [keycloak-with-route.yaml](keycloak-with-route.yaml) and run:
 
-    ```
     kubectl apply -f keycloak-with-route.yaml
-    ```
 
-If you prefer to install with ingress on any platform, you can also get keycloak-with-ingress.yaml
-Edit the Ingress <HOST_NAME> and <TLS_SECRET_NAME> and run:
+If you prefer to install with ingress on any platform, you can also get [keycloak-with-ingress.yaml](keycloak-with-ingress.yaml)
+Edit the file and replace <HOST_NAME> and <TLS_SECRET_NAME> using your platform information and run:
  
-    ```
     kubectl apply -f keycloak-with-ingress.yaml
-    ```
 
 # Configure a Keycloak instance for ODM (Part 1)
 
@@ -228,12 +224,13 @@ For more details about ODM groups and roles, have a look at [ODM on k8s document
       * Between 11-20 predefined mapper, select **groups**
       * Click *Save*
 
-    ![Add group mapper](/images/Keycloak/add_group_mapper_to_role_scole.png)
+    ![Add group mapper](/images/Keycloak/add_group_mapper_to_role_scope.png)
 
 3. Retrieve the Keycloak Server URL
 
     In Menu **Configure**/**Realm settings**, in the **General** tab, click on **OpenID Endpoint Configuration** link
-    Take a note of the issuer URL. It will be referenced as ``KEYCLOAK_SERVER_URL`` in the next steps.
+    Take a note of the issuer URL. 
+    It will be referenced as ``KEYCLOAK_SERVER_URL`` in the next steps.
     
 4. Check the configuration
   
