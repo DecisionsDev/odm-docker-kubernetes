@@ -60,15 +60,15 @@ Terminology:
 The [Authorization Code flow](https://www.keycloak.org/docs/latest/server_admin/index.html#_oidc-auth-flows-authorization) is best used by server-side apps where the source code is not publicly exposed. The apps must be server-side because the request that exchanges the authorization code for a token requires a client secret, which has to be stored in your client. However, the server-side app requires an end user because it relies on interactions with the end user's web browser, which redirects the user and then receives the authorization code.
 
 
-![Authentication flow](/images/AzureAD/AuthenticationFlow.png) (© Microsoft) 
+![Authentication flow](/images/Okta/Authentication_flow.png) (© Okta)
 
 The [Client Credentials flow](https://www.keycloak.org/docs/latest/server_admin/index.html#_client_credentials_grant) is intended for server-side (AKA "confidential") client applications with no end user, which normally describes machine-to-machine communication. The application must be server-side because it must be trusted with the client secret, and since the credentials are hard-coded, it cannot be used by an actual end user. It involves a single, authenticated request to the token endpoint, which returns an access token.
 
-![Azure AD Client Credential Flow](/images/AzureAD/ClientCredential.png) (© Microsoft)
+![Client Credential Flow](/images/Okta/oauth_client_creds_flow.png) (© Okta)
 
 The Microsoft identity platform supports the OAuth 2.0 Resource Owner Password Credentials (ROPC) grant, which allows an application to sign in the user by directly handling their password. Microsoft recommends you do not use the ROPC flow. In most scenarios, more secure alternatives are available and recommended. This flow requires a very high degree of trust in the application, and carries risks which are not present in other flows. You should only use this flow when other more secure flows cannot be used.
 
-![Azure AD Password Flow](/images/AzureAD/PasswordFlow.png) (© Microsoft)
+![Password Flow](/images/Okta/password_flow.png) (© Okta)
 
 ## Prerequisites
 
