@@ -39,7 +39,7 @@ aws ecr create-repository --repository-name odm-decisionserverconsole --image-sc
 
     Extract the file that contains both the Helm chart and the images. The name of the file includes the chart version number:
 
-    ```bash
+    ```
     $ mkdir ODM-PPA
     $ cd ODM-PPA
     $ tar zxvf PPA_NAME.tar.gz
