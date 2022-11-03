@@ -66,7 +66,7 @@ The [Client Credentials flow](https://www.keycloak.org/docs/latest/server_admin/
 
 ![Client Credential Flow](/images/Okta/oauth_client_creds_flow.png) (© Okta)
 
-The Microsoft identity platform supports the OAuth 2.0 Resource Owner Password Credentials (ROPC) grant, which allows an application to sign in the user by directly handling their password. Microsoft recommends you do not use the ROPC flow. In most scenarios, more secure alternatives are available and recommended. This flow requires a very high degree of trust in the application, and carries risks which are not present in other flows. You should only use this flow when other more secure flows cannot be used.
+The resource owner password flow allows an application to sign in the user by directly handling their password. It is not recommended to use this flow. In most scenarios, more secure alternatives are available and recommended. This flow requires a very high degree of trust in the application, and carries risks which are not present in other flows. You should only use this flow when other more secure flows cannot be used.
 
 ![Password Flow](/images/Okta/password_flow.png) (© Okta)
 
