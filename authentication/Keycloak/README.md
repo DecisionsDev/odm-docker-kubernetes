@@ -47,7 +47,7 @@ The following procedure describes how to manually configure ODM with an Azure AD
 
 ## ODM OpenID flows
 
-OpenID Connect([OpenID Connect](https://www.keycloak.org/docs/latest/server_admin/index.html#con-oidc_server_administration_guide)) is an authentication standard built on top of OAuth 2.0. It adds a token called an ID token.
+[OpenID Connect](https://www.keycloak.org/docs/latest/server_admin/index.html#con-oidc_server_administration_guide) is an authentication standard built on top of OAuth 2.0. It adds a token called an ID token.
 
 Terminology:
 
@@ -82,7 +82,7 @@ You need the following elements:
 
 ### Install a Keycloak Instance
 
-For this tutorial, we followed the documented procedure explaining how to install Keycloak on OpenShift ([Keycloak on OpenShift](https://www.keycloak.org/getting-started/getting-started-openshift))
+For this tutorial, we followed the documented procedure explaining how to install [Keycloak on OpenShift](https://www.keycloak.org/getting-started/getting-started-openshift)
 We tested with the Keycloak version 19.0.3
 
 If you want to install with route on Openshift, you can also get [keycloak-with-route.yaml](keycloak-with-route.yaml) and run:
@@ -136,8 +136,9 @@ But, in order to avoid to mix all what will be configured with existing configur
 ## Manage roles, groups and users
 
 As you can read in [Keycloak documentation](https://www.keycloak.org/docs/latest/server_admin/index.html#assigning-permissions-using-roles-and-groups), roles and groups have a similar purpose, which is to give users access and permissions to use applications. Groups are a collection of users to which you apply roles and attributes. Roles define specific applications permissions and access control.
-To manage permissions inside the ODM application, the ID token and access token will contains a groups information. But, in reality, this information is using roles.
-So, you can create only roles. You can also create groups and realize a mapping between groups and roles. This way, adding a user in a group will also provide it the roles mapped to this group. 
+To manage permissions inside the ODM application, the ID token and access token will contains all roles that will be gather in a property named groups.
+So, you can create only roles, and provide these roles to a user.
+You can also create groups and realize a mapping between groups and roles. This way, adding a user in a group will also provide it the roles mapped to this group. This is the way we have choosen here.
 
 1. Create a role for ODM administrators.
 
@@ -188,6 +189,15 @@ For more details about ODM groups and roles, have a look at [ODM on k8s document
         * Fill the Password and Password confirmation  fields with **johndoe**
 	* Temporary: Off
 	* Click **Save**
+    
+    (Optional) Every user is created with a predefined role named **default-roles-<CLIENT_ID>** 
+    This role has no interest. So, we here is the way to unassign this role.
+    
+      * In User Details, select the **Role mapping** tab 
+        * Select **default-roles-<CLIENT_ID>**
+        * Click **Unassign**
+    
+      ![Unassign default role](/images/Keycloak/unassign_default_role.png)
     
     Repeat this step for each user you want to add.
 
