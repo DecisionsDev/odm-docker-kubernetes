@@ -190,7 +190,7 @@ In this step, we augment the token with meta-information that is required by the
 
     ```
     ...
-    "loginName": "<YourEmailAddress>",
+    "email": "<YourEmailAddress>",
     "groups": [
       "odm-admin"
     ]
