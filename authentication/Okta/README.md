@@ -8,7 +8,7 @@
     - [Create an Okta account](#create-an-okta-account)
 - [Configure Okta instance for ODM (Part 1)](#configure-okta-instance-for-odm-part-1)
   - [Log into the OKTA instance](#log-into-the-okta-instance)
-  - [Manage group and user](#manage-group-and-user)
+  - [Manage groups and users](#manage-groups-and-users)
   - [Setup an application](#setup-an-application)
   - [Configure the default Authorization Server](#configure-the-default-authorization-server)
 - [Deploy ODM on container configured with Okta Server (Part 2)](#deploy-odm-on-container-configured-with-okta-server-part-2)
@@ -352,7 +352,7 @@ In this step, we augment the token with meta-information that is required by the
 
 ### Access the ODM services
 
-Well done!  You can now connect to ODM using the endpoints you got [earlier](#register-the-odm-redirect-url) and log in as an ODM admin with the account you created in [the first step](#manage-group-and-user).
+Well done!  You can now connect to ODM using the endpoints you got [earlier](#register-the-odm-redirect-url) and log in as an ODM admin with the account you created in [the first step](#manage-groups-and-users).
 
 >Note:  Logout in ODM components using Okta authentication raises an error for the time being.  This is a known issue.  We recommend to use a private window in your browser to log in, so that logout is done just by closing this window.
 
