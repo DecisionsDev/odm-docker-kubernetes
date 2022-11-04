@@ -41,7 +41,7 @@ In the context of the Operational Decision Manager (ODM) on Certified Kubernetes
 
 You need to create a number of secrets before you can install an ODM instance with an external OIDC provider such as the Keycloakservice and use web application single sign-on (SSO). The following diagram shows the ODM services with an external OIDC provider after a successful installation.
 
-![ODM web application SSO](/images/AzureAD/diag_azuread_interaction.jpg)
+![ODM web application SSO](/images/Keycloak/diag_keycloak_interaction.jpg)
 
 The following procedure describes how to manually configure ODM with an Azure AD service.
 
