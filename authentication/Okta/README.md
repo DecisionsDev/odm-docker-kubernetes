@@ -9,7 +9,7 @@
 - [Configure Okta instance for ODM (Part 1)](#configure-okta-instance-for-odm-part-1)
   - [Log into the OKTA instance](#log-into-the-okta-instance)
   - [Manage groups and users](#manage-groups-and-users)
-  - [Setup an application](#setup-an-application)
+  - [Set up an application](#set-up-an-application)
   - [Configure the default Authorization Server](#configure-the-default-authorization-server)
 - [Deploy ODM on container configured with Okta Server (Part 2)](#deploy-odm-on-container-configured-with-okta-server-part-2)
   - [Prepare your environment for the ODM installation](#prepare-your-environment-for-the-odm-installation)
