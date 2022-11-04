@@ -407,7 +407,7 @@ You can now install the product. We will use the PostgreSQL internal database an
   helm install my-odm-release ibmcharts/ibm-odm-prod \
           --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
           --set oidc.enabled=true \
-          --set license=accept \
+          --set license=true \
           --set internalDatabase.persistence.enabled=false \
           --set customization.trustedCertificateList={"keycloak-secret"} \
           --set customization.authSecretRef=keycloak-auth-secret \
