@@ -301,7 +301,8 @@ In this step, we augment the token with meta-information that is required by the
           --set oidc.enabled=true \
           --set internalDatabase.persistence.enabled=false \
           --set customization.trustedCertificateList={"okta-secret"} \
-          --set customization.authSecretRef=okta-auth-secret
+          --set customization.authSecretRef=okta-auth-secret \
+          --set license=true
     ```
 
     > Note: On OpenShift, you have to add the following parameters due to security context constraints.
