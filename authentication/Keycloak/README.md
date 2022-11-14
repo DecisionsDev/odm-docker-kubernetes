@@ -235,8 +235,11 @@ If you want to prevent this behaviour, you have to create the 'rtsUsers' role in
     In Menu **Manage** / **Client scopes**, click on the existing **roles** scope:
     * Select the **Mappers** tab
     * Click **Add mapper>From predefined mappers**
-      * Between 11-20 predefined mapper, select **groups**
-      * Click *Save*
+      * Search for mapper : **groups** 	
+      * select **groups**
+      * Click *Add*
+    * Click *Settings tab*
+    * Click *Save*	
 
     ![Add group mapper](/images/Keycloak/add_group_mapper_to_role_scope.png)
 
