@@ -31,7 +31,7 @@
 
 # Introduction
 
-In the context of the Operational Decision Manager (ODM) on Certified Kubernetes offering, ODM for production can be configured with an external OpenID Connect server (OIDC provider) such as the Azure AD cloud service.
+In the context of the Operational Decision Manager (ODM) on Certified Kubernetes offering, ODM for production can be configured with an external OpenID Connect server (OIDC provider), such as the Azure AD cloud service.
 
 ## What is Azure AD?
 
@@ -40,7 +40,7 @@ Azure Active Directory ([Azure AD](https://azure.microsoft.com/en-us/services/ac
 
 ## About this task
 
-You need to create a number of secrets before you can install an ODM instance with an external OIDC provider such as the Azure AD service and use web application single sign-on (SSO). The following diagram shows the ODM services with an external OIDC provider after a successful installation.
+You need to create a number of secrets before you can install an ODM instance with an external OIDC provider such as the Azure AD service, and use web application single sign-on (SSO). The following diagram shows the ODM services with an external OIDC provider after a successful installation.
 
 ![ODM web application SSO](/images/AzureAD/diag_azuread_interaction.jpg)
 
@@ -52,18 +52,18 @@ OpenID Connect is an authentication standard built on top of OAuth 2.0. It adds 
 
 Terminology:
 
-- The **OpenID provider** — The authorization server that issues the ID token. In this case, Azure AD is the OpenID provider.
-- The **end user** — The end user whose information is contained in the ID token.
-- The **relying party** — The client application that requests the ID token from Azure AD.
-- The **ID token** — The token that is issued by the OpenID provider and contains information about the end user in the form of claims.
-- A **claim** — A piece of information about the end user.
+- **OpenID provider** — The authorization server that issues the ID token. In this case, Azure AD is the OpenID provider.
+- **end user** — The end user whose details are contained in the ID token.
+- **relying party** — The client application that requests the ID token from Azure AD.
+- **ID token** — The token that is issued by the OpenID provider and contains information about the end user in the form of claims.
+- **claim** — A piece of information about the end user.
 
-The Authorization Code flow is best used by server-side apps where the source code is not publicly exposed. The apps must be server-side because the request that exchanges the authorization code for a token requires a client secret, which has to be stored in your client. However, the server-side app requires an end user because it relies on interactions with the end user's web browser, which redirects the user and then receives the authorization code.
+The Authorization Code flow is best used by server-side apps in which the source code is not publicly exposed. The apps must be server-side because the request that exchanges the authorization code for a token requires a client secret, which has to be stored in your client. However, the server-side app requires an end user because it relies on interactions with the end user's web browser which redirects the user and then receives the authorization code.
 
 
 ![Authentication flow](/images/AzureAD/AuthenticationFlow.png) (© Microsoft) 
 
-The Client Credentials flow is intended for server-side (AKA "confidential") client applications with no end user, which normally describes machine-to-machine communication. The application must be server-side because it must be trusted with the client secret, and since the credentials are hard-coded, it cannot be used by an actual end user. It involves a single, authenticated request to the token endpoint, which returns an access token.
+The Client Credentials flow is intended for server-side (AKA "confidential") client applications with no end user, which normally describes machine-to-machine communication. The application must be server-side because it must be trusted with the client secret, and since the credentials are hard-coded, it cannot be used by an actual end user. It involves a single, authenticated request to the token endpoint which returns an access token.
 
 ![Azure AD Client Credential Flow](/images/AzureAD/ClientCredential.png) (© Microsoft)
 
