@@ -115,7 +115,7 @@ After activating your account by email, you should have access to your Aure AD i
 
     ![Add Group](/images/AzureAD/NewGroup.png)
 
-    In Menu **Azure Active Directory** / **Groups** take a note of the Object ID. It will be referenced as ``GROUP_GUID`` later in this tutorial.
+    In Menu **Azure Active Directory** / **Groups** take note of the Object ID. It will be referenced as ``GROUP_GUID`` later in this tutorial.
 
     ![GroupID](/images/AzureAD/GroupGUID.png)
 
@@ -136,10 +136,10 @@ After activating your account by email, you should have access to your Aure AD i
         * Edit properties
         * Fill the email field with *myodmuser*@YOURDOMAIN
     
-      * Try to login to the [azure portal](https://portal.azure.com/) with the user.
+      * Try to log in to the [azure portal](https://portal.azure.com/) with the user.
        This may require to enable 2FA and/or change the password for the first time. 
        
-    Repeat this step for each user you want to add.
+    Repeat this step for each user that you want to add.
 
 ## Set up an application
 
