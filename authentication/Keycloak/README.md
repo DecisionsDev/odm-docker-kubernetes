@@ -507,7 +507,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 
 ### Access the ODM services
 
-Well done!  You can now connect to ODM using the endpoints you got [earlier](#register-the-odm-redirect-url) and log in as an ODM admin with the account you created in [the first step](#manage-group-and-user).
+Well done!  You can now connect to ODM using the endpoints you got [earlier](#register-the-odm-redirect-url) and log in as an ODM admin with the account you created in [the first step](#create-a-dedicated-odm-realm) (For ex: johndoe@mycompany.com/johndoe).
 
 ### Set up Rule Designer
 
