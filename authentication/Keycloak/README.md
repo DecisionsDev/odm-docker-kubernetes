@@ -43,7 +43,8 @@ You need to create a number of secrets before you can install an ODM instance wi
 
 ![ODM web application SSO](/images/Keycloak/diag_keycloak_interaction.jpg)
 
-The following procedure describes how to manually configure ODM with an Azure AD service.
+
+The following procedure describes how to manually configure ODM with an Keycloak service.
 
 ## ODM OpenID flows
 
@@ -83,16 +84,11 @@ You need the following elements:
 ### Install a Keycloak Instance
 
 For this tutorial, we followed the documented procedure explaining how to install [Keycloak on OpenShift](https://www.keycloak.org/getting-started/getting-started-openshift)
-We tested with the Keycloak version 19.0.3
+We tested with the Keycloak version 20.0.1
 
-If you want to install with route on Openshift, you can also get [keycloak-with-route.yaml](keycloak-with-route.yaml) and run:
+You can follow this installation the [Get started with Keycloak on Openshift](https://www.keycloak.org/getting-started/getting-started-openshift) instructions.
 
-    kubectl apply -f keycloak-with-route.yaml
-
-If you prefer to install with ingress on any platform, you can also get [keycloak-with-ingress.yaml](keycloak-with-ingress.yaml)
-Edit the file and replace <HOST_NAME> and <TLS_SECRET_NAME> using your platform information and run:
- 
-    kubectl apply -f keycloak-with-ingress.yaml
+If you want to install in another Kubernetes platform you can follow this [Get started with Keycloak on Kubernetes](https://www.keycloak.org/getting-started/getting-started-kube) instructions.
 
 # Configure a Keycloak instance for ODM (Part 1)
 
@@ -106,7 +102,7 @@ In this section, we explain how to:
 
 ## Log into the Keycloak Admin Console
 
-When, it's done,using routes you should be able to access the Keycloak Admin Console using the following URL with the **admin** username and **admin** password:
+When, it's done,using Openshiftroutes you should be able to access the Keycloak Admin Console using the following URL with the **admin** username and **admin** password:
 
     ```
     KEYCLOAK_URL=https://$(oc get route keycloak --template='{{ .spec.host }}') &&
@@ -114,8 +110,6 @@ When, it's done,using routes you should be able to access the Keycloak Admin Con
     echo "Keycloak Admin Console:   $KEYCLOAK_URL/admin" &&
     echo ""
     ```
-
-Using ingress, admin console is accessible at https://<HOST_NAME>/admin
 
 All the following configuration will be done inside this Admin Console.
 
@@ -152,8 +146,6 @@ You can also create groups and realize a mapping between groups and roles. This 
 Do the same for all others ODM J2EE existing roles like : rtsConfigManagers,rtsInstallers,rtsUsers,resAdministrators,resMonitors,resDeployers,resExecutors
 For more details about ODM groups and roles, have a look at [ODM on k8s documentation](https://www.ibm.com/docs/en/odm/8.11.0?topic=access-user-roles-user-groups)
 
-We have no need of the rtsUsers role as all authenticated Decision Center users have this role.
-If you want to prevent this behaviour, you have to create the 'rtsUsers' role in Keycloak and launch the ODM Helm release using the option '--set decisionCenter.disableAllAuthenticatedUser=true'   
 
 2. Create a group for ODM administrators.
 
@@ -175,13 +167,14 @@ If you want to prevent this behaviour, you have to create the 'rtsUsers' role in
 3. Create at least one user that belongs to this new group.
 
     In Menu **Manage** / **Users**:
-      * Click **Add user** 
+      * Click **Create new user** 
+        * Username: ``johndoe@mycompany.com``
         * Email: ``johndoe@mycompany.com``
-	* Email Verified: On
+        * Email Verified: On
         * First name: ``John``
         * Last name: ``Doe``
         * Enabled: On
-	* Required user actions: nothing
+        * Required user actions: nothing
         * Groups : Click on **Join Groups** , select ***odm-admin*** and click **Join**
         * Click **Create**
 
@@ -190,7 +183,9 @@ If you want to prevent this behaviour, you have to create the 'rtsUsers' role in
       * In User Details, select the **Credentials** tab 
         * Click on **Set password**
         * Fill the Password and Password confirmation  fields with **johndoe**
-	* Temporary: Off
+	* Temporary: Off      
+	* Click *Save Password*
+	* Click Details tab
 	* Click **Save**
     
     (Optional) Every user is created with a predefined role named **default-roles-<CLIENT_ID>** 
@@ -199,6 +194,7 @@ If you want to prevent this behaviour, you have to create the 'rtsUsers' role in
       * In User Details, select the **Role mapping** tab 
         * Select **default-roles-<CLIENT_ID>**
         * Click **Unassign**
+        * Click **Remove**
     
       ![Unassign default role](/images/Keycloak/unassign_default_role.png)
     
@@ -234,8 +230,11 @@ If you want to prevent this behaviour, you have to create the 'rtsUsers' role in
     In Menu **Manage** / **Client scopes**, click on the existing **roles** scope:
     * Select the **Mappers** tab
     * Click **Add mapper>From predefined mappers**
-      * Between 11-20 predefined mapper, select **groups**
-      * Click *Save*
+      * Search for mapper : **groups** 	
+      * select **groups**
+      * Click *Add*
+    * Click *Settings tab*
+    * Click *Save*	
 
     ![Add group mapper](/images/Keycloak/add_group_mapper_to_role_scope.png)
 
@@ -260,9 +259,12 @@ If you want to prevent this behaviour, you have to create the 'rtsUsers' role in
   
     Where:
   
-    - *CLIENT_ID* is your ODM Application, default is odm, can be retrieve in the **Manage** / **Clients** menu
+    - *CLIENT_ID* is your ODM Application, default is **odm**, can be retrieve in the **Manage** / **Clients** menu
     - *CLIENT_SECRET* is listed in your ODM Application, in the **Credentials** tab
     - *KEYCLOAK_SERVER_URL* is the issuer that can be retrieved using the **OpenID Endpoint Configuration** link of the **General** tab in the **Configure**/**Realm settings** menu
+    
+    **TOOD What do we needs to check**
+    
     
     7.2 Verify the Client Password Token 
 
@@ -346,6 +348,8 @@ If you want to prevent this behaviour, you have to create the 'rtsUsers' role in
     kubectl create secret generic keycloak-secret --from-file=tls.crt=keycloak.crt
     ```
     
+    **TODO Explain the KEYCLOAK_SERVER_URL_WITHOUT_HTTPS parameter**
+     
 2. Generate the ODM configuration file for Keycloak
 
    
@@ -409,11 +413,12 @@ You can now install the product. We will use the PostgreSQL internal database an
           --set oidc.enabled=true \
           --set license=true \
           --set internalDatabase.persistence.enabled=false \
+	  --set decisionCenter.disableAllAuthenticatedUser=true \
           --set customization.trustedCertificateList={"keycloak-secret"} \
           --set customization.authSecretRef=keycloak-auth-secret \
           --set internalDatabase.runAsUser='' --set customization.runAsUser='' --set service.enableRoute=true
   ```
-
+ 
 #### b. Installation using Ingress
   
   Refer to the following documentation to install an NGINX Ingress Controller on:
@@ -432,6 +437,7 @@ You can now install the product. We will use the PostgreSQL internal database an
           --set customization.trustedCertificateList={"keycloak-secret"} \
           --set customization.authSecretRef=keycloak-auth-secret \
           --set service.ingress.enabled=true \
+	  --set decisionCenter.disableAllAuthenticatedUser=true \
           --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"\,"nginx.ingress.kubernetes.io/backend-protocol: HTTPS"\,"nginx.ingress.kubernetes.io/affinity: cookie"}
   ```
 
@@ -486,9 +492,10 @@ You can now install the product. We will use the PostgreSQL internal database an
       - Decision Server Runtime redirect URI:  `https://<INGRESS_ADDRESS>/DecisionService/openid/redirect/odm`
       - Rule Designer redirect URI: `https://127.0.0.1:9081/oidcCallback`
 
-   From the Keycloak admin console, in **Manage** / **Clients** / **Settings**:
-  
-    - Add the redirect URIs in the **Valid redirect URIs** field
+   From the Keycloak admin console, in **Manage** / **Clients** / **odm** 
+    - In the tab setting **Settings**
+    	* Add the redirect URIs in the **Valid redirect URIs** field for each components.
+    	
       For example add the Decision Center redirect URI that you got earlier (`https://<DC_HOST>/decisioncenter/openid/redirect/odm` -- don't forget to replace <DC_HOST> with your actual host name!)
     - Click **Save** at the bottom of the page.
 
@@ -497,7 +504,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 
 ### Access the ODM services
 
-Well done!  You can now connect to ODM using the endpoints you got [earlier](#register-the-odm-redirect-url) and log in as an ODM admin with the account you created in [the first step](#manage-group-and-user).
+Well done!  You can now connect to ODM using the endpoints you got [earlier](#register-the-odm-redirect-url) and log in as an ODM admin with the account you created in [the first step](#create-a-dedicated-odm-realm) (For ex: johndoe@mycompany.com/johndoe).
 
 ### Set up Rule Designer
 
@@ -537,6 +544,8 @@ You can realize a basic authentication ODM runtime call the following way:
   ```
   
   Where b2RtQWRtaW46b2RtQWRtaW4= is the base64 encoding of the current username:password odmAdmin:odmAdmin
+
+**TODO Could we give detail of the project to deploy or just say that it's a sample**
 
 But if you want to execute a bearer authentication ODM runtime call using the Client Credentials flow, you have to get a bearer access token:
   
