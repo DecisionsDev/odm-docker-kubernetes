@@ -153,18 +153,18 @@ After activating your account by email, you should have access to your Aure AD i
     ![New Web Application](/images/AzureAD/RegisterApp.png)
 
 
-2. Generate an OpenID client secret
+2. Generate an OpenID client secret.
    
     In Menu **Azure Active Directory** / **App Registration**, click **ODM Application**:
-    * From the Overview page Click **Client credentials: Add a certificate or secret** (link) or click on the **Manage/Certificates & secrets** tab
+    * From the Overview page, click **Client credentials: Add a certificate or secret** (link) or click the **Manage/Certificates & secrets** tab
     * Click +New Client Secret
       * Description: ``For ODM integration``
       * Click Add
-   * Take a note of the **Value**. It will be referenced as ``CLIENT_SECRET`` in the next steps.
+   * Take note of the **Value**. It will be referenced as ``CLIENT_SECRET`` in the next steps.
   
-3. Add Claims 
+3. Add Claims. 
 
-    In Menu **Azure Active Directory** / **App Registration**, click **ODM Application**, click **Token Configuration**:
+    In Menu **Azure Active Directory** / **App Registration**, click **ODM Application**, and then click **Token Configuration**:
 
   * Add Optional Email ID Claim
     * Click +Add optional claim 
@@ -178,7 +178,7 @@ After activating your account by email, you should have access to your Aure AD i
     * Check Email
     * Click Add
 
-  * Turno Microsoft Graph email permission 
+  * Turn on Microsoft Graph email permission 
     * Check Turn on the Microsoft Graph email permission 
     * Click Add
   * Add Group Claim
@@ -186,20 +186,20 @@ After activating your account by email, you should have access to your Aure AD i
     * Check Security Groups
     * Click Add
   
-4. API Permissions
+4. API Permissions.
 
-    In Menu **Azure Active Directory** / **App Registration**, click **ODM Application**, click **API Permissions**.
+    In Menu **Azure Active Directory** / **App Registration**, click **ODM Application**, and then click **API Permissions**.
     * Click Grant Admin Consent for **YourOrg**
   
-5. Manifest change
+5. Manifest change.
   
-    In Menu **Azure Active Directory** / **App Registration**, click **ODM Application**, click **Manifest**.
+    In Menu **Azure Active Directory** / **App Registration**, click **ODM Application**, and then click **Manifest**.
     
     As explained in [accessTokenAcceptedVersion attribute explanation](  https://docs.microsoft.com/en-us/azure/active-directory/develop/reference-app-manifest#accesstokenacceptedversion-attribute
-), change the value to 2 and click Save.
+), change the value to 2 and then click Save.
   ODM OpenID Liberty configuration needs version 2.0 for the issuerIdentifier. See the [openIdWebSecurity.xml](templates/openIdWebSecurity.xml) file.
   
-6. Retrieve Tenant and Client information
+6. Retrieve Tenant and Client information.
 
     From the Azure console, in **Azure Active Directory** / **App Registrations** / **ODM Application**:
     - Click Overview 
@@ -208,16 +208,16 @@ After activating your account by email, you should have access to your Aure AD i
 
     ![Tenant ID](/images/AzureAD/GetTenantID.png)
     
-7. Check the configuration
+7. Check the configuration.
   
-     Download the [azuread-odm-script.zip](azuread-odm-script.zip) file to your machine and unzip it in your working directory. This .zip file contains scripts and template to verify and setup ODM.
+     Download the [azuread-odm-script.zip](azuread-odm-script.zip) file to your machine and unzip it in your working directory. This .zip file contains scripts and templates to verify and set up ODM.
      
     7.1 Verify the Client Credential Token 
    
    
    
-     You can request an access token using the Client-Credentials flow to verify the token's format.
-     This token is used for the deployment between Decision Cennter and the Decision Server Console: 
+     You can request an access token using the Client-Credentials flow to verify the token format.
+     This token is used for the deployment between Decision Cennter and the Decision Server console: 
      
     ```shell
     $ ./get-client-credential-token.sh -i <CLIENT_ID> -x <CLIENT_SECRET> -n <TENANT_ID>
@@ -228,7 +228,7 @@ After activating your account by email, you should have access to your Aure AD i
     - *TENANT_ID* and *CLIENT_ID* have been obtained from 'Retrieve Tenant and Client information' section.
     - *CLIENT_SECRET* is listed in your ODM Application, section **General** / **Client Credentials**
     
-    You should get a token and by introspecting the value with this online tool [https://jwt.ms](https://jwt.ms). You should get:
+    You should get a token and by introspecting the value with this online tool [https://jwt.ms](https://jwt.ms) you should get:
     
     ```
     {
@@ -242,15 +242,15 @@ After activating your account by email, you should have access to your Aure AD i
     "ver": "2.0"
     }
     ```
-    - *ver* : Should be 2.0. Unless you should verify the previous step **Manifest change**
-    - *aud* : Should be your CLIENT_ID
-    - *iss* : Should be end by 2.0. Unless you should verify the previous step **Manifest change**
+    - *ver* : should be 2.0. otherwise you should verify the previous step **Manifest change**
+    - *aud* : should be your CLIENT_ID
+    - *iss* : should end with 2.0. otherwise you should verify the previous step **Manifest change**
     
-    7.2 Verify the Client Password Token 
+    7.2 Verify the Client Password Token. 
 
 
    To check that it has been correctly taken into account, you can request an access token using the Client password flow.
-   This token is used for the invocation of the ODM components such as the Decision Center, Decision Servcer console and the invocation of the Decision Server Runtime REST API.
+   This token is used for the invocation of the ODM components like Decision Center, Decision Servcer console, and the invocation of the Decision Server Runtime REST API.
    
     ```shell
     $ ./get-user-password-token.sh -i <CLIENT_ID> -x <CLIENT_SECRET> -n <TENANT_ID> -u <USERNAME> -p <PASSWORD> 
@@ -262,8 +262,8 @@ After activating your account by email, you should have access to your Aure AD i
     - *CLIENT_SECRET* is listed in your ODM Application, section **General** / **Client Credentials**
     - *USERNAME* *PASSWORD* have been created from 'Create at least one user that belongs to this new group.' section.
     
-     by introspecting the id_token value with this online tool [https://jwt.ms](https://jwt.ms). You should get:
-     You should get :
+     By introspecting the id_token value with this online tool [https://jwt.ms](https://jwt.ms), you should get:
+    
      
     ```
     {
@@ -279,14 +279,14 @@ After activating your account by email, you should have access to your Aure AD i
    }
     ```
     
-    Verfiy :
-    - *email* : Should be present. Unless you should verify the creation of your user and fill the Email field.
-    - * : Should be present. Unless you should verify the creation of your user and fill the Email field. 
-    - *ver* : Should be 2.0. Unless you should verify the previous step **Manifest change**
-    - *aud* : Should be your CLIENT_ID
-    - *iss* : Should be end by 2.0. Unless you should verify the previous step **Manifest change**
+    Verify :
+    - *email* : should be present. Otherwise you should verify the creation of your user and fill the Email field.
+    - * : should be present. Otherwise you should verify the creation of your user and fill the Email field. 
+    - *ver* : should be 2.0. Otherwise you should verify the previous step **Manifest change**
+    - *aud* : should be your CLIENT_ID
+    - *iss* : should end with 2.0. Otherwise you should verify the previous step **Manifest change**
 
-  > If this command failed try to login to the [Azure Portal](https://portal.azure.com/). You may require to enable 2FA and/or change the password for the first time. 
+  > If this command failed, try to log in to the [Azure Portal](https://portal.azure.com/). You may have to enable 2FA and/or change the password for the first time. 
 
 # Deploy ODM on a container configured with Azure AD (Part 2)
 
