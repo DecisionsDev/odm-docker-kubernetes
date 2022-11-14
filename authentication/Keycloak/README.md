@@ -264,7 +264,7 @@ If you want to prevent this behaviour, you have to create the 'rtsUsers' role in
   
     Where:
   
-    - *CLIENT_ID* is your ODM Application, default is odm, can be retrieve in the **Manage** / **Clients** menu
+    - *CLIENT_ID* is your ODM Application, default is **odm**, can be retrieve in the **Manage** / **Clients** menu
     - *CLIENT_SECRET* is listed in your ODM Application, in the **Credentials** tab
     - *KEYCLOAK_SERVER_URL* is the issuer that can be retrieved using the **OpenID Endpoint Configuration** link of the **General** tab in the **Configure**/**Realm settings** menu
     
