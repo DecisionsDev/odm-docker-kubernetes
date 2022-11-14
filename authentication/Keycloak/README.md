@@ -548,6 +548,8 @@ You can realize a basic authentication ODM runtime call the following way:
   
   Where b2RtQWRtaW46b2RtQWRtaW4= is the base64 encoding of the current username:password odmAdmin:odmAdmin
 
+**TODO Could we give detail of the project to deploy or just say that it's a sample**
+
 But if you want to execute a bearer authentication ODM runtime call using the Client Credentials flow, you have to get a bearer access token:
   
   ```
