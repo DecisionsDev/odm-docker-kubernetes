@@ -86,9 +86,10 @@ You need the following elements:
 
 For this tutorial, we followed the documented procedure explaining how to install [Keycloak on OpenShift](https://www.keycloak.org/getting-started/getting-started-openshift)
 We tested with the Keycloak version 19.0.3
-You can follow this installation instructions : [Get started with Keycloak on Openshift](https://www.keycloak.org/getting-started/getting-started-openshift)
 
-If you want to install in another Kubernetes platform you can follow this [instructions](https://www.keycloak.org/getting-started/getting-started-kube).
+You can follow this installation the [Get started with Keycloak on Openshift](https://www.keycloak.org/getting-started/getting-started-openshift) instructions.
+
+If you want to install in another Kubernetes platform you can follow this [Get started with Keycloak on Kubernetes](https://www.keycloak.org/getting-started/getting-started-kube) instructions.
 
 # Configure a Keycloak instance for ODM (Part 1)
 
@@ -102,7 +103,7 @@ In this section, we explain how to:
 
 ## Log into the Keycloak Admin Console
 
-When, it's done,using routes you should be able to access the Keycloak Admin Console using the following URL with the **admin** username and **admin** password:
+When, it's done,using Openshiftroutes you should be able to access the Keycloak Admin Console using the following URL with the **admin** username and **admin** password:
 
     ```
     KEYCLOAK_URL=https://$(oc get route keycloak --template='{{ .spec.host }}') &&
