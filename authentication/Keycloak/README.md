@@ -353,6 +353,8 @@ If you want to prevent this behaviour, you have to create the 'rtsUsers' role in
     kubectl create secret generic keycloak-secret --from-file=tls.crt=keycloak.crt
     ```
     
+    **TODO Explain the KEYCLOAK_SERVER_URL_WITHOUT_HTTPS parameter**
+     
 2. Generate the ODM configuration file for Keycloak
 
    
@@ -420,7 +422,7 @@ You can now install the product. We will use the PostgreSQL internal database an
           --set customization.authSecretRef=keycloak-auth-secret \
           --set internalDatabase.runAsUser='' --set customization.runAsUser='' --set service.enableRoute=true
   ```
-
+ 
 #### b. Installation using Ingress
   
   Refer to the following documentation to install an NGINX Ingress Controller on:
