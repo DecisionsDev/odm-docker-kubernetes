@@ -172,13 +172,14 @@ If you want to prevent this behaviour, you have to create the 'rtsUsers' role in
 3. Create at least one user that belongs to this new group.
 
     In Menu **Manage** / **Users**:
-      * Click **Add user** 
+      * Click **Create new user** 
+        * Username: ``johndoe@mycompany.com``
         * Email: ``johndoe@mycompany.com``
-	* Email Verified: On
+        * Email Verified: On
         * First name: ``John``
         * Last name: ``Doe``
         * Enabled: On
-	* Required user actions: nothing
+        * Required user actions: nothing
         * Groups : Click on **Join Groups** , select ***odm-admin*** and click **Join**
         * Click **Create**
 
@@ -187,7 +188,9 @@ If you want to prevent this behaviour, you have to create the 'rtsUsers' role in
       * In User Details, select the **Credentials** tab 
         * Click on **Set password**
         * Fill the Password and Password confirmation  fields with **johndoe**
-	* Temporary: Off
+	* Temporary: Off      
+	* Click *Save Password*
+	* Click Details tab
 	* Click **Save**
     
     (Optional) Every user is created with a predefined role named **default-roles-<CLIENT_ID>** 
@@ -196,6 +199,7 @@ If you want to prevent this behaviour, you have to create the 'rtsUsers' role in
       * In User Details, select the **Role mapping** tab 
         * Select **default-roles-<CLIENT_ID>**
         * Click **Unassign**
+        * Click **Remove**
     
       ![Unassign default role](/images/Keycloak/unassign_default_role.png)
     
