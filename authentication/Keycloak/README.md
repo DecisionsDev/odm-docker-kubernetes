@@ -268,6 +268,9 @@ If you want to prevent this behaviour, you have to create the 'rtsUsers' role in
     - *CLIENT_SECRET* is listed in your ODM Application, in the **Credentials** tab
     - *KEYCLOAK_SERVER_URL* is the issuer that can be retrieved using the **OpenID Endpoint Configuration** link of the **General** tab in the **Configure**/**Realm settings** menu
     
+    **TOOD What do we needs to check**
+    
+    
     7.2 Verify the Client Password Token 
 
 
