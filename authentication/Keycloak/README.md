@@ -555,8 +555,6 @@ But if you want to execute a bearer authentication ODM runtime call using the Cl
       '<KEYCLOAK_SERVER_URL>/protocol/openid-connect/token'
   ```
   
-  **TODO Ne marche pas chez moi**
-  
  And use the retrieved access token in the following way:
   
    ```
