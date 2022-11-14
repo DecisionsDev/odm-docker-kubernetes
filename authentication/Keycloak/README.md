@@ -43,7 +43,6 @@ You need to create a number of secrets before you can install an ODM instance wi
 
 ![ODM web application SSO](/images/Keycloak/diag_keycloak_interaction.jpg)
 
-**TODO : Needs to be redo : AZURE AD**
 
 The following procedure describes how to manually configure ODM with an Keycloak service.
 
