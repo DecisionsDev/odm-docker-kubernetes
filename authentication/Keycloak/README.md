@@ -84,7 +84,7 @@ You need the following elements:
 ### Install a Keycloak Instance
 
 For this tutorial, we followed the documented procedure explaining how to install [Keycloak on OpenShift](https://www.keycloak.org/getting-started/getting-started-openshift)
-We tested with the Keycloak version 19.0.3
+We tested with the Keycloak version 20.0.1
 
 You can follow this installation the [Get started with Keycloak on Openshift](https://www.keycloak.org/getting-started/getting-started-openshift) instructions.
 
