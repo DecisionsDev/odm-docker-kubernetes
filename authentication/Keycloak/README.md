@@ -86,17 +86,9 @@ You need the following elements:
 
 For this tutorial, we followed the documented procedure explaining how to install [Keycloak on OpenShift](https://www.keycloak.org/getting-started/getting-started-openshift)
 We tested with the Keycloak version 19.0.3
+You can follow this installation instructions : [Get started with Keycloak on Openshift](https://www.keycloak.org/getting-started/getting-started-openshift)
 
-If you want to install with route on Openshift, you can also get [keycloak-with-route.yaml](keycloak-with-route.yaml) and run:
-
-    kubectl apply -f keycloak-with-route.yaml
-
-If you prefer to install with ingress on any platform, you can also get [keycloak-with-ingress.yaml](keycloak-with-ingress.yaml)
-Edit the file and replace <HOST_NAME> and <TLS_SECRET_NAME> using your platform information and run:
- 
-    kubectl apply -f keycloak-with-ingress.yaml
-    
-If you want to install in another Kubernetes platform you can follow this [instruction]([https://www.keycloak.org/getting-started/getting-started-openshift](https://www.keycloak.org/getting-started/getting-started-kube).
+If you want to install in another Kubernetes platform you can follow this [instructions](https://www.keycloak.org/getting-started/getting-started-kube).
 
 # Configure a Keycloak instance for ODM (Part 1)
 
@@ -118,8 +110,6 @@ When, it's done,using routes you should be able to access the Keycloak Admin Con
     echo "Keycloak Admin Console:   $KEYCLOAK_URL/admin" &&
     echo ""
     ```
-
-Using ingress, admin console is accessible at https://<HOST_NAME>/admin
 
 All the following configuration will be done inside this Admin Console.
 
