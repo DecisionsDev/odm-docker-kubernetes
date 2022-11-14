@@ -146,10 +146,6 @@ You can also create groups and realize a mapping between groups and roles. This 
 Do the same for all others ODM J2EE existing roles like : rtsConfigManagers,rtsInstallers,rtsUsers,resAdministrators,resMonitors,resDeployers,resExecutors
 For more details about ODM groups and roles, have a look at [ODM on k8s documentation](https://www.ibm.com/docs/en/odm/8.11.0?topic=access-user-roles-user-groups)
 
-**TODO Il y a rtsUsers dois t'on le garder**
-
-We have no need of the rtsUsers role as all authenticated Decision Center users have this role.
-If you want to prevent this behaviour, you have to create the 'rtsUsers' role in Keycloak and launch the ODM Helm release using the option '--set decisionCenter.disableAllAuthenticatedUser=true'   
 
 2. Create a group for ODM administrators.
 
@@ -417,6 +413,7 @@ You can now install the product. We will use the PostgreSQL internal database an
           --set oidc.enabled=true \
           --set license=true \
           --set internalDatabase.persistence.enabled=false \
+	  --set decisionCenter.disableAllAuthenticatedUser=true \
           --set customization.trustedCertificateList={"keycloak-secret"} \
           --set customization.authSecretRef=keycloak-auth-secret \
           --set internalDatabase.runAsUser='' --set customization.runAsUser='' --set service.enableRoute=true
@@ -440,6 +437,7 @@ You can now install the product. We will use the PostgreSQL internal database an
           --set customization.trustedCertificateList={"keycloak-secret"} \
           --set customization.authSecretRef=keycloak-auth-secret \
           --set service.ingress.enabled=true \
+	  --set decisionCenter.disableAllAuthenticatedUser=true \
           --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"\,"nginx.ingress.kubernetes.io/backend-protocol: HTTPS"\,"nginx.ingress.kubernetes.io/affinity: cookie"}
   ```
 
