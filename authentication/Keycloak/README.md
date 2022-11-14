@@ -495,9 +495,10 @@ You can now install the product. We will use the PostgreSQL internal database an
       - Decision Server Runtime redirect URI:  `https://<INGRESS_ADDRESS>/DecisionService/openid/redirect/odm`
       - Rule Designer redirect URI: `https://127.0.0.1:9081/oidcCallback`
 
-   From the Keycloak admin console, in **Manage** / **Clients** / **Settings**:
-  
-    - Add the redirect URIs in the **Valid redirect URIs** field
+   From the Keycloak admin console, in **Manage** / **Clients** / **odm** 
+    - In the tab setting **Settings**
+    	* Add the redirect URIs in the **Valid redirect URIs** field for each components.
+    	
       For example add the Decision Center redirect URI that you got earlier (`https://<DC_HOST>/decisioncenter/openid/redirect/odm` -- don't forget to replace <DC_HOST> with your actual host name!)
     - Click **Save** at the bottom of the page.
 
