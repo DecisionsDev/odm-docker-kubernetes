@@ -147,6 +147,8 @@ You can also create groups and realize a mapping between groups and roles. This 
 Do the same for all others ODM J2EE existing roles like : rtsConfigManagers,rtsInstallers,rtsUsers,resAdministrators,resMonitors,resDeployers,resExecutors
 For more details about ODM groups and roles, have a look at [ODM on k8s documentation](https://www.ibm.com/docs/en/odm/8.11.0?topic=access-user-roles-user-groups)
 
+**TODO Il y a rtsUsers dois t'on le garder **
+
 We have no need of the rtsUsers role as all authenticated Decision Center users have this role.
 If you want to prevent this behaviour, you have to create the 'rtsUsers' role in Keycloak and launch the ODM Helm release using the option '--set decisionCenter.disableAllAuthenticatedUser=true'   
 
