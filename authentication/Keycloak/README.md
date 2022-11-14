@@ -43,7 +43,9 @@ You need to create a number of secrets before you can install an ODM instance wi
 
 ![ODM web application SSO](/images/Keycloak/diag_keycloak_interaction.jpg)
 
-The following procedure describes how to manually configure ODM with an Azure AD service.
+**TODO : Needs to be redo : AZURE AD**
+
+The following procedure describes how to manually configure ODM with an Keycloak service.
 
 ## ODM OpenID flows
 
@@ -93,6 +95,8 @@ If you prefer to install with ingress on any platform, you can also get [keycloa
 Edit the file and replace <HOST_NAME> and <TLS_SECRET_NAME> using your platform information and run:
  
     kubectl apply -f keycloak-with-ingress.yaml
+    
+If you want to install in another Kubernetes platform you can follow this [instruction]([https://www.keycloak.org/getting-started/getting-started-openshift](https://www.keycloak.org/getting-started/getting-started-kube).
 
 # Configure a Keycloak instance for ODM (Part 1)
 
