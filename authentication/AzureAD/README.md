@@ -294,7 +294,7 @@ After activating your account by email, you should have access to your Aure AD i
 
 ### Create a secret to use the Entitled Registry
 
-1. To get your entitlement key, log in to [MyIBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary) with the IBMid and password that are associated with the entitled software .
+1. To get your entitlement key, log in to [MyIBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary) with the IBMid and password that are associated with the entitled software.
 
     In the **Container software library** tile, verify your entitlement on the **View library** page, and then go to **Get entitlement key**  to retrieve the key.
 
@@ -321,7 +321,7 @@ After activating your account by email, you should have access to your Aure AD i
 
 
 
-1. Create a secret with the Azure AD Server certificate
+1. Create a secret with the Azure AD Server certificate.
 
     To allow ODM services to access the Azure AD Server, it is mandatory to provide the Azure AD Server certificate.
     You can create the secret as follows:
@@ -331,15 +331,15 @@ After activating your account by email, you should have access to your Aure AD i
     kubectl create secret generic ms-secret --from-file=tls.crt=microsoft.crt
     ```
     
-    Introspecting the Azure AD login.microsoftonline.com certificate. You can see it has been signed by the Digicert Root CA authorithy
-    So, we will also add the [Digicert Root CA certificate](resources/digicert.crt) :
+    Introspecting the Azure AD login.microsoftonline.com certificate, you can see it has been signed by the Digicert Root CA authorithy.
+    So we will also add the [Digicert Root CA certificate](resources/digicert.crt):
     
     ```
     kubectl create secret generic digicert-secret --from-file=tls.crt=digicert.crt
     ```
     
     
-2. Generate the ODM configuration file for Azure AD
+2. Generate the ODM configuration file for Azure AD.
 
    
     If you have not yet done so, download the [azuread-odm-script.zip](azuread-odm-script.zip) file to your machine. This .zip file contains the [script](generateTemplate.sh) and the content of the [templates](templates) directory. 
@@ -353,20 +353,20 @@ After activating your account by email, you should have access to your Aure AD i
     - *TENANT_ID* and *CLIENT_ID* have been obtained from [previous step](#retrieve-tenant-and-client-information)
     - *CLIENT_SECRET* is listed in your ODM Application, section **General** / **Client Credentials**
     - *GROUP_GUID* is the ODM Admin group created in a [previous step](#manage-group-and-user) (*odm-admin*)
-    - *SSO_DOMAIN* is the domain name of your sso. If your AzureAD is connected to another SSO you should add the SSO domain name in this parameter. If you're user has been declared as explain in step **Create at least one user that belongs to this new group** you can omitt this parameter.
+    - *SSO_DOMAIN* is the domain name of your SSO. If your AzureAD is connected to another SSO, you should add the SSO domain name in this parameter. If your user has been declared as explained in step **Create at least one user that belongs to this new group**, you can omit this parameter.
 
-    The following 4 files are generated into the `output` directory :
+    The following four files are generated into the `output` directory:
     
-    - webSecurity.xml is containing the mapping between liberty J2EE ODM roles and Azure AD groups and users :
+    - webSecurity.xml contains the mapping between Liberty J2EE ODM roles and Azure AD groups and users:
       * All ODM roles are given to the GROUP_GUID group
       * rtsAdministrators/resAdministrators/resExecutors ODM roles are given to the CLIENT_ID (which is seen as a user) to manage the client-credentials flow  
-    - openIdWebSecurity.xml is containing 2 openIdConnectClient liberty configuration :
-      * for the web access to Decision Center an Decision Server consoles using userIdentifier="email" with the Authorization Code flow
-      * for the rest-api call using userIdentifier="aud" with the client-credentials flow
-    - openIdParameters.properties is configuring several features like allowed domains, logout and some internal ODM openid features
-    - OdmOidcProviders.json is configuring the client-credentials OpenId provider used by the Decision Center Server configuration to connect Decision Center to the RES Console and Decision Center to the Decision Runner  
+    - openIdWebSecurity.xml contains two openIdConnectClient Liberty configurations:
+      * For web access to the Decision Center an Decision Server consoles using userIdentifier="email" with the Authorization Code flow
+      * For the rest-api call using userIdentifier="aud" with the client-credentials flow
+    - openIdParameters.properties configures several features like allowed domains, logout, and some internal ODM OpenId features
+    - OdmOidcProviders.json configures the client-credentials OpenId provider used by the Decision Center server configuration to connect Decision Center to the Decision Server console and Decision Center to the Decision Runner  
 
-3. Create the Azure AD authentication secret
+3. Create the Azure AD authentication secret.
 
     ```
     kubectl create secret generic azuread-auth-secret \
