@@ -436,7 +436,7 @@ After activating your account by email, you should have access to your Aure AD i
 
 ## Complete post-deployment tasks
 
-### Register the ODM redirect URL
+### Register the ODM redirect URLs
 
     
 1. Get the ODM endpoints.
@@ -537,9 +537,9 @@ For more information, refer to the [documentation](https://www.ibm.com/docs/en/o
   
 ### Calling the ODM Runtime Service
   
-As explained in the ODM on Certified Kubernetes documentation [Configuring user access with OpenID](https://www.ibm.com/docs/en/odm/8.11.0?topic=access-configuring-user-openid), we advise to use basic authentication for the ODM runtime call for performance reasons and to avoid the issue of token expiration and revocation.
+As explained in the ODM on Certified Kubernetes documentation [Configuring user access with OpenID](https://www.ibm.com/docs/en/odm/8.11.0?topic=access-configuring-user-openid), we advise to use basic authentication for the ODM runtime call, for performance reasons and to avoid the issue of token expiration and revocation.
 
-You can realize a basic authentication ODM runtime call the following way:
+You can realize a basic authentication for the ODM runtime call in the following way:
   
    ```
   $ curl -H "Content-Type: application/json" -k --data @payload.json \
@@ -549,7 +549,7 @@ You can realize a basic authentication ODM runtime call the following way:
   
   Where b2RtQWRtaW46b2RtQWRtaW4= is the base64 encoding of the current username:password odmAdmin:odmAdmin
 
-But if you want to execute a bearer authentication ODM runtime call using the Client Credentials flow, you have to get a bearer access token:
+If you want to execute a bearer authentication for the ODM runtime call using the Client Credentials flow, you have to get a bearer access token:
   
   ```
   $ curl -X POST -H "Content-Type: application/x-www-form-urlencoded" \
