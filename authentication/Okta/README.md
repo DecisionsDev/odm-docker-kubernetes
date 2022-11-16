@@ -55,7 +55,7 @@ The Client Credentials flow is intended for server-side (AKA "confidential") cli
 
 ![Okta Client Credential Flow](/images/Okta/oauth_client_creds_flow.png) (© Okta)
 
-The Authorization Code flow is best used by server-side apps where the source code isn't publicly exposed. The apps must be server-side because the request that exchanges the authorization code for a token requires a client secret, which has to be stored in your client. However, the server-side app requires an end user because it relies on interactions with the end user's web browser, which redirects the user and then receives the authorization code.
+The Authorization Code flow is best used by server-side apps where the source code is not publicly exposed. The apps must be server-side because the request that exchanges the authorization code for a token requires a client secret, which has to be stored in your client. However, the server-side app requires an end user because it relies on interactions with the end user's web browser, which redirects the user and then receives the authorization code.
 
 Auth Code flow width:
 
@@ -73,7 +73,7 @@ First, install the following software on your machine:
 
 ### Create an Okta account
 
-You can sign up for a [free trial Okta account](https://www.okta.com/free-trial/) if you don't own an Okta account already. Beware, Okta enforces [rate limits](https://developer.okta.com/docs/reference/rate-limits/) that are obviously lower for free developer accounts than for paid accounts but they should not be a problem for a demo.
+If you do not own an Okta account, you can sign up for a [free trial Okta account](https://www.okta.com/free-trial/). Be aware that Okta enforces [rate limits](https://developer.okta.com/docs/reference/rate-limits/) that are obviously lower for free developer accounts than for paid accounts but they should not be a problem for a demo.
 
 # Configure an Okta instance for ODM (Part 1)
 
@@ -131,7 +131,7 @@ After activating your account by email, you should have access to your Okta inst
       * Check **Client Credentials**
       * Check **Refresh Token**
       * Check **Implicit (hybrid)**
-    * Leave the default **Sign-in redirect URIs** and **Sign-out redirect URIs** and leave blank the **Base URIs**
+    * Keep the default **Sign-in redirect URIs** and **Sign-out redirect URIs**, and leave the **Base URIs** blank
     * In **Assignments**:
       * Under **Controlled access**:
         * Check **Limit access to selected groups**
@@ -148,7 +148,7 @@ In this step, we augment the token with meta-information that is required by the
 
 2. Add the *odmapiusers* scope.
 
-    To be more secure, we will use the client credentials flow for the ODM Rest API call. This requires to create a specific restricted scope (named *OKTA_API_SCOPE* later in this article).
+    To be more secure, we will use the client credentials flow for the ODM REST API call. This requires to create a specific restricted scope (named *OKTA_API_SCOPE* later in this article).
 
     In the **Scopes** tab, click **Add Scope** 
       - Name : *odmapiusers*
