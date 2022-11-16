@@ -5,6 +5,7 @@
   - [About this task](#about-this-task)
   - [ODM OpenID flows](#odm-openid-flows)
   - [Prerequisites](#prerequisites)
+    - [Install a Keycloak Instance](#install-a-keycloak-instance)
 - [Configure a Keycloak instance for ODM (Part 1)](#configure-a-keycloak-instance-for-odm-part-1)
   - [Log into the Keycloak Admin Console](#log-into-the-keycloak-admin-console)
   - [Create a dedicated odm realm](#create-a-dedicated-odm-realm)
@@ -25,6 +26,7 @@
     - [Access the ODM services](#access-the-odm-services)
     - [Set up Rule Designer](#set-up-rule-designer)
     - [Calling the ODM Runtime Service](#calling-the-odm-runtime-service)
+    - [Getting Started with IBM Operational Decision Manager for Containers](#getting-started-with-ibm-operational-decision-manager-for-containers)
 - [License](#license)
 <!-- /TOC -->
 
