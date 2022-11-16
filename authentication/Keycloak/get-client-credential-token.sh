@@ -64,7 +64,7 @@ echo "-------------------------------------------"
 echo "Open a browser at this URL : https://jwt.io"
 echo "-------------------------------------------"
 echo " Copy paste the id_token : "
-echo $RESULT | sed "s/.*access_token\"://g"
+echo $RESULT | sed 's|.*"access_token":*"\([^"]*\)".*|\1|g'
 echo "====> "
 echo " Verify this field exists in your Token :"
 echo " preferred_username = service-account-<KEYCLOAK_CLIENT_ID> "

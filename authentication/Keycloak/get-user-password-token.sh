@@ -77,12 +77,12 @@ fi
 RESULT=$(curl -k -X POST -H "Content-Type: application/x-www-form-urlencoded" -d "client_id=$KEYCLOAK_CLIENT_ID&username=$USERNAME&scope=openid&password=$PASSWORD&client_secret=$KEYCLOAK_CLIENT_SECRET&grant_type=password" \
   "$KEYCLOAK_SERVER_URL/protocol/openid-connect/token")
 
-echo "Retrieve this Token : $RESULT"
+echo "Retrieve this Token : $RESULT curl -k -X POST -H 'Content-Type: application/x-www-form-urlencoded" -d "client_id=$KEYCLOAK_CLIENT_ID&username=$USERNAME&scope=openid&password=$PASSWORD&client_secret=$KEYCLOAK_CLIENT_SECRET&grant_type=password'  '$KEYCLOAK_SERVER_URL/protocol/openid-connect/token'"
 echo "-------------------------------------------"  
 echo "Open a browser at this URL : https://jwt.io"
 echo "-------------------------------------------"
 echo " Copy paste the id_token : "
-echo $RESULT | sed "s/.*id_token\"://g"
+echo $RESULT | sed 's|.*"id_token":*"\([^"]*\)".*|\1|g'
 echo "====> "
 echo " Verify this fields exists in your Token :"
 echo " iss = $KEYCLOAK_SERVER_URL"
