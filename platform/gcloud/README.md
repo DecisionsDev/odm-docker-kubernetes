@@ -311,12 +311,12 @@ A configuration that uses [BackendConfig](https://cloud.google.com/kubernetes-en
 
 ### 6. Access ODM services
 
-In a real enterprise use-case, to access the mycompany.com domain name, you will have to deal with [Google Managed Certificate](https://cloud.google.com/load-balancing/docs/ssl-certificates/google-managed-certs) and [Google Cloud DNS](https://cloud.google.com/dns).
+In a real enterprise use case, to access the mycompany.com domain name, you have to deal with [Google Managed Certificate](https://cloud.google.com/load-balancing/docs/ssl-certificates/google-managed-certs) and [Google Cloud DNS](https://cloud.google.com/dns).
 
-In this trial, we are using a self-signed certificate. So, there is no extra charge like certificate and domain purchase.
-We just have to manage a configuration to simulate the mycompany.com access.
+In this trial, we use a self-signed certificate. So, there is no extra charge like certificate and domain purchase.
+We only have to manage a configuration to simulate the mycompany.com access.
 
-- Get the EXTERNAL-IP using the command line:
+- Get the EXTERNAL-IP with the command line:
 
   ```
   kubectl get ingress <release>-odm-ingress -o jsonpath='{.status.loadBalancer.ingress[].ip}'
@@ -338,7 +338,7 @@ We just have to manage a configuration to simulate the mycompany.com access.
   | Decision Server Runtime | https://mycompany.com/DecisionService | odmAdmin/odmAdmin
   | Decision Runner | https://mycompany.com/DecisionRunner | odmAdmin/odmAdmin
 
-  > NOTE:You can also click on the Ingress routes accessible from the Google Cloud console below the [Kubernetes Engine/Services & Ingress Details Panel](https://console.cloud.google.com/kubernetes/ingresses):
+  > NOTE:You can also click the Ingress routes accessible from the Google Cloud console under the [Kubernetes Engine/Services & Ingress Details Panel](https://console.cloud.google.com/kubernetes/ingresses).
   > <img width="1000" height="532" src='./images/ingress_routes.png'/>
 
 ### 7. Track ODM usage with the IBM License Service
