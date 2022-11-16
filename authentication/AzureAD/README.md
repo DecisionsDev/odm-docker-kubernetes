@@ -571,7 +571,7 @@ You can realize a basic authentication ODM runtime call the following way:
 But if you want to execute a bearer authentication ODM runtime call using the Client Credentials flow, you have to get a bearer access token:
   
   ```
-  $ curl -X POST -H "Content-Type: application/x-www-form-urlencoded" \
+  $ curl -k -X POST -H "Content-Type: application/x-www-form-urlencoded" \
       -d 'client_id=<CLIENT_ID>&scope=<CLIENT_ID>%2F.default&client_secret=<CLIENT_SECRET>&grant_type=client_credentials' \
       'https://login.microsoftonline.com/<TENANT_ID>/oauth2/v2.0/token'
   ```
