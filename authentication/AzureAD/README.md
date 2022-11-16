@@ -24,8 +24,8 @@
         - Register the ODM redirect URLs
         - Access the ODM services
         - Set up Rule Designer
-        - Calling the ODM Runtime Service
         - Getting Started with IBM Operational Decision Manager for Containers
+        - Calling the ODM Runtime Service
 - License
 
 <!-- /TOC -->
@@ -536,10 +536,13 @@ To be able to securely connect your Rule Designer to the Decision Server and Dec
 
 For more information, refer to the [documentation](https://www.ibm.com/docs/en/odm/8.11.0?topic=designer-importing-security-certificate-in-rule).
 
-### Calling the ODM Runtime Service
 
-If your are familiar with ODM, you can now import your own Decision Services and work with ODM.
-If you prefer to follow an ODM tutorial to understand main ODM features, have a look at the [getting started](https://github.com/DecisionsDev/odm-for-container-getting-started)
+### Getting Started with IBM Operational Decision Manager for Containers
+
+Get hands-on experience with IBM Operational Decision Manager in a container environment by following this [Getting started tutorial](https://github.com/DecisionsDev/odm-for-container-getting-started/blob/master/README.md).
+
+
+### Calling the ODM Runtime Service
 
 To manage ODM runtime call on the next steps, we used the [Loan Validation Decision Service project](https://github.com/DecisionsDev/odm-for-container-getting-started/blob/master/Loan%20Validation%20Service.zip)
 
@@ -581,13 +584,6 @@ But if you want to execute a bearer authentication ODM runtime call using the Cl
          https://<DS_RUNTIME_HOST>/DecisionService/rest/production_deployment/1.0/loan_validation_production/1.0
   ```
   
-
-### Getting Started with IBM Operational Decision Manager for Containers
-
-Get hands-on experience with IBM Operational Decision Manager in a container environment by following this [Getting started tutorial](https://github.com/DecisionsDev/odm-for-container-getting-started/blob/master/README.md).
-
-
-
 # License
 
 [Apache 2.0](/LICENSE)
