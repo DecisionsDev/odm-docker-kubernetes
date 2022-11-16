@@ -446,7 +446,7 @@ You can now install the product. We will use the PostgreSQL internal database an
           --set customization.trustedCertificateList={"keycloak-secret"} \
           --set customization.authSecretRef=keycloak-auth-secret \
           --set service.ingress.enabled=true \
-	  --set decisionCenter.disableAllAuthenticatedUser=true \
+          --set decisionCenter.disableAllAuthenticatedUser=true \
           --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"\,"nginx.ingress.kubernetes.io/backend-protocol: HTTPS"\,"nginx.ingress.kubernetes.io/affinity: cookie"}
   ```
 
