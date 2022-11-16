@@ -1,4 +1,4 @@
-<!-- TOC titleSize:2 tabSpaces:2 depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 skip:0 title:1 charForUnorderedList:- -->
+<!-- TOC depthfrom:1 depthto:6 withlinks:false updateonsave:false orderedlist:false -->
 ## Table of Contents
 - [Introduction](#introduction)
   - [What is Okta?](#what-is-okta)
@@ -23,6 +23,7 @@
     - [Getting Started with IBM Operational Decision Manager for Containers](#getting-started-with-ibm-operational-decision-manager-for-containers)
     - [Calling the ODM Runtime Service](#calling-the-odm-runtime-service)
 - [License](#license)
+
 <!-- /TOC -->
 
 # Introduction
