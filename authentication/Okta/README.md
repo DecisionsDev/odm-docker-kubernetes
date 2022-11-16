@@ -313,7 +313,7 @@ In this step, we augment the token with meta-information that is required by the
 
 ## Complete post-deployment tasks
 
-### Register the ODM redirect URL
+### Register the ODM redirect URLs
 
 1. Get the ODM endpoints.
     You can refer to the [documentation](https://www.ibm.com/docs/en/odm/8.11.0?topic=production-configuring-external-access) to retrieve the ODM endpoints.
