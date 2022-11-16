@@ -104,12 +104,12 @@ In this section, we explain how to:
 
 When, it's done,using Openshiftroutes you should be able to access the Keycloak Admin Console using the following URL with the **admin** username and **admin** password:
 
-    ```
-    KEYCLOAK_URL=https://$(oc get route keycloak --template='{{ .spec.host }}') &&
-    echo "" &&
-    echo "Keycloak Admin Console:   $KEYCLOAK_URL/admin" &&
-    echo ""
-    ```
+```shell
+KEYCLOAK_URL=https://$(oc get route keycloak --template='{{ .spec.host }}') &&
+echo "" &&
+echo "Keycloak Admin Console:   $KEYCLOAK_URL/admin" &&
+echo ""
+```
 
 All the following configuration will be done inside this Admin Console.
 
