@@ -21,7 +21,7 @@
       - [a. Installation on OpenShift using Routes](#a-installation-on-openshift-using-routes)
       - [b. Installation using Ingress](#b-installation-using-ingress)
   - [Complete post-deployment tasks](#complete-post-deployment-tasks)
-    - [Register the ODM redirect URL](#register-the-odm-redirect-url)
+    - [Register the ODM redirect URLs](#register-the-odm-redirect-urls)
     - [Access the ODM services](#access-the-odm-services)
     - [Set up Rule Designer](#set-up-rule-designer)
     - [Calling the ODM Runtime Service](#calling-the-odm-runtime-service)
