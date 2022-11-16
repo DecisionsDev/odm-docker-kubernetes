@@ -263,8 +263,17 @@ For more details about ODM groups and roles, have a look at [ODM on k8s document
     - *CLIENT_SECRET* is listed in your ODM Application, in the **Credentials** tab
     - *KEYCLOAK_SERVER_URL* is the issuer that can be retrieved using the **OpenID Endpoint Configuration** link of the **General** tab in the **Configure**/**Realm settings** menu
     
-    **TOOD What do we needs to check**
-    
+     by introspecting the access_token value with this online tool [https://jwt.io](https://jwt.io). You should get:
+     
+    ```
+    {
+      ..
+      "iss": "<KEYCLOAK_SERVER_URL>",
+     ....
+      "preferred_username": "service-account-<CLIENT_ID>",
+      ...
+   }
+    ```    
     
     7.2 Verify the Client Password Token 
 
@@ -284,7 +293,6 @@ For more details about ODM groups and roles, have a look at [ODM on k8s document
     - *USERNAME* *PASSWORD* have been created from 'Create at least one user that belongs to this new group.' section.
     
      by introspecting the id_token value with this online tool [https://jwt.io](https://jwt.io). You should get:
-     You should get :
      
     ```
     {
