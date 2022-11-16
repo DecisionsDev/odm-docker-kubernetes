@@ -45,11 +45,11 @@ OpenID Connect is an authentication standard built on top of OAuth 2.0. It adds 
 
 Terminology:
 
-- The **OpenID provider** — The authorization server that issues the ID token. In this case, Okta is the OpenID provider.
-- The **end user** — The end user whose information is contained in the ID token.
-- The **relying party** — The client application that requests the ID token from Okta.
-- The **ID token** — The token that is issued by the OpenID provider and contains information about the end user in the form of claims.
-- A **claim** — A piece of information about the end user.
+- **OpenID provider** — The authorization server that issues the ID token. In this case, Okta is the OpenID provider.
+- **end user** — The end user whose details are contained in the ID token.
+- **relying party** — The client application that requests the ID token from Okta.
+- **ID token** — The token that is issued by the OpenID provider and contains information about the end user in the form of claims.
+- **claim** — A piece of information about the end user.
 
 The Client Credentials flow is intended for server-side (AKA "confidential") client applications with no end user, which normally describes machine-to-machine communication. The application must be server-side because it must be trusted with the client secret, and since the credentials are hard-coded, it can't be used by an actual end user. It involves a single, authenticated request to the token endpoint, which returns an access token.
 
