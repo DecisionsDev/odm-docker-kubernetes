@@ -549,11 +549,11 @@ To manage ODM runtime call on the next steps, we used the [Loan Validation Decis
 
 Import the **Loan Validation Service** in Decision Center connected as John Doe
 
-    ![Import project](/images/Keycloak/import_project.png)
+![Import project](/images/Keycloak/import_project.png)
 
 Deploy the **Loan Validation Service** production_deployment ruleapps using the **production deployment** deployment configuration in the Deployments>Configurations tab.
 
-    ![Deploy project](/images/Keycloak/deploy_project.png)
+![Deploy project](/images/Keycloak/deploy_project.png)
 
 You can retrieve the payload.json from the ODM Decision Server Console or use [the provided payload](payload.json)
   
