@@ -2,13 +2,13 @@
 
 This project demonstrates how to deploy an IBM® Operational Decision Manager (ODM) clustered topology using the [container-native load balancer of GKE](https://cloud.google.com/blog/products/containers-kubernetes/container-native-load-balancing-on-gke-now-generally-available).
 
-The ODM services will be exposed using the Ingress provided by ODM on K8s Helm chart.
+The ODM services will be exposed using the Ingress provided by the ODM on Kubernetes Helm chart.
 This deployment implements Kubernetes and Docker technologies.
-Here is the home page of Google Cloud: https://cloud.google.com
+Here is the Google Cloud home page: https://cloud.google.com
 
 <img width="1000" height="560" src='./images/architecture.png'/>
 
-The ODM on Kubernetes material is available in [IBM Entitled Registry](https://www.ibm.com/cloud/container-registry) for the Docker images, and the [IBM Helm charts repository](https://github.com/IBM/charts) for the ODM Helm chart.
+The ODM on Kubernetes Docker images are available in [IBM Entitled Registry](https://www.ibm.com/cloud/container-registry). The ODM Helm chart is available in the [IBM Helm charts repository](https://github.com/IBM/charts).
 
 ## Included components
 
@@ -30,7 +30,7 @@ First, install the following software on your machine:
 - [kubectl](https://kubernetes.io/docs/tasks/tools/)
 - [Helm v3](https://helm.sh/docs/intro/install/)
 
-Then, manage the following tasks:
+Then, perform the following tasks:
 
 1. Create a Google Cloud account by connecting to the Google Cloud Platform [console](https://console.cloud.google.com/). When prompted to sign in, create a new account by clicking **Create account**.
 
