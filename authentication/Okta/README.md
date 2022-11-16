@@ -259,7 +259,7 @@ In this step, we augment the token with meta-information that is required by the
     Where:
     - *OKTA_API_SCOPE* has been defined [above](#configure-the-default-authorization-server) (*odmapiusers*)
     - *OKTA_SERVER_NAME* has been obtained from [previous step](#retrieve-okta-server-information)
-    - Both *OKTA_CLIENT_ID* and *OKTA_CLIENT_SECRET* are listed in your ODM Application, section In Menu **Applications** / **Applications** / **ODM Application** / **General** / **Client Credentials**
+    - Both *OKTA_CLIENT_ID* and *OKTA_CLIENT_SECRET* are listed in your ODM Application, section **Applications** / **Applications** / **ODM Application** / **General** / **Client Credentials**
     - *OKTA_ODM_GROUP* is the ODM Admin group we created in a [previous step](#manage-group-and-user) (*odm-admin*)
 
     The files are generated into the `output` directory.
@@ -309,7 +309,7 @@ In this step, we augment the token with meta-information that is required by the
     > ```
     > --set internalDatabase.runAsUser='' --set customization.runAsUser='' --set service.enableRoute=true
     > ```
-    > See [Preparing to install](https://www.ibm.com/docs/en/odm/8.11.0?topic=production-preparing-install-operational-decision-manager) documentation topic for additional information.
+    > See [Preparing to install](https://www.ibm.com/docs/en/odm/8.11.0?topic=production-preparing-install-operational-decision-manager) documentation for additional information.
 
 ## Complete post-deployment tasks
 
@@ -333,7 +333,7 @@ In this step, we augment the token with meta-information that is required by the
 
 2. Register the redirect URIs into your Okta application.
 
-    The redirect URIs are built the following way:
+    The redirect URIs are built in the following way:
 
       - Decision Center redirect URI:  `https://<DC_HOST>/decisioncenter/openid/redirect/odm`
       - Decision Runner redirect URI:  `https://<DR_HOST>/DecisionRunner/openid/redirect/odm`
@@ -344,7 +344,7 @@ In this step, we augment the token with meta-information that is required by the
     In **Applications** / **Applications**:
       - Select **ODM Application**.
       - In the **General** tab, click **Edit** on the **General Settings** section.
-      - In the **LOGIN** section, click **+ Add URI** in the **Sign-in redirect URIs** section and add the Decision Center redirect URI you got earlier (`https://<DC_HOST>/decisioncenter/openid/redirect/odm` -- don't forget to replace <DC_HOST> by your actual host name!)
+      - In the **LOGIN** section, click **+ Add URI** in the **Sign-in redirect URIs** section and add the Decision Center redirect URI you got earlier (`https://<DC_HOST>/decisioncenter/openid/redirect/odm` -- do not forget to replace <DC_HOST> by your actual host name!)
       - Repeat the previous step for all other redirect URIs.
       - Click **Save** at the bottom of the LOGIN section.
 
@@ -352,9 +352,9 @@ In this step, we augment the token with meta-information that is required by the
 
 ### Access the ODM services
 
-Well done!  You can now connect to ODM using the endpoints you got [earlier](#register-the-odm-redirect-url) and log in as an ODM admin with the account you created in [the first step](#manage-groups-and-users).
+Well done!  You can now connect to ODM using the endpoints you got [earlier](#register-the-odm-redirect-url), and log in as an ODM admin with the account you created in [the first step](#manage-groups-and-users).
 
->Note:  Logout in ODM components using Okta authentication raises an error for the time being.  This is a known issue.  We recommend to use a private window in your browser to log in, so that logout is done just by closing this window.
+>Note:  Logout in ODM components using Okta authentication raises an error for the time being.  This is a known issue.  We recommend you to use a private window in your browser to log in, so that logout is done just by closing this window.
 
 ### Set up Rule Designer
 
