@@ -419,8 +419,8 @@ But if you want to execute a bearer authentication ODM runtime call using the Cl
   
   ```
   $ curl -k -X POST -H "Content-Type: application/x-www-form-urlencoded" \
-      -d 'client_id=<CLIENT_ID>&scope=openid&client_secret=<CLIENT_SECRET>&grant_type=client_credentials' \
-      ' https://<OKTA_SERVER_NAME>/api/v1/authn'
+      -d 'client_id=<CLIENT_ID>&scope=<OKTA_API_SCOPE>&client_secret=<CLIENT_SECRET>&grant_type=client_credentials' \
+      ' https://<OKTA_SERVER_NAME>/default/v1/token'
   ```
   
  And use the retrieved access token in the following way:
