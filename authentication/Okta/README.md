@@ -51,7 +51,7 @@ Terminology:
 - **ID token** — The token that is issued by the OpenID provider and contains information about the end user in the form of claims.
 - **claim** — A piece of information about the end user.
 
-The Client Credentials flow is intended for server-side (AKA "confidential") client applications with no end user, which normally describes machine-to-machine communication. The application must be server-side because it must be trusted with the client secret, and since the credentials are hard-coded, it can't be used by an actual end user. It involves a single, authenticated request to the token endpoint, which returns an access token.
+The Client Credentials flow is intended for server-side (AKA "confidential") client applications with no end user, which normally describes machine-to-machine communication. The application must be server-side because it must be trusted with the client secret, and since the credentials are hard coded, it cannot be used by an actual end user. It involves a single, authenticated request to the token endpoint, which returns an access token.
 
 ![Okta Client Credential Flow](/images/Okta/oauth_client_creds_flow.png) (© Okta)
 
