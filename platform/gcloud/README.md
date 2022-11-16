@@ -126,25 +126,25 @@ Regions and zones (used below) can be listed respectively with `gcloud compute r
 
 #### a. Create the database instance
 
-We will use the Google Cloud Console to create this instance:
+We will use the Google Cloud Platform console to create the database instance.
 
-- Go on the [SQL context](https://console.cloud.google.com/sql) and click on the **CREATE INSTANCE** button
-- Click on **Choose PostgreSQL**
+- Go to the [SQL context](https://console.cloud.google.com/sql), and then click the **CREATE INSTANCE** button
+- Click **Choose PostgreSQL**
   - Instance ID: ``<YourInstanceName>``
-  - Password: ``<PASSWORD>`` - Take a note of this password.
+  - Password: ``<PASSWORD>`` - Take note of this password.
   - Database version: `PostgreSQL 13`
-  - Region: ``<REGION>`` (must be similar to the cluster for the communication is optimal between the database and the ODM instance)
+  - Region: ``<REGION>`` (must be the same as the cluster for the communication to be optimal between the database and the ODM instance)
   - Keep **Multiple zones** for Zonal availability to the highest availability
   - Expand **Show customization option** and expand **Connections**
-    - As *Public IP* is selected by default, in Authorised networks click on the **ADD NETWORK** button, put a name and add *0.0.0.0/0* for Network, then click on **DONE**.
-      > NOTE: It's not recommended to use public IP. In production environment, you should use private IP.
-- Click on **CREATE INSTANCE**
+    - As *Public IP* is selected by default, in Authorized networks, click the **ADD NETWORK** button, put a name and add *0.0.0.0/0* for Network, then click **DONE**.
+      > NOTE: It is not recommended to use a public IP. In a production environment, you should use a private IP.
+- Click **CREATE INSTANCE**
 
-When created, you can drill on the SQL instance overview to retrieve needed information to connect to this instance like the IP adress and the connection name. Take a note of the **Public IP address**.
+After the database instance is created, you can drill on the SQL instance overview to retrieve needed information to connect to this instance, like the IP address and the connection name. Take note of the **Public IP address**.
 
 <img width="1000" height="630" src='./images/database_overview.png'/>
 
-> NOTE: A default *postgres* database is created with a default *postgres* user. You can change the password of the postgres user by using the **Users** panel, selecting the *postgres* user, and using the **Change password** menu:
+> NOTE: A default *postgres* database is created with a default *postgres* user. You can change the password of the postgres user in the **Users** panel by selecting the *postgres* user, and then using the **Change password** menu:
 > <img width="1000" height="360" src='./images/database_changepassword.png'/>
 
 #### b. Create the database secret for Google Cloud SQL PostgreSQL
@@ -158,9 +158,9 @@ kubectl create secret generic <ODM_DB_SECRET> \
 ```
 
 Where:
-- `<ODM_DB_SECRET>`: the secret name
-- `<USERNAME>`: the database username (default is *postgres*)
-- `<PASSWORD>`: the database password (PASSWORD set in the PostgreSQL instance creation above)
+- `<ODM_DB_SECRET>` is the secret name
+- `<USERNAME>` is the database username (default is *postgres*)
+- `<PASSWORD>` is the database password (PASSWORD set in the PostgreSQL instance creation above)
 
 ### 3. Prepare your environment for the ODM installation (10 min)
 
