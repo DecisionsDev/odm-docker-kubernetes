@@ -182,7 +182,7 @@ kubectl create secret docker-registry <REGISTRY_SECRET> \
         --docker-email=<USER_EMAIL>
 ```
 
-where:
+Where:
 
 * `<REGISTRY_SECRET>` is the secret name.
 * `<API_KEY_GENERATED>` is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
@@ -211,9 +211,9 @@ ibmcharts/ibm-odm-prod	22.2.0          8.11.1.0        IBM Operational Decision 
 
 #### a. (Optional) Generate a self-signed certificate
 
-In this step, you will generate a certificate to be used by the GKE loadbalancer.
+In this step, you will generate a certificate to be used by the GKE load balancer.
 
-If you do not have a trusted certificate, you can use OpenSSL and other cryptography and certificate management libraries to generate a certificate file and a private key, to define the domain name, and to set the expiration date. The following command creates a self-signed certificate (`.crt` file) and a private key (`.key` file) that accepts the domain name *mycompany.com*. The expiration is set to 1000 days:
+If you do not have a trusted certificate, you can use OpenSSL and other cryptography and certificate management libraries to generate a certificate file and a private key to define the domain name and to set the expiration date. The following command creates a self-signed certificate (`.crt` file) and a private key (`.key` file) that accept the domain name *mycompany.com*. The expiration is set to 1000 days:
 
 ```
 openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mycompany.key \
@@ -232,12 +232,12 @@ The certificate must be the same as the one you used to enable TLS connections i
 
 #### a. Install an ODM Helm release
 
-The ODM services will be exposed with an Ingress using the previously created `mycompany` certificate.
-It will create automatically an HTTPS GKE loadbalancer. So, we disable the ODM internal TLS as it's not needed.
+The ODM services will be exposed with an Ingress that uses the previously created `mycompany` certificate.
+It automatically creates an HTTPS GKE load balancer. We will disable the ODM internal TLS as it is not needed.
 
 - Get the [gcp-values.yaml](./gcp-values.yaml) file and replace the following keys:
 
-  - `<REGISTRY_SECRET>`: the name of the secret containing the IBM Entitled registry key
+  - `<REGISTRY_SECRET>`: the name of the secret containing the IBM Entitled Registry key
   - `<ODM_DB_SECRET>`: the name of the secret containing the database user and password
   - `<DB_ENDPOINT>`: the database IP
   - `<DATABASE_NAME>`: the database name (default is postgres)
@@ -250,7 +250,7 @@ It will create automatically an HTTPS GKE loadbalancer. So, we disable the ODM i
     helm install <release> ibmcharts/ibm-odm-prod --version 22.2.0 -f gcp-values.yaml
     ```
 
-  > NOTE: You may prefer to access ODM components through NGINX Ingress controller instead of using the IP addresses. If so, please follow [these instructions](README_NGINX.md).
+  > NOTE: You might prefer to access ODM components through the NGINX Ingress controller instead of using the IP addresses. If so, please follow [these instructions](README_NGINX.md).
 
 #### b. Check the topology
 
