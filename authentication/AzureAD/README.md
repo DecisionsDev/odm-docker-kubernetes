@@ -534,12 +534,27 @@ To be able to securely connect your Rule Designer to the Decision Server and Dec
 4. Restart Rule Designer.
 
 For more information, refer to the [documentation](https://www.ibm.com/docs/en/odm/8.11.0?topic=designer-importing-security-certificate-in-rule).
-  
-### Calling the ODM Runtime Service
-  
-As explained in the ODM on Certified Kubernetes documentation [Configuring user access with OpenID](https://www.ibm.com/docs/en/odm/8.11.0?topic=access-configuring-user-openid), we advise to use basic authentication for the ODM runtime call, for performance reasons and to avoid the issue of token expiration and revocation.
 
-You can realize a basic authentication for the ODM runtime call in the following way:
+### Calling the ODM Runtime Service
+
+If your are familiar with ODM, you can now import your own Decision Services and work with ODM.
+If you prefer to follow an ODM tutorial to understand main ODM features, have a look at the [getting started](https://github.com/DecisionsDev/odm-for-container-getting-started)
+
+To manage ODM runtime call on the next steps, we used the [Loan Validation Decision Service project](https://github.com/DecisionsDev/odm-for-container-getting-started/blob/master/Loan%20Validation%20Service.zip)
+
+Import the **Loan Validation Service** in Decision Center connected as John Doe
+
+![Import project](../images/Keycloak/import_project.png)
+
+Deploy the **Loan Validation Service** production_deployment ruleapps using the **production deployment** deployment configuration in the Deployments>Configurations tab.
+
+![Deploy project](../images/Keycloak/deploy_project.png)
+
+You can retrieve the payload.json from the ODM Decision Server Console or use [the provided payload](payload.json)
+  
+As explained in the ODM on Certified Kubernetes documentation [Configuring user access with OpenID](https://www.ibm.com/docs/en/odm/8.11.0?topic=access-configuring-user-openid), we advise to use basic authentication for the ODM runtime call for performance reasons and to avoid the issue of token expiration and revocation.
+
+You can realize a basic authentication ODM runtime call the following way:
   
    ```
   $ curl -H "Content-Type: application/json" -k --data @payload.json \
@@ -549,7 +564,7 @@ You can realize a basic authentication for the ODM runtime call in the following
   
   Where b2RtQWRtaW46b2RtQWRtaW4= is the base64 encoding of the current username:password odmAdmin:odmAdmin
 
-If you want to execute a bearer authentication for the ODM runtime call using the Client Credentials flow, you have to get a bearer access token:
+But if you want to execute a bearer authentication ODM runtime call using the Client Credentials flow, you have to get a bearer access token:
   
   ```
   $ curl -X POST -H "Content-Type: application/x-www-form-urlencoded" \
@@ -564,6 +579,7 @@ If you want to execute a bearer authentication for the ODM runtime call using th
          -H "Authorization: Bearer <ACCESS_TOKEN>" \
          https://<DS_RUNTIME_HOST>/DecisionService/rest/production_deployment/1.0/loan_validation_production/1.0
   ```
+  
 
 ### Getting Started with IBM Operational Decision Manager for Containers
 
