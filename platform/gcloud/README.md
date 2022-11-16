@@ -345,7 +345,7 @@ We only have to manage a configuration to simulate the mycompany.com access.
 
 This section explains how to track ODM usage with the IBM License Service.
 
-#### a. Create a NGINX Ingress controller
+#### a. Create an NGINX Ingress controller
 
 - Add the official stable repository:
 
@@ -354,7 +354,7 @@ This section explains how to track ODM usage with the IBM License Service.
     helm repo update
     ```
 
-- Use Helm to deploy an NGINX Ingress controller:
+- Use Helm to deploy the NGINX Ingress controller:
 
     ```
     helm install nginx-ingress ingress-nginx/ingress-nginx
@@ -364,11 +364,11 @@ This section explains how to track ODM usage with the IBM License Service.
 
 Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cpfs?topic=software-manual-installation-without-operator-lifecycle-manager-olm)
 
-> NOTE: Make sure you don't follow the instantiation part!
+> NOTE: Make sure you do not follow the instantiation part!
 
 #### c. Create the IBM Licensing instance
 
-Get the [licensing-instance.yaml](./licensing-instance.yaml) file and execute the command :
+Get the [licensing-instance.yaml](./licensing-instance.yaml) file and run the following command:
 
 ```
 kubectl create -f licensing-instance.yaml
@@ -378,24 +378,24 @@ kubectl create -f licensing-instance.yaml
 
 #### d. Retrieving license usage
 
-After a couple of minutes, the ingress configuration is created and you will be able to access the IBM License Service by retrieving the URL with this command:
+After a couple of minutes, the Ingress configuration is created and you will be able to access the IBM License Service by retrieving the URL with the following command:
 
 ```
 export LICENSING_URL=$(kubectl get ingress ibm-licensing-service-instance -n ibm-common-services -o jsonpath='{.status.loadBalancer.ingress[0].ip}')/ibm-licensing-service-instance
 export TOKEN=$(kubectl get secret ibm-licensing-token -o jsonpath={.data.token} -n ibm-common-services |base64 -d)
 ```
 
-You can access the `http://${LICENSING_URL}/status?token=${TOKEN}` url to view the licensing usage or retrieve the licensing report zip file by running:
+You can access the `http://${LICENSING_URL}/status?token=${TOKEN}` URL to view the licensing usage or retrieve the licensing report ZIP file by running the following command:
 
 ```
 curl -v "http://${LICENSING_URL}/snapshot?token=${TOKEN}" --output report.zip
 ```
 
-If your IBM License Service instance is not running properly, please refer to this [troubleshooting page](https://www.ibm.com/docs/en/cpfs?topic=software-troubleshooting).
+If your IBM License Service instance is not running properly, refer to this [troubleshooting page](https://www.ibm.com/docs/en/cpfs?topic=software-troubleshooting).
 
 ## Troubleshooting
 
-If your ODM instances are not running properly, please refer to [our dedicated troubleshooting page](https://www.ibm.com/docs/en/odm/8.11.0?topic=8110-troubleshooting-support).
+If your ODM instances are not running properly, refer to [our dedicated troubleshooting page](https://www.ibm.com/docs/en/odm/8.11.0?topic=8110-troubleshooting-support).
 
 ## Getting Started with IBM Operational Decision Manager for Containers
 
