@@ -265,11 +265,11 @@ NAME                                                   READY   STATUS    RESTART
 <release>-odm-decisionserverruntime-***                1/1     Running   0          20m
 ```
 
-#### c. Check the Ingress and GKE LoadBalancer
+#### c. Check the Ingress and the GKE LoadBalancer
 
-To get a status on the current deployment, you can go in the console to the [Kubernetes Engine / Services & Ingress Panel](https://console.cloud.google.com/kubernetes/ingresses).
+To get the status of the current deployment, go to the [Kubernetes Engine / Services & Ingress Panel](https://console.cloud.google.com/kubernetes/ingresses) in the console.
 
-The ingress is remaining in the *Creating ingress* state several minutes until the pods are up and ready, and that the backend is getting an healthy state.
+The Ingress remains in the state *Creating ingress* for several minutes until the pods are up and running, and the backend gets in a healthy state.
 
 <img width="1000" height="308" src='./images/ingress_creating.png'/>
 
@@ -278,19 +278,19 @@ It provides information about the backend using the service health check.
 
 <img width="1000" height="352" src='./images/loadbalancer.png'/>
 
-Entering inside the Ingress details, you should get an *HEALTHY* state on all backends.
-This panel is also providing some logs on the loadbalancer activity.
-When the Ingress is showing an OK status, all ODM services can be accessed.
+In the Ingress details, you should get a *HEALTHY* state on all backends.
+This panel also provides some logs on the load balancer activity.
+When the Ingress shows an OK status, all ODM services can be accessed.
 
 <img width="1000" height="517" src='./images/ingress_details.png'/>
 
 #### d. Create a Backend Configuration for the Decision Center Service
 
-Sticky session is needed for Decision Center. The browser contains a cookie identifying the user session that will be linked to a unique container.
-The ODM on K8s Helm chart has [clientIP](https://kubernetes.io/docs/concepts/services-networking/service/#proxy-mode-ipvs) for the Decision Center session affinity. Unfortunately, GKE doesn't use it automatically.
-However, you will not encounter any issue until you scale up the Decision Center deployment.
+Sticky session is needed for Decision Center. The browser contains a cookie which identifies the user session that is linked to a unique container.
+The ODM on Kubernetes Helm chart has a [clientIP](https://kubernetes.io/docs/concepts/services-networking/service/#proxy-mode-ipvs) for the Decision Center session affinity. Unfortunately, GKE does not use it automatically.
+You will not encounter any issue until you scale up the Decision Center deployment.
 
-A configuration using [BackendConfig](https://cloud.google.com/kubernetes-engine/docs/how-to/ingress-features#session_affinity) is needed to manage it at the loadbalancer level.
+A configuration that uses [BackendConfig](https://cloud.google.com/kubernetes-engine/docs/how-to/ingress-features#session_affinity) is needed to manage session affinity at the load balancer level.
 
 - Create the [Decision Center Backend Config](decisioncenter-backendconfig.yaml):
 
@@ -305,7 +305,7 @@ A configuration using [BackendConfig](https://cloud.google.com/kubernetes-engine
           cloud.google.com/backend-config='{"ports": {"9453":"dc-backendconfig"}}'
   ```
 
-  As soon as GKE has managed the Decision Center session affinity at the loadbalancer level, you can check the ClientIP availability below the Decision Center Network Endpoint Group configuration from the Google Cloud Console in the Load Balancer details:
+  As soon as GKE manages Decision Center session affinity at the load balancer level, you can check the ClientIP availability below the Decision Center Network Endpoint Group configuration from the Google Cloud Console in the Load Balancer details.
 
   <img width="1000" height="353" src='./images/dc_sessionaffinity.png'/>
 
