@@ -422,7 +422,7 @@ You can now install the product. We will use the PostgreSQL internal database an
           --set oidc.enabled=true \
           --set license=true \
           --set internalDatabase.persistence.enabled=false \
-	  --set decisionCenter.disableAllAuthenticatedUser=true \
+          --set decisionCenter.disableAllAuthenticatedUser=true \
           --set customization.trustedCertificateList={"keycloak-secret"} \
           --set customization.authSecretRef=keycloak-auth-secret \
           --set internalDatabase.runAsUser='' --set customization.runAsUser='' --set service.enableRoute=true
