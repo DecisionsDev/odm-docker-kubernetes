@@ -58,7 +58,7 @@ Without the relevant billing level, some Google Cloud resources will not be crea
 
 ### 1. Prepare your GKE instance (30 min)
 
-You can refer to the [GKE quickstart](https://cloud.google.com/kubernetes-engine/docs/quickstart) for more information.
+Refer to the [GKE quickstart](https://cloud.google.com/kubernetes-engine/docs/quickstart) for more information.
 
 #### a. Log into Google Cloud
 
@@ -71,8 +71,8 @@ gcloud auth login <ACCOUNT>
 #### b. Create a GKE cluster
 
 There are several [types of clusters](https://cloud.google.com/kubernetes-engine/docs/concepts/types-of-clusters).
-In this article we chose to create a [regional cluster](https://cloud.google.com/kubernetes-engine/docs/how-to/creating-a-regional-cluster).
-Regions and zones (used below) can be listed with `gcloud compute regions list` and `gcloud compute zones list`.
+In this article, we chose to create a [regional cluster](https://cloud.google.com/kubernetes-engine/docs/how-to/creating-a-regional-cluster).
+Regions and zones (used below) can be listed respectively with `gcloud compute regions list` and `gcloud compute zones list`.
 
 - Set the project (associated to a billing account):
 
@@ -92,7 +92,7 @@ Regions and zones (used below) can be listed with `gcloud compute regions list` 
   gcloud config set compute/zone <ZONE (ex: europe-west1-b)>
   ```
 
-- Create a cluster and [enable autoscaling](https://cloud.google.com/kubernetes-engine/docs/how-to/cluster-autoscaler). Here, we start with 6 nodes (with 16 max):
+- Create a cluster and [enable autoscaling](https://cloud.google.com/kubernetes-engine/docs/how-to/cluster-autoscaler). Here, we start with 6 nodes (16 max):
 
   ```
   gcloud container clusters create <CLUSTER_NAME> \
@@ -102,18 +102,17 @@ Regions and zones (used below) can be listed with `gcloud compute regions list` 
 
   > If you get a red warning about a missing gke-gcloud-auth-plugin, install it with `gcloud components install gke-gcloud-auth-plugin` and enable it for each kubectl command with `export USE_GKE_GCLOUD_AUTH_PLUGIN=True` ([more information](https://cloud.google.com/blog/products/containers-kubernetes/kubectl-auth-changes-in-gke)).
 
-  > NOTE: You can also create your cluster from the Google Cloud Platform using the **Kubernetes Engine Clusters** panel, by clicking on the **Create** button
+  > NOTE: You can also create your cluster from the Google Cloud Platform using the **Kubernetes Engine** > **Clusters** panel and clicking the **Create** button
   > <img width="1000" height="300" src='./images/create_cluster.png'/>
 
 #### c. Set up your environment
 
 - Create a kubeconfig to connect to your cluster:
--
   ```
   gcloud container clusters get-credentials <CLUSTER_NAME>
   ```
 
-  > NOTE: You can also retrieve the command line to configure `kubectl` by going on the Google Cloud Console in the **Kubernetes Engine** > **Clusters** panel, by selecting **Connect** on the dedicated cluster.
+  > NOTE: You can also retrieve the command line to configure `kubectl` from the Google Cloud Console using the **Kubernetes Engine** > **Clusters** panel and selecting **Connect** on the dedicated cluster.
   > <img width="1000" height="300" src='./images/connection.png'/>
 
 - Check your environment
