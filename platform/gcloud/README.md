@@ -160,11 +160,11 @@ kubectl create secret generic <ODM_DB_SECRET> \
 Where:
 - `<ODM_DB_SECRET>` is the secret name
 - `<USERNAME>` is the database username (default is *postgres*)
-- `<PASSWORD>` is the database password (PASSWORD set in the PostgreSQL instance creation above)
+- `<PASSWORD>` is the database password (PASSWORD set during the PostgreSQL instance creation above)
 
 ### 3. Prepare your environment for the ODM installation (10 min)
 
-To get access to the ODM material, you must have an IBM entitlement registry key to pull the images from the IBM Entitled registry.
+To get access to the ODM material, you need an IBM entitlement registry key to pull the images from the IBM Entitled Registry.
 
 #### a. Retrieve your entitled registry key
 
@@ -184,13 +184,13 @@ kubectl create secret docker-registry <REGISTRY_SECRET> \
 
 where:
 
-* `<REGISTRY_SECRET>`: the secret name
-* `<API_KEY_GENERATED>`: the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
-* `<USER_EMAIL>`: the email address associated with your IBMid.
+* `<REGISTRY_SECRET>` is the secret name.
+* `<API_KEY_GENERATED>` is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
+* `<USER_EMAIL>` is the email address associated with your IBMid.
 
 > NOTE:  The `cp.icr.io` value for the docker-server parameter is the only registry domain name that contains the images. You must set the docker-username to `cp` to use an entitlement key as docker-password.
 
-Take a note of the secret name so that you can set it for the *image.pullSecrets* parameter when you run a helm install of your containers.  The *image.repository* parameter will later be set to `cp.icr.io/cp/cp4a/odm`.
+Take note of the secret name so that you can set it for the *image.pullSecrets* parameter when you run a helm install command of your containers.  The *image.repository* parameter will later be set to `cp.icr.io/cp/cp4a/odm`.
 
 #### c. Add the public IBM Helm charts repository
 
@@ -199,7 +199,7 @@ helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo
 helm repo update
 ```
 
-#### d. Check you can access ODM's charts
+#### d. Check you can access ODM charts
 
 ```
 helm search repo ibm-odm-prod
