@@ -296,6 +296,7 @@ For more details about ODM groups and roles, have a look at [ODM on k8s document
         "rtsAdministrators",
         "rtsInstallers",
         "rtsConfigManagers",
+	"rtsUsers",
         "resAdministrators",
         "resDeployers",
         "resMonitors",
