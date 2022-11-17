@@ -294,7 +294,7 @@ openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mycompany.key \
         -addext "subjectAltName = DNS:mycompany.com"
 ```
 
->Note:  You can use -addext only with actual OpenSSL, not LibreSSL (yet).
+>Note:  You can use -addext only with actual OpenSSL, not with LibreSSL (yet).
 
 2. Create a Kubernetes secret with the certificate.
 
@@ -329,9 +329,9 @@ helm install <release> ibmcharts/ibm-odm-prod --version 22.2.0 \
         --set license=true --set usersPassword=<password>
 ```
 
-where:
+Where:
 
-* \<password\> is the password that will be used for standard users odmAdmin, resAdmin and rtsAdmin.
+* \<password\> is the password that will be used for standard users odmAdmin, resAdmin, and rtsAdmin.
 
 ### Check the topology
 
@@ -363,9 +363,9 @@ kubernetes                                  ClusterIP      10.0.0.1       <none>
 
 You can then open a browser on https://xxx.xxx.xxx.xxx:9443 to access Decision Server console, Decision Server Runtime, and Decision Runner, and on https://xxx.xxx.xxx.xxx:9453 to access Decision Center.
 
-## Create a NGINX Ingress controller
+## Create an NGINX Ingress controller
 
-Installing a NGINX Ingress controller will allow you to access ODM components through a single external IP address instead of the different IP addresses as seen above.  It is also mandatory when retrieving license usage through IBM License Service.
+Installing an NGINX Ingress controller allows you to access ODM components through a single external IP address instead of the different IP addresses as seen above.  It is also mandatory to retrieve license usage through the IBM License Service.
 
 1. Add the official stable repository.
 
@@ -373,7 +373,7 @@ Installing a NGINX Ingress controller will allow you to access ODM components th
     helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
     ```
 
-2. Use Helm to deploy an NGINX Ingress controller.
+2. Use Helm to deploy the NGINX Ingress controller.
 
     ```
     helm install nginx-ingress ingress-nginx/ingress-nginx
@@ -390,7 +390,7 @@ Installing a NGINX Ingress controller will allow you to access ODM components th
 
 ## (Optional) Install an ODM Helm release and expose it with the NGINX Ingress controller (10 min)
 
-You may want to access ODM components through a single external IP address.
+You might want to access ODM components through a single external IP address.
 
 ### Install the product
 
@@ -443,7 +443,7 @@ ODM services are available through the following URLs:
 | Decision Server Runtime | https://mycompany.com/DecisionService | odmAdmin/\<password\>
 | Decision Runner | https://mycompany.com/DecisionRunner | odmAdmin/\<password\>
 
-where:
+Where:
 
 * \<password\> is the password provided to the **usersPassword** helm chart parameter
 
@@ -452,7 +452,7 @@ where:
 
 This section explains how to track ODM usage with the IBM License Service.
 
-Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cpfs?topic=software-manual-installation-without-operator-lifecycle-manager-olm). Do not follow the **Creating an IBM Licensing instance**  part!
+Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cpfs?topic=software-manual-installation-without-operator-lifecycle-manager-olm) documentation. Do not follow the **Creating an IBM Licensing instance**  part!
 
 ### Create the Licensing instance
 
@@ -473,16 +473,16 @@ export LICENSING_URL=$(kubectl get ingress ibm-licensing-service-instance -n ibm
 export TOKEN=$(oc get secret ibm-licensing-token -o jsonpath={.data.token} -n ibm-common-services |base64 -d)
 ```
 
-You can access the `http://${LICENSING_URL}/status?token=${TOKEN}` URL to view the licensing usage or retrieve the licensing report zip file by running:
+You can access the `http://${LICENSING_URL}/status?token=${TOKEN}` URL to view the licensing usage, or retrieve the licensing report ZIP file by running:
 ```
 curl -v "http://${LICENSING_URL}/snapshot?token=${TOKEN}" --output report.zip
 ```
 
-If your IBM License Service instance is not running properly, please refer to this [troubleshooting page](https://www.ibm.com/docs/en/cpfs?topic=software-troubleshooting).
+If your IBM License Service instance is not running properly, refer to this [troubleshooting page](https://www.ibm.com/docs/en/cpfs?topic=software-troubleshooting).
 
 ## Troubleshooting
 
-If your ODM instances are not running properly, please refer to [our dedicated troubleshooting page](https://www.ibm.com/docs/en/odm/8.11.0?topic=8110-troubleshooting-support).
+If your ODM instances are not running properly, refer to [our dedicated troubleshooting page](https://www.ibm.com/docs/en/odm/8.11.0?topic=8110-troubleshooting-support).
 
 ## Getting Started with IBM Operational Decision Manager for Containers
 
