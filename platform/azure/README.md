@@ -223,17 +223,17 @@ az postgres server firewall-rule create --resource-group <resourcegroup> --serve
 
 ## Prepare your environment for the ODM installation
 
-To get access to the ODM material, you must have an IBM entitlement registry key to pull the images from the IBM Entitled registry.
+To get access to the ODM material, you must have an IBM entitlement key to pull the images from the IBM Entitled Registry.
 
-(If you prefer to install ODM from Azure Container Registry, you can have a look at [this dedicated page](README_PPA.md).)
+(If you prefer to install ODM from Azure Container Registry, take a look at [this dedicated page](README_PPA.md).)
 
-### Using the IBM Entitled registry with your IBMid (10 min)
+### Using the IBM Entitled Registry with your IBMid (10 min)
 
 Log in to [MyIBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary) with the IBMid and password that are associated with the entitled software.
 
 In the Container software library tile, verify your entitlement on the View library page, and then go to Get entitlement key to retrieve the key.
 
-Create a pull secret by running a kubectl create secret command.
+Create a pull secret by running the `kubectl create secret` command.
 
 ```
 $ kubectl create secret docker-registry <registrysecret> --docker-server=cp.icr.io \
@@ -242,13 +242,13 @@ $ kubectl create secret docker-registry <registrysecret> --docker-server=cp.icr.
                                                          --docker-email=<email>
 ```
 
-where:
+Where:
 
 * \<registrysecret\> is the secret name
 * \<entitlementkey\> is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
 * \<email\> is the email address associated with your IBMid.
 
-> Note:  The cp.icr.io value for the docker-server parameter is the only registry domain name that contains the images. You must set the docker-username to cp to use an entitlement key as docker-password.
+> Note:  The cp.icr.io value for the docker-server parameter is the only registry domain name that contains the images. You must set the docker-username to `cp` to use an entitlement key as docker-password.
 
 Make a note of the secret name so that you can set it for the image.pullSecrets parameter when you run a helm install of your containers.  The image.repository parameter will later be set to cp.icr.io/cp/cp4a/odm.
 
@@ -274,7 +274,7 @@ ibmcharts/ibm-odm-prod	20.3.0       	8.10.5.0   	IBM Operational Decision Manage
 
 ### Create the database credentials secret for Azure PostgreSQL
 
-To secure access to the database, you must create a secret that encrypts the database user and password before you install the Helm release.
+To secure the access to the database, create a secret that encrypts the database user and password before you install the Helm release.
 
 ```
 kubectl create secret generic <odmdbsecret> \
