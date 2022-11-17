@@ -62,7 +62,7 @@ Reference: https://docs.aws.amazon.com/eks/latest/userguide/create-cluster.html
 
 #### b. Set up your environment (10 min)
 
-Check your environment
+Check your environment.
 
 If your environment is set up correctly, you should be able to get the cluster information by running the following command:
 
