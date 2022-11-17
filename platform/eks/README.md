@@ -303,9 +303,9 @@ export LICENSING_URL=$(kubectl get ingress ibm-licensing-service-instance -n ibm
 export TOKEN=$(kubectl get secret ibm-licensing-token -n ibm-common-services -o jsonpath='{.data.token}' |base64 -d)
 ```
 
-If LICENSING_URL is empty take a look the [troubleshooting](#troubleshooting) section.
+If LICENSING_URL is empty, take a look at the [troubleshooting](#troubleshooting) section.
 
-You can access the `http://${LICENSING_URL}/status?token=${TOKEN}` url to view the licensing usage or retrieve the licensing report zip file by running:
+You can access the `http://${LICENSING_URL}/status?token=${TOKEN}` URL to view the licensing usage or retrieve the licensing report ZIP file by running:
 
 ```bash
 curl "http://${LICENSING_URL}/snapshot?token=${TOKEN}" --output report.zip
@@ -313,18 +313,18 @@ curl "http://${LICENSING_URL}/snapshot?token=${TOKEN}" --output report.zip
 
 ## Troubleshooting
 
-If your ODM instances are not running properly, check the logs by running the following command:
+If your ODM instances are not running properly, check the logs with the following command:
 ```
 kubectl logs <your-pod-name>
 ```
 
-If the ROOTURL is empty, it means there is no address delivered to the ODM ingress instance (mycompany-odm-ingress) by the ALB controller.
-So, you can check the ALB controller logs with :
+If the ROOTURL is empty, it means that the ALB controller did not deliver an address to the ODM Ingress instance (mycompany-odm-ingress).
+Check the ALB controller logs with the following command:
 ```
 kubectl logs -n kube-system deployment.apps/aws-load-balancer-controller
 ```
 
-Check the ALB configuration if you get a message like :
+Check the ALB configuration if you get a message like:
 "msg"="Reconciler error" "error"="failed to reconcile ...
 
 Reference: https://aws.amazon.com/blogs/opensource/network-load-balancer-nginx-ingress-controller-eks/
