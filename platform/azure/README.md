@@ -5,7 +5,7 @@ Here is the home page of Microsoft Azure: https://portal.azure.com/#home
 
 ![AKS schema](images/aks-schema.png)
 
-The ODM on Kubernetes material is available in [IBM Entitled Registry](https://www.ibm.com/cloud/container-registry) for the Docker images, and the [IBM Helm charts repository](https://github.com/IBM/charts) for the ODM Helm chart.
+The ODM on Kubernetes Docker images are available in the [IBM Entitled Registry](https://www.ibm.com/cloud/container-registry). The ODM Helm chart is available in the [IBM Helm charts repository](https://github.com/IBM/charts).
 
 ## Included components
 
@@ -26,9 +26,9 @@ First, install the following software on your machine:
 - [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)
 - [Helm v3](https://helm.sh/docs/intro/install/)
 
-Then [create an Azure account and pay as you go](https://azure.microsoft.com/en-us/pricing/purchase-options/pay-as-you-go/).
+Then, [create an Azure account and pay as you go](https://azure.microsoft.com/en-us/pricing/purchase-options/pay-as-you-go/).
 
-> Note:  Prerequisites and software supported by ODM 8.11 are listed on [the Detailed System Requirements page](https://www.ibm.com/software/reports/compatibility/clarity-reports/report/html/softwareReqsForProduct?deliverableId=2D28A510507B11EBBBEA1195F7E6DF31&osPlatforms=AIX%7CLinux%7CMac%20OS%7CWindows&duComponentIds=D002%7CS003%7CS006%7CS005%7CC006&mandatoryCapIds=30%7C1%7C13%7C25%7C26&optionalCapIds=341%7C47%7C9%7C1%7C15).
+> Note:  Prerequisites and software supported by ODM 8.11 are listed in [the Detailed System Requirements page](https://www.ibm.com/software/reports/compatibility/clarity-reports/report/html/softwareReqsForProduct?deliverableId=2D28A510507B11EBBBEA1195F7E6DF31&osPlatforms=AIX%7CLinux%7CMac%20OS%7CWindows&duComponentIds=D002%7CS003%7CS006%7CS005%7CC006&mandatoryCapIds=30%7C1%7C13%7C25%7C26&optionalCapIds=341%7C47%7C9%7C1%7C15).
 
 ## Steps to deploy ODM on Kubernetes to Azure AKS
 
@@ -62,19 +62,19 @@ After installing the Azure CLI, use the following command line:
 az login [--tenant <name>.onmicrosoft.com]
 ```
 
-A Web browser opens where you can connect with your Azure credentials.
+A web browser opens where you can connect with your Azure credentials.
 
 ### Create a resource group
 
-An Azure resource group is a logical group in which Azure resources are deployed and managed. When you create a resource group, you are asked to specify a location. This location is where resource group metadata is stored. It is also where your resources run in Azure, if you don't specify another region during resource creation. Create a resource group by running the `az group create` command.
+An Azure resource group is a logical group in which Azure resources are deployed and managed. When you create a resource group, you are asked to specify a location. This location is where resource group metadata is stored. It is also where your resources run in Azure, if you do not specify another region during resource creation. Create a resource group by running the `az group create` command.
 
-To get a list of available location, you can run :
+To get a list of available locations, run :
 ```
 az account list-locations -o table
 ```
 
 
-Then, you can create the resource group :
+Then, create the resource group:
 ```
 az group create --name <resourcegroup> --location <azurelocation> [--tags Owner=<email> Team=DBA Usage=demo Usage_desc="Azure customers support" Delete_date=2022-12-31]
 ```
