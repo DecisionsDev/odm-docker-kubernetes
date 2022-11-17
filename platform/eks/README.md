@@ -94,10 +94,10 @@ Reference: https://docs.aws.amazon.com/eks/latest/userguide/aws-load-balancer-co
 
 ### 2. Prepare your environment for the ODM installation (25 min)
 
-To get access to the ODM material, you must have an IBM entitlement registry key to pull the images from the IBM Entitled registry.
-It's what will be used in the next step of this tutorial.
+To get access to the ODM material, you must have an IBM entitlement key to pull the images from the IBM Entitled registry.
+This is what will be used in the next step of this tutorial.
 
-But, you can also download the ODM on Kubernetes package (.tgz file) from Passport Advantage® (PPA) and then push the contained images to the EKS Container Registry (ECR). If you prefer to manage ODM images this way, find the explanation [here](README-ECR-REGISTRY.md)
+You can also download the ODM on Kubernetes package (.tgz file) from Passport Advantage® (PPA), and then push the contained images to the EKS Container Registry (ECR). If you prefer to manage the ODM images this way, see the details [here](README-ECR-REGISTRY.md)
 
 #### a. Retrieve your entitled registry key
 
@@ -105,14 +105,14 @@ But, you can also download the ODM on Kubernetes package (.tgz file) from Passpo
 
 - In the Container software library tile, verify your entitlement on the View library page, and then go to *Get entitlement key* to retrieve the key.
 
-#### b. Create a pull secret by running a kubectl create secret command.
+#### b. Create a pull secret by running the kubectl create secret command.
 
 ```console
 kubectl create secret docker-registry my-odm-docker-registry --docker-server=cp.icr.io \
     --docker-username=cp --docker-password="<ENTITLEMENT_KEY>" --docker-email=<USER_EMAIL>
 ```
 
-where:
+Where:
 * <ENTITLEMENT_KEY> is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
 * <USER_EMAIL> is the email address associated with your IBMid.
 
@@ -127,7 +127,7 @@ helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo
 helm repo update
 ```
 
-#### d. Check you can access ODM's chart
+#### d. Check your access to the ODM chart
 
 ```console
 $ helm search repo ibm-odm-prod
@@ -137,7 +137,7 @@ ibmcharts/ibm-odm-prod           	22.2.0       	8.11.1.0   	IBM Operational Deci
 
 ### 3. Create an RDS database (20 min)
 
-This following step is using PostgreSQL but the procedure is valid for any database supported by ODM:
+The following step uses PostgreSQL but the procedure is valid for any database supported by ODM:
 
 ```bash
 aws rds create-db-instance --db-instance-identifier <INSTANCE_NAME> \
@@ -159,11 +159,11 @@ It will be used later as RDS_DB_ENDPOINT.
 Reference: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_CreateDBInstance.html
 
 > NOTE:  Make sure to:
-> - Create the RDS database in the same cluster region for performance reason (mainly for Decision Center schema creation time)
-> - Take a PostgreSQL v13.X version (the command above creates a PG 13.7 instance at the moment)
+> - Create the RDS database in the same cluster region for better performance (mainly for Decision Center schema creation time)
+> - Take a PostgreSQL v13.X version (the command above creates a PostgreSQL 13.7 instance at the moment)
 > - Set up incoming traffic to allow connection from EKS (set vpc inboud rule to anywhere)
 
-Once the RDS PostgreSQL database is available, take a note of the database endpoint. It will be referred as `RDS_DB_ENDPOINT` in the next sections.
+Once the RDS PostgreSQL database is available, take a note of the database endpoint. It will be referred to as `RDS_DB_ENDPOINT` in the next sections.
 
 To secure access to the database, you must create a secret that encrypts the database user and password before you install the Helm release.
 
@@ -173,8 +173,8 @@ kubectl create secret generic odm-db-secret \
 --from-literal=db-password=<PG_PASSWORD>
 ```
 
-> NOTE: ODM on K8s is provided with a ready to use internal database based on PostgreSQL that can be used empty or with pre-populated samples.
-If you want to install an ODM demo quickly, you can use this internal database. This internal database is dedicated to prototyping, not for production.
+> NOTE: ODM on Kubernetes is provided with an internal database based on PostgreSQL that can be used empty or with pre-populated samples.
+If you want to install an ODM demo quickly, you can use this internal database. It is dedicated to prototyping, not for production.
 
 ### 4. Manage a  digital certificate (10 min)
 
