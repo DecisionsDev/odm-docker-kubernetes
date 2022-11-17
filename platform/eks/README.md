@@ -4,7 +4,7 @@ This project demonstrates how to deploy an IBM® Operational Decision Manager (O
 
 <img src="./images/eks-schema.jpg" alt="Flow" width="2050" height="600" />
 
-The ODM on Kubernetes material is available in [IBM Entitled Registry](https://www.ibm.com/cloud/container-registry) for the Docker images, and the [IBM Helm charts repository](https://github.com/IBM/charts) for the ODM Helm chart.
+The ODM on Kubernetes Docker images are available in the [IBM Entitled Registry](https://www.ibm.com/cloud/container-registry). The ODM Helm chart is available in the [IBM Helm charts repository](https://github.com/IBM/charts).
 
 ## Included components
 The project uses the following components:
