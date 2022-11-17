@@ -188,7 +188,7 @@ openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mycompany.key \
   -out mycompany.crt -subj "/CN=*.mycompany.com/OU=it/O=mycompany/L=Paris/C=FR"
 ```
 
-#### b. Upload the certificate to AWS IAM service
+#### b. Upload the certificate to the AWS IAM service
 
 Run the following command:
 ```bash
@@ -216,7 +216,7 @@ The output of the command is:
 
 Install a Kubernetes release with the default configuration and a name of `mycompany`.
 
-To install ODM with the AWS RDS postgreSQL database created in [step 3](#3-create-an-rds-database-20-min) :
+To install ODM with the AWS RDS PostgreSQL database created in [step 3](#3-create-an-rds-database-20-min):
 
 - Get the [eks-rds-values.yaml](./eks-rds-values.yaml) file and replace the following keys:
   - `<AWS-AccountId>` is your AWS Account Id
@@ -227,9 +227,9 @@ To install ODM with the AWS RDS postgreSQL database created in [step 3](#3-creat
 helm install mycompany ibmcharts/ibm-odm-prod --version 22.2.0 -f eks-rds-values.yaml
 ```
 
-> NOTE: If you prefer to install ODM to prototype (not for production purpose) with the ODM PostgreSQL internal database :
+> NOTE: If you prefer to install ODM to prototype (not for production purpose) with the ODM PostgreSQL internal database:
 >
-> - Get the [eks-values.yaml](./eks-values.yaml) file and replace the following keys:
+> - Get the [eks-values.yaml](./eks-values.yaml) file and replace the following key:
 >   - `<AWS-AccountId>` is your AWS Account Id
 >
 >```bash
@@ -256,13 +256,13 @@ kubectl get pods
 
 This section explains how to implement an Application Load Balancer (ALB) to expose the ODM services to Internet connectivity.
 
-After a couple of minutes, the ALB reflects the ingress configuration. Then you can access the ODM services by retrieving the URL with this command:
+After a couple of minutes, the ALB reflects the Ingress configuration. You can then access the ODM services by retrieving the URL with this command:
 
 ```bash
 export ROOTURL=$(kubectl get ingress mycompany-odm-ingress --no-headers |awk '{print $4}')
 ```
 
-If ROOTURL is empty take a look the [troubleshooting](#troubleshooting) section.
+If ROOTURL is empty, take a look at the [troubleshooting](#troubleshooting) section.
 
 With this ODM topology in place, you can access web applications to author, deploy, and test your rule-based decision services.
 
@@ -280,13 +280,13 @@ The services are accessible from the following URLs:
 
 #### a. Install the IBM License Service
 
-Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cpfs?topic=software-manual-installation-without-operator-lifecycle-manager-olm)
+Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cpfs?topic=software-manual-installation-without-operator-lifecycle-manager-olm) documentation.
 
-> NOTE: Make sure you don't follow the instantiation part!
+> NOTE: Make sure you do not follow the instantiation part!
 
 #### b. Create the IBM Licensing instance
 
-Get the [licensing-instance.yaml](./licensing-instance.yaml) file and execute the command :
+Get the [licensing-instance.yaml](./licensing-instance.yaml) file and execute the command:
 
 ```
 kubectl create -f licensing-instance.yaml
