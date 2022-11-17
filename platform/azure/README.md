@@ -106,7 +106,7 @@ az aks create --name <cluster> --resource-group <resourcegroup> --node-count 2 \
           --enable-addons monitoring --generate-ssh-keys [--location <azurelocation>]
 ```
 
-After a few minutes, the command completes and returns JSON-formatted information about the cluster.  Make a note of the newly-created Resource Group that is displayed in the JSON output (e.g.: "nodeResourceGroup": "<noderesourcegroup>") if you have to tag it, for instance:
+After a few minutes, the command completes and returns JSON-formatted information about the cluster.  Make a note of the newly-created Resource Group that is displayed in the JSON output (e.g. "nodeResourceGroup": "<noderesourcegroup>") if you have to tag it, for example:
 
 ```
 az group update --name <noderesourcegroup> \
@@ -115,7 +115,7 @@ az group update --name <noderesourcegroup> \
        
 ### Set up your environment to this cluster
 
-To manage a Kubernetes cluster, use kubectl, the Kubernetes command-line client. If you use Azure Cloud Shell, kubectl is already installed. To install kubectl locally, use the `az aks install-cli` command:
+To manage a Kubernetes cluster, use `kubectl`, the Kubernetes command-line client. If you use Azure Cloud Shell, kubectl is already installed. To install kubectl locally, use the `az aks install-cli` command:
 
 ```
 az aks install-cli
@@ -152,7 +152,7 @@ kubectl cluster-info dump
 ### Create an Azure Database for PostgreSQL
 
 Create an Azure Database for PostgreSQL server by running the `az postgres server create` command. A server can contain multiple databases.
-You have to choose the same location for the PostgreSQL server than for the AKS cluster to have a good bandwidth between ODM containers and the database.
+To get a good bandwidth between ODM containers and the database, choose the same location for the PostgreSQL server and for the AKS cluster.
 
 ```
 az postgres server create --name <postgresqlserver> --resource-group <resourcegroup> \
@@ -210,7 +210,7 @@ Result:
 }
 ```
 
-Make a note of the server name that is displayed in the JSON output (e.g.: "fullyQualifiedDomainName": "<postgresqlserver>.postgres.database.azure.com") as it will be used later while deploying ODM with "helm install".
+Make a note of the server name that is displayed in the JSON output (e.g. "fullyQualifiedDomainName": "<postgresqlserver>.postgres.database.azure.com") as it will be used later to deploy ODM with "helm install".
 
 ###  Create a firewall rule that allows access from Azure services
 
