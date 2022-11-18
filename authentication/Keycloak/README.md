@@ -145,8 +145,16 @@ You can also create groups and realize a mapping between groups and roles. This 
 
     ![Create Roles](/images/Keycloak/create_roles.png)
 
-Do the same for all others ODM J2EE existing roles like : rtsConfigManagers,rtsInstallers,rtsUsers,resAdministrators,resMonitors,resDeployers,resExecutors
-For more details about ODM groups and roles, have a look at [ODM on k8s documentation](https://www.ibm.com/docs/en/odm/8.11.0?topic=access-user-roles-user-groups)
+    Do the same for all others ODM J2EE existing roles like:
+      * rtsConfigManagers
+      * rtsInstallers
+      * rtsUsers
+      * resAdministrators
+      * resMonitors
+      * resDeployers
+      * resExecutors
+
+    For more details about ODM groups and roles, have a look at [ODM on k8s documentation](https://www.ibm.com/docs/en/odm/8.11.0?topic=access-user-roles-user-groups)
 
 
 2. Create a group for ODM administrators.
@@ -190,8 +198,8 @@ For more details about ODM groups and roles, have a look at [ODM on k8s document
 	* Click Details tab
 	* Click **Save**
     
-    (Optional) Every user is created with a predefined role named **default-roles-<CLIENT_ID>** 
-    This role has no interest. So, we here is the way to unassign this role.
+    (Optional) Every user is created with a predefined role named **default-roles-<CLIENT_ID>**.
+    This role has no interest. So, here is the way to unassign this role.
     
       * In User Details, select the **Role mapping** tab 
         * Select **default-roles-<CLIENT_ID>**
@@ -248,7 +256,8 @@ For more details about ODM groups and roles, have a look at [ODM on k8s document
     
 4. Check the configuration
   
-     Download the [keycloak-odm-script.zip](keycloak-odm-script.zip) file to your machine and unzip it in your working directory. This .zip file contains scripts and template to verify and setup ODM.
+     Download the [keycloak-odm-script.zip](keycloak-odm-script.zip) file to your machine and unzip it in your working directory.
+     This .zip file contains scripts and template to verify and setup ODM.
      
     7.1 Verify the Client Credential Token 
    
