@@ -42,7 +42,7 @@ Then, [create an Azure account and pay as you go](https://azure.microsoft.com/en
 * [Create the PostgreSQL Azure instance (10 min)](#create-the-postgresql-azure-instance-10-min)
 * [Prepare your environment for the ODM installation](#prepare-your-environment-for-the-odm-installation)
 * [Install an ODM Helm release and expose it with the service type LoadBalancer (10 min)](#install-an-odm-helm-release-and-expose-it-with-the-service-type-loadbalancer-10-min)
-* [Create a NGINX Ingress controller](#create-a-nginx-ingress-controller)
+* [Create an NGINX Ingress controller](#create-an-nginx-ingress-controller)
 * [(Optional) Install an ODM Helm release and expose it with the NGINX Ingress controller (10 min)](#optional-install-an-odm-helm-release-and-expose-it-with-the-nginx-ingress-controller-10-min)
 * [Install the IBM License Service and retrieve license usage](#install-the-ibm-license-service-and-retrieve-license-usage)
 * [Troubleshooting](#troubleshooting)
