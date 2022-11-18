@@ -150,7 +150,7 @@ Wait a few minutes for the RDB instance to be created and then get its public en
 aws rds describe-db-instances |jq -r ".DBInstances[].Endpoint.Address"
 ```
 
-(If `jq` is not installed then just remove this second part above and look for the endpoint address; it looks like `<INSTANCE_NAME>.xxxxxxxx.<REGION>.rds.amazonaws.com`.)
+(If `jq` is not installed, remove the second part above and look for the endpoint address; it looks like `<INSTANCE_NAME>.xxxxxxxx.<REGION>.rds.amazonaws.com`.)
 
 It will be used later as RDS_DB_ENDPOINT.
 
