@@ -524,7 +524,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 
 ### Access the ODM services
 
-Well done!  You can now connect to ODM using the endpoints you got [earlier](#register-the-odm-redirect-url) and log in as an ODM admin with the account you created in [the first step](#create-a-dedicated-odm-realm) (For ex: johndoe@mycompany.com/johndoe).
+Well done!  You can now connect to ODM using the endpoints you got [earlier](#register-the-odm-redirect-url) and log in as an ODM admin with the account you created in [the first step](#create-a-dedicated-odm-realm) (e.g. johndoe@mycompany.com/johndoe).
 
 ### Set up Rule Designer
 
@@ -533,7 +533,7 @@ To be able to securely connect your Rule Designer to the Decision Server and Dec
 1. Get the following configuration files.
     * `https://<DC_HOST>/decisioncenter/assets/truststore.jks`
     * `https://<DC_HOST>/odm/decisioncenter/assets/OdmOidcProvidersRD.json`
-      Where *DC_HOST* is the Decision Center endpoint.
+      where *DC_HOST* is the Decision Center endpoint.
 
 2. Copy the `truststore.jks` and `OdmOidcProvidersRD.json` files to your Rule Designer installation directory next to the `eclipse.ini` file.
 
@@ -549,7 +549,7 @@ To be able to securely connect your Rule Designer to the Decision Server and Dec
 
 4. Restart Rule Designer.
 
-For more information, refer to the [documentation](https://www.ibm.com/docs/en/odm/8.11.0?topic=designer-importing-security-certificate-in-rule).
+For more information, refer to [this documentation](https://www.ibm.com/docs/en/odm/8.11.0?topic=designer-importing-security-certificate-in-rule).
   
 ### Getting Started with IBM Operational Decision Manager for Containers
 
@@ -557,9 +557,9 @@ Get hands-on experience with IBM Operational Decision Manager in a container env
 
 ### Calling the ODM Runtime Service
 
-To manage ODM runtime call on the next steps, we use the [Loan Validation Decision Service project](https://github.com/DecisionsDev/odm-for-container-getting-started/blob/master/Loan%20Validation%20Service.zip)
+To manage ODM runtime calls, we use the [Loan Validation Decision Service project](https://github.com/DecisionsDev/odm-for-container-getting-started/blob/master/Loan%20Validation%20Service.zip)
 
-Import the **Loan Validation Service** in Decision Center connected as John Doe
+Import the **Loan Validation Service** in Decision Center connected as John Doe.
 
 ![Import project](/images/Keycloak/import_project.png)
 
@@ -567,11 +567,11 @@ Deploy the **Loan Validation Service** production_deployment ruleapps using the 
 
 ![Deploy project](/images/Keycloak/deploy_project.png)
 
-You can retrieve the payload.json from the ODM Decision Server Console or use [the provided payload](payload.json)
+You can retrieve the payload.json from the ODM Decision Server Console or use [the provided payload](payload.json).
   
-As explained in the ODM on Certified Kubernetes documentation [Configuring user access with OpenID](https://www.ibm.com/docs/en/odm/8.11.0?topic=access-configuring-user-openid), we advise to use basic authentication for the ODM runtime call for performance reasons and to avoid the issue of token expiration and revocation.
+As explained in the ODM on Certified Kubernetes documentation [Configuring user access with OpenID](https://www.ibm.com/docs/en/odm/8.11.0?topic=access-configuring-user-openid), we advise you to use basic authentication for the ODM runtime call for better performance and to avoid token expiration and revocation.
 
-You can realize a basic authentication ODM runtime call the following way:
+You perform a basic authentication ODM runtime call in the following way:
   
    ```
   $ curl -H "Content-Type: application/json" -k --data @payload.json \
@@ -579,9 +579,9 @@ You can realize a basic authentication ODM runtime call the following way:
         https://<DS_RUNTIME_HOST>/DecisionService/rest/production_deployment/1.0/loan_validation_production/1.0
   ```
   
-  Where b2RtQWRtaW46b2RtQWRtaW4= is the base64 encoding of the current username:password odmAdmin:odmAdmin
+  Where `b2RtQWRtaW46b2RtQWRtaW4=` is the base64 encoding of the current username:password odmAdmin:odmAdmin
 
-But if you want to execute a bearer authentication ODM runtime call using the Client Credentials flow, you have to get a bearer access token:
+If you want to perform a bearer authentication ODM runtime call using the Client Credentials flow, you must get a bearer access token:
   
   ```
   $ curl -k -X POST -H "Content-Type: application/x-www-form-urlencoded" \
