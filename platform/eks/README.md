@@ -156,12 +156,13 @@ It will be used later as RDS_DB_ENDPOINT.
 
 Reference: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_CreateDBInstance.html
 
-> NOTE:  Make sure to:
-> - Create the RDS database in the same cluster region for better performance (mainly for Decision Center schema creation time)
-> - Take a PostgreSQL v13.X version (the command above creates a PostgreSQL 13.7 instance at the moment)
-> - Set up incoming traffic to allow connection from EKS (set vpc inboud rule to anywhere)
+> NOTE:  
+> Make sure to:
+> - Create the RDS database in the same cluster region for better performance (mainly for Decision Center schema creation time).
+> - Take a PostgreSQL v13.X version (the command above creates a PostgreSQL 13.7 instance at the moment).
+> - Set up incoming traffic to allow connection from EKS (set vpc inboud rule to anywhere).
 
-Once the RDS PostgreSQL database is available, take a note of the database endpoint. It will be referred to as `RDS_DB_ENDPOINT` in the next sections.
+When the RDS PostgreSQL database is available, take note of the database endpoint. It will be referred to as `RDS_DB_ENDPOINT` in the next sections.
 
 To secure access to the database, you must create a secret that encrypts the database user and password before you install the Helm release.
 
@@ -171,7 +172,7 @@ kubectl create secret generic odm-db-secret \
 --from-literal=db-password=<PG_PASSWORD>
 ```
 
-> NOTE: ODM on Kubernetes is provided with an internal database based on PostgreSQL that can be used empty or with pre-populated samples.
+> NOTE: ODM on Kubernetes is provided with an internal PostgreSQL database that can be used empty or with pre-populated samples.
 If you want to install an ODM demo quickly, you can use this internal database. It is dedicated to prototyping, not for production.
 
 ### 4. Manage a  digital certificate (10 min)
