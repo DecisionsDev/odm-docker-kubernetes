@@ -164,7 +164,7 @@ Where:
 
 ### 3. Prepare your environment for the ODM installation (10 min)
 
-To get access to the ODM material, you need an IBM entitlement registry key to pull the images from the IBM Entitled Registry.
+To get access to the ODM material, you need an IBM entitlement key to pull the images from the IBM Entitled Registry.
 
 #### a. Retrieve your entitled registry key
 
