@@ -1,10 +1,10 @@
-The following steps are explaining how to download ODM images on Kubernetes package (.tgz file) from Passport Advantage® (PPA) and then push the contained images to the [Amazon Elastic Container Registry (Amazon ECR)](https://aws.amazon.com/ecr/).
+The following steps explain how to download the ODM on Kubernetes images (.tgz file) from Passport Advantage® (PPA), and then push them to the [Amazon Elastic Container Registry (Amazon ECR)](https://aws.amazon.com/ecr/).
 
 Prerequisites:
 
 - Install Docker
 
-- Export the following environment variables as they will be used all along this document:
+- Export the following environment variables as they will be used all along this procedure:
 
     ```bash
     export REGION=<REGION>
@@ -64,7 +64,7 @@ aws ecr create-repository --repository-name odm-decisionserverconsole --image-sc
     for name in images/*.tar.gz; do docker image load --input ${name}; done
     ```
 
-   For more information, refer to the [ODM knowledge center](hhttps://www.ibm.com/docs/en/odm/8.11.0?topic=production-installing-helm-release-odm).
+   For more information, refer to the [ODM knowledge center](hhttps://www.ibm.com/docs/en/odm/8.11.1?topic=production-installing-helm-release-odm).
 
 #### d. Tag and push the images to the ECR registry
 
@@ -100,7 +100,7 @@ kubectl create secret docker-registry ecrodm \
 
 #### f. Install ODM with the following parameters
 
-When reaching the step [Install an IBM Operational Decision Manager release](README.md#5-install-an-ibm-operational-decision-manager-release-10-min), to change the ODM pull images from the IBM Entitled Registry by the ECR registry, choose the relevant yaml file provided according if you want to try NGINX or ALB ingress controller, internal or RDS postgreSQL database, and you just have to override the image.pullSecrets and image.repository properties when installing the helm chart like:
+When you reach the step [Install an IBM Operational Decision Manager release](README.md#5-install-an-ibm-operational-decision-manager-release-10-min), if you want to move the ODM pulled images from the IBM Entitled Registry to the ECR registry, choose the relevant .yaml file depending on whether you want to try the NGINX or the ALB Ingress controller, the internal database or the RDS PostgreSQL database. All you have to do is to override the `image.pullSecrets` and `image.repository` properties when you install the Helm chart:
 
 ```bash
 helm install mycompany ibmcharts/ibm-odm-prod --version 22.2.0 \
