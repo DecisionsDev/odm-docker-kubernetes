@@ -32,21 +32,21 @@
 
 # Introduction
 
-In the context of the Operational Decision Manager (ODM) on Certified Kubernetes offering, ODM for production can be configured with an external OpenID Connect server (OIDC provider) such as the Keycloak cloud service.
+In the context of the Operational Decision Manager (ODM) on Certified Kubernetes offering, ODM for production can be configured with an external OpenID Connect server (OIDC provider), such as the Keycloak cloud service.
 
 ## What is Keycloak?
 
-[Keycloak](https://www.keycloak.org/), is an open source enterprise identity service that provides single sign-on, user federation, identity brokering and social login. This is the service that we use in this article, using the Keycloak SSO [OpenID Connect](https://www.keycloak.org/docs/latest/server_admin/index.html#con-oidc_server_administration_guide) capability.
+[Keycloak](https://www.keycloak.org/) is an open source enterprise identity service that provides single sign-on, user federation, identity brokering and social login. The Keycloak SSO [OpenID Connect](https://www.keycloak.org/docs/latest/server_admin/index.html#con-oidc_server_administration_guide) capability is the service that we use in this article.
 
 
 ## About this task
 
-You need to create a number of secrets before you can install an ODM instance with an external OIDC provider such as the Keycloakservice and use web application single sign-on (SSO). The following diagram shows the ODM services with an external OIDC provider after a successful installation.
+You need to create a number of secrets before you can install an ODM instance with an external OIDC provider such as the Keycloak service, and use web application single sign-on (SSO). The following diagram shows the ODM services with an external OIDC provider after a successful installation.
 
 ![ODM web application SSO](/images/Keycloak/diag_keycloak_interaction.jpg)
 
 
-The following procedure describes how to manually configure ODM with an Keycloak service.
+The following procedure describes how to manually configure ODM with a Keycloak service.
 
 ## ODM OpenID flows
 
@@ -69,7 +69,7 @@ The [Client Credentials flow](https://www.keycloak.org/docs/latest/server_admin/
 
 ![Client Credential Flow](/images/Okta/oauth_client_creds_flow.png) (© Okta)
 
-The resource owner password flow allows an application to sign in the user by directly handling their password. It is not recommended to use this flow. In most scenarios, more secure alternatives are available and recommended. This flow requires a very high degree of trust in the application, and carries risks which are not present in other flows. You should only use this flow when other more secure flows cannot be used.
+The resource owner password flow allows an application to sign in a user by directly handling their password. It is not recommended to use this flow. In most scenarios, more secure alternatives are available and recommended. This flow requires a very high degree of trust in the application, and carries risks which are not present in other flows. You should only use this flow when other more secure flows cannot be used.
 
 ![Password Flow](/images/Okta/password_flow.png) (© Okta)
 
@@ -83,14 +83,14 @@ You need the following elements:
 - Access to a CNCF Kubernetes cluster 
 - A Keycloak Instance
 
-### Install a Keycloak Instance
+### Install a Keycloak instance
 
-For this tutorial, we followed the documented procedure explaining how to install [Keycloak on OpenShift](https://www.keycloak.org/getting-started/getting-started-openshift)
-We tested with the Keycloak version 20.0.1
+For this tutorial, we followed the procedure explaining how to install [Keycloak on OpenShift](https://www.keycloak.org/getting-started/getting-started-openshift).
+We tested with the Keycloak version 20.0.1.
 
-You can follow this installation the [Get started with Keycloak on Openshift](https://www.keycloak.org/getting-started/getting-started-openshift) instructions.
+You can follow the [Get started with Keycloak on Openshift](https://www.keycloak.org/getting-started/getting-started-openshift) instructions.
 
-If you want to install in another Kubernetes platform you can follow this [Get started with Keycloak on Kubernetes](https://www.keycloak.org/getting-started/getting-started-kube) instructions.
+If you want to install on another Kubernetes platform, follow these instructions: [Get started with Keycloak on Kubernetes](https://www.keycloak.org/getting-started/getting-started-kube).
 
 # Configure a Keycloak instance for ODM (Part 1)
 
