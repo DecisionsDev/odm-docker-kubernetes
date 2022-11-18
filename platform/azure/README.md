@@ -210,7 +210,7 @@ Result:
 }
 ```
 
-Make a note of the server name that is displayed in the JSON output (e.g. "fullyQualifiedDomainName": "<postgresqlserver>.postgres.database.azure.com") as it will be used later to deploy ODM with "helm install".
+Make a note of the server name that is displayed in the JSON output (e.g. "fullyQualifiedDomainName": "<postgresqlserver>.postgres.database.azure.com") as it will be used later to deploy ODM with `helm instal`.
 
 ###  Create a firewall rule that allows access from Azure services
 
