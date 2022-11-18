@@ -285,7 +285,7 @@ Follow the **Installation** section of the [Manual installation without the Oper
 
 #### b. Create the IBM Licensing instance
 
-Get the [licensing-instance.yaml](./licensing-instance.yaml) file and execute the command:
+Get the [licensing-instance.yaml](./licensing-instance.yaml) file and run the command:
 
 ```
 kubectl create -f licensing-instance.yaml
