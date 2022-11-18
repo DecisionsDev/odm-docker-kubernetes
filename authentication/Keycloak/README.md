@@ -331,7 +331,7 @@ You can also create groups and do a mapping between groups and roles. This way, 
 
 ### Create a secret to use the Entitled Registry
 
-1. To get your entitlement key, log in to [MyIBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary) with the IBMid and password that are associated with the entitled software .
+1. To get your entitlement key, log in to [MyIBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary) with the IBMid and password that are associated with the entitled software.
 
     In the **Container software library** tile, verify your entitlement on the **View library** page, and then go to **Get entitlement key**  to retrieve the key.
 
@@ -383,14 +383,14 @@ You can also create groups and do a mapping between groups and roles. This way, 
     Where:
     - *CLIENT_SECRET* is listed in your ODM Application, section **General** / **Client Credentials**
 
-    The following 4 files are generated into the `output` directory :
+    The following four files are generated into the `output` directory:
     
-    - webSecurity.xml is containing the mapping between liberty J2EE ODM roles and Azure AD groups and users :
+    - webSecurity.xml contains the mapping between Liberty J2EE ODM roles and Keycloak groups and users:
       * rtsAdministrators/resAdministrators/resExecutors ODM roles are given to the CLIENT_ID (which is seen as a user) to manage the client-credentials flow  
-    - openIdWebSecurity.xml is containing 2 openIdConnectClient liberty configuration :
-      * for the web access to Decision Center an Decision Server consoles using userIdentifier="preferred_username" with the Authorization Code flow
+    - openIdWebSecurity.xml contains two openIdConnectClient Liberty configurations:
+      * for web access to Decision Center an Decision Server consoles using userIdentifier="preferred_username" with the Authorization Code flow
       * for the rest-api call using userIdentifier="preferred_username" with the client-credentials flow
-    - openIdParameters.properties is configuring several features like allowed domains, logout and some internal ODM openid features
+    - openIdParameters.properties configures several features like allowed domains, logout, and some internal ODM openid features
 
 3. Create the Keycloak authentication secret
 
