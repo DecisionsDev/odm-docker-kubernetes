@@ -421,11 +421,11 @@ You can also create groups and do a mapping between groups and roles. This way, 
 
 ### 3. Run the `helm install` command
 
-You can now install the product. We will use the PostgreSQL internal database and disable the data persistence (`internalDatabase.persistence.enabled=false`) to avoid any platform complexity concerning persistent volume allocation.
+You can now install the product. We will use the PostgreSQL internal database and disable data persistence (`internalDatabase.persistence.enabled=false`) to avoid any platform complexity with persistent volume allocation.
 
 #### a. Installation on OpenShift using Routes
   
-  See the [Preparing to install](https://www.ibm.com/docs/en/odm/8.11.0?topic=production-preparing-install-operational-decision-manager) documentation for additional information.
+  See the [Preparing to install](https://www.ibm.com/docs/en/odm/8.11.0?topic=production-preparing-install-operational-decision-manager) documentation for more information.
   
   ```shell
   helm install my-odm-release ibmcharts/ibm-odm-prod \
@@ -467,7 +467,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 
     
 1. Get the ODM endpoints.
-    Refer to the [documentation](https://www.ibm.com/docs/en/odm/8.11.0?topic=production-configuring-external-access) to retrieve the endpoints.
+    Refer to [this documentation](https://www.ibm.com/docs/en/odm/8.11.0?topic=production-configuring-external-access) to retrieve the endpoints.
     For example, on OpenShift you can get the route names and hosts with:
 
     ```
@@ -496,7 +496,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 
 2. Register the redirect URIs into your Keycloak application.
 
-    The redirect URIs are built the following way:
+    The redirect URIs are built in the following way:
 
       Using Routes:
       - Decision Center redirect URI:  `https://<DC_HOST>/decisioncenter/openid/redirect/odm`
@@ -513,10 +513,10 @@ You can now install the product. We will use the PostgreSQL internal database an
       - Rule Designer redirect URI: `https://127.0.0.1:9081/oidcCallback`
 
    From the Keycloak admin console, in **Manage** / **Clients** / **odm** 
-    - In the tab setting **Settings**
+    - In the tab **Settings**
     	* Add the redirect URIs in the **Valid redirect URIs** field for each components.
     	
-      For example add the Decision Center redirect URI that you got earlier (`https://<DC_HOST>/decisioncenter/openid/redirect/odm` -- don't forget to replace <DC_HOST> with your actual host name!)
+      For example, add the Decision Center redirect URI that you got earlier (`https://<DC_HOST>/decisioncenter/openid/redirect/odm` -- do not forget to replace <DC_HOST> with your actual host name!)
     - Click **Save** at the bottom of the page.
 
     ![Add URI](/images/Keycloak/redirect_uris.png)
