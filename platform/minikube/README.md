@@ -2,6 +2,8 @@
 
 This tutorial explains the deployment of an IBM® Operational Decision Manager (ODM) clustered topology on a Minikube Kubernetes cluster. This deployment implements Kubernetes and Docker technologies.
 
+Minikube is local Kubernetes, focusing on making it easy to learn and develop for Kubernetes. You can use it to evaluate ODM.
+
 ![Architecture](images/minikube-architecture.png)
 
 The ODM on Kubernetes Docker images are available in the [IBM Entitled Registry](https://www.ibm.com/cloud/container-registry). The ODM Helm chart is available in the [IBM Helm charts repository](https://github.com/IBM/charts).
@@ -136,9 +138,11 @@ $ minikube service list -n default
 |----------------------|------------------------------------------------|----------------------------------|---------------------------|
 ```
 
+The URL are listed using **http**, you should replace it with **https** to access the services.
+
 > Note: you can directly open the URL corresponding to a component in a new browser tab with the following command:
 > ```
-> $ minikube service my-odm-release-odm-decisioncenter
+> $ minikube service my-odm-release-odm-decisioncenter -n default --https
 > ```
 
 ## Troubleshooting
