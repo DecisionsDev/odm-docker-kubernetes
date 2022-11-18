@@ -1,0 +1,15 @@
+license: true
+usersPassword: "odmAdmin"
+
+service:
+  enableTLS: false
+
+image:
+  repository: cp.icr.io/cp/cp4a/odm
+  pullSecrets:
+  - my-odm-docker-registry
+
+internalDatabase:
+  populateSampleData: true
+  persistence:
+    useDynamicProvisioning: true
