@@ -15,16 +15,16 @@ This tutorial was tested on MacOS and Linux.
 
 ## Prerequisites
 
-* Install [Minikube](https://github.com/kubernetes/minikube).
+* [Minikube](https://github.com/kubernetes/minikube)
 * [Helm v3](https://helm.sh/docs/intro/install/)
 
 
 ## Steps
 
-1. [Start Minikube](#start-minikube)
-2. [Prepare your environment for the ODM installation](#prepare-your-environment-for-the-odm-installation)
-3. [Install an IBM Operational Decision Manager release](#install-an-ibm-operational-decision-manager-release)
-4. [Access the ODM services](#access-the-odm-services)
+1. [Start Minikube](#1-start-minikube)
+2. [Prepare your environment for the ODM installation](#2-prepare-your-environment-for-the-odm-installation)
+3. [Install an IBM Operational Decision Manager release](#3-install-an-ibm-operational-decision-manager-release)
+4. [Access the ODM services](#4-access-the-odm-services)
 
 ### 1. Start Minikube
 
@@ -59,7 +59,7 @@ You can also download the ODM on Kubernetes package (.tgz file) from Passport Ad
 
 - Log in to [MyIBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary) with the IBMid and password that are associated with the entitled software.
 
-- In the Container software library tile, verify your entitlement on the View library page, and then go to *Get entitlement key* to retrieve the key.
+- In the *Container software library* tile, verify your entitlement on the *View library* page, and then go to **Get entitlement key** to retrieve the key.
 
 #### b. Create a pull secret by running the kubectl create secret command.
 
@@ -136,7 +136,7 @@ $ minikube service list -n default
 |----------------------|------------------------------------------------|----------------------------------|---------------------------|
 ```
 
-> Note: you can directly open the URl corresponding to a component in a new browser tab with the following command:
+> Note: you can directly open the URL corresponding to a component in a new browser tab with the following command:
 > ```
 > $ minikube service my-odm-release-odm-decisioncenter
 > ```
