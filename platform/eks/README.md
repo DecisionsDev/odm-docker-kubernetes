@@ -103,7 +103,7 @@ You can also download the ODM on Kubernetes package (.tgz file) from Passport Ad
 
 - In the Container software library tile, verify your entitlement on the View library page, and then go to *Get entitlement key* to retrieve the key.
 
-#### b. Create a pull secret by running the kubectl create secret command.
+#### b. Create a pull secret by running the kubectl create secret command
 
 ```console
 kubectl create secret docker-registry my-odm-docker-registry --docker-server=cp.icr.io \
@@ -118,7 +118,7 @@ Where:
 
 The my-odm-docker-registry secret name is already used for the `image.pullSecrets` parameter when you run a helm install of your containers. The `image.repository` parameter is also set by default to `cp.icr.io/cp/cp4a/odm`.
 
-#### c. Add the public IBM Helm charts repository:
+#### c. Add the public IBM Helm charts repository
 
 ```console
 helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo/entitled
