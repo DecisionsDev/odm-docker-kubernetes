@@ -145,7 +145,7 @@ You can also create groups and do a mapping between groups and roles. This way, 
 
     ![Create Roles](/images/Keycloak/create_roles.png)
 
-    Do the same for all others ODM J2EE existing roles like:
+    Do the same for the other ODM J2EE roles:
       * rtsConfigManagers
       * rtsInstallers
       * rtsUsers
@@ -154,7 +154,7 @@ You can also create groups and do a mapping between groups and roles. This way, 
       * resDeployers
       * resExecutors
 
-    For more details about ODM groups and roles, have a look at [ODM on k8s documentation](https://www.ibm.com/docs/en/odm/8.11.0?topic=access-user-roles-user-groups)
+    For more information about ODM groups and roles, refer to the [ODM on Kubernetes documentation](https://www.ibm.com/docs/en/odm/8.11.0?topic=access-user-roles-user-groups).
 
 
 2. Create a group for ODM administrators.
@@ -185,13 +185,13 @@ You can also create groups and do a mapping between groups and roles. This way, 
         * Last name: ``Doe``
         * Enabled: On
         * Required user actions: nothing
-        * Groups : Click on **Join Groups** , select ***odm-admin*** and click **Join**
+        * Groups : Click **Join Groups** , select ***odm-admin***, and click **Join**
         * Click **Create**
 
       ![Create User](/images/Keycloak/create_user.png)
       
       * In User Details, select the **Credentials** tab 
-        * Click on **Set password**
+        * Click **Set password**
         * Fill the Password and Password confirmation  fields with **johndoe**
 	* Temporary: Off      
 	* Click *Save Password*
