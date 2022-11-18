@@ -229,7 +229,7 @@ You can also create groups and do a mapping between groups and roles. This way, 
 
     ![Create Client 2](/images/Keycloak/create_client_2.png)
 
-    * Click on **Credentials** tab
+    * Click **Credentials** tab
     * Take a note of the **Client secret** value. It will be referenced as ``CLIENT_SECRET`` in the next steps.
     
     ![Get Client Secret](/images/Keycloak/client_secret.png)
@@ -237,11 +237,11 @@ You can also create groups and do a mapping between groups and roles. This way, 
   
 2. Add the GROUPS predefined mapper on the ROLES client scope
 
-    In Menu **Manage** / **Client scopes**, click on the existing **roles** scope:
+    In Menu **Manage** / **Client scopes**, click the existing **roles** scope:
     * Select the **Mappers** tab
     * Click **Add mapper>From predefined mappers**
       * Search for mapper : **groups** 	
-      * select **groups**
+      * Select **groups**
       * Click *Add*
     * Click *Settings tab*
     * Click *Save*	
@@ -250,18 +250,18 @@ You can also create groups and do a mapping between groups and roles. This way, 
 
 3. Retrieve the Keycloak Server URL
 
-    In Menu **Configure**/**Realm settings**, in the **General** tab, click on **OpenID Endpoint Configuration** link
-    Take a note of the issuer URL. 
+    In Menu **Configure**/**Realm settings**, in the **General** tab, click the **OpenID Endpoint Configuration** link.
+    Take note of the issuer URL. 
     It will be referenced as ``KEYCLOAK_SERVER_URL`` in the next steps.
     
 4. Check the configuration
   
      Download the [keycloak-odm-script.zip](keycloak-odm-script.zip) file to your machine and unzip it in your working directory.
-     This .zip file contains scripts and template to verify and setup ODM.
+     This .zip file contains scripts and templates to verify and set up ODM.
      
-    7.1 Verify the Client Credential Token 
+    7.1 Verify the Client Credentials Token 
    
-     You can request an access token using the Client-Credentials flow to verify the token's format.
+     You can request an access token using the Client-Credentials flow to verify the format of the token.
      This token is used for the deployment between Decision Cennter and the Decision Server Console: 
      
     ```shell
@@ -274,7 +274,7 @@ You can also create groups and do a mapping between groups and roles. This way, 
     - *CLIENT_SECRET* is listed in your ODM Application, in the **Credentials** tab
     - *KEYCLOAK_SERVER_URL* is the issuer that can be retrieved using the **OpenID Endpoint Configuration** link of the **General** tab in the **Configure**/**Realm settings** menu
     
-     by introspecting the access_token value with this online tool [https://jwt.io](https://jwt.io). You should get:
+     By introspecting the access_token value with the online tool [https://jwt.io](https://jwt.io), you should get:
      
     ```
     {
@@ -290,7 +290,7 @@ You can also create groups and do a mapping between groups and roles. This way, 
 
 
    To check that it has been correctly taken into account, you can request an access token using the Client password flow.
-   This token is used for the invocation of the ODM components such as the Decision Center, Decision Servcer console and the invocation of the Decision Server Runtime REST API.
+   This token is used for the invocation of the ODM components like the Decision Center, Decision Server console, and the invocation of the Decision Server Runtime REST API.
    
     ```shell
     $ ./get-user-password-token.sh -i <CLIENT_ID> -x <CLIENT_SECRET> -n <KEYCLOAK_SERVER_URL> -u <USERNAME> -p <PASSWORD> 
@@ -298,12 +298,12 @@ You can also create groups and do a mapping between groups and roles. This way, 
    
    Where:
   
-    - *CLIENT_ID* is your ODM Application, default is odm, can be retrieve in the **Manage** / **Clients** menu
+    - *CLIENT_ID* is your ODM Application, default is odm, can be retrieved in the **Manage** / **Clients** menu
     - *CLIENT_SECRET* is listed in your ODM Application, in the **Credentials** tab
     - *KEYCLOAK_SERVER_URL* is the issuer that can be retrieved using the **OpenID Endpoint Configuration** link of the **General** tab in the **Configure**/**Realm settings** menu
     - *USERNAME* *PASSWORD* have been created from 'Create at least one user that belongs to this new group.' section.
     
-     by introspecting the id_token value with this online tool [https://jwt.io](https://jwt.io). You should get:
+     By introspecting the id_token value with the online tool [https://jwt.io](https://jwt.io), you should get:
      
     ```
     {
