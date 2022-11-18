@@ -8,7 +8,7 @@ Here is the Google Cloud home page: https://cloud.google.com
 
 <img width="1000" height="560" src='./images/architecture.png'/>
 
-The ODM on Kubernetes Docker images are available in [IBM Entitled Registry](https://www.ibm.com/cloud/container-registry). The ODM Helm chart is available in the [IBM Helm charts repository](https://github.com/IBM/charts).
+The ODM on Kubernetes Docker images are available in the [IBM Entitled Registry](https://www.ibm.com/cloud/container-registry). The ODM Helm chart is available in the [IBM Helm charts repository](https://github.com/IBM/charts).
 
 ## Included components
 
