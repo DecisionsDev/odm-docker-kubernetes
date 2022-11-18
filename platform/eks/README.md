@@ -51,8 +51,6 @@ aws configure 
 
 #### a. Create an EKS cluster (30 min)
 
-Create an EKS cluster:
-
 ```bash
 eksctl create cluster <CLUSTER_NAME> --alb-ingress-access
 
