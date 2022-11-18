@@ -405,7 +405,7 @@ You can retrieve the payload.json from the ODM Decision Server Console or use [t
   
 As explained in the ODM on Certified Kubernetes documentation [Configuring user access with OpenID](https://www.ibm.com/docs/en/odm/8.11.0?topic=access-configuring-user-openid), we advise to use basic authentication for the ODM runtime call for performance reasons and to avoid the issue of token expiration and revocation.
 
-You can realize a basic authentication ODM runtime call the following way:
+You can realize a basic authentication ODM runtime call in the following way:
   
    ```
   $ curl -H "Content-Type: application/json" -k --data @payload.json \
