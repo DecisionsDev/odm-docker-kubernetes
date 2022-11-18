@@ -295,7 +295,7 @@ kubectl create -f licensing-instance.yaml
 
 #### c. Retrieving license usage
 
-After a couple of minutes, the ALB reflects the ingress configuration and you will be able to access the IBM License Service by retrieving the URL with this command:
+After a couple of minutes, the ALB reflects the Ingress configuration. You will be able to access the IBM License Service by retrieving the URL with this command:
 
 ```bash
 export LICENSING_URL=$(kubectl get ingress ibm-licensing-service-instance -n ibm-common-services -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
@@ -304,7 +304,7 @@ export TOKEN=$(kubectl get secret ibm-licensing-token -n ibm-common-services -o 
 
 If LICENSING_URL is empty, take a look at the [troubleshooting](#troubleshooting) section.
 
-You can access the `http://${LICENSING_URL}/status?token=${TOKEN}` URL to view the licensing usage or retrieve the licensing report ZIP file by running:
+You can access the `http://${LICENSING_URL}/status?token=${TOKEN}` URL to view the licensing usage or retrieve the licensing report .zip file by running:
 
 ```bash
 curl "http://${LICENSING_URL}/snapshot?token=${TOKEN}" --output report.zip
