@@ -238,7 +238,7 @@ helm install mycompany ibmcharts/ibm-odm-prod --version 22.2.0 -f eks-rds-values
 > NOTE: If you choose to use the NGINX Ingress Controller, refer to [Install an ODM release with NGINX Ingress Controller](README-NGINX.md#install-an-odm-release-with-nginx-ingress-controller).
 
 
-#### c. Check the topology
+#### Check the topology
 Run the following command to check the status of the pods that have been created: 
 ```bash
 kubectl get pods
@@ -265,7 +265,7 @@ If ROOTURL is empty, take a look at the [troubleshooting](#troubleshooting) sect
 
 With this ODM topology in place, you can access web applications to author, deploy, and test your rule-based decision services.
 
-The services are accessible from the following URLs:
+The ODM services are accessible from the following URLs:
 
 | *Component* | *URL* | *Username/Password* |
 |---|---|---|
