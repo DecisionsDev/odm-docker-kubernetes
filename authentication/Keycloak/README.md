@@ -358,8 +358,8 @@ For more details about ODM groups and roles, have a look at [ODM on k8s document
     keytool -printcert -sslserver <KEYCLOAK_SERVER_URL_WITHOUT_HTTPS> -rfc > keycloak.crt
     kubectl create secret generic keycloak-secret --from-file=tls.crt=keycloak.crt
     ```
-    
-    **TODO Explain the KEYCLOAK_SERVER_URL_WITHOUT_HTTPS parameter**
+    Where:
+    - KEYCLOAK_SERVER_URL_WITHOUT_HTTPS is KEYCLOAK_SERVER_URL by removing https:// prefix
      
 2. Generate the ODM configuration file for Keycloak
 
@@ -368,7 +368,7 @@ For more details about ODM groups and roles, have a look at [ODM on k8s document
     The [script](generateTemplate.sh) allows you to generate the necessary configuration files.
     Generate the files with the following command:
     ```
-    ./generateTemplate.sh -i <CLIENT_ID> -x <CLIENT_SECRET> -n <SERVER_URL> [-r <REALM_NAME> -u <USER_ID>]
+    ./generateTemplate.sh -i <CLIENT_ID> -x <CLIENT_SECRET> -n <KEYCLOAK_SERVER_URL> [-r <REALM_NAME> -u <USER_ID>]
     ```
 
     Where:
