@@ -98,13 +98,13 @@ In this section, we explain how to:
 
 - Log into the Keycloak Admin Console
 - Create a dedicated odm realm
-- Manage roles, groups and users
+- Manage roles, groups, and users
 - Set up an application
 - Configure the default Authorization server
 
 ## Log into the Keycloak Admin Console
 
-When, it's done,using Openshiftroutes you should be able to access the Keycloak Admin Console using the following URL with the **admin** username and **admin** password:
+Using OpenShift routes, you should be able to access the Keycloak Admin Console through the following URL with the **admin** username and **admin** password:
 
 ```shell
 KEYCLOAK_URL=https://$(oc get route keycloak --template='{{ .spec.host }}') &&
@@ -113,28 +113,28 @@ echo "Keycloak Admin Console:   $KEYCLOAK_URL/admin" &&
 echo ""
 ```
 
-All the following configuration will be done inside this Admin Console.
+The following configuration takes place in this Admin Console.
 
 ## Create a dedicated odm realm
-This step is not compulsory as you can realize all the following tasks in the default master realm.
-But, in order to avoid to mix all what will be configured with existing configurations, it's preferable to create a dedicated odm realm.
+This step is not compulsory as you can perform the following tasks in the default master realm.
+But to avoid getting mixing up with existing configurations, it is preferable to create a dedicated odm realm.
 
 1. Create an odm realm
 
-   In Main page click on **Master**:
-     * Click on **Create Realm** button
+   On the Main page, click **Master**:
+     * Click **Create Realm** 
        * Realm Name: *odm*
        * Enabled: On
        * Click **Create**
        
     ![Create Realm](/images/Keycloak/create_realm.png)
 
-## Manage roles, groups and users
+## Manage roles, groups, and users
 
-As you can read in [Keycloak documentation](https://www.keycloak.org/docs/latest/server_admin/index.html#assigning-permissions-using-roles-and-groups), roles and groups have a similar purpose, which is to give users access and permissions to use applications. Groups are a collection of users to which you apply roles and attributes. Roles define specific applications permissions and access control.
-To manage permissions inside the ODM application, the ID token and access token will contains all roles that will be gather in a property named groups.
-So, you can create only roles, and provide these roles to a user.
-You can also create groups and realize a mapping between groups and roles. This way, adding a user in a group will also provide it the roles mapped to this group. This is the way we have choosen here.
+As explained in [Keycloak documentation](https://www.keycloak.org/docs/latest/server_admin/index.html#assigning-permissions-using-roles-and-groups), roles and groups have a similar purpose, which is to give users access and permissions to use applications. Groups are collections of users to which you apply roles and attributes. Roles define specific application permissions and access control.
+To manage permissions inside the ODM application, the ID token and access token contain all the roles that are gather in a property named groups.
+So, you can only create  roles and provide these roles to a user.
+You can also create groups and do a mapping between groups and roles. This way, adding a user to a group will grant them the roles mapped to this group. This is what we are applying here.
 
 1. Create a role for ODM administrators.
 
