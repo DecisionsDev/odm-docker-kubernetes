@@ -8,7 +8,7 @@ The ODM on Kubernetes Docker images are available in the [IBM Entitled Registry]
 
 ## Included components
 The project uses the following components:
-- [IBM Operational Decision Manager](https://www.ibm.com/docs/en/odm/8.11.0)
+- [IBM Operational Decision Manager](https://www.ibm.com/docs/en/odm/8.11.1)
 - [Amazon Elastic Kubernetes Service (Amazon EKS)](https://aws.amazon.com/eks/)
 - [Amazon Relational Database Service (Amazon RDS)](https://aws.amazon.com/rds/)
 - [AWS Application Load Balancer (ALB)](https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html)
