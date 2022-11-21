@@ -154,7 +154,7 @@ You can also create groups and do a mapping between groups and roles. This way, 
       * resDeployers
       * resExecutors
 
-    For more information about ODM groups and roles, refer to the [ODM on Kubernetes documentation](https://www.ibm.com/docs/en/odm/8.11.0?topic=access-user-roles-user-groups).
+    For more information about ODM groups and roles, refer to the [ODM on Kubernetes documentation](https://www.ibm.com/docs/en/odm/8.11.1?topic=access-user-roles-user-groups).
 
 
 2. Create a group for ODM administrators.
@@ -425,7 +425,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 
 #### a. Installation on OpenShift using Routes
   
-  See the [Preparing to install](https://www.ibm.com/docs/en/odm/8.11.0?topic=production-preparing-install-operational-decision-manager) documentation for more information.
+  See the [Preparing to install](https://www.ibm.com/docs/en/odm/8.11.1?topic=production-preparing-install-operational-decision-manager) documentation for more information.
   
   ```shell
   helm install my-odm-release ibmcharts/ibm-odm-prod \
@@ -467,7 +467,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 
     
 1. Get the ODM endpoints.
-    Refer to [this documentation](https://www.ibm.com/docs/en/odm/8.11.0?topic=production-configuring-external-access) to retrieve the endpoints.
+    Refer to [this documentation](https://www.ibm.com/docs/en/odm/8.11.1?topic=production-configuring-external-access) to retrieve the endpoints.
     For example, on OpenShift you can get the route names and hosts with:
 
     ```
@@ -549,7 +549,7 @@ To be able to securely connect your Rule Designer to the Decision Server and Dec
 
 4. Restart Rule Designer.
 
-For more information, refer to [this documentation](https://www.ibm.com/docs/en/odm/8.11.0?topic=designer-importing-security-certificate-in-rule).
+For more information, refer to [this documentation](https://www.ibm.com/docs/en/odm/8.11.1?topic=designer-importing-security-certificate-in-rule).
   
 ### Getting Started with IBM Operational Decision Manager for Containers
 
