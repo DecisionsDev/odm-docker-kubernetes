@@ -56,8 +56,6 @@ This tutorial was tested on MacOS and Linux.
 To get access to the ODM material, you must have an IBM entitlement key to pull the images from the IBM Entitled registry.
 This is what will be used in the next step of this tutorial.
 
-You can also download the ODM on Kubernetes package (.tgz file) from Passport Advantage® (PPA), and then push the contained images to the minikube registry. If you prefer to manage the ODM images this way, see the details [here](README-minikube-registry.md).
-
 #### a. Retrieve your entitled registry key
 
 - Log in to [MyIBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary) with the IBMid and password that are associated with the entitled software.
