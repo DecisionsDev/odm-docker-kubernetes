@@ -32,7 +32,7 @@ So, don't hesitate to contact us if you faced a specific issue that you think mu
   
   If you forgot to provide a valid certificate, you will get an exception in the browser like: 
   ```
-  **{"error_description":"OpenID Connect client returned with status: SEND_401","error":401}**
+  {"error_description":"OpenID Connect client returned with status: SEND_401","error":401}
   ```
   And in the ODM pod logs, you see:
 
@@ -42,7 +42,7 @@ So, don't hesitate to contact us if you faced a specific issue that you think mu
   The extended  error message from the SSL handshake exception is: [unable to find valid certification path to requested target].
   ```
 
-Pay attention, for some openId server like Azure AD, you also have to provide a root CA Certificate Authority. For Azure AD, it's Digicert.
+Pay attention, for some openId server like Azure AD, you also have to provide a root Certificate Authority. For Azure AD, currently, root CA is [Digicert](https://www.digicert.com/).
 
 ## Missing or Invalid Allowed Domain List
 
