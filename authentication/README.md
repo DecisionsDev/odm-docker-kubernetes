@@ -9,9 +9,10 @@
 
 # Troubleshooting
 
-You should encounter any issue with the delivered openId tutorials because we generate the major configuration file.
+You should not encounter issue with the delivered openId tutorials because we generate the major configuration files.
 But, it may happen that you encounter an issue configuring ODM with OpenId manually.
-So, we provide here the most common issue and how to solve them.
+So, we provide here the most common issue you can face and how to solve them.
+
 The list is obviously not exhaustive.
 So, don't hesitate to contact us if you faced a specific issue that you think must figure in this helper.
 
