@@ -17,7 +17,7 @@ This tutorial was tested on MacOS and Linux.
 
 ## Prerequisites
 
-* [Minikube](https://github.com/kubernetes/minikube)
+* [Minikube](https://github.com/kubernetes/minikube#installation)
 * [Helm v3](https://helm.sh/docs/intro/install/)
 
 
@@ -138,12 +138,12 @@ $ minikube service list -n default
 |----------------------|------------------------------------------------|----------------------------------|---------------------------|
 ```
 
-The URL are listed using **http**, you should replace it with **https** to access the services.
+> ⚠️ **Warning**: The URL are listed using **http**, you should replace it with **https** to access the services.
 
-> Note: you can directly open the URL corresponding to a component in a new browser tab with the following command:
-> ```
-> $ minikube service my-odm-release-odm-decisioncenter -n default --https
-> ```
+You can directly open the URL corresponding to a component in a new browser tab with the following command:
+```
+$ minikube service my-odm-release-odm-decisioncenter -n default --https
+```
 
 ## Troubleshooting
 
