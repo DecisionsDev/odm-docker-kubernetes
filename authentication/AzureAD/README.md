@@ -26,6 +26,7 @@
         - Set up Rule Designer
         - Getting Started with IBM Operational Decision Manager for Containers
         - Calling the ODM Runtime Service
+- [Troubleshooting](#troubleshooting)
 - License
 
 <!-- /TOC -->
@@ -584,6 +585,10 @@ But if you want to execute a bearer authentication ODM runtime call using the Cl
          https://<DS_RUNTIME_HOST>/DecisionService/rest/production_deployment/1.0/loan_validation_production/1.0
   ```
   
+# Troubleshooting
+
+If you encounter any issue, have a look at the [common troubleshooting explanation](../README.md#Troubleshooting)
+
 # License
 
 [Apache 2.0](/LICENSE)
