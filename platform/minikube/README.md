@@ -48,7 +48,8 @@ This tutorial was tested on MacOS and Linux.
   To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
   ```
 
-  > Note: You can access the [Kubernetes Dashboard](http://kubernetes.io/docs/user-guide/ui/), by running the `minikube dashboard` command.
+  > **Note**  
+  > You can access the [Kubernetes Dashboard](http://kubernetes.io/docs/user-guide/ui/), by running the `minikube dashboard` command.
 
 ### 2. Prepare your environment for the ODM installation
 
@@ -74,7 +75,8 @@ Where:
 * `<ENTITLEMENT_KEY>` is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
 * `<USER_EMAIL>` is the email address associated with your IBMid.
 
-> Note: The `cp.icr.io` value for the docker-server parameter is the only registry domain name that contains the images. You must set the docker-username to `cp` to use an entitlement key as docker-password.
+> **Note**  
+> The `cp.icr.io` value for the docker-server parameter is the only registry domain name that contains the images. You must set the docker-username to `cp` to use an entitlement key as docker-password.
 
 The *my-odm-docker-registry* secret name is set as the `image.pullSecrets` parameter when you run a helm install of your containers. The `image.repository` parameter is also set to `cp.icr.io/cp/cp4a/odm`.
 
@@ -138,7 +140,8 @@ $ minikube service list -n default
 |----------------------|------------------------------------------------|----------------------------------|---------------------------|
 ```
 
-> ⚠️ **Warning**: The URL are listed using **http**, you should replace it with **https** to access the services.
+> **Warning**  
+> The URL are listed using **http**, you should replace it with **https** to access the services.
 
 You can directly open the URL corresponding to a component in a new browser tab with the following command:
 ```
