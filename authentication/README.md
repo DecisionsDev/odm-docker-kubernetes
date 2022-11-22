@@ -112,10 +112,10 @@ So, we used :
 <variable name="odm.rtsAdministrators.group1" value="group:KEYCLOAK_SERVER_URL/rtsAdministrators"/>
 ```
 
-If the list is empty, it means that liberty didn't find any group in the id_token using the openIdConnectClient **groupId** property provided in the openIdWebSecurity.xml file.
+If the list is empty, it means that liberty didn't find any group in the **id_token** using the openIdConnectClient **groupId** property provided in the openIdWebSecurity.xml file.
 So, check that :
 * you used the relevant property name (e.g: groupId="groups")
-* the id_token that can be found in the liberty logs is countaining the wanted group names.
+* the **id_token** that can be found in the liberty logs is countaining the expected **groups** names.
 
 For example, you can find in the logs :
 ```
