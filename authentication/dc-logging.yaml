@@ -1,0 +1,7 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: my-dc-logging-configmap
+data:
+  dc-logging: "<server>\n\t<logging traceFileName=\"stdout\" traceFormat=\"BASIC\" traceSpecification=\"*=audit:com.ibm.ws.security.*=all:com.ibm.ws.webcontainer.security.*=all:org.apache.solr.*=warning:com.ibm.rules.bdsl.search.solr.*=warning\" consoleLogLevel=\"INFO\"/>\n</server>"
+
