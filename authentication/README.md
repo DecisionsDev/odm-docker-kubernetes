@@ -74,14 +74,14 @@ If you encounter some difficulty to be authorized, we advise to :
         **com.ibm.ws.security.*=all:com.ibm.ws.webcontainer.security.*=all** to the liberty logging.
     * create the **my-dc-logging-configmap** Decision Center configmap using [dc-logging.yaml](./dc-logging.yaml) with the command:
             **kubectl apply -f dc-logging.xml** 
-      and attach it to the helm deployment launching using 
+      and attach it to the helm deployment using 
             **-set decisionCenter.loggingRef=my-dc-logging-configmap** 
 * to debug the liberty authorization mechanism when accessing Decision Server Console choose between :
     * edit the logging configmap of Decision Server Console of the current release and add
         **com.ibm.ws.security.*=all:com.ibm.ws.webcontainer.security.*=all** to the liberty logging.
     * create the **my-dsc-logging-configmap** Decision Server configmap using [dsc-logging.yaml](./dsc-logging.yaml) with the command:
             **kubectl apply -f dsc-logging.xml** 
-      and attach it to the helm deployment launching using 
+      and attach it to the helm deployment using 
             **-set decisionServerConsole.loggingRef=my-dsc-logging-configmap** 
 * wait the pod is taking into account the modification by having a look at the pod logs
 * have a try to authenticate using Decision Server URL
