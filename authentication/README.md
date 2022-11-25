@@ -48,9 +48,10 @@ Pay attention, for some openId server like Azure AD, you also have to provide a 
 
 ODM is using a check referer mechanism to prevent [CSRF attack](https://portswigger.net/web-security/csrf).
 So, you have to provide to ODM what are the allowed domains. We use the property OPENID_ALLOWED_DOMAINS which is provided by the openIdParameters.properties file.
-Generally, the allowed domain is only the openId server name. But, in some context, like for example with Azure AD when the openId server is redirecting to an enterprise portal.
+Generally, the allowed domain is only the openId server name. But, in some context, like for example with Azure AD, the openId server is redirecting to an enterprise portal.
 So, it's also necessary to provide the enterprise portal URL in the list of allowed domains. The OPENID_ALLOWED_DOMAINS is a list separated by comma. Wildcard * is not accepted.
-If you face this issue :
+Here is how to identify this issue:
+
 * Decision Center is not accessible and you see in the pod logs:
 ```
 com.ibm.rules.decisioncenter.web.core.filters.SecurityCheckPointFilter isRefererHeaderValid Invalid request [Referer - https://<external-idp-domain-name>/]{"method":"GET","URL":"https:\/\/<Decision_Center_URL>:443\/odm\/decisioncenter"}**
