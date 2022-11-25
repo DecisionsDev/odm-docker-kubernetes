@@ -52,7 +52,7 @@ In general, an allowed domain corresponds to the OpenID server name. However, in
 So, you must also provide the enterprise portal URL with the list of allowed domains. OPENID_ALLOWED_DOMAINS is a list of comma-separated values. Wildcard * is not accepted.
 Here is how to identify this issue:
 
-* Decision Center is not accessible and you see the following in the pod logs:
+* Decision Center is not accessible and you see the following message in the pod logs:
 ```
 com.ibm.rules.decisioncenter.web.core.filters.SecurityCheckPointFilter isRefererHeaderValid Invalid request [Referer - https://<external-idp-domain-name>/]{"method":"GET","URL":"https:\/\/<Decision_Center_URL>:443\/odm\/decisioncenter"}**
 ```
@@ -60,9 +60,9 @@ com.ibm.rules.decisioncenter.web.core.filters.SecurityCheckPointFilter isReferer
 
 ## Authorization issue
 
-If you are not using the Helm chart property **decisionCenter.disableAllAuthenticatedUser=true**, you just have to be authenticated by the openId server to access Decision Center as rtsUser.
-But, if you would like to have the Administration tab accessible in Decision Center, you must be authorized by Liberty as belonging to the rtsAdministrators group.
-To manage this, we provide a mapping mechanism using the webSecurity.xml file like:
+If you do not use the Helm chart property **decisionCenter.disableAllAuthenticatedUser=true**, you only need to be authenticated with the OpenID server to access Decision Center as rtsUser.
+However, if you want to have access to the Administration tab in Decision Center, you must be authorized by Liberty to belong to the rtsAdministrators group.
+This can be done through a mapping mechanism in the webSecurity.xml file:
 
 ```
 <variable name="odm.rtsAdministrators.group1" value="group:<OPENID_SERVER_URL_TO_REACH_THE_DEDICATED_GROUP>"/>
