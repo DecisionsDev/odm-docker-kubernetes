@@ -9,28 +9,28 @@
 
 # Troubleshooting
 
-You should not encounter issue with the delivered openId tutorials because we generate the major configuration files.
-But, it may happen that you encounter an issue configuring ODM with OpenId manually.
-So, we provide here the most common issue you can face and how to solve them.
+You should not encounter any issue with the delivered OpenID tutorials because we generate the major configuration files.
+However, you might encounter an issue when manually configuring IBM Operational Decision Manager (ODM) with OpenID.
+We provide here the most common issues and how to solve them.
 
 The list is obviously not exhaustive.
-So, don't hesitate to contact us if you faced a specific issue that you think must figure in this helper.
+Do not hesitate to contact us if you face a specific issue that you think needs to be reported.
 
 ## Missing or invalid redirect
 
-  This error prevents you to access the login page.
-  When you are trying to access an ODM console, according to the OpenId Application Flow, the openId ODM application is trying to reach a valid redirect URI.
+  This error prevents you from accessing the login page.
+  When you try to access an ODM console, according to the OpenID Application Flow, the OpenID ODM application tries to reach a valid redirect URI.
   As explained in the documentation, the redirects are:
    * https://<Decision_Center_URL>/decisioncenter/openid/redirect/odm for the Decision Center
    * https://<Decision_Server_Console_URL>/res/openid/redirect/odm for the Decision Server Console
 
-  If you missed to provide a redirect URI or provide an invalid redirect URI, an error like **Invalid parameter: redirect_uri** will be displayed in the browser.
+  If you missed to provide a redirect URI or if you provide an invalid redirect URI, an error like **Invalid parameter: redirect_uri** is displayed in the browser.
 
-## Missing or invalid OpenId Server Certificate
+## Missing or invalid OpenID Server Certificate
 
-  For almost all OpenId server, the communication between ODM and the OpenId Server is secured using HTTPS.
+  For almost all OpenID servers, the communication between ODM and the OpenID Server is secured with HTTPS.
   
-  If you forgot to provide a valid certificate, you will get an exception in the browser like: 
+  If you forgot to provide a valid certificate, you get an exception in the browser like: 
   ```
   {"error_description":"OpenID Connect client returned with status: SEND_401","error":401}
   ```
@@ -42,17 +42,17 @@ So, don't hesitate to contact us if you faced a specific issue that you think mu
   The extended  error message from the SSL handshake exception is: [unable to find valid certification path to requested target].
   ```
 
-Pay attention, for some openId server like Azure AD, you also have to provide a root Certificate Authority. For Azure AD, currently, root CA is [Digicert](https://www.digicert.com/).
+Pay attention, for some OpenID servers like Azure AD, you also have to provide a root Certificate Authority (CA). For Azure AD, the root CA currently is [Digicert](https://www.digicert.com/).
 
 ## Missing or Invalid Allowed Domain List
 
-ODM is using a check referer mechanism to prevent [CSRF attack](https://portswigger.net/web-security/csrf).
-So, you have to provide to ODM what are the allowed domains. We use the property OPENID_ALLOWED_DOMAINS which is provided by the openIdParameters.properties file.
-Generally, the allowed domain is only the openId server name. But, in some context, like for example with Azure AD, the openId server is redirecting to an enterprise portal.
-So, it's also necessary to provide the enterprise portal URL in the list of allowed domains. The OPENID_ALLOWED_DOMAINS is a list separated by comma. Wildcard * is not accepted.
+ODM uses a check referer mechanism to prevent [CSRF attack](https://portswigger.net/web-security/csrf).
+So, you have to provide the allowed domains for ODM by using the property OPENID_ALLOWED_DOMAINS that is included in the openIdParameters.properties file.
+In general, an allowed domain corresponds to the OpenID server name. However, in some contexts like Azure AD, the OpenID server redirects to an enterprise portal.
+So, you must also provide the enterprise portal URL with the list of allowed domains. OPENID_ALLOWED_DOMAINS is a list of comma-separated values. Wildcard * is not accepted.
 Here is how to identify this issue:
 
-* Decision Center is not accessible and you see in the pod logs:
+* Decision Center is not accessible and you see the following in the pod logs:
 ```
 com.ibm.rules.decisioncenter.web.core.filters.SecurityCheckPointFilter isRefererHeaderValid Invalid request [Referer - https://<external-idp-domain-name>/]{"method":"GET","URL":"https:\/\/<Decision_Center_URL>:443\/odm\/decisioncenter"}**
 ```
