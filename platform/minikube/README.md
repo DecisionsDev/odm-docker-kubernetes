@@ -94,9 +94,7 @@ ibmcharts/ibm-odm-prod           	22.2.0       	8.11.1.0   	IBM Operational Deci
 
 ### 3. Install an IBM Operational Decision Manager release
 
-#### a. Install an ODM Helm release
-
-Install an ODM release with the default configuration and an internal database:
+#### a. Install an ODM Helm release with the default configuration and an internal database
 
 Get the [minikube-values.yaml](./minikube-values.yaml) file and run the following command:
 
@@ -121,7 +119,7 @@ my-odm-release-odm-decisionserverruntime-xxxxxxx   1/1     Running   0          
 
 ### 4. Access the ODM services
 
-With this ODM topology in place, you can access web applications to author, deploy, and test your rule-based decision services. You can retrieve the URL to access the ODM services with the following command:
+With this ODM topology in place, you can access web applications to author, deploy, and test your rule-based decision services. You can retrieve the URLs to access the ODM services with the following command:
 
 ```
 $ minikube service list -n default
@@ -138,7 +136,7 @@ $ minikube service list -n default
 ```
 
 > **Warning**  
-> The URLs are prefixed with **http**. You must replace it with **https** to access the services.
+> The URLs are prefixed with **http**. You must replace the prefix with **https** to access the services.
 
 You can directly open the URL corresponding to a component in a new browser tab with the following command:
 ```
