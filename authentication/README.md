@@ -88,10 +88,10 @@ If you encounter issues to be authorized, follow this advice:
 * Try authenticating with the Decision Server URL.
 * Redirect the Decision Center logs to a file with kubectl logs <DC_POD_NAME> > dc.logs because the Liberty logs are very verbose and impossible to analyze  on the fly.
 * In the dc.logs file, search for the pattern **groupIds=[**
-groupIds should display all the group name provided by the openId Server where the logged user is belonging.
-The webSecurity.xml mapping should use precisely one of these groups name.
+It should list all the group names to which the logged user belongs. 
+The mapping in the webSecurity.xml file must precisely use one of these group names.
 
-Here is an example using the [Keycloal tutorial](./Keycloak/README.md) using a John Doe authentication:
+Here is an example from the [Keycloal tutorial](./Keycloak/README.md) that illustrates a John Doe authentication:
 ```
         Public Credential: com.ibm.ws.security.credentials.wscred.WSCredentialImpl@151c2134,
           realmName=KEYCLOAK_SERVER_URL,securityName=johndoe@mycompany.com,
@@ -108,7 +108,7 @@ Here is an example using the [Keycloal tutorial](./Keycloak/README.md) using a J
             group:KEYCLOAK_SERVER_URL/resExecutors]
 ```
 
-So, we used :
+We used:
 ```
 <variable name="odm.rtsAdministrators.group1" value="group:KEYCLOAK_SERVER_URL/rtsAdministrators"/>
 ```
