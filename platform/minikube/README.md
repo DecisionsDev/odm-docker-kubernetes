@@ -54,7 +54,6 @@ This tutorial was tested on macOS and Linux.
 ### 2. Prepare your environment for the ODM installation
 
 To get access to the ODM material, you need an IBM entitlement key to pull the images from the IBM Entitled registry.
-This is explained in the next step of this tutorial.
 
 #### a. Retrieve your entitled registry key
 
