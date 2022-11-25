@@ -2,7 +2,7 @@
 
 This tutorial explains how to deploy an IBM® Operational Decision Manager (ODM) clustered topology on a Minikube Kubernetes cluster. This deployment implements Kubernetes and Docker technologies.
 
-Minikube is a local Kubernetes, focusing on making it easy to learn and develop for Kubernetes. You can use it to evaluate ODM.
+Minikube is a local Kubernetes that makes it easy to learn and develop for Kubernetes. You can use it to evaluate ODM.
 
 ![Architecture](images/minikube-architecture.png)
 
