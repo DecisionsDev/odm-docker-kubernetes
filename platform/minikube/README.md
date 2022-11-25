@@ -30,7 +30,7 @@ This tutorial was tested on macOS and Linux.
 
 ### 1. Start Minikube
 
-- Start Minikube with sufficient resources:
+#### a. Start Minikube with sufficient resources
 
   ```
   minikube start --cpus 6 --memory 8GB
@@ -38,7 +38,7 @@ This tutorial was tested on macOS and Linux.
 
   The kubectl context is automatically set to point to the created Minikube cluster.
 
-- Check your environment:
+#### b. Check your environment
 
   ```
   $ kubectl cluster-info
