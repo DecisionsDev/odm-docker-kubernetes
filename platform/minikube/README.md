@@ -1,19 +1,19 @@
 #  Deploying IBM Operational Decision Manager on Kubernetes Minikube
 
-This tutorial explains the deployment of an IBM® Operational Decision Manager (ODM) clustered topology on a Minikube Kubernetes cluster. This deployment implements Kubernetes and Docker technologies.
+This tutorial explains how to deploy an IBM® Operational Decision Manager (ODM) clustered topology on a Minikube Kubernetes cluster. This deployment implements Kubernetes and Docker technologies.
 
-Minikube is local Kubernetes, focusing on making it easy to learn and develop for Kubernetes. You can use it to evaluate ODM.
+Minikube is a local Kubernetes, focusing on making it easy to learn and develop for Kubernetes. You can use it to evaluate ODM.
 
 ![Architecture](images/minikube-architecture.png)
 
 The ODM on Kubernetes Docker images are available in the [IBM Entitled Registry](https://www.ibm.com/cloud/container-registry). The ODM Helm chart is available in the [IBM Helm charts repository](https://github.com/IBM/charts).
 
 ## Included Components
-- [IBM Operational Decision Manager](https://www.ibm.com/docs/en/odm/8.11.0)
+- [IBM Operational Decision Manager](https://www.ibm.com/docs/en/odm/8.11.1)
 - [Kubernetes Minikube](https://github.com/kubernetes/minikube)
 
 ## Test environment
-This tutorial was tested on MacOS and Linux.
+This tutorial was tested on macOS and Linux.
 
 ## Prerequisites
 
@@ -30,13 +30,13 @@ This tutorial was tested on MacOS and Linux.
 
 ### 1. Start Minikube
 
-- Start Minikube with sufficient reources:
+- Start Minikube with sufficient resources:
 
   ```
   minikube start --cpus 6 --memory 8GB
   ```
 
-  The kubectl context is automatically set to point to the created minikube cluster.
+  The kubectl context is automatically set to point to the created Minikube cluster.
 
 - Check your environment:
 
@@ -49,12 +49,12 @@ This tutorial was tested on MacOS and Linux.
   ```
 
   > **Note**  
-  > You can access the [Kubernetes Dashboard](http://kubernetes.io/docs/user-guide/ui/), by running the `minikube dashboard` command.
+  > You can access the [Kubernetes Dashboard](http://kubernetes.io/docs/user-guide/ui/) by running the `minikube dashboard` command.
 
 ### 2. Prepare your environment for the ODM installation
 
-To get access to the ODM material, you must have an IBM entitlement key to pull the images from the IBM Entitled registry.
-This is what will be used in the next step of this tutorial.
+To get access to the ODM material, you need an IBM entitlement key to pull the images from the IBM Entitled registry.
+This is explained in the next step of this tutorial.
 
 #### a. Retrieve your entitled registry key
 
@@ -62,7 +62,7 @@ This is what will be used in the next step of this tutorial.
 
 - In the *Container software library* tile, verify your entitlement on the *View library* page, and then go to **Get entitlement key** to retrieve the key.
 
-#### b. Create a pull secret by running the kubectl create secret command.
+#### b. Create a pull secret by running the `kubectl create secret` command
 
 ```
 kubectl create secret docker-registry my-odm-docker-registry --docker-server=cp.icr.io \
@@ -78,7 +78,7 @@ Where:
 
 The *my-odm-docker-registry* secret name is set as the `image.pullSecrets` parameter when you run a helm install of your containers. The `image.repository` parameter is also set to `cp.icr.io/cp/cp4a/odm`.
 
-#### c. Add the public IBM Helm charts repository:
+#### c. Add the public IBM Helm charts repository
 
 ```
 helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo/entitled
@@ -97,7 +97,7 @@ ibmcharts/ibm-odm-prod           	22.2.0       	8.11.1.0   	IBM Operational Deci
 
 #### a. Install an ODM Helm release
 
-Install a ODM release with the default configuration and an internal database:
+Install an ODM release with the default configuration and an internal database:
 
 Get the [minikube-values.yaml](./minikube-values.yaml) file and run the following command:
 
@@ -122,7 +122,7 @@ my-odm-release-odm-decisionserverruntime-xxxxxxx   1/1     Running   0          
 
 ### 4. Access the ODM services
 
-With this ODM topology in place, you can access web applications to author, deploy, and test your rule-based decision services. You can retrieve the URL to access the ODM services with this command:
+With this ODM topology in place, you can access web applications to author, deploy, and test your rule-based decision services. You can retrieve the URL to access the ODM services with the following command:
 
 ```
 $ minikube service list -n default
@@ -139,7 +139,7 @@ $ minikube service list -n default
 ```
 
 > **Warning**  
-> The URL are listed using **http**, you should replace it with **https** to access the services.
+> The URLs are prefixed with **http**. You must replace it with **https** to access the services.
 
 You can directly open the URL corresponding to a component in a new browser tab with the following command:
 ```
