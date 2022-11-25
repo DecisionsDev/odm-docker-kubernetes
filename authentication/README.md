@@ -68,26 +68,26 @@ This can be done through a mapping mechanism in the webSecurity.xml file:
 <variable name="odm.rtsAdministrators.group1" value="group:<OPENID_SERVER_URL_TO_REACH_THE_DEDICATED_GROUP>"/>
 ```
 
-The URL allowing to provide the dedicated OpenId server syntax group is very dependant of the OpenId Server but also of the openIdConnectClient groupId property that you will use with this openId Server. Azure AD is using ObjectId. For Keycloak, we advise to use roles...
-If you encounter some difficulty to be authorized, we advise to :
-* to debug the liberty authorization mechanism when accessing Decision Center, you have the choice between :
-    * edit the logging configmap of Decision Center of the current release and add
-        **com.ibm.ws.security.*=all:com.ibm.ws.webcontainer.security.*=all** to the liberty logging.
-    * create the **my-dc-logging-configmap** Decision Center configmap using [dc-logging.yaml](./dc-logging.yaml) with the command:
+The URL that provides the dedicated OpenID Server syntax group depends on the OpenID Server but also on the openIdConnectClient groupId property that you use with this OpenID Server. Azure AD uses ObjectId. For Keycloak, we advise to use roles.
+If you encounter issues to be authorized, follow this advice:
+* To debug the Liberty authorization mechanism when accessing Decision Center, choose one of the following options:
+    * Edit the Decision Center logging configmap of the current release by adding:
+        **com.ibm.ws.security.*=all:com.ibm.ws.webcontainer.security.*=all** to the Liberty logging.
+    * Create the **my-dc-logging-configmap** Decision Center configmap using [dc-logging.yaml](./dc-logging.yaml) with the command:
             **kubectl apply -f dc-logging.xml** 
-      and attach it to the helm deployment using 
+      and attach it to the Helm deployment using 
             **-set decisionCenter.loggingRef=my-dc-logging-configmap** 
-* to debug the liberty authorization mechanism when accessing Decision Server Console choose between :
-    * edit the logging configmap of Decision Server Console of the current release and add
-        **com.ibm.ws.security.*=all:com.ibm.ws.webcontainer.security.*=all** to the liberty logging.
-    * create the **my-dsc-logging-configmap** Decision Server configmap using [dsc-logging.yaml](./dsc-logging.yaml) with the command:
+* To debug the Liberty authorization mechanism when accessing Decision Server Console, choose one of the following options:
+    * Edit the Decision Server Console logging configmap of the current release by adding:
+        **com.ibm.ws.security.*=all:com.ibm.ws.webcontainer.security.*=all** to the Liberty logging.
+    * Create the **my-dsc-logging-configmap** Decision Server configmap using [dsc-logging.yaml](./dsc-logging.yaml) with the command:
             **kubectl apply -f dsc-logging.xml** 
-      and attach it to the helm deployment using 
+      and attach it to the Helm deployment using 
             **-set decisionServerConsole.loggingRef=my-dsc-logging-configmap** 
-* wait the pod is taking into account the modification by having a look at the pod logs
-* have a try to authenticate using Decision Server URL
-* Redirect the DC logs to a file with : kubectl logs <DC_POD_NAME> > dc.logs because the liberty logs are very verbose. So, it's quite impossible to analyze it on the fly.
-* Search in the dc.logs file for the pattern **groupIds=[**
+* Wait for the pod to take into account the change and have a look at the pod logs.
+* Try authenticating with the Decision Server URL.
+* Redirect the Decision Center logs to a file with kubectl logs <DC_POD_NAME> > dc.logs because the Liberty logs are very verbose and impossible to analyze  on the fly.
+* In the dc.logs file, search for the pattern **groupIds=[**
 groupIds should display all the group name provided by the openId Server where the logged user is belonging.
 The webSecurity.xml mapping should use precisely one of these groups name.
 
