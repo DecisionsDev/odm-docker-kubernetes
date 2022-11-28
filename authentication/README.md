@@ -1,7 +1,7 @@
 <!-- TOC depthfrom:1 depthto:6 withlinks:false updateonsave:false orderedlist:false -->
 - [Troubleshooting](#troubleshooting)
     - [Missing or invalid redirect](#missing-or-invalid-redirect)
-    - [Missing or invalid OpenId Server Certificate](#missing-or-invalid-openid-server-certificate)
+    - [Missing or invalid OpenID Server Certificate](#missing-or-invalid-openid-server-certificate)
     - [Missing or Invalid Allowed Domain List](#missing-or-invalid-allowed-domain-list)
     - [Authorization issue](#authorization-issue)
 
@@ -24,7 +24,7 @@ Do not hesitate to contact us if you face a specific issue that you think needs 
    * https://<Decision_Center_URL>/decisioncenter/openid/redirect/odm for the Decision Center
    * https://<Decision_Server_Console_URL>/res/openid/redirect/odm for the Decision Server Console
 
-  If you missed to provide a redirect URI or if you provide an invalid redirect URI, an error like **Invalid parameter: redirect_uri** is displayed in the browser.
+  If you forgot to provide a redirect URI or if you provide an invalid redirect URI, an error like **Invalid parameter: redirect_uri** is displayed in the browser.
 
 ## Missing or invalid OpenID Server Certificate
 
