@@ -1,33 +1,33 @@
-<!-- TOC depthfrom:1 depthto:6 withlinks:false updateonsave:false orderedlist:false -->
+<!-- TOC -->
 
-- Introduction
-    - What is Azure AD?
-    - About this task
-    - ODM OpenID flows
-    - Prerequisites
-        - Create an Azure AD account
-- Configure an Azure AD instance for ODM (Part 1)
-    - Log into the Azure AD instance
-    - Manage groups and users
-    - Set up an application
-- Deploy ODM on a container configured with Azure AD (Part 2)
-    - Prepare your environment for the ODM installation
-        - Create a secret to use the Entitled Registry
-        - Create secrets to configure ODM with Azure AD
-    - Install your ODM Helm release
-        - Add the public IBM Helm charts repository
-        - Check that you can access the ODM chart
-        - Run the `helm install` command
-            - a. Installation on OpenShift using Routes
-            - b. Installation using Ingress
-    - Complete post-deployment tasks
-        - Register the ODM redirect URLs
-        - Access the ODM services
-        - Set up Rule Designer
-        - Getting Started with IBM Operational Decision Manager for Containers
-        - Calling the ODM Runtime Service
+- [Introduction](#introduction)
+  - [What is Azure AD?](#what-is-azure-ad)
+  - [About this task](#about-this-task)
+  - [ODM OpenID flows](#odm-openid-flows)
+  - [Prerequisites](#prerequisites)
+    - [Create an Azure AD account](#create-an-azure-ad-account)
+- [Configure an Azure AD instance for ODM (Part 1)](#configure-an-azure-ad-instance-for-odm-part-1)
+  - [Log into the Azure AD instance](#log-into-the-azure-ad-instance)
+  - [Manage groups and users](#manage-groups-and-users)
+  - [Set up an application](#set-up-an-application)
+- [Deploy ODM on a container configured with Azure AD (Part 2)](#deploy-odm-on-a-container-configured-with-azure-ad-part-2)
+  - [Prepare your environment for the ODM installation](#prepare-your-environment-for-the-odm-installation)
+    - [Create a secret to use the Entitled Registry](#create-a-secret-to-use-the-entitled-registry)
+    - [Create secrets to configure ODM with Azure AD](#create-secrets-to-configure-odm-with-azure-ad)
+  - [Install your ODM Helm release](#install-your-odm-helm-release)
+    - [Add the public IBM Helm charts repository](#add-the-public-ibm-helm-charts-repository)
+    - [Check that you can access the ODM chart](#check-that-you-can-access-the-odm-chart)
+    - [Run the `helm install` command](#run-the-helm-install-command)
+      - [a. Installation on OpenShift using Routes](#a-installation-on-openshift-using-routes)
+      - [b. Installation using Ingress](#b-installation-using-ingress)
+  - [Complete post-deployment tasks](#complete-post-deployment-tasks)
+    - [Register the ODM redirect URLs](#register-the-odm-redirect-urls)
+    - [Access the ODM services](#access-the-odm-services)
+    - [Set up Rule Designer](#set-up-rule-designer)
+    - [Getting Started with IBM Operational Decision Manager for Containers](#getting-started-with-ibm-operational-decision-manager-for-containers)
+    - [Calling the ODM Runtime Service](#calling-the-odm-runtime-service)
 - [Troubleshooting](#troubleshooting)
-- License
+- [License](#license)
 
 <!-- /TOC -->
 
