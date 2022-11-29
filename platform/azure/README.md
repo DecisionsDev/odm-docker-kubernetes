@@ -414,7 +414,7 @@ You might want to access ODM components through a single external IP address.
 
 ### Install the product
 
-You can reuse the secret with TLS certificate created [above](#manage-a-digital-certificate-10-min):
+You can reuse the secret with TLS certificate created [above](#manage-adigital-certificate-10-min):
 
 ```
 helm install <release> ibmcharts/ibm-odm-prod --version 22.1.0 \
