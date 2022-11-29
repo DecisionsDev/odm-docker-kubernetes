@@ -6,9 +6,13 @@ For reference, see the Google Cloud documentation https://cloud.google.com/commu
 
 ## Table of Contents
 
-1. [Create a NGINX Ingress controller](#1-create-a-nginx-ingress-controller)
-2. [Install the ODM release](#2-install-the-odm-release)
-3. [Check the deployment and access ODM services](#3-check-the-deployment-and-access-odm-services)
+- [Install an ODM Helm release and expose it with a NGINX Ingress controller (15 min)](#install-an-odm-helm-release-and-expose-it-with-a-nginx-ingress-controller-15-min)
+  - [Table of Contents](#table-of-contents)
+    - [1. Create a NGINX Ingress controller](#1-create-a-nginx-ingress-controller)
+    - [2. Install the ODM release](#2-install-the-odm-release)
+    - [3. Check the deployment and access ODM services](#3-check-the-deployment-and-access-odm-services)
+  - [Troubleshooting](#troubleshooting)
+- [License](#license)
 
 ### 1. Create a NGINX Ingress controller
 
@@ -35,7 +39,7 @@ Refer to the [the main README](README.md#b-check-the-topology) to check the depl
 
 ## Troubleshooting
 
-If your ODM instances are not running properly, please refer to [our dedicated troubleshooting page](https://www.ibm.com/docs/en/odm/8.11.0?topic=8110-troubleshooting-support).
+If your ODM instances are not running properly, please refer to [our dedicated troubleshooting page](https://www.ibm.com/docs/en/odm/8.11.1?topic=8111-troubleshooting-support).
 
 # License
 

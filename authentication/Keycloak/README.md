@@ -5,11 +5,11 @@
   - [About this task](#about-this-task)
   - [ODM OpenID flows](#odm-openid-flows)
   - [Prerequisites](#prerequisites)
-    - [Install a Keycloak Instance](#install-a-keycloak-instance)
+    - [Install a Keycloak instance](#install-a-keycloak-instance)
 - [Configure a Keycloak instance for ODM (Part 1)](#configure-a-keycloak-instance-for-odm-part-1)
   - [Log into the Keycloak Admin Console](#log-into-the-keycloak-admin-console)
   - [Create a dedicated odm realm](#create-a-dedicated-odm-realm)
-  - [Manage roles, groups and users](#manage-roles-groups-and-users)
+  - [Manage roles, groups, and users](#manage-roles-groups-and-users)
   - [Set up the client](#set-up-the-client)
 - [Deploy ODM on a container configured with Keycloak (Part 2)](#deploy-odm-on-a-container-configured-with-keycloak-part-2)
   - [Prepare your environment for the ODM installation](#prepare-your-environment-for-the-odm-installation)
@@ -27,7 +27,7 @@
     - [Set up Rule Designer](#set-up-rule-designer)
     - [Getting Started with IBM Operational Decision Manager for Containers](#getting-started-with-ibm-operational-decision-manager-for-containers)
     - [Calling the ODM Runtime Service](#calling-the-odm-runtime-service)
-  - [Troubleshooting](#troubleshooting)
+- [Troubleshooting](#troubleshooting)
 - [License](#license)
 <!-- /TOC -->
 
@@ -570,7 +570,7 @@ Deploy the **Loan Validation Service** production_deployment ruleapps using the 
 
 You can retrieve the payload.json from the ODM Decision Server Console or use [the provided payload](payload.json).
   
-As explained in the ODM on Certified Kubernetes documentation [Configuring user access with OpenID](https://www.ibm.com/docs/en/odm/8.11.0?topic=access-configuring-user-openid), we advise you to use basic authentication for the ODM runtime call for better performance and to avoid token expiration and revocation.
+As explained in the ODM on Certified Kubernetes documentation [Configuring user access with OpenID](https://www.ibm.com/docs/en/odm/8.11.1?topic=access-configuring-user-openid), we advise you to use basic authentication for the ODM runtime call for better performance and to avoid token expiration and revocation.
 
 You perform a basic authentication ODM runtime call in the following way:
   
