@@ -414,7 +414,7 @@ You might want to access ODM components through a single external IP address.
 
 ### Install the product
 
-You can reuse the secret with TLS certificate created [above](#manage-a-digital-certificate-10-min):
+You can reuse the secret with TLS certificate created [above](#manage-adigital-certificate-10-min):
 
 ```
 helm install <release> ibmcharts/ibm-odm-prod --version 22.1.0 \
@@ -502,7 +502,7 @@ If your IBM License Service instance is not running properly, refer to this [tro
 
 ## Troubleshooting
 
-If your ODM instances are not running properly, refer to [our dedicated troubleshooting page](https://www.ibm.com/docs/en/odm/8.11.1?topic=8110-troubleshooting-support).
+If your ODM instances are not running properly, refer to [our dedicated troubleshooting page](https://www.ibm.com/docs/en/odm/8.11.1?topic=8111-troubleshooting-support).
 
 ## Getting Started with IBM Operational Decision Manager for Containers
 

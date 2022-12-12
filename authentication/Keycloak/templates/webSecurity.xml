@@ -14,6 +14,7 @@
 <variable name="odm.rtsAdministrators.group1" value="group:KEYCLOAK_SERVER_URL/rtsAdministrators"/>
 <variable name="odm.rtsInstallers.group1" value="group:KEYCLOAK_SERVER_URL/rtsInstallers"/>
 <variable name="odm.rtsConfigManagers.group1" value="group:KEYCLOAK_SERVER_URL/rtsConfigManagers"/>
+  <variable name="odm.rtsUsers.group1" value="group:KEYCLOAK_SERVER_URL/rtsUsers"/>
 <variable name="odm.resAdministrators.group1" value="group:KEYCLOAK_SERVER_URL/resAdministrators"/>
 <variable name="odm.resDeployers.group1" value="group:KEYCLOAK_SERVER_URL/resDeployers"/>
 <variable name="odm.resMonitors.group1" value="group:KEYCLOAK_SERVER_URL/resMonitors"/>
