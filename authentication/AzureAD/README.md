@@ -1,5 +1,5 @@
-<!-- TOC titleSize:2 tabSpaces:2 depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 skip:0 title:1 charForUnorderedList:- -->
-## Table of Contents
+<!-- TOC -->
+
 - [Introduction](#introduction)
   - [What is Azure AD?](#what-is-azure-ad)
   - [About this task](#about-this-task)
@@ -15,22 +15,25 @@
     - [Create a secret to use the Entitled Registry](#create-a-secret-to-use-the-entitled-registry)
     - [Create secrets to configure ODM with Azure AD](#create-secrets-to-configure-odm-with-azure-ad)
   - [Install your ODM Helm release](#install-your-odm-helm-release)
-    - [1. Add the public IBM Helm charts repository](#1-add-the-public-ibm-helm-charts-repository)
-    - [2. Check that you can access the ODM chart](#2-check-that-you-can-access-the-odm-chart)
-    - [3. Run the `helm install` command](#3-run-the-helm-install-command)
+    - [Add the public IBM Helm charts repository](#add-the-public-ibm-helm-charts-repository)
+    - [Check that you can access the ODM chart](#check-that-you-can-access-the-odm-chart)
+    - [Run the `helm install` command](#run-the-helm-install-command)
       - [a. Installation on OpenShift using Routes](#a-installation-on-openshift-using-routes)
       - [b. Installation using Ingress](#b-installation-using-ingress)
   - [Complete post-deployment tasks](#complete-post-deployment-tasks)
-    - [Register the ODM redirect URL](#register-the-odm-redirect-url)
+    - [Register the ODM redirect URLs](#register-the-odm-redirect-urls)
     - [Access the ODM services](#access-the-odm-services)
     - [Set up Rule Designer](#set-up-rule-designer)
+    - [Getting Started with IBM Operational Decision Manager for Containers](#getting-started-with-ibm-operational-decision-manager-for-containers)
     - [Calling the ODM Runtime Service](#calling-the-odm-runtime-service)
+- [Troubleshooting](#troubleshooting)
 - [License](#license)
+
 <!-- /TOC -->
 
 # Introduction
 
-In the context of the Operational Decision Manager (ODM) on Certified Kubernetes offering, ODM for production can be configured with an external OpenID Connect server (OIDC provider) such as the Azure AD cloud service.
+In the context of the Operational Decision Manager (ODM) on Certified Kubernetes offering, ODM for production can be configured with an external OpenID Connect server (OIDC provider), such as the Azure AD cloud service.
 
 ## What is Azure AD?
 
@@ -39,7 +42,7 @@ Azure Active Directory ([Azure AD](https://azure.microsoft.com/en-us/services/ac
 
 ## About this task
 
-You need to create a number of secrets before you can install an ODM instance with an external OIDC provider such as the Azure AD service and use web application single sign-on (SSO). The following diagram shows the ODM services with an external OIDC provider after a successful installation.
+You need to create a number of secrets before you can install an ODM instance with an external OIDC provider such as the Azure AD service, and use web application single sign-on (SSO). The following diagram shows the ODM services with an external OIDC provider after a successful installation.
 
 ![ODM web application SSO](/images/AzureAD/diag_azuread_interaction.jpg)
 
@@ -51,18 +54,18 @@ OpenID Connect is an authentication standard built on top of OAuth 2.0. It adds 
 
 Terminology:
 
-- The **OpenID provider** — The authorization server that issues the ID token. In this case, Azure AD is the OpenID provider.
-- The **end user** — The end user whose information is contained in the ID token.
-- The **relying party** — The client application that requests the ID token from Azure AD.
-- The **ID token** — The token that is issued by the OpenID provider and contains information about the end user in the form of claims.
-- A **claim** — A piece of information about the end user.
+- **OpenID provider** — The authorization server that issues the ID token. In this case, Azure AD is the OpenID provider.
+- **end user** — The end user whose details are contained in the ID token.
+- **relying party** — The client application that requests the ID token from Azure AD.
+- **ID token** — The token that is issued by the OpenID provider and contains information about the end user in the form of claims.
+- **claim** — A piece of information about the end user.
 
-The Authorization Code flow is best used by server-side apps where the source code is not publicly exposed. The apps must be server-side because the request that exchanges the authorization code for a token requires a client secret, which has to be stored in your client. However, the server-side app requires an end user because it relies on interactions with the end user's web browser, which redirects the user and then receives the authorization code.
+The Authorization Code flow is best used by server-side apps in which the source code is not publicly exposed. The apps must be server-side because the request that exchanges the authorization code for a token requires a client secret, which has to be stored in your client. However, the server-side app requires an end user because it relies on interactions with the end user's web browser which redirects the user and then receives the authorization code.
 
 
 ![Authentication flow](/images/AzureAD/AuthenticationFlow.png) (© Microsoft) 
 
-The Client Credentials flow is intended for server-side (AKA "confidential") client applications with no end user, which normally describes machine-to-machine communication. The application must be server-side because it must be trusted with the client secret, and since the credentials are hard-coded, it cannot be used by an actual end user. It involves a single, authenticated request to the token endpoint, which returns an access token.
+The Client Credentials flow is intended for server-side (AKA "confidential") client applications with no end user, which normally describes machine-to-machine communication. The application must be server-side because it must be trusted with the client secret, and since the credentials are hard-coded, it cannot be used by an actual end user. It involves a single, authenticated request to the token endpoint which returns an access token.
 
 ![Azure AD Client Credential Flow](/images/AzureAD/ClientCredential.png) (© Microsoft)
 
@@ -114,7 +117,7 @@ After activating your account by email, you should have access to your Aure AD i
 
     ![Add Group](/images/AzureAD/NewGroup.png)
 
-    In Menu **Azure Active Directory** / **Groups** take a note of the Object ID. It will be referenced as ``GROUP_GUID`` later in this tutorial.
+    In Menu **Azure Active Directory** / **Groups** take note of the Object ID. It will be referenced as ``GROUP_GUID`` later in this tutorial.
 
     ![GroupID](/images/AzureAD/GroupGUID.png)
 
@@ -129,10 +132,16 @@ After activating your account by email, you should have access to your Aure AD i
         * Password: ``My2ODMPassword?``
         * Groups (optional): ***odm-admin***
         * Click **Create**
-
-    ![New User](/images/AzureAD/NewUser.png)
-
-    Repeat this step for each user you want to add.
+      ![New User](/images/AzureAD/NewUser.png)
+      
+      * Click the **myodmuser** user previously created
+        * Edit properties
+        * Fill the email field with *myodmuser*@YOURDOMAIN
+    
+      * Try to log in to the [azure portal](https://portal.azure.com/) with the user.
+       This may require to enable 2FA and/or change the password for the first time. 
+       
+    Repeat this step for each user that you want to add.
 
 ## Set up an application
 
@@ -146,57 +155,148 @@ After activating your account by email, you should have access to your Aure AD i
     ![New Web Application](/images/AzureAD/RegisterApp.png)
 
 
-2. Generate an OpenID client secret
+2. Generate an OpenID client secret.
    
     In Menu **Azure Active Directory** / **App Registration**, click **ODM Application**:
-    * From the Overview page Click **Client credentials: Add a certificate or secret** (link) or click on the **Manage/Certificates & secrets** tab
+    * From the Overview page, click **Client credentials: Add a certificate or secret** (link) or click the **Manage/Certificates & secrets** tab
     * Click +New Client Secret
       * Description: ``For ODM integration``
       * Click Add
-   * Take a note of the **Value**. It will be referenced as ``CLIENT_SECRET`` in the next steps.
+   * Take note of the **Value**. It will be referenced as ``CLIENT_SECRET`` in the next steps.
   
-3. Add Claims 
+3. Add Claims. 
 
-    In Menu **Azure Active Directory** / **App Registration**, click **ODM Application**, click **Token Configuration**:
+    In Menu **Azure Active Directory** / **App Registration**, click **ODM Application**, and then click **Token Configuration**:
 
+  * Add Optional Email ID Claim
     * Click +Add optional claim 
     * Select ID
     * Check Email
     * Click Add
-    
+
+  * Add Optional Email Access Claim
     * Click +Add optional claim 
     * Select Access
     * Check Email
     * Click Add
-    
+
+  * Turn on Microsoft Graph email permission 
     * Check Turn on the Microsoft Graph email permission 
     * Click Add
-
+  * Add Group Claim
     * Click +Add groups claim
     * Check Security Groups
-    * Click Save
+    * Click Add
   
-4. API Permissions
+4. API Permissions.
 
-    In Menu **Azure Active Directory** / **App Registration**, click **ODM Application**, click **API Permissions**.
+    In Menu **Azure Active Directory** / **App Registration**, click **ODM Application**, and then click **API Permissions**.
     * Click Grant Admin Consent for **YourOrg**
   
-5. Manifest change
+5. Manifest change.
   
-    In Menu **Azure Active Directory** / **App Registration**, click **ODM Application**, click **Manifest**.
+    In Menu **Azure Active Directory** / **App Registration**, click **ODM Application**, and then click **Manifest**.
     
     As explained in [accessTokenAcceptedVersion attribute explanation](  https://docs.microsoft.com/en-us/azure/active-directory/develop/reference-app-manifest#accesstokenacceptedversion-attribute
-), change the value to 2 and click Save.
+), change the value to 2 and then click Save.
   ODM OpenID Liberty configuration needs version 2.0 for the issuerIdentifier. See the [openIdWebSecurity.xml](templates/openIdWebSecurity.xml) file.
   
+6. Retrieve Tenant and Client information.
+
+    From the Azure console, in **Azure Active Directory** / **App Registrations** / **ODM Application**:
+    - Click Overview 
+    - Directory (tenant) ID: **Your Tenant ID**. It will be referenced as `TENANT_ID` in the next steps.
+    - Application (client) ID: **Client ID**. It will be referenced as `CLIENT_ID` in the next steps.
+
+    ![Tenant ID](/images/AzureAD/GetTenantID.png)
+    
+7. Check the configuration.
   
+     Download the [azuread-odm-script.zip](azuread-odm-script.zip) file to your machine and unzip it in your working directory. This .zip file contains scripts and templates to verify and set up ODM.
+     
+    7.1 Verify the Client Credential Token 
+   
+   
+   
+     You can request an access token using the Client-Credentials flow to verify the token format.
+     This token is used for the deployment between Decision Cennter and the Decision Server console: 
+     
+    ```shell
+    $ ./get-client-credential-token.sh -i <CLIENT_ID> -x <CLIENT_SECRET> -n <TENANT_ID>
+    ```
+  
+    Where:
+  
+    - *TENANT_ID* and *CLIENT_ID* have been obtained from 'Retrieve Tenant and Client information' section.
+    - *CLIENT_SECRET* is listed in your ODM Application, section **General** / **Client Credentials**
+    
+    You should get a token and by introspecting the value with this online tool [https://jwt.ms](https://jwt.ms) you should get:
+    
+    ```
+    {
+    "typ": "JWT",
+    "alg": "RS256",
+    "kid": "jS1Xo1OWDj_52vbwGNgvQO2VzMc"
+    }.{
+    "aud": "<CLIENT_ID>",
+    "iss": "https://login.microsoftonline.com/<TENANT_ID>/v2.0",
+    ...
+    "ver": "2.0"
+    }
+    ```
+    - *ver* : should be 2.0. otherwise you should verify the previous step **Manifest change**
+    - *aud* : should be your CLIENT_ID
+    - *iss* : should end with 2.0. otherwise you should verify the previous step **Manifest change**
+    
+    7.2 Verify the Client Password Token. 
+
+
+   To check that it has been correctly taken into account, you can request an access token using the Client password flow.
+   This token is used for the invocation of the ODM components like Decision Center, Decision Servcer console, and the invocation of the Decision Server Runtime REST API.
+   
+    ```shell
+    $ ./get-user-password-token.sh -i <CLIENT_ID> -x <CLIENT_SECRET> -n <TENANT_ID> -u <USERNAME> -p <PASSWORD> 
+    ```
+   
+   Where:
+  
+    - *TENANT_ID* and *CLIENT_ID* have been obtained from 'Retrieve Tenant and Client information' section.
+    - *CLIENT_SECRET* is listed in your ODM Application, section **General** / **Client Credentials**
+    - *USERNAME* *PASSWORD* have been created from 'Create at least one user that belongs to this new group.' section.
+    
+     By introspecting the id_token value with this online tool [https://jwt.ms](https://jwt.ms), you should get:
+    
+     
+    ```
+    {
+      ..
+      "iss": "https://login.microsoftonline.com/<TENANT_ID>/v2.0",
+     ....
+      "email": "<USERNAME>",
+      "groups": [
+        "<GROUP>"
+      ],
+      ...
+      "ver": "2.0"
+   }
+    ```
+    
+    Verify :
+    - *email* : should be present. Otherwise you should verify the creation of your user and fill the Email field.
+    - * : should be present. Otherwise you should verify the creation of your user and fill the Email field. 
+    - *ver* : should be 2.0. Otherwise you should verify the previous step **Manifest change**
+    - *aud* : should be your CLIENT_ID
+    - *iss* : should end with 2.0. Otherwise you should verify the previous step **Manifest change**
+
+  > If this command failed, try to log in to the [Azure Portal](https://portal.azure.com/). You may have to enable 2FA and/or change the password for the first time. 
+
 # Deploy ODM on a container configured with Azure AD (Part 2)
 
 ## Prepare your environment for the ODM installation
 
 ### Create a secret to use the Entitled Registry
 
-1. To get your entitlement key, log in to [MyIBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary) with the IBMid and password that are associated with the entitled software .
+1. To get your entitlement key, log in to [MyIBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary) with the IBMid and password that are associated with the entitled software.
 
     In the **Container software library** tile, verify your entitlement on the **View library** page, and then go to **Get entitlement key**  to retrieve the key.
 
@@ -223,7 +323,7 @@ After activating your account by email, you should have access to your Aure AD i
 
 
 
-1. Create a secret with the Azure AD Server certificate
+1. Create a secret with the Azure AD Server certificate.
 
     To allow ODM services to access the Azure AD Server, it is mandatory to provide the Azure AD Server certificate.
     You can create the secret as follows:
@@ -233,49 +333,42 @@ After activating your account by email, you should have access to your Aure AD i
     kubectl create secret generic ms-secret --from-file=tls.crt=microsoft.crt
     ```
     
-    Introspecting the Azure AD login.microsoftonline.com certificate. You can see it has been signed by the Digicert Root CA authorithy
-    So, we will also add the [Digicert Root CA certificate](resources/digicert.crt) :
+    Introspecting the Azure AD login.microsoftonline.com certificate, you can see it has been signed by the Digicert Root CA authorithy.
+    So we will also add the [Digicert Root CA certificate](resources/digicert.crt):
     
     ```
     kubectl create secret generic digicert-secret --from-file=tls.crt=digicert.crt
     ```
     
     
-2. Retrieve Tenant and Client information
+2. Generate the ODM configuration file for Azure AD.
 
-    From the Azure console, in **Azure Active Directory** / **App Registrations** / **ODM Application**:
-    - Click Overview 
-    - Directory (tenant) ID: **Your Tenant ID**. It will be referenced as `TENANT_ID` in the next steps.
-    - Application (client) ID: **Client ID**. It will be referenced as `CLIENT_ID` in the next steps.
-
-    ![Tenant ID](/images/AzureAD/GetTenantID.png)
-3. Generate the ODM configuration file for Azure AD
-
+   
+    If you have not yet done so, download the [azuread-odm-script.zip](azuread-odm-script.zip) file to your machine. This .zip file contains the [script](generateTemplate.sh) and the content of the [templates](templates) directory. 
     The [script](generateTemplate.sh) allows you to generate the necessary configuration files.
-    Download the [azuread-odm-script.zip](azuread-odm-script.zip) file to your machine. This .zip file contains the [script](generateTemplate.sh) and the content of the [templates](templates) directory.
-
     Generate the files with the following command:
     ```
-    ./generateTemplate.sh -i <CLIENT_ID> -x <CLIENT_SECRET> -n <TENANT_ID> -g <GROUP_GUID>
+    ./generateTemplate.sh -i <CLIENT_ID> -x <CLIENT_SECRET> -n <TENANT_ID> -g <GROUP_GUID> [-a <SSO_DOMAIN>]
     ```
 
     Where:
     - *TENANT_ID* and *CLIENT_ID* have been obtained from [previous step](#retrieve-tenant-and-client-information)
     - *CLIENT_SECRET* is listed in your ODM Application, section **General** / **Client Credentials**
     - *GROUP_GUID* is the ODM Admin group created in a [previous step](#manage-group-and-user) (*odm-admin*)
+    - *SSO_DOMAIN* is the domain name of your SSO. If your AzureAD is connected to another SSO, you should add the SSO domain name in this parameter. If your user has been declared as explained in step **Create at least one user that belongs to this new group**, you can omit this parameter.
 
-    The following 4 files are generated into the `output` directory :
+    The following four files are generated into the `output` directory:
     
-    - webSecurity.xml is containing the mapping between liberty J2EE ODM roles and Azure AD groups and users :
+    - webSecurity.xml contains the mapping between Liberty J2EE ODM roles and Azure AD groups and users:
       * All ODM roles are given to the GROUP_GUID group
       * rtsAdministrators/resAdministrators/resExecutors ODM roles are given to the CLIENT_ID (which is seen as a user) to manage the client-credentials flow  
-    - openIdWebSecurity.xml is containing 2 openIdConnectClient liberty configuration :
-      * for the web access to Decision Center an Decision Server consoles using userIdentifier="email" with the Authorization Code flow
-      * for the rest-api call using userIdentifier="aud" with the client-credentials flow
-    - openIdParameters.properties is configuring several features like allowed domains, logout and some internal ODM openid features
-    - OdmOidcProviders.json is configuring the client-credentials OpenId provider used by the Decision Center Server configuration to connect Decision Center to the RES Console and Decision Center to the Decision Runner  
+    - openIdWebSecurity.xml contains two openIdConnectClient Liberty configurations:
+      * For web access to the Decision Center an Decision Server consoles using userIdentifier="email" with the Authorization Code flow
+      * For the rest-api call using userIdentifier="aud" with the client-credentials flow
+    - openIdParameters.properties configures several features like allowed domains, logout, and some internal ODM OpenId features
+    - OdmOidcProviders.json configures the client-credentials OpenId provider used by the Decision Center server configuration to connect Decision Center to the Decision Server console and Decision Center to the Decision Runner  
 
-4. Create the Azure AD authentication secret
+3. Create the Azure AD authentication secret.
 
     ```
     kubectl create secret generic azuread-auth-secret \
@@ -285,79 +378,39 @@ After activating your account by email, you should have access to your Aure AD i
         --from-file=webSecurity.xml=./output/webSecurity.xml
     ```
 
-5. Check the Token format
-  
-  
-   To check that it has been correctly taken into account, you can request an access token using the Client-Credentials flow:
-  
-    ```
-    $ curl -X POST -H "Content-Type: application/x-www-form-urlencoded" \
-      -d 'client_id=<CLIENT_ID>&scope=<CLIENT_ID>%2F.default&client_secret=<CLIENT_SECRET>&grant_type=client_credentials' \
-      'https://login.microsoftonline.com/<TENANT_ID>/oauth2/v2.0/token'
-    ```
-  
-    Where:
-  
-    - *TENANT_ID* and *CLIENT_ID* have been obtained from 'Retrieve Tenant and Client information' section.
-    - *CLIENT_SECRET* is listed in your ODM Application, section **General** / **Client Credentials**
-    
-    You should get :
-    
-    ```
-    {
-    "token_type": "Bearer",
-    "expires_in": 3599,
-    "ext_expires_in": 3599,
-    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IjJaUXBKM1VwYm...n4dJxbZXIvT6MssIh908IxTg"
-    }
-    ```
-    
-    and by introspecting the access_token value with this online tool [https://jwt.ms](https://jwt.ms). You should get:
-    
-    ```
-    {
-    "typ": "JWT",
-    "alg": "RS256",
-    "kid": "jS1Xo1OWDj_52vbwGNgvQO2VzMc"
-    }.{
-    "aud": "<CLIENT_ID",
-    "iss": "https://login.microsoftonline.com/<TENANT_ID>/v2.0",
-    ...
-    "ver": "2.0"
-    }
-    ```
-  
+
 ## Install your ODM Helm release
 
-### 1. Add the public IBM Helm charts repository
+### Add the public IBM Helm charts repository
 
-    ```
-    helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo/entitled
-    helm repo update
-    ```
+  ```shell
+  helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo/entitled
+  helm repo update
+  ```
 
-### 2. Check that you can access the ODM chart
+### Check that you can access the ODM chart
 
-    ```
-    helm search repo ibm-odm-prod
-    NAME                  	CHART VERSION	APP VERSION	DESCRIPTION                     
-    ibmcharts/ibm-odm-prod	22.1.0       	8.11.0.1   	IBM Operational Decision Manager
-    ```
+  ```shell
+  helm search repo ibm-odm-prod
+  NAME                  	CHART VERSION	APP VERSION	DESCRIPTION                     
+  ibmcharts/ibm-odm-prod	22.2.0       	8.11.1.0   	IBM Operational Decision Manager
+  ```
 
-### 3. Run the `helm install` command
+### Run the `helm install` command
 
     You can now install the product. We will use the PostgreSQL internal database and disable the data persistence (`internalDatabase.persistence.enabled=false`) to avoid any platform complexity concerning persistent volume allocation.
 
 #### a. Installation on OpenShift using Routes
   
-  See the [Preparing to install](https://www.ibm.com/docs/en/odm/8.11.0?topic=production-preparing-install-operational-decision-manager) documentation for additional information.
+  See the [Preparing to install](https://www.ibm.com/docs/en/odm/8.11.1?topic=production-preparing-install-operational-decision-manager) documentation for additional information.
   
-  ```
+  ```shell
   helm install my-odm-release ibmcharts/ibm-odm-prod \
           --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
           --set oidc.enabled=true \
+          --set license=accept \
           --set internalDatabase.persistence.enabled=false \
-          --set customization.trustedCertificateList={"ms-secret","digicert-secret"} \
+          --set customization.trustedCertificateList='{ms-secret,digicert-secret}' \
           --set customization.authSecretRef=azuread-auth-secret \
           --set internalDatabase.runAsUser='' --set customization.runAsUser='' --set service.enableRoute=true
   ```
@@ -375,8 +428,9 @@ After activating your account by email, you should have access to your Aure AD i
   helm install my-odm-release ibmcharts/ibm-odm-prod \
           --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
           --set oidc.enabled=true \
+          --set license=true \
           --set internalDatabase.persistence.enabled=false \
-          --set customization.trustedCertificateList={"ms-secret","digicert-secret"} \
+          --set customization.trustedCertificateList='{ms-secret,digicert-secret}' \
           --set customization.authSecretRef=azuread-auth-secret \
           --set service.ingress.enabled=true \
           --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"\,"nginx.ingress.kubernetes.io/backend-protocol: HTTPS"\,"nginx.ingress.kubernetes.io/affinity: cookie"}
@@ -384,11 +438,11 @@ After activating your account by email, you should have access to your Aure AD i
 
 ## Complete post-deployment tasks
 
-### Register the ODM redirect URL
+### Register the ODM redirect URLs
 
     
 1. Get the ODM endpoints.
-    Refer to the [documentation](https://www.ibm.com/docs/en/odm/8.11.0?topic=production-configuring-external-access) to retrieve the endpoints.
+    Refer to the [documentation](https://www.ibm.com/docs/en/odm/8.11.1?topic=production-configuring-external-access) to retrieve the endpoints.
     For example, on OpenShift you can get the route names and hosts with:
 
     ```
@@ -481,11 +535,29 @@ To be able to securely connect your Rule Designer to the Decision Server and Dec
 
 4. Restart Rule Designer.
 
-For more information, refer to the [documentation](https://www.ibm.com/docs/en/odm/8.11.0?topic=designer-importing-security-certificate-in-rule).
-  
+For more information, refer to the [documentation](https://www.ibm.com/docs/en/odm/8.11.1?topic=designer-importing-security-certificate-in-rule).
+
+
+### Getting Started with IBM Operational Decision Manager for Containers
+
+Get hands-on experience with IBM Operational Decision Manager in a container environment by following this [Getting started tutorial](https://github.com/DecisionsDev/odm-for-container-getting-started/blob/master/README.md).
+
+
 ### Calling the ODM Runtime Service
+
+To manage ODM runtime call on the next steps, we used the [Loan Validation Decision Service project](https://github.com/DecisionsDev/odm-for-container-getting-started/blob/master/Loan%20Validation%20Service.zip)
+
+Import the **Loan Validation Service** in Decision Center connected as John Doe
+
+![Import project](/images/Keycloak/import_project.png)
+
+Deploy the **Loan Validation Service** production_deployment ruleapps using the **production deployment** deployment configuration in the Deployments>Configurations tab.
+
+![Deploy project](/images/Keycloak/deploy_project.png)
+
+You can retrieve the payload.json from the ODM Decision Server Console or use [the provided payload](payload.json)
   
-As explained in the ODM on Certified Kubernetes documentation [Configuring user access with OpenID](https://www.ibm.com/docs/en/odm/8.11.0?topic=access-configuring-user-openid), we advise to use basic authentication for the ODM runtime call for performance reasons and to avoid the issue of token expiration and revocation.
+As explained in the ODM on Certified Kubernetes documentation [Configuring user access with OpenID](https://www.ibm.com/docs/en/odm/8.11.1?topic=access-configuring-user-openid), we advise to use basic authentication for the ODM runtime call for performance reasons and to avoid the issue of token expiration and revocation.
 
 You can realize a basic authentication ODM runtime call the following way:
   
@@ -500,7 +572,7 @@ You can realize a basic authentication ODM runtime call the following way:
 But if you want to execute a bearer authentication ODM runtime call using the Client Credentials flow, you have to get a bearer access token:
   
   ```
-  $ curl -X POST -H "Content-Type: application/x-www-form-urlencoded" \
+  $ curl -k -X POST -H "Content-Type: application/x-www-form-urlencoded" \
       -d 'client_id=<CLIENT_ID>&scope=<CLIENT_ID>%2F.default&client_secret=<CLIENT_SECRET>&grant_type=client_credentials' \
       'https://login.microsoftonline.com/<TENANT_ID>/oauth2/v2.0/token'
   ```
@@ -513,6 +585,10 @@ But if you want to execute a bearer authentication ODM runtime call using the Cl
          https://<DS_RUNTIME_HOST>/DecisionService/rest/production_deployment/1.0/loan_validation_production/1.0
   ```
   
+# Troubleshooting
+
+If you encounter any issue, have a look at the [common troubleshooting explanation](../README.md#Troubleshooting)
+
 # License
 
 [Apache 2.0](/LICENSE)

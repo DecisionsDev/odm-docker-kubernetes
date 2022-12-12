@@ -16,12 +16,12 @@ Extract the file that contains both the Helm chart and the images.  The name of 
 $ mkdir ODM-PPA
 $ cd ODM-PPA
 $ tar zxvf PPA_NAME.tar.gz
-charts/ibm-odm-prod-21.3.0.tgz
-images/odm-decisionserverconsole_8.11.0.0-amd64.tar.gz
-images/odm-decisionserverruntime_8.11.0.0-amd64.tar.gz
-images/odm-decisionrunner_8.11.0.0-amd64.tar.gz
-images/odm-decisioncenter_8.11.0.0-amd64.tar.gz
-images/dbserver_8.11.0.0-amd64.tar.gz
+charts/ibm-odm-prod-22.2.0.tgz
+images/odm-decisionserverconsole_8.11.1.0-amd64.tar.gz
+images/odm-decisionserverruntime_8.11.1.0-amd64.tar.gz
+images/odm-decisionrunner_8.11.1.0-amd64.tar.gz
+images/odm-decisioncenter_8.11.1.0-amd64.tar.gz
+images/dbserver_8.11.1.0-amd64.tar.gz
 manifest.json
 manifest.yaml
 ```
@@ -57,7 +57,7 @@ In order to load the container images from the extracted folder into your Docker
 4. Tag the images loaded locally with your registry name.
 
     ```
-    export IMAGE_TAG_NAME=${ODM_VERSION:-8.11.0.0}-amd64
+    export IMAGE_TAG_NAME=${ODM_VERSION:-8.11.1.0}-amd64
     docker tag odm-decisionserverconsole:${IMAGE_TAG_NAME} ${DOCKER_REGISTRY}/odm-decisionserverconsole:${IMAGE_TAG_NAME}
     docker tag dbserver:${IMAGE_TAG_NAME} ${DOCKER_REGISTRY}/dbserver:${IMAGE_TAG_NAME}
     docker tag odm-decisioncenter:${IMAGE_TAG_NAME} ${DOCKER_REGISTRY}/odm-decisioncenter:${IMAGE_TAG_NAME}
@@ -91,13 +91,13 @@ You can now proceed to the [datasource secret's creation](README.md#create-the-d
 Note that instead of using
 
 ```
-helm install <release> ibmcharts/ibm-odm-prod --version 21.3.0 --set image.repository=cp.icr.io/cp/cp4a/odm [...]
+helm install <release> ibmcharts/ibm-odm-prod --version 22.2.0 --set image.repository=cp.icr.io/cp/cp4a/odm [...]
 ```
 
 in later steps, you will have to use
 
 ```
-helm install <release> charts/ibm-odm-prod-21.3.0.tgz --set image.repository=${DOCKER_REGISTRY} [...]
+helm install <release> charts/ibm-odm-prod-22.2.0.tgz --set image.repository=${DOCKER_REGISTRY} [...]
 ```
 
 instead.

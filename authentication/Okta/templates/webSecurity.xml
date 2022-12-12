@@ -1,4 +1,15 @@
 <server>
+<!-- basic registry to manage rest-api / ruledesigner and DC to RES deployment as an alternative to okta client-cresentials -->
+  <basicRegistry id="basic" realm="basic">
+    <user name="odmAdmin" password="odmAdmin"/>
+    <group name="basicAdministrators">
+      <member name="odmAdmin" />
+    </group>
+</basicRegistry>
+<variable name="odm.resAdministrators.group2" value="group:basic/basicAdministrators"/>
+<variable name="odm.resExecutors.group2" value="group:basic/basicAdministrators"/>
+<variable name="odm.rtsAdministrators.group2" value="group:basic/basicAdministrators"/>
+
 <!-- group mapping to authorize users of the OKTA_ODM_GROUP group -->
 <variable name="group1" value="group:OKTA_SERVER_URL/oauth2/default/OKTA_ODM_GROUP"/>
 

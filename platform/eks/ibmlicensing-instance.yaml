@@ -14,7 +14,3 @@ spec:
       kubernetes.io/ingress.class: alb
     path: /*
   instanceNamespace: ibm-common-services
-  resources: {}
-  usageContainer:
-    resources: {}
-  version: 1.10.0

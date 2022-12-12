@@ -1,7 +1,7 @@
 #!/bin/bash
 
 export OKTA_CLAIM_GROUPS="groups"
-export OKTA_CLAIM_LOGIN="loginName"
+export OKTA_CLAIM_LOGIN="email"
 OUTPUT_DIR=./output
 TEMPLATE_DIR=./templates
 

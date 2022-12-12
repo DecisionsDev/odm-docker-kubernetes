@@ -1,0 +1,31 @@
+<server>
+
+  <variable name="ServerHost" value="KEYCLOAK_SERVER_URL"/>
+
+  <!-- Open ID Connect -->
+  <!-- Client with inbound propagation set to supported -->
+  <openidConnectClient authFilterRef="browserAuthFilter" id="odm" scope="openid"
+        clientId="KEYCLOAK_CLIENT_ID" clientSecret="KEYCLOAK_CLIENT_SECRET"
+        signatureAlgorithm="RS256" inboundPropagation="supported"
+        audiences="ALL_AUDIENCES" httpsRequired="false"
+        tokenReuse="true"
+        userIdentifier="KEYCLOAK_USERID" groupIdentifier="groups"
+        issuerIdentifier="${ServerHost}"
+        jwkEndpointUrl="${ServerHost}/protocol/openid-connect/certs"
+        authorizationEndpointUrl="${ServerHost}/protocol/openid-connect/auth"
+        tokenEndpointUrl="${ServerHost}/protocol/openid-connect/token"
+        validationEndpointUrl="${ServerHost}/protocol/openid-connect/token/introspect"/>
+
+  <!-- Client with inbound propagation set to required -->
+  <openidConnectClient authFilterRef="apiAuthFilter" id="odmapi" scope="openid"
+        clientId="KEYCLOAK_CLIENT_ID" clientSecret="KEYCLOAK_CLIENT_SECRET"
+        signatureAlgorithm="RS256" inboundPropagation="required"
+        audiences="ALL_AUDIENCES" httpsRequired="false"
+        tokenReuse="true"
+        userIdentifier="KEYCLOAK_USERID" groupIdentifier="groups"
+        issuerIdentifier="${ServerHost}"
+        jwkEndpointUrl="${ServerHost}/protocol/openid-connect/certs"
+        authorizationEndpointUrl="${ServerHost}/protocol/openid-connect/auth"
+        tokenEndpointUrl="${ServerHost}/protocol/openid-connect/token"
+        validationEndpointUrl="${ServerHost}/protocol/openid-connect/token/introspect"/>
+</server>

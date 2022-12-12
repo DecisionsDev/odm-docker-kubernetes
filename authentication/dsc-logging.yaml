@@ -1,0 +1,7 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: my-dsc-logging-configmap
+data:
+  dsc-logging: "<server>\n\t<logging traceFileName=\"stdout\" traceFormat=\"BASIC\" traceSpecification=\"*=audit:com.ibm.ws.security.*=all:com.ibm.ws.webcontainer.security.*=all:com.ibm.rules.*=info:ilog.rules.*=info\" consoleLogLevel=\"INFO\"/>\n</server>"
+

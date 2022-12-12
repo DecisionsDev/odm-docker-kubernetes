@@ -2,19 +2,19 @@
 
 This project demonstrates how to deploy an IBM® Operational Decision Manager (ODM) clustered topology using the [container-native load balancer of GKE](https://cloud.google.com/blog/products/containers-kubernetes/container-native-load-balancing-on-gke-now-generally-available).
 
-The ODM services will be exposed using the Ingress provided by ODM on k8s Helm chart.
+The ODM services will be exposed using the Ingress provided by the ODM on Kubernetes Helm chart.
 This deployment implements Kubernetes and Docker technologies.
-Here is the home page of Google Cloud: https://cloud.google.com
+Here is the Google Cloud home page: https://cloud.google.com
 
 <img width="1000" height="560" src='./images/architecture.png'/>
 
-The ODM on Kubernetes material is available in [IBM Entitled Registry](https://myibm.ibm.com/products-services/containerlibrary) for the Docker Images, and the [IBM Helm charts repository](https://github.com/IBM/charts) for the ODM Helm Chart.
+The ODM on Kubernetes Docker images are available in the [IBM Entitled Registry](https://www.ibm.com/cloud/container-registry). The ODM Helm chart is available in the [IBM Helm charts repository](https://github.com/IBM/charts).
 
 ## Included components
 
 The project comes with the following components:
 
-- [IBM Operational Decision Manager](https://www.ibm.com/docs/en/odm/8.11.0?topic=operational-decision-manager-certified-kubernetes-8110)
+- [IBM Operational Decision Manager](https://www.ibm.com/docs/en/odm/8.11.1?topic=operational-decision-manager-certified-kubernetes-8110)
 - [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine)
 - [Google Cloud SQL for PostgreSQL](https://cloud.google.com/sql)
 - [IBM License Service](https://github.com/IBM/ibm-licensing-operator)
@@ -30,7 +30,7 @@ First, install the following software on your machine:
 - [kubectl](https://kubernetes.io/docs/tasks/tools/)
 - [Helm v3](https://helm.sh/docs/intro/install/)
 
-Then, manage the following tasks:
+Then, perform the following tasks:
 
 1. Create a Google Cloud account by connecting to the Google Cloud Platform [console](https://console.cloud.google.com/). When prompted to sign in, create a new account by clicking **Create account**.
 
@@ -44,17 +44,21 @@ Without the relevant billing level, some Google Cloud resources will not be crea
 
 ## Steps to deploy ODM on Kubernetes from Google GKE
 
-1. [Prepare your GKE instance (30 min)](#1-prepare-your-gke-instance-30-min)
-2. [Create the Google Cloud SQL PostgreSQL instance (10 min)](#2-create-the-google-cloud-sql-postgresql-instance-10-min)
-3. [Prepare your environment for the ODM installation (10 min)](#3-prepare-your-environment-for-the-odm-installation-10-min)
-4. [Manage a digital certificate (10 min)](#4-manage-a-digital-certificate-2-min)
-5. [Install the ODM release (10 min)](#5-install-the-odm-release-10-min)
-6. [Access ODM services](#6-access-odm-services)
-7. [Track ODM usage with the IBM License Service](#7-track-odm-usage-with-the-ibm-license-service)
+<!-- TOC depthfrom:3 depthto:3 -->
+
+- [Prepare your GKE instance 30 min](#prepare-your-gke-instance-30-min)
+- [Create the Google Cloud SQL PostgreSQL instance 10 min](#create-the-google-cloud-sql-postgresql-instance-10-min)
+- [Prepare your environment for the ODM installation 10 min](#prepare-your-environment-for-the-odm-installation-10-min)
+- [Manage a digital certificate 2 min](#manage-a-digital-certificate-2-min)
+- [Install the ODM release 10 min](#install-the-odm-release-10-min)
+- [Access ODM services](#access-odm-services)
+- [Track ODM usage with the IBM License Service](#track-odm-usage-with-the-ibm-license-service)
+
+<!-- /TOC -->
 
 ### 1. Prepare your GKE instance (30 min)
 
-You can refer to the [GKE quickstart](https://cloud.google.com/kubernetes-engine/docs/quickstart) for more information.
+Refer to the [GKE quickstart](https://cloud.google.com/kubernetes-engine/docs/quickstart) for more information.
 
 #### a. Log into Google Cloud
 
@@ -67,18 +71,13 @@ gcloud auth login <ACCOUNT>
 #### b. Create a GKE cluster
 
 There are several [types of clusters](https://cloud.google.com/kubernetes-engine/docs/concepts/types-of-clusters).
-In this article we chose to create a [regional cluster](https://cloud.google.com/kubernetes-engine/docs/how-to/creating-a-regional-cluster).
+In this article, we chose to create a [regional cluster](https://cloud.google.com/kubernetes-engine/docs/how-to/creating-a-regional-cluster).
+Regions and zones (used below) can be listed respectively with `gcloud compute regions list` and `gcloud compute zones list`.
 
 - Set the project (associated to a billing account):
 
   ```
   gcloud config set project <PROJECT_ID>
-  ```
-
-- Set the zone:
-
-  ```
-  gcloud config set compute/zone <ZONE (ex: europe-west1-b)>
   ```
 
 - Set the region:
@@ -87,23 +86,33 @@ In this article we chose to create a [regional cluster](https://cloud.google.com
   gcloud config set compute/region <REGION (ex: europe-west1)>
   ```
 
-- Create a cluster and enable autoscaling. Here, we start with 6 nodes (with 16 max):
+- Set the zone:
 
   ```
-  gcloud container clusters create <CLUSTER_NAME> --num-nodes 6 --enable-autoscaling --min-nodes 1 --max-nodes 16
+  gcloud config set compute/zone <ZONE (ex: europe-west1-b)>
   ```
 
-  > NOTE: You can also create your cluster from the Google Cloud Platform using the **Kubernetes Engine Clusters** panel, by clicking on the **Create** button
+- Create a cluster and [enable autoscaling](https://cloud.google.com/kubernetes-engine/docs/how-to/cluster-autoscaler). Here, we start with 6 nodes (16 max):
+
+  ```
+  gcloud container clusters create <CLUSTER_NAME> \
+    --release-channel=regular --cluster-version=1.24 \
+    --enable-autoscaling --num-nodes=6 --total-min-nodes=1 --total-max-nodes=16
+  ```
+
+  > If you get a red warning about a missing gke-gcloud-auth-plugin, install it with `gcloud components install gke-gcloud-auth-plugin` and enable it for each kubectl command with `export USE_GKE_GCLOUD_AUTH_PLUGIN=True` ([more information](https://cloud.google.com/blog/products/containers-kubernetes/kubectl-auth-changes-in-gke)).
+
+  > NOTE: You can also create your cluster from the Google Cloud Platform using the **Kubernetes Engine** > **Clusters** panel and clicking the **Create** button
   > <img width="1000" height="300" src='./images/create_cluster.png'/>
 
 #### c. Set up your environment
 
-- Create a kubeconfig to connect to your cluster
+- Create a kubeconfig to connect to your cluster:
   ```
   gcloud container clusters get-credentials <CLUSTER_NAME>
   ```
 
-  > NOTE: You can also retrieve the command line to configure `kubectl` by going on the Google Cloud Console in the **Kubernetes Engine** > **Clusters** panel, by selecting **Connect** on the dedicated cluster.
+  > NOTE: You can also retrieve the command line to configure `kubectl` from the Google Cloud Console using the **Kubernetes Engine** > **Clusters** panel and clicking **Connect** on the dedicated cluster.
   > <img width="1000" height="300" src='./images/connection.png'/>
 
 - Check your environment
@@ -117,25 +126,25 @@ In this article we chose to create a [regional cluster](https://cloud.google.com
 
 #### a. Create the database instance
 
-We will use the Google Cloud Console to create this instance:
+We will use the Google Cloud Platform console to create the database instance.
 
-- Go on the [SQL context](https://console.cloud.google.com/sql) and click on the **CREATE INSTANCE** button
-- Click on **Choose PostgreSQL**
+- Go to the [SQL context](https://console.cloud.google.com/sql), and then click the **CREATE INSTANCE** button
+- Click **Choose PostgreSQL**
   - Instance ID: ``<YourInstanceName>``
-  - Password: ``<PASSWORD>`` - Take a note of this password.
+  - Password: ``<PASSWORD>`` - Take note of this password.
   - Database version: `PostgreSQL 13`
-  - Region: ``<REGION>`` (must be similar to the cluster for the communication is optimal between the database and the ODM instance)
+  - Region: ``<REGION>`` (must be the same as the cluster for the communication to be optimal between the database and the ODM instance)
   - Keep **Multiple zones** for Zonal availability to the highest availability
   - Expand **Show customization option** and expand **Connections**
-    - As *Public IP* is selected by default, click on the **ADD NETWORK** button, put a name and add *0.0.0.0/0* for Network, then click on **DONE**.
-      > NOTE: It's not recommended to use plublic IP. In production environment, you should use private IP.
+    - As *Public IP* is selected by default, in Authorized networks, click the **ADD NETWORK** button, put a name and add *0.0.0.0/0* for Network, then click **DONE**.
+      > NOTE: It is not recommended to use a public IP. In a production environment, you should use a private IP.
+- Click **CREATE INSTANCE**
 
-When created, you can drill on the SQL instance overview to retrieve needed information to connect to this instance like the IP adress and the connection name. Take a note of the **Public IP address**.
+After the database instance is created, you can drill on the SQL instance overview to retrieve needed information to connect to this instance, like the IP address and the connection name. Take note of the **Public IP address**.
 
 <img width="1000" height="630" src='./images/database_overview.png'/>
 
-
-> NOTE: A default *postgres* database is created with a default *postgres* user. You can change the password of the postgres user by using the **Users** panel, selecting the *postgres* user, and using the **Change password** menu:
+> NOTE: A default *postgres* database is created with a default *postgres* user. You can change the password of the postgres user in the **Users** panel by selecting the *postgres* user, and then using the **Change password** menu:
 > <img width="1000" height="360" src='./images/database_changepassword.png'/>
 
 #### b. Create the database secret for Google Cloud SQL PostgreSQL
@@ -143,19 +152,19 @@ When created, you can drill on the SQL instance overview to retrieve needed info
 To secure access to the database, you must create a secret that encrypts the database user and password before you install the Helm release.
 
 ```
-kubectl create secret generic <odm-db-secret> \
+kubectl create secret generic <ODM_DB_SECRET> \
   --from-literal=db-user=<USERNAME> \
   --from-literal=db-password=<PASSWORD> 
 ```
 
 Where:
-- `<ODM_DB_SECRET>`: the secret name
-- `<USERNAME>`: the database username (default is *postgres*)
-- `<PASSWORD>`: the database password (PASSWORD set in the [previous step](#2-create-the-google-cloud-sql-postgresql-instance-10-min))
+- `<ODM_DB_SECRET>` is the secret name
+- `<USERNAME>` is the database username (default is *postgres*)
+- `<PASSWORD>` is the database password (PASSWORD set during the PostgreSQL instance creation above)
 
 ### 3. Prepare your environment for the ODM installation (10 min)
 
-To get access to the ODM material, you must have an IBM entitlement registry key to pull the images from the IBM Entitled registry.
+To get access to the ODM material, you need an IBM entitlement key to pull the images from the IBM Entitled Registry.
 
 #### a. Retrieve your entitled registry key
 
@@ -173,15 +182,15 @@ kubectl create secret docker-registry <REGISTRY_SECRET> \
         --docker-email=<USER_EMAIL>
 ```
 
-where:
+Where:
 
-* `<REGISTRY_SECRET>`: the secret name
-* `<API_KEY_GENERATED>`: the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
-* `<USER_EMAIL>`: the email address associated with your IBMid.
+* `<REGISTRY_SECRET>` is the secret name.
+* `<API_KEY_GENERATED>` is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
+* `<USER_EMAIL>` is the email address associated with your IBMid.
 
 > NOTE:  The `cp.icr.io` value for the docker-server parameter is the only registry domain name that contains the images. You must set the docker-username to `cp` to use an entitlement key as docker-password.
 
-Take a note of the secret name so that you can set it for the *image.pullSecrets* parameter when you run a helm install of your containers.  The *image.repository* parameter will later be set to `cp.icr.io/cp/cp4a/odm`.
+Take note of the secret name so that you can set it for the *image.pullSecrets* parameter when you run a helm install command of your containers.  The *image.repository* parameter will later be set to `cp.icr.io/cp/cp4a/odm`.
 
 #### c. Add the public IBM Helm charts repository
 
@@ -190,21 +199,21 @@ helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo
 helm repo update
 ```
 
-#### d. Check you can access ODM's charts
+#### d. Check you can access ODM charts
 
 ```
 helm search repo ibm-odm-prod
-NAME                  	CHART VERSION	APP VERSION	DESCRIPTION                     
-ibmcharts/ibm-odm-prod	22.1.0       	8.11.0.1   	IBM Operational Decision Manager
+NAME                  	CHART VERSION   APP VERSION     DESCRIPTION
+ibmcharts/ibm-odm-prod	22.2.0          8.11.1.0        IBM Operational Decision Manager
 ```
 
 ### 4. Manage a digital certificate (2 min)
 
 #### a. (Optional) Generate a self-signed certificate
 
-In this step, you will generate a certificate to be used by the GKE loadbalancer.
+In this step, you will generate a certificate to be used by the GKE load balancer.
 
-If you do not have a trusted certificate, you can use OpenSSL and other cryptography and certificate management libraries to generate a certificate file and a private key, to define the domain name, and to set the expiration date. The following command creates a self-signed certificate (`.crt` file) and a private key (`.key` file) that accepts the domain name *mycompany.com*. The expiration is set to 1000 days:
+If you do not have a trusted certificate, you can use OpenSSL and other cryptography and certificate management libraries to generate a certificate file and a private key to define the domain name and to set the expiration date. The following command creates a self-signed certificate (`.crt` file) and a private key (`.key` file) that accept the domain name *mycompany.com*. The expiration is set to 1000 days:
 
 ```
 openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mycompany.key \
@@ -217,18 +226,20 @@ openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mycompany.key \
 kubectl create secret tls mycompany-crt-secret --key mycompany.key --cert mycompany.crt
 ```
 
-The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://www.ibm.com/docs/en/odm/8.11.0?topic=servers-server-certificates) and [Working with certificates and SSL](https://docs.oracle.com/cd/E19830-01/819-4712/ablqw/index.html).
+The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://www.ibm.com/docs/en/odm/8.11.1?topic=servers-server-certificates) and [Working with certificates and SSL](https://docs.oracle.com/cd/E19830-01/819-4712/ablqw/index.html).
 
 ### 5. Install the ODM release (10 min)
 
 #### a. Install an ODM Helm release
 
-The ODM services will be exposed with an Ingress using the previously created `mycompany` certificate.
-It will create automatically an HTTPS GKE loadbalancer. So, we disable the ODM internal TLS as it's not needed.
+The ODM services will be exposed with an Ingress that uses the previously created `mycompany` certificate.
+It automatically creates an HTTPS GKE load balancer. We will disable the ODM internal TLS as it is not needed.
 
 - Get the [gcp-values.yaml](./gcp-values.yaml) file and replace the following keys:
-  - `<REGISTRY_SECRET>`: the name of the secret containing the IBM Entitled registry key
-  - `<DB_ENDPOINT>`: the database ip
+
+  - `<REGISTRY_SECRET>`: the name of the secret containing the IBM Entitled Registry key
+  - `<ODM_DB_SECRET>`: the name of the secret containing the database user and password
+  - `<DB_ENDPOINT>`: the database IP
   - `<DATABASE_NAME>`: the database name (default is postgres)
 
   > NOTE: You can configure the driversUrl parameter to point to the appropriate version of the Google Cloud SQL PostgreSQL driver. For more information, refer to the [Cloud SQL Connector for Java](https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory#cloud-sql-connector-for-java) documentation.
@@ -236,11 +247,10 @@ It will create automatically an HTTPS GKE loadbalancer. So, we disable the ODM i
 - Install the chart from IBM's public Helm charts repository:
 
     ```
-    helm install mycompany ibmcharts/ibm-odm-prod --version 22.1.0 \
-                 -f gcp-values.yaml
+    helm install <release> ibmcharts/ibm-odm-prod --version 22.2.0 -f gcp-values.yaml
     ```
 
-  > NOTE: You may prefer to access ODM components through NGINX Ingress controller instead of using the IP addresses. If so, please follow [these instructions](README_NGINX.md).
+  > NOTE: You might prefer to access ODM components through the NGINX Ingress controller instead of using the IP addresses. If so, please follow [these instructions](README_NGINX.md).
 
 #### b. Check the topology
 
@@ -255,10 +265,11 @@ NAME                                                   READY   STATUS    RESTART
 <release>-odm-decisionserverruntime-***                1/1     Running   0          20m
 ```
 
-#### c. Check the Ingress and GKE LoadBalancer
+#### c. Check the Ingress and the GKE LoadBalancer
 
-To get a status on the current deployment, you can go in the console to the [Kubernetes Engine/Services & Ingress Panel](https://console.cloud.google.com/kubernetes/ingresses).
-The ingress is remaining in the *Creating ingress* state several minutes until the pods are up and ready, and that the backend is getting an healthy state.
+To get the status of the current deployment, go to the [Kubernetes Engine / Services & Ingress Panel](https://console.cloud.google.com/kubernetes/ingresses) in the console.
+
+The Ingress remains in the state *Creating ingress* for several minutes until the pods are up and running, and the backend gets in a healthy state.
 
 <img width="1000" height="308" src='./images/ingress_creating.png'/>
 
@@ -267,45 +278,45 @@ It provides information about the backend using the service health check.
 
 <img width="1000" height="352" src='./images/loadbalancer.png'/>
 
-Entering inside the Ingress details, you should get an *HEALTHY* state on all backends.
-This panel is also providing some logs on the loadbalancer activity.
-When the Ingress is showing an OK status, all ODM services can be accessed.
+In the Ingress details, you should get a *HEALTHY* state on all backends.
+This panel also provides some logs on the load balancer activity.
+When the Ingress shows an OK status, all ODM services can be accessed.
 
 <img width="1000" height="517" src='./images/ingress_details.png'/>
 
 #### d. Create a Backend Configuration for the Decision Center Service
 
-Sticky session is needed for Decision Center. The browser contains a cookie identifying the user session that will be linked to a unique container.
-The ODM on k8s helm chart has [clientIP](https://kubernetes.io/docs/concepts/services-networking/service/#proxy-mode-ipvs) for the Decision Center session affinity. Unfortunately, GKE doesn't use it automatically.
-However, you will not encounter any issue until you scale up the Decision Center deployment.
+Sticky session is needed for Decision Center. The browser contains a cookie which identifies the user session that is linked to a unique container.
+The ODM on Kubernetes Helm chart has a [clientIP](https://kubernetes.io/docs/concepts/services-networking/service/#proxy-mode-ipvs) for the Decision Center session affinity. Unfortunately, GKE does not use it automatically.
+You will not encounter any issue until you scale up the Decision Center deployment.
 
-A configuration using [BackendConfig](https://cloud.google.com/kubernetes-engine/docs/how-to/ingress-features#session_affinity) is needed to manage it at the loadbalancer level.
+A configuration that uses [BackendConfig](https://cloud.google.com/kubernetes-engine/docs/how-to/ingress-features#session_affinity) is needed to manage session affinity at the load balancer level.
 
 - Create the [Decision Center Backend Config](decisioncenter-backendconfig.yaml):
 
   ```
-  kubectl apply -f decisioncenter-backendconfig.yaml
+  kubectl create -f decisioncenter-backendconfig.yaml
   ```
 
 - Annotate the Decision Center Service with this GKE Backend Config:
 
   ```
   kubectl annotate service <release>-odm-decisioncenter \
-          cloud.google.com/backend-config="{\"ports\": {\"9453\":\"dc-backendconfig\"}}"
+          cloud.google.com/backend-config='{"ports": {"9453":"dc-backendconfig"}}'
   ```
 
-  As soon as GKE has managed the Decision Center session affinity at the loadbalancer level, you can check the ClientIP availability below the Decision Center Network Endpoint Group configuration from the Google Cloud Console in the Load Balancer details:
+  As soon as GKE manages Decision Center session affinity at the load balancer level, you can check the ClientIP availability below the Decision Center Network Endpoint Group configuration from the Google Cloud Console in the Load Balancer details.
 
   <img width="1000" height="353" src='./images/dc_sessionaffinity.png'/>
 
 ### 6. Access ODM services
 
-In a real enterprise use-case, to access the mycompany.com domain name, you will have to deal with [Google Managed Certificate](https://cloud.google.com/load-balancing/docs/ssl-certificates/google-managed-certs) and [Google Cloud DNS](https://cloud.google.com/dns).
+In a real enterprise use case, to access the mycompany.com domain name, you have to deal with [Google Managed Certificate](https://cloud.google.com/load-balancing/docs/ssl-certificates/google-managed-certs) and [Google Cloud DNS](https://cloud.google.com/dns).
 
-In this trial, we are using a self-signed certificate. So, there is no extra charge like certificate and domain purchase.
-We just have to manage a configuration to simulate the mycompany.com access.
+In this trial, we use a self-signed certificate. So, there is no extra charge like certificate and domain purchase.
+We only have to manage a configuration to simulate the mycompany.com access.
 
-- Get the EXTERNAL-IP using the command line:
+- Get the EXTERNAL-IP with the command line:
 
   ```
   kubectl get ingress <release>-odm-ingress -o jsonpath='{.status.loadBalancer.ingress[].ip}'
@@ -327,14 +338,14 @@ We just have to manage a configuration to simulate the mycompany.com access.
   | Decision Server Runtime | https://mycompany.com/DecisionService | odmAdmin/odmAdmin
   | Decision Runner | https://mycompany.com/DecisionRunner | odmAdmin/odmAdmin
 
-  > NOTE:You can also click on the Ingress routes accessible from the Google Cloud console below the [Kubernetes Engine/Services & Ingress Details Panel](https://console.cloud.google.com/kubernetes/ingresses):
+  > NOTE:You can also click the Ingress routes accessible from the Google Cloud console under the [Kubernetes Engine/Services & Ingress Details Panel](https://console.cloud.google.com/kubernetes/ingresses).
   > <img width="1000" height="532" src='./images/ingress_routes.png'/>
 
 ### 7. Track ODM usage with the IBM License Service
 
 This section explains how to track ODM usage with the IBM License Service.
 
-#### a. Create a NGINX Ingress controller
+#### a. Create an NGINX Ingress controller
 
 - Add the official stable repository:
 
@@ -343,51 +354,52 @@ This section explains how to track ODM usage with the IBM License Service.
     helm repo update
     ```
 
-- Use Helm to deploy an NGINX Ingress controller:
+- Use Helm to deploy the NGINX Ingress controller:
 
     ```
-    helm install nginx-ingress ingress-nginx/ingress-nginx \
-      --set controller.replicaCount=2 \
-      --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux \
-      --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux
+    helm install nginx-ingress ingress-nginx/ingress-nginx
     ```
 
 #### b. Install the IBM License Service
 
-Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://github.com/IBM/ibm-licensing-operator/blob/latest/docs/Content/Install_without_OLM.md)
+Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cpfs?topic=software-manual-installation-without-operator-lifecycle-manager-olm)
 
-> NOTE: Make sure you don't follow the instantiation part!
+> NOTE: Make sure you do not follow the instantiation part!
 
 #### c. Create the IBM Licensing instance
 
-Get the [licensing-instance.yaml](./licensing-instance.yaml) file and execute the command :
+Get the [licensing-instance.yaml](./licensing-instance.yaml) file and run the following command:
 
 ```
 kubectl create -f licensing-instance.yaml
 ```
 
-> NOTE: You can find more information and use cases on [this page](https://github.com/IBM/ibm-licensing-operator/blob/latest/docs/Content/Configuration.md#configuring-ingress).
+> NOTE: You can find more information and use cases on [this page](https://www.ibm.com/docs/en/cpfs?topic=software-configuration).
 
 #### d. Retrieving license usage
 
-After a couple of minutes, the ingress configuration is created and you will be able to access the IBM License Service by retrieving the URL with this command:
+After a couple of minutes, the Ingress configuration is created and you will be able to access the IBM License Service by retrieving the URL with the following command:
 
 ```
-export LICENSING_URL=$(kubectl get ingress ibm-licensing-service-instance -n ibm-common-services |awk '{print $4}' |tail -1)/ibm-licensing-service-instance
+export LICENSING_URL=$(kubectl get ingress ibm-licensing-service-instance -n ibm-common-services -o jsonpath='{.status.loadBalancer.ingress[0].ip}')/ibm-licensing-service-instance
 export TOKEN=$(kubectl get secret ibm-licensing-token -o jsonpath={.data.token} -n ibm-common-services |base64 -d)
 ```
 
-You can access the `http://${LICENSING_URL}/status?token=${TOKEN}` url to view the licensing usage or retrieve the licensing report zip file by running:
+You can access the `http://${LICENSING_URL}/status?token=${TOKEN}` URL to view the licensing usage or retrieve the licensing report .zip file by running the following command:
 
 ```
 curl -v "http://${LICENSING_URL}/snapshot?token=${TOKEN}" --output report.zip
 ```
 
-If your IBM License Service instance is not running properly, please refer to this [troubleshooting page](https://github.com/IBM/ibm-licensing-operator/blob/latest/docs/Content/Troubleshooting.md).
+If your IBM License Service instance is not running properly, refer to this [troubleshooting page](https://www.ibm.com/docs/en/cpfs?topic=software-troubleshooting).
 
 ## Troubleshooting
 
-If your ODM instances are not running properly, please refer to [our dedicated troubleshooting page](https://www.ibm.com/docs/en/odm/8.11.0?topic=8110-troubleshooting-support).
+If your ODM instances are not running properly, refer to [our dedicated troubleshooting page](https://www.ibm.com/docs/en/odm/8.11.1?topic=8110-troubleshooting-support).
+
+## Getting Started with IBM Operational Decision Manager for Containers
+
+Get hands-on experience with IBM Operational Decision Manager in a container environment by following this [Getting started tutorial](https://github.com/DecisionsDev/odm-for-container-getting-started/blob/master/README.md).
 
 # License
 

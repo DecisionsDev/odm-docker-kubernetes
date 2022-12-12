@@ -1,7 +1,7 @@
 <server description="ODM server">
   <variable name="ServerHost" value="OKTA_SERVER_URL/oauth2/default"/>
   
-      <openidConnectClient authFilterRef="browserAuthFilter" id="odm" scope="openid"
+      <openidConnectClient authFilterRef="browserAuthFilter" id="odm" scope="openid email"
       clientId="OKTA_CLIENT_ID" clientSecret="OKTA_CLIENT_SECRET"
       signatureAlgorithm="RS256" inboundPropagation="supported"
       audiences="ALL_AUDIENCES" tokenReuse="true"
@@ -12,11 +12,11 @@
       tokenEndpointUrl="${ServerHost}/v1/token"
       validationEndpointUrl="${ServerHost}/v1/introspect"/>
 
-      <openidConnectClient authFilterRef="apiAuthFilter" id="odmapi" scope="openid"
+      <openidConnectClient authFilterRef="apiAuthFilter" id="odmapi" scope="openid email"
       clientId="OKTA_CLIENT_ID" clientSecret="OKTA_CLIENT_SECRET"
       signatureAlgorithm="RS256" inboundPropagation="required"
       audiences="ALL_AUDIENCES" tokenReuse="true"
-      userIdentifier="OKTA_CLAIM_LOGIN" groupIdentifier="OKTA_CLAIM_GROUPS"
+      userIdentifier="sub" groupIdentifier="OKTA_CLAIM_GROUPS"
       issuerIdentifier="${ServerHost}"
       jwkEndpointUrl="${ServerHost}/v1/keys"
       authorizationEndpointUrl="${ServerHost}/v1/authorize"

@@ -5,13 +5,13 @@ Here is the home page of Microsoft Azure: https://portal.azure.com/#home
 
 ![AKS schema](images/aks-schema.png)
 
-The ODM on Kubernetes material is available in [IBM Entitled Registry](https://www.ibm.com/cloud/container-registry) for the Docker images, and the [IBM Helm charts repository](https://github.com/IBM/charts) for the ODM Helm chart.
+The ODM on Kubernetes Docker images are available in the [IBM Entitled Registry](https://www.ibm.com/cloud/container-registry). The ODM Helm chart is available in the [IBM Helm charts repository](https://github.com/IBM/charts).
 
 ## Included components
 
 The project comes with the following components:
 
-- [IBM Operational Decision Manager](https://www.ibm.com/docs/en/odm/8.11.0)
+- [IBM Operational Decision Manager](https://www.ibm.com/docs/en/odm/8.11.1)
 - [Azure Database for PostgreSQL](https://docs.microsoft.com/en-us/azure/postgresql/)
 - [Azure Kubernetes Service (AKS)](https://docs.microsoft.com/en-us/azure/aks/)
 - [Network concepts for applications in AKS](https://docs.microsoft.com/en-us/azure/aks/concepts-network)
@@ -26,25 +26,48 @@ First, install the following software on your machine:
 - [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)
 - [Helm v3](https://helm.sh/docs/intro/install/)
 
-Then [create an Azure account and pay as you go](https://azure.microsoft.com/en-us/pricing/purchase-options/pay-as-you-go/).
+Then, [create an Azure account and pay as you go](https://azure.microsoft.com/en-us/pricing/purchase-options/pay-as-you-go/).
 
-> Note:  Prerequisites and software supported by ODM 8.11 are listed on [the Detailed System Requirements page](https://www.ibm.com/software/reports/compatibility/clarity-reports/report/html/softwareReqsForProduct?deliverableId=2D28A510507B11EBBBEA1195F7E6DF31&osPlatforms=AIX%7CLinux%7CMac%20OS%7CWindows&duComponentIds=D002%7CS003%7CS006%7CS005%7CC006&mandatoryCapIds=30%7C1%7C13%7C25%7C26&optionalCapIds=341%7C47%7C9%7C1%7C15).
+> Note:  Prerequisites and software supported by ODM 8.11 are listed in [the Detailed System Requirements page](https://www.ibm.com/software/reports/compatibility/clarity-reports/report/html/softwareReqsForProduct?deliverableId=2D28A510507B11EBBBEA1195F7E6DF31&osPlatforms=AIX%7CLinux%7CMac%20OS%7CWindows&duComponentIds=D002%7CS003%7CS006%7CS005%7CC006&mandatoryCapIds=30%7C1%7C13%7C25%7C26&optionalCapIds=341%7C47%7C9%7C1%7C15).
 
 ## Steps to deploy ODM on Kubernetes to Azure AKS
 
-<!-- TOC titleSize:2 tabSpaces:2 depthFrom:2 depthTo:2 withLinks:1 updateOnSave:1 orderedList:0 skip:0 title:0 charForUnorderedList:* -->
-* [Included components](#included-components)
-* [Tested environment](#tested-environment)
-* [Prerequisites](#prerequisites)
-* [Steps to deploy ODM on Kubernetes to Azure AKS](#steps-to-deploy-odm-on-kubernetes-to-azure-aks)
-* [Prepare your AKS instance (30 min)](#prepare-your-aks-instance-30-min)
-* [Create the PostgreSQL Azure instance (10 min)](#create-the-postgresql-azure-instance-10-min)
-* [Prepare your environment for the ODM installation](#prepare-your-environment-for-the-odm-installation)
-* [Install an ODM Helm release and expose it with the service type LoadBalancer (10 min)](#install-an-odm-helm-release-and-expose-it-with-the-service-type-loadbalancer-10-min)
-* [Create a NGINX Ingress controller](#create-a-nginx-ingress-controller)
-* [(Optional) Install an ODM Helm release and expose it with the NGINX Ingress controller (10 min)](#optional-install-an-odm-helm-release-and-expose-it-with-the-nginx-ingress-controller-10-min)
-* [Install the IBM License Service and retrieve license usage](#install-the-ibm-license-service-and-retrieve-license-usage)
-* [Troubleshooting](#troubleshooting)
+<!-- TOC depthFrom:2 depthTo:2 -->
+
+- [Deploying IBM Operational Decision Manager on Azure AKS](#deploying-ibm-operational-decision-manager-on-azure-aks)
+  - [Included components](#included-components)
+  - [Tested environment](#tested-environment)
+  - [Prerequisites](#prerequisites)
+  - [Steps to deploy ODM on Kubernetes to Azure AKS](#steps-to-deploy-odm-on-kubernetes-to-azure-aks)
+  - [Prepare your AKS instance (30 min)](#prepare-your-aks-instance-30-min)
+    - [Log into Azure](#log-into-azure)
+    - [Create a resource group](#create-a-resource-group)
+    - [Create an AKS cluster](#create-an-aks-cluster)
+    - [Set up your environment to this cluster](#set-up-your-environment-to-this-cluster)
+  - [Create the PostgreSQL Azure instance (10 min)](#create-the-postgresql-azure-instance-10-min)
+    - [Create an Azure Database for PostgreSQL](#create-an-azure-database-for-postgresql)
+    - [Create a firewall rule that allows access from Azure services](#create-a-firewall-rule-that-allows-access-from-azure-services)
+  - [Prepare your environment for the ODM installation](#prepare-your-environment-for-the-odm-installation)
+    - [Using the IBM Entitled Registry with your IBMid (10 min)](#using-the-ibm-entitled-registry-with-your-ibmid-10-min)
+    - [Create the database credentials secret for Azure PostgreSQL](#create-the-database-credentials-secret-for-azure-postgresql)
+    - [Manage a digital certificate (10 min)](#manage-adigital-certificate-10-min)
+  - [Install an ODM Helm release and expose it with the service type LoadBalancer (10 min)](#install-an-odm-helm-release-and-expose-it-with-the-service-type-loadbalancer-10-min)
+    - [Allocate public IP addresses](#allocate-public-ip-addresses)
+    - [Install the ODM release](#install-the-odm-release)
+    - [Check the topology](#check-the-topology)
+    - [Access ODM services](#access-odm-services)
+  - [Create an NGINX Ingress controller](#create-an-nginx-ingress-controller)
+  - [(Optional) Install an ODM Helm release and expose it with the NGINX Ingress controller (10 min)](#optional-install-an-odm-helm-release-and-expose-it-with-the-nginx-ingress-controller-10-min)
+    - [Install the product](#install-the-product)
+    - [Edit your /etc/hosts](#edit-your-etchosts)
+    - [Access the ODM services](#access-the-odm-services)
+  - [Install the IBM License Service and retrieve license usage](#install-the-ibm-license-service-and-retrieve-license-usage)
+    - [Create the Licensing instance](#create-the-licensing-instance)
+    - [Retrieve license usage](#retrieve-license-usage)
+  - [Troubleshooting](#troubleshooting)
+  - [Getting Started with IBM Operational Decision Manager for Containers](#getting-started-with-ibm-operational-decision-manager-for-containers)
+- [License](#license)
+
 <!-- /TOC -->
 
 ## Prepare your AKS instance (30 min)
@@ -59,12 +82,19 @@ After installing the Azure CLI, use the following command line:
 az login [--tenant <name>.onmicrosoft.com]
 ```
 
-A Web browser opens where you can connect with your Azure credentials.
+A web browser opens where you can connect with your Azure credentials.
 
 ### Create a resource group
 
-An Azure resource group is a logical group in which Azure resources are deployed and managed. When you create a resource group, you are asked to specify a location. This location is where resource group metadata is stored. It is also where your resources run in Azure, if you don't specify another region during resource creation. Create a resource group by running the `az group create` command.
+An Azure resource group is a logical group in which Azure resources are deployed and managed. When you create a resource group, you are asked to specify a location. This location is where resource group metadata is stored. It is also where your resources run in Azure, if you do not specify another region during resource creation. Create a resource group by running the `az group create` command.
 
+To get a list of available locations, run :
+```
+az account list-locations -o table
+```
+
+
+Then, create the resource group:
 ```
 az group create --name <resourcegroup> --location <azurelocation> [--tags Owner=<email> Team=DBA Usage=demo Usage_desc="Azure customers support" Delete_date=2022-12-31]
 ```
@@ -96,7 +126,7 @@ az aks create --name <cluster> --resource-group <resourcegroup> --node-count 2 \
           --enable-addons monitoring --generate-ssh-keys [--location <azurelocation>]
 ```
 
-After a few minutes, the command completes and returns JSON-formatted information about the cluster.  Make a note of the newly-created Resource Group that is displayed in the JSON output (e.g.: "nodeResourceGroup": "<noderesourcegroup>") if you have to tag it, for instance:
+After a few minutes, the command completes and returns JSON-formatted information about the cluster.  Make a note of the newly-created Resource Group that is displayed in the JSON output (e.g. "nodeResourceGroup": "<noderesourcegroup>") if you have to tag it, for example:
 
 ```
 az group update --name <noderesourcegroup> \
@@ -105,7 +135,7 @@ az group update --name <noderesourcegroup> \
        
 ### Set up your environment to this cluster
 
-To manage a Kubernetes cluster, use kubectl, the Kubernetes command-line client. If you use Azure Cloud Shell, kubectl is already installed. To install kubectl locally, use the `az aks install-cli` command:
+To manage a Kubernetes cluster, use `kubectl`, the Kubernetes command-line client. If you use Azure Cloud Shell, kubectl is already installed. To install kubectl locally, use the `az aks install-cli` command:
 
 ```
 az aks install-cli
@@ -142,6 +172,7 @@ kubectl cluster-info dump
 ### Create an Azure Database for PostgreSQL
 
 Create an Azure Database for PostgreSQL server by running the `az postgres server create` command. A server can contain multiple databases.
+To get a good bandwidth between ODM containers and the database, choose the same location for the PostgreSQL server and for the AKS cluster.
 
 ```
 az postgres server create --name <postgresqlserver> --resource-group <resourcegroup> \
@@ -199,7 +230,7 @@ Result:
 }
 ```
 
-Make a note of the server name that is displayed in the JSON output (e.g.: "fullyQualifiedDomainName": "<postgresqlserver>.postgres.database.azure.com") as it will be used later while deploying ODM with "helm install".
+Make a note of the server name that is displayed in the JSON output (e.g. "fullyQualifiedDomainName": "<postgresqlserver>.postgres.database.azure.com") as it will be used later to deploy ODM with `helm instal`.
 
 ###  Create a firewall rule that allows access from Azure services
 
@@ -212,17 +243,17 @@ az postgres server firewall-rule create --resource-group <resourcegroup> --serve
 
 ## Prepare your environment for the ODM installation
 
-To get access to the ODM material, you must have an IBM entitlement registry key to pull the images from the IBM Entitled registry.
+To get access to the ODM material, you must have an IBM entitlement key to pull the images from the IBM Entitled Registry.
 
-(If you prefer to install ODM from Azure Container Registry, you can have a look at [this dedicated page](README_PPA.md).)
+(If you prefer to install ODM from Azure Container Registry, take a look at [this dedicated page](README_PPA.md).)
 
-### Using the IBM Entitled registry with your IBMid (10 min)
+### Using the IBM Entitled Registry with your IBMid (10 min)
 
 Log in to [MyIBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary) with the IBMid and password that are associated with the entitled software.
 
 In the Container software library tile, verify your entitlement on the View library page, and then go to Get entitlement key to retrieve the key.
 
-Create a pull secret by running a kubectl create secret command.
+Create a pull secret by running the `kubectl create secret` command.
 
 ```
 $ kubectl create secret docker-registry <registrysecret> --docker-server=cp.icr.io \
@@ -231,13 +262,13 @@ $ kubectl create secret docker-registry <registrysecret> --docker-server=cp.icr.
                                                          --docker-email=<email>
 ```
 
-where:
+Where:
 
 * \<registrysecret\> is the secret name
 * \<entitlementkey\> is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
 * \<email\> is the email address associated with your IBMid.
 
-> Note:  The cp.icr.io value for the docker-server parameter is the only registry domain name that contains the images. You must set the docker-username to cp to use an entitlement key as docker-password.
+> Note:  The cp.icr.io value for the docker-server parameter is the only registry domain name that contains the images. You must set the docker-username to `cp` to use an entitlement key as docker-password.
 
 Make a note of the secret name so that you can set it for the image.pullSecrets parameter when you run a helm install of your containers.  The image.repository parameter will later be set to cp.icr.io/cp/cp4a/odm.
 
@@ -251,8 +282,9 @@ helm repo update
 Check that you can access the ODM charts:
 
 ```
-helm search repo ibm-odm-prod --versions                  
+helm search repo ibm-odm-prod --versions
 NAME                  	CHART VERSION	APP VERSION	DESCRIPTION
+ibmcharts/ibm-odm-prod  22.2.0          8.11.1.0        IBM Operational Decision Manager
 ibmcharts/ibm-odm-prod	22.1.0       	8.11.0.1   	IBM Operational Decision Manager
 ibmcharts/ibm-odm-prod	21.3.0       	8.11.0.0   	IBM Operational Decision Manager
 ibmcharts/ibm-odm-prod	21.2.0       	8.10.5.1   	IBM Operational Decision Manager
@@ -262,7 +294,7 @@ ibmcharts/ibm-odm-prod	20.3.0       	8.10.5.0   	IBM Operational Decision Manage
 
 ### Create the database credentials secret for Azure PostgreSQL
 
-To secure access to the database, you must create a secret that encrypts the database user and password before you install the Helm release.
+To secure the access to the database, create a secret that encrypts the database user and password before you install the Helm release.
 
 ```
 kubectl create secret generic <odmdbsecret> \
@@ -282,7 +314,7 @@ openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mycompany.key \
         -addext "subjectAltName = DNS:mycompany.com"
 ```
 
->Note:  You can use -addext only with actual OpenSSL, not LibreSSL (yet).
+>Note:  You can use -addext only with actual OpenSSL, not with LibreSSL (yet).
 
 2. Create a Kubernetes secret with the certificate.
 
@@ -290,7 +322,7 @@ openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mycompany.key \
 kubectl create secret generic <mycompanytlssecret> --from-file=tls.crt=mycompany.crt --from-file=tls.key=mycompany.key
 ```
 
-The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://www.ibm.com/docs/en/odm/8.11.0?topic=servers-server-certificates).
+The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://www.ibm.com/docs/en/odm/8.11.1?topic=servers-server-certificates).
 
 ## Install an ODM Helm release and expose it with the service type LoadBalancer (10 min)
 
@@ -305,9 +337,9 @@ az aks update --name <cluster> --resource-group <resourcegroup> --load-balancer-
 You can now install the product:
 
 ```
-helm install <release> ibmcharts/ibm-odm-prod --version 22.1.0 \
+helm install <release> ibmcharts/ibm-odm-prod --version 22.2.0 \
         --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=<registrysecret> \
-        --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.11.0.1} --set service.type=LoadBalancer \
+        --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.11.1.0} --set service.type=LoadBalancer \
         --set externalDatabase.type=postgres \
         --set externalDatabase.serverName=<postgresqlserver>.postgres.database.azure.com \
         --set externalDatabase.databaseName=postgres \
@@ -317,9 +349,9 @@ helm install <release> ibmcharts/ibm-odm-prod --version 22.1.0 \
         --set license=true --set usersPassword=<password>
 ```
 
-where:
+Where:
 
-* \<password\> is the password that will be used for standard users odmAdmin, resAdmin and rtsAdmin.
+* \<password\> is the password that will be used for standard users odmAdmin, resAdmin, and rtsAdmin.
 
 ### Check the topology
 
@@ -351,9 +383,9 @@ kubernetes                                  ClusterIP      10.0.0.1       <none>
 
 You can then open a browser on https://xxx.xxx.xxx.xxx:9443 to access Decision Server console, Decision Server Runtime, and Decision Runner, and on https://xxx.xxx.xxx.xxx:9453 to access Decision Center.
 
-## Create a NGINX Ingress controller
+## Create an NGINX Ingress controller
 
-Installing a NGINX Ingress controller will allow you to access ODM components through a single external IP address instead of the different IP addresses as seen above.  It is also mandatory when retrieving license usage through IBM License Service.
+Installing an NGINX Ingress controller allows you to access ODM components through a single external IP address instead of the different IP addresses as seen above.  It is also mandatory to retrieve license usage through the IBM License Service.
 
 1. Add the official stable repository.
 
@@ -361,13 +393,10 @@ Installing a NGINX Ingress controller will allow you to access ODM components th
     helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
     ```
 
-2. Use Helm to deploy an NGINX Ingress controller.
+2. Use Helm to deploy the NGINX Ingress controller.
 
     ```
-    helm install nginx-ingress ingress-nginx/ingress-nginx \
-      --set controller.replicaCount=2 \
-      --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux \
-      --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux
+    helm install nginx-ingress ingress-nginx/ingress-nginx
     ```
 
 3. Get the Ingress controller external IP address.
@@ -381,16 +410,16 @@ Installing a NGINX Ingress controller will allow you to access ODM components th
 
 ## (Optional) Install an ODM Helm release and expose it with the NGINX Ingress controller (10 min)
 
-You may want to access ODM components through a single external IP address.
+You might want to access ODM components through a single external IP address.
 
 ### Install the product
 
-You can reuse the secret with TLS certificate created [above](#manage-a-digital-certificate-10-min):
+You can reuse the secret with TLS certificate created [above](#manage-adigital-certificate-10-min):
 
 ```
 helm install <release> ibmcharts/ibm-odm-prod --version 22.1.0 \
         --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=<registrysecret> \
-        --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.11.0.1} \
+        --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.11.1.0} \
         --set externalDatabase.type=postgres \
         --set externalDatabase.serverName=<postgresqlserver>.postgres.database.azure.com \
         --set externalDatabase.databaseName=postgres \
@@ -429,16 +458,21 @@ ODM services are available through the following URLs:
 
 | SERVICE NAME | URL | USERNAME/PASSWORD
 | --- | --- | ---
-| Decision Server Console | https://mycompany.com/res | odmAdmin/odmAdmin
-| Decision Center | https://mycompany.com/decisioncenter | odmAdmin/odmAdmin
-| Decision Server Runtime | https://mycompany.com/DecisionService | odmAdmin/odmAdmin
-| Decision Runner | https://mycompany.com/DecisionRunner | odmAdmin/odmAdmin
+| Decision Server Console | https://mycompany.com/res | odmAdmin/\<password\>
+| Decision Center | https://mycompany.com/decisioncenter | odmAdmin/\<password\>
+| Decision Server Runtime | https://mycompany.com/DecisionService | odmAdmin/\<password\>
+| Decision Runner | https://mycompany.com/DecisionRunner | odmAdmin/\<password\>
+
+Where:
+
+* \<password\> is the password provided to the **usersPassword** helm chart parameter
+
 
 ## Install the IBM License Service and retrieve license usage
 
 This section explains how to track ODM usage with the IBM License Service.
 
-Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://github.com/IBM/ibm-licensing-operator/blob/latest/docs/Content/Install_without_OLM.md). Do not follow the instantiation part!
+Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cpfs?topic=software-manual-installation-without-operator-lifecycle-manager-olm) documentation. Do not follow the **Creating an IBM Licensing instance**  part!
 
 ### Create the Licensing instance
 
@@ -448,7 +482,7 @@ Just run:
 kubectl create -f licensing-instance.yml
 ```
 
-(More information and use cases on [this page](https://github.com/IBM/ibm-licensing-operator/blob/latest/docs/Content/Configuration.md#configuring-ingress).)
+(More information and use cases on [this page](https://www.ibm.com/docs/en/cpfs?topic=software-configuration).)
 
 ### Retrieve license usage
 
@@ -459,16 +493,21 @@ export LICENSING_URL=$(kubectl get ingress ibm-licensing-service-instance -n ibm
 export TOKEN=$(oc get secret ibm-licensing-token -o jsonpath={.data.token} -n ibm-common-services |base64 -d)
 ```
 
-You can access the `http://${LICENSING_URL}/status?token=${TOKEN}` URL to view the licensing usage or retrieve the licensing report zip file by running:
+You can access the `http://${LICENSING_URL}/status?token=${TOKEN}` URL to view the licensing usage, or retrieve the licensing report .zip file by running:
 ```
 curl -v "http://${LICENSING_URL}/snapshot?token=${TOKEN}" --output report.zip
 ```
 
-If your IBM License Service instance is not running properly, please refer to this [troubleshooting page](https://github.com/IBM/ibm-licensing-operator/blob/latest/docs/Content/Troubleshooting.md).
+If your IBM License Service instance is not running properly, refer to this [troubleshooting page](https://www.ibm.com/docs/en/cpfs?topic=software-troubleshooting).
 
 ## Troubleshooting
 
-If your ODM instances are not running properly, please refer to [our dedicated troubleshooting page](https://www.ibm.com/docs/en/odm/8.11.0?topic=8110-troubleshooting-support).
+If your ODM instances are not running properly, refer to [our dedicated troubleshooting page](https://www.ibm.com/docs/en/odm/8.11.1?topic=8111-troubleshooting-support).
+
+## Getting Started with IBM Operational Decision Manager for Containers
+
+Get hands-on experience with IBM Operational Decision Manager in a container environment by following this [Getting started tutorial](https://github.com/DecisionsDev/odm-for-container-getting-started/blob/master/README.md).
+
 
 # License
 
