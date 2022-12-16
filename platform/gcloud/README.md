@@ -195,7 +195,7 @@ Take note of the secret name so that you can set it for the *image.pullSecrets* 
 #### c. Add the public IBM Helm charts repository
 
 ```
-helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo/entitled
+helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm
 helm repo update
 ```
 
