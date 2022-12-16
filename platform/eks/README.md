@@ -121,7 +121,7 @@ The my-odm-docker-registry secret name is already used for the `image.pullSecret
 #### c. Add the public IBM Helm charts repository
 
 ```console
-helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo/entitled
+helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm
 helm repo update
 ```
 
