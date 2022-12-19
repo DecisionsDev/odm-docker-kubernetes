@@ -252,7 +252,7 @@ If you need to add or modify a parameter to the `openidConnectClient` tag in the
 - If you want to call the REST API, you must get an access token by running a cURL command with the following endpoint:
 `https://<oidc.serverUrl\>/oidc/endpoint/<oidc.provider\>/token`.
 
-  You can then authenticate with the "Bearer <access-token\>". For more information, see [How a Liberty-based application obtains an access token from UMS SSO](con_ums_sso_liberty.dita).
+  You can then authenticate with the "Bearer <access-token\>".
 
   The following diagram shows the API invocations with an external OIDC provider.
 
