@@ -384,7 +384,7 @@ After activating your account by email, you should have access to your Aure AD i
 ### Add the public IBM Helm charts repository
 
   ```shell
-  helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo/entitled
+  helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm
   helm repo update
   ```
 
