@@ -71,7 +71,7 @@ The following procedure describes how to manually configure ODM with an external
 
 3.  Provide the certificate of the OpenID server.
 
-    For more information, see [Importing the certificate of an external service](https://www.ibm.com/docs/cloud-paks/cp-biz-automation/21.0.x?topic=services-importing-certificate-external-service).
+    For more information, see [Importing the certificate of an external service](https://www.ibm.com/docs/en/odm/8.11.1?topic=production-importing-certificate-external-service).
 
 4.  Provide the URL of the external OpenID server.
 
