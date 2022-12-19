@@ -258,7 +258,7 @@ If you need to add or modify a parameter to the `openidConnectClient` tag in the
 
   ![ODM service API invocations](images/diag_oidc_other_interaction_api.jpg)
 
-  For more information, see [Invoking the Token Endpoint for OpenID Connect](https://www.ibm.com/docs/en/was-liberty/zos?topic=liberty-invoking-token-endpoint-openid-connect).
+  For more information, see [Invoking the Token Endpoint for OpenID Connect](https://www.ibm.com/docs/en/was-liberty/base?topic=SSEQTP_liberty/com.ibm.websphere.wlp.zseries.doc/ae/twlp_oidc_token_endpoint.htm).
 
 - The following OIDC groups provide an example of how to map these ODM roles.
   -   oidcFullAccess, a group to manage all ODM roles.
@@ -320,12 +320,10 @@ If you need to add or modify a parameter to the `openidConnectClient` tag in the
 
 ## Related information
 
-- [Configuring user access with UMS](https://www.ibm.com/docs/cloud-paks/cp-biz-automation/21.0.x?topic=access-configuring-user-ums)
+- [Configuring user access with OpenID](https://www.ibm.com/docs/en/odm/8.11.1?topic=access-configuring-user-openid)
 
-- [Configuring user access](https://www.ibm.com/docs/cloud-paks/cp-biz-automation/21.0.x?topic=manager-configuring-user-access)
+- [Configuring user access](https://www.ibm.com/docs/en/odm/8.11.1?topic=production-configuring-user-access)
 
-- [ODM configuration parameters](https://www.ibm.com/docs/cloud-paks/cp-biz-automation/21.0.x?topic=parameters-operational-decision-manager)
+- [ODM configuration parameters](https://www.ibm.com/docs/en/odm/8.11.1?topic=reference-odm-production-configuration-parameters)
 
-- [Preparing to install ODM](https://www.ibm.com/docs/cloud-paks/cp-biz-automation/21.0.x?topic=capabilities-preparing-install-operational-decision-manager)
-
-- [User Management Services](https://www.ibm.com/docs/en/cloud-paks/cp-biz-automation/21.0.x?topic=services-ums-single-sign)
+- [Preparing to install ODM](https://www.ibm.com/docs/en/odm/8.11.1?topic=production-preparing-install-operational-decision-manager)
