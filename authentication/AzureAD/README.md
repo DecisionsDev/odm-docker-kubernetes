@@ -384,7 +384,7 @@ After activating your account by email, you should have access to your Aure AD i
 ### Add the public IBM Helm charts repository
 
   ```shell
-  helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo/entitled
+  helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm
   helm repo update
   ```
 
@@ -516,7 +516,7 @@ To be able to securely connect your Rule Designer to the Decision Server and Dec
 
 1. Get the following configuration files.
     * `https://<DC_HOST>/decisioncenter/assets/truststore.jks`
-    * `https://<DC_HOST>/odm/decisioncenter/assets/OdmOidcProvidersRD.json`
+    * `https://<DC_HOST>/decisioncenter/assets/OdmOidcProvidersRD.json`
       Where *DC_HOST* is the Decision Center endpoint.
 
 2. Copy the `truststore.jks` and `OdmOidcProvidersRD.json` files to your Rule Designer installation directory next to the `eclipse.ini` file.

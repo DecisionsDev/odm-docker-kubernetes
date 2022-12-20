@@ -283,7 +283,7 @@ In this step, we augment the token with meta-information that is required by the
 1. Add the public IBM Helm charts repository.
 
     ```
-    helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo/entitled
+    helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm
     helm repo update
     ```
 
