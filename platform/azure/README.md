@@ -282,14 +282,9 @@ helm repo update
 Check that you can access the ODM charts:
 
 ```
-helm search repo ibm-odm-prod --versions
+helm search repo ibm-odm-prod
 NAME                  	CHART VERSION	APP VERSION	DESCRIPTION
 ibmcharts/ibm-odm-prod  22.2.0          8.11.1.0        IBM Operational Decision Manager
-ibmcharts/ibm-odm-prod	22.1.0       	8.11.0.1   	IBM Operational Decision Manager
-ibmcharts/ibm-odm-prod	21.3.0       	8.11.0.0   	IBM Operational Decision Manager
-ibmcharts/ibm-odm-prod	21.2.0       	8.10.5.1   	IBM Operational Decision Manager
-ibmcharts/ibm-odm-prod	21.1.0       	8.10.5.0   	IBM Operational Decision Manager
-ibmcharts/ibm-odm-prod	20.3.0       	8.10.5.0   	IBM Operational Decision Manager
 ```
 
 ### Create the database credentials secret for Azure PostgreSQL
