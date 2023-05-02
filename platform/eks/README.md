@@ -8,7 +8,7 @@ The ODM on Kubernetes Docker images are available in the [IBM Entitled Registry]
 
 ## Included components
 The project uses the following components:
-- [IBM Operational Decision Manager](https://www.ibm.com/docs/en/odm/8.11.1)
+- [IBM Operational Decision Manager](https://www.ibm.com/docs/en/odm/8.12.0)
 - [Amazon Elastic Kubernetes Service (Amazon EKS)](https://aws.amazon.com/eks/)
 - [Amazon Relational Database Service (Amazon RDS)](https://aws.amazon.com/rds/)
 - [AWS Application Load Balancer (ALB)](https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html)
@@ -26,16 +26,15 @@ First, install the following software on your machine:
 Then, create an [AWS Account](https://aws.amazon.com/getting-started/).
 
 ## Steps to deploy ODM on Kubernetes from Amazon EKS
+<!-- TOC depthFrom:3 depthTo:3 withLinks:1 updateOnSave:1 orderedList:0 -->
 
-<!-- TOC depthfrom:3 depthto:3 updateonsave:false -->
-
-- [Prepare your environment 40 min](#prepare-your-environment-40-min)
-- [Prepare your environment for the ODM installation 25 min](#prepare-your-environment-for-the-odm-installation-25-min)
-- [Create an RDS database 20 min](#create-an-rds-database-20-min)
-- [Manage a  digital certificate 10 min](#manage-a%C2%A0-digital-certificate-10-min)
-- [Install an IBM Operational Decision Manager release 10 min](#install-an-ibm-operational-decision-manager-release-10-min)
-- [Access the ODM services](#access-the-odm-services)
-- [Track ODM usage with the IBM License Service](#track-odm-usage-with-the-ibm-license-service)
+- [1. Prepare your environment (40 min)](#1-prepare-your-environment-40-min)
+- [2. Prepare your environment for the ODM installation (25 min)](#2-prepare-your-environment-for-the-odm-installation-25-min)
+- [3. Create an RDS database (20 min)](#3-create-an-rds-database-20-min)
+- [4. Manage a  digital certificate (10 min)](#4-manage-a-digital-certificate-10-min)
+- [5. Install an IBM Operational Decision Manager release (10 min)](#5-install-an-ibm-operational-decision-manager-release-10-min)
+- [6. Access the ODM services](#6-access-the-odm-services)
+- [7. Track ODM usage with the IBM License Service](#7-track-odm-usage-with-the-ibm-license-service)
 
 <!-- /TOC -->
 
