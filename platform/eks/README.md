@@ -146,18 +146,18 @@ You can also download the ODM on Kubernetes package (.tgz file) from Passport Ad
 
 - Log in to [MyIBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary) with the IBMid and password that are associated with the entitled software.
 
-- In the Container software library tile, verify your entitlement on the View library page, and then go to *Get entitlement key* to retrieve the key.
+- In the **Container Software and Entitlement Keys** tile, verify your entitlement on the **View library page**, and then go to *Entitlement keys* to retrieve the key.
 
 #### b. Create a pull secret by running the kubectl create secret command
 
-```console
+```bash
 kubectl create secret docker-registry my-odm-docker-registry --docker-server=cp.icr.io \
     --docker-username=cp --docker-password="<ENTITLEMENT_KEY>" --docker-email=<USER_EMAIL>
 ```
 
 Where:
-* <ENTITLEMENT_KEY> is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
-* <USER_EMAIL> is the email address associated with your IBMid.
+* `<ENTITLEMENT_KEY>` is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
+* `<USER_EMAIL>` is the email address associated with your IBMid.
 
 > **Note**
 > The `cp.icr.io` value for the docker-server parameter is the only registry domain name that contains the images. You must set the docker-username to `cp` to use an entitlement key as docker-password.
@@ -166,14 +166,14 @@ The my-odm-docker-registry secret name is already used for the `image.pullSecret
 
 #### c. Add the public IBM Helm charts repository
 
-```console
+```bash
 helm repo add ibm-helm https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm
 helm repo update
 ```
 
 #### d. Check your access to the ODM chart
 
-```console
+```bash
 $ helm search repo ibm-odm-prod
 NAME                             	CHART VERSION	APP VERSION	DESCRIPTION
 ibm-helm/ibm-odm-prod           	22.2.0       	8.11.1.0   	IBM Operational Decision Manager
@@ -295,7 +295,7 @@ Follow the **Installation** section of the [Manual installation without the Oper
 
 Get the [licensing-instance.yaml](./licensing-instance.yaml) file and run the command:
 
-```
+```bash
 kubectl create -f licensing-instance.yaml
 ```
 
@@ -322,13 +322,13 @@ curl "http://${LICENSING_URL}/snapshot?token=${TOKEN}" --output report.zip
 ## Troubleshooting
 
 If your ODM instances are not running properly, check the logs with the following command:
-```
+```bash
 kubectl logs <your-pod-name>
 ```
 
 If the ROOTURL is empty, it means that the ALB controller did not deliver an address to the ODM Ingress instance (mycompany-odm-ingress).
 Check the ALB controller logs with the following command:
-```
+```bash
 kubectl logs -n kube-system deployment.apps/aws-load-balancer-controller
 ```
 
