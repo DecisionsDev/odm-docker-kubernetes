@@ -90,7 +90,8 @@ helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
 
 For more information, refer to [Installing the AWS Load Balancer Controller add-on](https://docs.aws.amazon.com/eks/latest/userguide/aws-load-balancer-controller.html).
 
-> NOTE: If you prefer to use the NGINX Ingress Controller instead of the AWS Load Balancer Controller, refer to [Deploying IBM Operational Decision Manager with NGINX Ingress Controller on Amazon EKS](README-NGINX.md)
+> **Note**
+> If you prefer to use the NGINX Ingress Controller instead of the AWS Load Balancer Controller, refer to [Deploying IBM Operational Decision Manager with NGINX Ingress Controller on Amazon EKS](README-NGINX.md)
 
 ### 2. Prepare your environment for the ODM installation (25 min)
 
@@ -116,7 +117,8 @@ Where:
 * <ENTITLEMENT_KEY> is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
 * <USER_EMAIL> is the email address associated with your IBMid.
 
-> Note: The `cp.icr.io` value for the docker-server parameter is the only registry domain name that contains the images. You must set the docker-username to `cp` to use an entitlement key as docker-password.
+> **Note**
+> The `cp.icr.io` value for the docker-server parameter is the only registry domain name that contains the images. You must set the docker-username to `cp` to use an entitlement key as docker-password.
 
 The my-odm-docker-registry secret name is already used for the `image.pullSecrets` parameter when you run a helm install of your containers. The `image.repository` parameter is also set by default to `cp.icr.io/cp/cp4a/odm`.
 
@@ -209,7 +211,8 @@ The output of the command is:
 }
 ```
 
-> NOTE: "Arn": "arn:aws:iam::\<AWS-AccountId\>:server-certificate/mycompany" is used later to configure the Ingress ALB certificate annotation.
+> **Note** 
+> "Arn": "arn:aws:iam::\<AWS-AccountId\>:server-certificate/mycompany" is used later to configure the Ingress ALB certificate annotation.
 
 ### 5. Install an IBM Operational Decision Manager release (10 min)
 
@@ -226,7 +229,8 @@ To install ODM with the AWS RDS PostgreSQL database created in [step 3](#3-creat
 helm install mycompany ibm-helm/ibm-odm-prod --version 22.2.0 -f eks-rds-values.yaml
 ```
 
-> NOTE: If you prefer to install ODM to prototype (not for production purpose) with the ODM PostgreSQL internal database:
+> **Note**
+> If you prefer to install ODM to prototype (not for production purpose) with the ODM PostgreSQL internal database:
 >
 > - Get the [eks-values.yaml](./eks-values.yaml) file and replace the following key:
 >   - `<AWS-AccountId>` is your AWS Account Id
@@ -235,7 +239,8 @@ helm install mycompany ibm-helm/ibm-odm-prod --version 22.2.0 -f eks-rds-values.
 >helm install mycompany ibm-helm/ibm-odm-prod --version 22.2.0 -f eks-values.yaml
 >```
 
-> NOTE: If you choose to use the NGINX Ingress Controller, refer to [Install an ODM release with NGINX Ingress Controller](README-NGINX.md#install-an-odm-release-with-nginx-ingress-controller).
+> **Note**
+> If you choose to use the NGINX Ingress Controller, refer to [Install an ODM release with NGINX Ingress Controller](README-NGINX.md#install-an-odm-release-with-nginx-ingress-controller).
 
 
 #### Check the topology
@@ -281,7 +286,8 @@ The ODM services are accessible from the following URLs:
 
 Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cpfs?topic=software-manual-installation-without-operator-lifecycle-manager-olm) documentation.
 
-> NOTE: Make sure you do not follow the instantiation part!
+> **Warning**
+> Make sure you do not follow the **Creating an IBM Licensing instance** part!
 
 #### b. Create the IBM Licensing instance
 
@@ -291,7 +297,8 @@ Get the [licensing-instance.yaml](./licensing-instance.yaml) file and run the co
 kubectl create -f licensing-instance.yaml
 ```
 
-> NOTE: You can find more information and use cases on [this page](https://www.ibm.com/docs/en/cpfs?topic=software-configuration).
+> **Note**
+> You can find more information and use cases on [this page](https://www.ibm.com/docs/en/cpfs?topic=software-configuration).
 
 #### c. Retrieving license usage
 
