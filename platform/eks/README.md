@@ -29,8 +29,8 @@ Then, create an [AWS Account](https://aws.amazon.com/getting-started/).
 <!-- TOC depthFrom:3 depthTo:3 withLinks:1 updateOnSave:1 orderedList:0 -->
 
 - [1. Prepare your environment (40 min)](#1-prepare-your-environment-40-min)
-- [2. Prepare your environment for the ODM installation (25 min)](#2-prepare-your-environment-for-the-odm-installation-25-min)
-- [3. Create an RDS database (20 min)](#3-create-an-rds-database-20-min)
+- [2. Create an RDS database (20 min)](#2-create-an-rds-database-20-min)
+- [3. Prepare your environment for the ODM installation (25 min)](#3-prepare-your-environment-for-the-odm-installation-25-min)
 - [4. Manage a  digital certificate (10 min)](#4-manage-a-digital-certificate-10-min)
 - [5. Install an IBM Operational Decision Manager release (10 min)](#5-install-an-ibm-operational-decision-manager-release-10-min)
 - [6. Access the ODM services](#6-access-the-odm-services)
@@ -93,7 +93,47 @@ For more information, refer to [Installing the AWS Load Balancer Controller add-
 > **Note**
 > If you prefer to use the NGINX Ingress Controller instead of the AWS Load Balancer Controller, refer to [Deploying IBM Operational Decision Manager with NGINX Ingress Controller on Amazon EKS](README-NGINX.md)
 
-### 2. Prepare your environment for the ODM installation (25 min)
+### 2. Create an RDS database (20 min)
+
+#### a. Create the database instance
+
+The following step uses PostgreSQL but the procedure is valid for any database supported by ODM:
+
+```bash
+aws rds create-db-instance --db-instance-identifier <INSTANCE_NAME> \
+  --engine postgres --db-instance-class db.t3.large --allocated-storage 250 \
+  --master-username <PG_USERNAME> --master-user-password <PG_PASSWORD> \
+  --db-name <RDS_DATABASE_NAME>
+```
+
+Wait a few minutes for the RDS PostgreSQL database to be created and take note of the its public endpoint. It will be referred to as `RDS_DB_ENDPOINT` in the next sections.
+
+Use the following command to get the RDS instance's endpoint:
+
+```bash
+aws rds describe-db-instances | jq -r ".DBInstances[].Endpoint.Address"
+```
+
+> **Note**
+> If `jq` is not installed, remove the second part above and look for the endpoint address; it looks like `<INSTANCE_NAME>.xxxxxxxx.<REGION>.rds.amazonaws.com`.)
+
+For more information, refer to [Creating an Amazon RDS DB instance](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_CreateDBInstance.html).
+
+#### b. Create the database secret
+
+To secure access to the database, you must create a secret that encrypts the database user and password before you install the Helm release.
+
+```bash
+kubectl create secret generic odm-db-secret \
+        --from-literal=db-user=<PG_USERNAME> \
+        --from-literal=db-password=<PG_PASSWORD>
+```
+
+> **Note**
+> ODM on Kubernetes is provided with an internal PostgreSQL database that can be used empty or with pre-populated samples.
+> If you want to install an ODM demo quickly, you can use this internal database. It is dedicated to prototyping, not for production.
+
+### 3. Prepare your environment for the ODM installation (25 min)
 
 To get access to the ODM material, you must have an IBM entitlement key to pull the images from the IBM Entitled registry.
 This is what will be used in the next step of this tutorial.
@@ -136,46 +176,6 @@ $ helm search repo ibm-odm-prod
 NAME                             	CHART VERSION	APP VERSION	DESCRIPTION
 ibm-helm/ibm-odm-prod           	22.2.0       	8.11.1.0   	IBM Operational Decision Manager
 ```
-
-### 3. Create an RDS database (20 min)
-
-#### a. Create the database instance
-
-The following step uses PostgreSQL but the procedure is valid for any database supported by ODM:
-
-```bash
-aws rds create-db-instance --db-instance-identifier <INSTANCE_NAME> \
-  --engine postgres --db-instance-class db.t3.large --allocated-storage 250 \
-  --master-username <PG_USERNAME> --master-user-password <PG_PASSWORD> \
-  --db-name <RDS_DATABASE_NAME>
-```
-
-Wait a few minutes for the RDS PostgreSQL database to be created and take note of the its public endpoint. It will be referred to as `RDS_DB_ENDPOINT` in the next sections.
-
-Use the following command to get the RDS instance's endpoint:
-
-```bash
-aws rds describe-db-instances | jq -r ".DBInstances[].Endpoint.Address"
-```
-
-> **Note**
-> If `jq` is not installed, remove the second part above and look for the endpoint address; it looks like `<INSTANCE_NAME>.xxxxxxxx.<REGION>.rds.amazonaws.com`.)
-
-For more information, refer to [Creating an Amazon RDS DB instance](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_CreateDBInstance.html).
-
-#### b. Create the database secret
-
-To secure access to the database, you must create a secret that encrypts the database user and password before you install the Helm release.
-
-```bash
-kubectl create secret generic odm-db-secret \
-        --from-literal=db-user=<PG_USERNAME> \
-        --from-literal=db-password=<PG_PASSWORD>
-```
-
-> **Note**
-> ODM on Kubernetes is provided with an internal PostgreSQL database that can be used empty or with pre-populated samples.
-> If you want to install an ODM demo quickly, you can use this internal database. It is dedicated to prototyping, not for production.
 
 ### 4. Manage a  digital certificate (10 min)
 
