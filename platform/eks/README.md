@@ -28,9 +28,9 @@ Then, create an [AWS Account](https://aws.amazon.com/getting-started/).
 ## Steps to deploy ODM on Kubernetes from Amazon EKS
 <!-- TOC depthFrom:3 depthTo:3 withLinks:1 updateOnSave:1 orderedList:0 -->
 
-- [1. Prepare your environment (40 min)](#1-prepare-your-environment-40-min)
+- [1. Prepare your environment (20 min)](#1-prepare-your-environment-20-min)
 - [2. Create an RDS database (20 min)](#2-create-an-rds-database-20-min)
-- [3. Prepare your environment for the ODM installation (25 min)](#3-prepare-your-environment-for-the-odm-installation-25-min)
+- [3. Prepare your environment for the ODM installation (5 min)](#3-prepare-your-environment-for-the-odm-installation-5-min)
 - [4. Manage a  digital certificate (10 min)](#4-manage-a-digital-certificate-10-min)
 - [5. Install an IBM Operational Decision Manager release (10 min)](#5-install-an-ibm-operational-decision-manager-release-10-min)
 - [6. Access the ODM services](#6-access-the-odm-services)
@@ -40,7 +40,7 @@ Then, create an [AWS Account](https://aws.amazon.com/getting-started/).
 
 For more information, see [Getting started with Amazon EKS](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html)
 
-### 1. Prepare your environment (40 min)
+### 1. Prepare your environment (20 min)
 
 #### a. Configure the `aws` CLI
 
@@ -50,7 +50,7 @@ Set up your environment by [configuring the AWS CLI](https://docs.aws.amazon.com
 aws configure 
 ```
 
-#### b. Create an EKS cluster (30 min)
+#### b. Create an EKS cluster (20 min)
 
 ```bash
 eksctl create cluster <CLUSTER_NAME> --version 1.26 --alb-ingress-access
@@ -62,7 +62,7 @@ eksctl create cluster <CLUSTER_NAME> --version 1.26 --alb-ingress-access
 
 For more information, refer to [Creating an Amazon EKS cluster](https://docs.aws.amazon.com/eks/latest/userguide/create-cluster.html).
 
-#### c. Set up your environment (10 min)
+#### c. Set up your environment
 
 If your environment is set up correctly, you should be able to get the cluster information by running the following command:
 
@@ -108,7 +108,7 @@ aws rds create-db-instance --db-instance-identifier <INSTANCE_NAME> \
 
 For more information, refer to [Creating an Amazon RDS DB instance](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_CreateDBInstance.html).
 
-#### b. Get the database endpoint
+#### b. Get the database endpoint (10 min)
 
 Wait a few minutes for the RDS PostgreSQL database to be created and take note of the its public endpoint. It will be referred to as `RDS_DB_ENDPOINT` in the next sections.
 
@@ -135,7 +135,7 @@ kubectl create secret generic odm-db-secret \
 > ODM on Kubernetes is provided with an internal PostgreSQL database that can be used empty or with pre-populated samples.
 > If you want to install an ODM demo quickly, you can use this internal database. It is dedicated to prototyping, not for production.
 
-### 3. Prepare your environment for the ODM installation (25 min)
+### 3. Prepare your environment for the ODM installation (5 min)
 
 To get access to the ODM material, you must have an IBM entitlement key to pull the images from the IBM Entitled registry.
 This is what will be used in the next step of this tutorial.
