@@ -137,6 +137,8 @@ ibm-helm/ibm-odm-prod           	22.2.0       	8.11.1.0   	IBM Operational Decis
 
 ### 3. Create an RDS database (20 min)
 
+#### a. Create the database instance
+
 The following step uses PostgreSQL but the procedure is valid for any database supported by ODM:
 
 ```bash
@@ -146,36 +148,32 @@ aws rds create-db-instance --db-instance-identifier <INSTANCE_NAME> \
   --db-name <RDS_DATABASE_NAME>
 ```
 
-Wait a few minutes for the RDB instance to be created and then get its public endpoint FQDN:
+Wait a few minutes for the RDS PostgreSQL database to be created and take note of the its public endpoint. It will be referred to as `RDS_DB_ENDPOINT` in the next sections.
+
+Use the following command to get the RDS instance's endpoint:
 
 ```bash
-aws rds describe-db-instances |jq -r ".DBInstances[].Endpoint.Address"
+aws rds describe-db-instances | jq -r ".DBInstances[].Endpoint.Address"
 ```
 
-(If `jq` is not installed, remove the second part above and look for the endpoint address; it looks like `<INSTANCE_NAME>.xxxxxxxx.<REGION>.rds.amazonaws.com`.)
+> **Note**
+> If `jq` is not installed, remove the second part above and look for the endpoint address; it looks like `<INSTANCE_NAME>.xxxxxxxx.<REGION>.rds.amazonaws.com`.)
 
-It will be used later as RDS_DB_ENDPOINT.
+For more information, refer to [Creating an Amazon RDS DB instance](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_CreateDBInstance.html).
 
-Reference: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_CreateDBInstance.html
-
-> NOTE:  
-> Make sure to:
-> - Create the RDS database in the same cluster region for better performance (mainly for Decision Center schema creation time).
-> - Take a PostgreSQL v13.X version (the command above creates a PostgreSQL 13.7 instance at the moment).
-> - Set up incoming traffic to allow connection from EKS (set vpc inboud rule to anywhere).
-
-When the RDS PostgreSQL database is available, take note of the database endpoint. It will be referred to as `RDS_DB_ENDPOINT` in the next sections.
+#### b. Create the database secret
 
 To secure access to the database, you must create a secret that encrypts the database user and password before you install the Helm release.
 
 ```bash
 kubectl create secret generic odm-db-secret \
---from-literal=db-user=<PG_USERNAME> \
---from-literal=db-password=<PG_PASSWORD>
+        --from-literal=db-user=<PG_USERNAME> \
+        --from-literal=db-password=<PG_PASSWORD>
 ```
 
-> NOTE: ODM on Kubernetes is provided with an internal PostgreSQL database that can be used empty or with pre-populated samples.
-If you want to install an ODM demo quickly, you can use this internal database. It is dedicated to prototyping, not for production.
+> **Note**
+> ODM on Kubernetes is provided with an internal PostgreSQL database that can be used empty or with pre-populated samples.
+> If you want to install an ODM demo quickly, you can use this internal database. It is dedicated to prototyping, not for production.
 
 ### 4. Manage a  digital certificate (10 min)
 
