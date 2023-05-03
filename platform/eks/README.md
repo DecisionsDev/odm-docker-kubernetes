@@ -42,24 +42,27 @@ For more information, see [Getting started with Amazon EKS](https://docs.aws.ama
 
 ### 1. Prepare your environment (40 min)
 
+#### a. Configure the `aws` CLI
+
 Set up your environment by [configuring the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html):
 
 ```bash
 aws configure 
 ```
 
-#### a. Create an EKS cluster (30 min)
+#### b. Create an EKS cluster (30 min)
 
 ```bash
-eksctl create cluster <CLUSTER_NAME> --alb-ingress-access
+eksctl create cluster <CLUSTER_NAME> --version 1.26 --alb-ingress-access
 
 ```
 
-Reference: https://docs.aws.amazon.com/eks/latest/userguide/create-cluster.html
+> **Note**
+> Use the latest kubernetes version available in AWS. Refer to [Amazon EKS Kubernetes versions](https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions.html).
 
-#### b. Set up your environment (10 min)
+For more information, refer to [Creating an Amazon EKS cluster](https://docs.aws.amazon.com/eks/latest/userguide/create-cluster.html).
 
-Check your environment.
+#### c. Set up your environment (10 min)
 
 If your environment is set up correctly, you should be able to get the cluster information by running the following command:
 
@@ -71,7 +74,7 @@ CoreDNS is running at https://xxxxxxxx.<REGION>.eks.amazonaws.com/api/v1/namespa
 To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
 ```
 
-#### c. Provision an AWS Load Balancer Controller
+#### d. Provision an AWS Load Balancer Controller
 
 The AWS Load Balancer Controller creates Application Load Balancers (ALBs) and the necessary supporting AWS resources whenever a Kubernetes Ingress resource is created on the cluster with the `kubernetes.io/ingress.class: alb` annotation.
 
@@ -85,7 +88,7 @@ helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
   --set clusterName=<CLUSTER_NAME>
 ```
 
-Reference: https://docs.aws.amazon.com/eks/latest/userguide/aws-load-balancer-controller.html
+For more information, refer to [Installing the AWS Load Balancer Controller add-on](https://docs.aws.amazon.com/eks/latest/userguide/aws-load-balancer-controller.html).
 
 > NOTE: If you prefer to use the NGINX Ingress Controller instead of the AWS Load Balancer Controller, refer to [Deploying IBM Operational Decision Manager with NGINX Ingress Controller on Amazon EKS](README-NGINX.md)
 
