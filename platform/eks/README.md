@@ -106,6 +106,10 @@ aws rds create-db-instance --db-instance-identifier <INSTANCE_NAME> \
   --db-name <RDS_DATABASE_NAME>
 ```
 
+For more information, refer to [Creating an Amazon RDS DB instance](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_CreateDBInstance.html).
+
+#### b. Get the database endpoint
+
 Wait a few minutes for the RDS PostgreSQL database to be created and take note of the its public endpoint. It will be referred to as `RDS_DB_ENDPOINT` in the next sections.
 
 Use the following command to get the RDS instance's endpoint:
@@ -117,9 +121,7 @@ aws rds describe-db-instances | jq -r ".DBInstances[].Endpoint.Address"
 > **Note**
 > If `jq` is not installed, remove the second part above and look for the endpoint address; it looks like `<INSTANCE_NAME>.xxxxxxxx.<REGION>.rds.amazonaws.com`.)
 
-For more information, refer to [Creating an Amazon RDS DB instance](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_CreateDBInstance.html).
-
-#### b. Create the database secret
+#### c. Create the database secret
 
 To secure access to the database, you must create a secret that encrypts the database user and password before you install the Helm release.
 
