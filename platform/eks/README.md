@@ -123,7 +123,7 @@ The my-odm-docker-registry secret name is already used for the `image.pullSecret
 #### c. Add the public IBM Helm charts repository
 
 ```console
-helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm
+helm repo add ibm-helm https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm
 helm repo update
 ```
 
@@ -132,7 +132,7 @@ helm repo update
 ```console
 $ helm search repo ibm-odm-prod
 NAME                             	CHART VERSION	APP VERSION	DESCRIPTION
-ibmcharts/ibm-odm-prod           	22.2.0       	8.11.1.0   	IBM Operational Decision Manager
+ibm-helm/ibm-odm-prod           	22.2.0       	8.11.1.0   	IBM Operational Decision Manager
 ```
 
 ### 3. Create an RDS database (20 min)
@@ -225,7 +225,7 @@ To install ODM with the AWS RDS PostgreSQL database created in [step 3](#3-creat
   - `<RDS_DATABASE_NAME>` is the initial database name defined when creating the RDS database
 
 ```bash
-helm install mycompany ibmcharts/ibm-odm-prod --version 22.2.0 -f eks-rds-values.yaml
+helm install mycompany ibm-helm/ibm-odm-prod --version 22.2.0 -f eks-rds-values.yaml
 ```
 
 > NOTE: If you prefer to install ODM to prototype (not for production purpose) with the ODM PostgreSQL internal database:
@@ -234,7 +234,7 @@ helm install mycompany ibmcharts/ibm-odm-prod --version 22.2.0 -f eks-rds-values
 >   - `<AWS-AccountId>` is your AWS Account Id
 >
 >```bash
->helm install mycompany ibmcharts/ibm-odm-prod --version 22.2.0 -f eks-values.yaml
+>helm install mycompany ibm-helm/ibm-odm-prod --version 22.2.0 -f eks-values.yaml
 >```
 
 > NOTE: If you choose to use the NGINX Ingress Controller, refer to [Install an ODM release with NGINX Ingress Controller](README-NGINX.md#install-an-odm-release-with-nginx-ingress-controller).
