@@ -29,7 +29,7 @@ Then, create an [AWS Account](https://aws.amazon.com/getting-started/).
 <!-- TOC depthFrom:3 depthTo:3 withLinks:1 updateOnSave:1 orderedList:0 -->
 
 - [1. Prepare your environment (20 min)](#1-prepare-your-environment-20-min)
-- [2. Create an RDS database (20 min)](#2-create-an-rds-database-20-min)
+- [2. Create an RDS database (10 min)](#2-create-an-rds-database-10-min)
 - [3. Prepare your environment for the ODM installation (5 min)](#3-prepare-your-environment-for-the-odm-installation-5-min)
 - [4. Manage a  digital certificate (10 min)](#4-manage-a-digital-certificate-10-min)
 - [5. Install an IBM Operational Decision Manager release (10 min)](#5-install-an-ibm-operational-decision-manager-release-10-min)
@@ -93,7 +93,7 @@ For more information, refer to [Installing the AWS Load Balancer Controller add-
 > **Note**
 > If you prefer to use the NGINX Ingress Controller instead of the AWS Load Balancer Controller, refer to [Deploying IBM Operational Decision Manager with NGINX Ingress Controller on Amazon EKS](README-NGINX.md)
 
-### 2. Create an RDS database (20 min)
+### 2. Create an RDS database (10 min)
 
 #### a. Create the database instance
 
@@ -184,7 +184,7 @@ ibm-helm/ibm-odm-prod           	22.2.0       	8.11.1.0   	IBM Operational Decis
 #### a. (Optional) Generate a self-signed certificate
 
 If you do not have a trusted certificate, you can use OpenSSL and other cryptography and certificate management libraries to generate a `.crt` certificate file and a private key, to define the domain name, and to set the expiration date.
-The following command creates a self-signed certificate (.crt file) and a private key (.key file) that accept the domain name *.mycompany.com*. The expiration is set to 1000 days:
+The following command creates a self-signed certificate (`.crt` file) and a private key (`.key` file) that accept the domain name `.mycompany.com`. The expiration is set to 1000 days:
 
 ```bash
 openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mycompany.key \
@@ -268,7 +268,8 @@ After a couple of minutes, the ALB reflects the Ingress configuration. You can 
 export ROOTURL=$(kubectl get ingress mycompany-odm-ingress --no-headers |awk '{print $4}')
 ```
 
-If ROOTURL is empty, take a look at the [troubleshooting](#troubleshooting) section.
+> **Note**
+> If `ROOTURL` is empty, take a look at the [troubleshooting](#troubleshooting) section.
 
 With this ODM topology in place, you can access web applications to author, deploy, and test your rule-based decision services.
 
@@ -311,7 +312,8 @@ export LICENSING_URL=$(kubectl get ingress ibm-licensing-service-instance -n ibm
 export TOKEN=$(kubectl get secret ibm-licensing-token -n ibm-common-services -o jsonpath='{.data.token}' |base64 -d)
 ```
 
-If LICENSING_URL is empty, take a look at the [troubleshooting](#troubleshooting) section.
+> **Note**
+> If `LICENSING_URL` is empty, take a look at the [troubleshooting](#troubleshooting) section.
 
 You can access the `http://${LICENSING_URL}/status?token=${TOKEN}` URL to view the licensing usage or retrieve the licensing report .zip file by running:
 
@@ -321,21 +323,21 @@ curl "http://${LICENSING_URL}/snapshot?token=${TOKEN}" --output report.zip
 
 ## Troubleshooting
 
-If your ODM instances are not running properly, check the logs with the following command:
-```bash
-kubectl logs <your-pod-name>
-```
+- If your ODM instances are not running properly, check the logs with the following command:
+  ```bash
+  kubectl logs <your-pod-name>
+  ```
 
-If the ROOTURL is empty, it means that the ALB controller did not deliver an address to the ODM Ingress instance (mycompany-odm-ingress).
-Check the ALB controller logs with the following command:
-```bash
-kubectl logs -n kube-system deployment.apps/aws-load-balancer-controller
-```
+- If the `ROOTURL` is empty, it means that the ALB controller did not deliver an address to the ODM Ingress instance (mycompany-odm-ingress).
+  Check the ALB controller logs with the following command:
+  ```bash
+  kubectl logs -n kube-system deployment.apps/aws-load-balancer-controller
+  ```
 
-Check the ALB configuration if you get a message like:
-"msg"="Reconciler error" "error"="failed to reconcile ...
+  Check the ALB configuration if you get a message like:
+  `"msg"="Reconciler error" "error"="failed to reconcile ...`
 
-Reference: https://aws.amazon.com/blogs/opensource/network-load-balancer-nginx-ingress-controller-eks/
+  For more information, refer to [Using a Network Load Balancer with the NGINX Ingress Controller on Amazon EKS](https://aws.amazon.com/blogs/opensource/network-load-balancer-nginx-ingress-controller-eks/).
 
 ## Getting Started with IBM Operational Decision Manager for Containers
 
