@@ -300,8 +300,10 @@ Get the [licensing-instance.yaml](./licensing-instance.yaml) file and run the co
 kubectl create -f licensing-instance.yaml
 ```
 
+You can find more information and use cases on [this page](https://www.ibm.com/docs/en/cpfs?topic=software-configuration).
+
 > **Note**
-> You can find more information and use cases on [this page](https://www.ibm.com/docs/en/cpfs?topic=software-configuration).
+> If you choose to use the NGINX Ingress Controller, you must use the [licensing-instance-nginx.yaml](./licensing-instance-nginx.yaml) file. Refer to [Track ODM usage with the IBM License Service with NGINX Ingress Controller](README-NGINX.md#track-odm-usage-with-the-ibm-license-service-with-nginx-ingress-controller).
 
 #### c. Retrieving license usage
 
@@ -315,10 +317,10 @@ export TOKEN=$(kubectl get secret ibm-licensing-token -n ibm-common-services -o 
 > **Note**
 > If `LICENSING_URL` is empty, take a look at the [troubleshooting](#troubleshooting) section.
 
-You can access the `http://${LICENSING_URL}/status?token=${TOKEN}` URL to view the licensing usage or retrieve the licensing report .zip file by running:
+You can access the `http://${LICENSING_URL}/ibm-licensing-service-instance/status?token=${TOKEN}` URL to view the licensing usage or retrieve the licensing report .zip file by running:
 
 ```bash
-curl "http://${LICENSING_URL}/snapshot?token=${TOKEN}" --output report.zip
+curl "http://${LICENSING_URL}/ibm-licensing-service-instance/snapshot?token=${TOKEN}" --output report.zip
 ```
 
 ## Troubleshooting

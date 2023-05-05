@@ -56,3 +56,15 @@ helm install mycompany ibm-helm/ibm-odm-prod --version 22.2.0 -f eks-rds-nginx-v
 > ```bash
 > helm install mycompany ibm-helm/ibm-odm-prod --version 22.2.0 -f eks-nginx-values.yaml
 > ```
+
+## Track ODM usage with the IBM License Service with NGINX Ingress Controller
+
+Install the IBM License Service following a. section of [Track ODM usage with the IBM License Service](README.md#7-track-odm-usage-with-the-ibm-license-service) step of the documentation.
+
+To create the IBM Licensing instance using NGINX, get the [licensing-instance-nginx.yaml](./licensing-instance-nginx.yaml) file and run the command:
+
+```bash
+kubectl create -f licensing-instance-nginx.yaml
+```
+
+You can then go back to the [main documentation](README.md#c-retrieving-license-usage) to retrieve license usage.
