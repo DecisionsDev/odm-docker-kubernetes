@@ -33,6 +33,9 @@ helm install mycompany ibmcharts/ibm-odm-prod --version 22.2.0 \
     --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"}
 ```
 
+> **Note**
+> By default, NGINX does not enable sticky session. If you want to use sticky session to connect to DC, refer to [Using sticky session for Decision Center connection](../../contrib/sticky-session/README.md)
+
 ### 3. Check the deployment and access ODM services
 
 Refer to the [the main README](README.md#b-check-the-topology) to check the deployment and access the ODM services.

@@ -55,3 +55,6 @@ helm install mycompany ibmcharts/ibm-odm-prod --version 22.2.0 -f eks-rds-nginx-
 >```bash
 >helm install mycompany ibmcharts/ibm-odm-prod --version 22.2.0 -f eks-nginx-values.yaml
 >```
+
+> **Note**
+> By default, NGINX does not enable sticky session. If you want to use sticky session to connect to DC, refer to [Using sticky session for Decision Center connection](../../contrib/sticky-session/README.md)

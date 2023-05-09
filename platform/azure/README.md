@@ -422,9 +422,12 @@ helm install <release> ibmcharts/ibm-odm-prod --version 22.1.0 \
         --set externalDatabase.secretCredentials=<odmdbsecret> \
         --set service.ingress.enabled=true --set service.ingress.tlsSecretRef=<mycompanytlssecret> \
         --set service.ingress.tlsHosts={mycompany.com} --set service.ingress.host=mycompany.com \
-        --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"\,"nginx.ingress.kubernetes.io/backend-protocol: HTTPS"\,"nginx.ingress.kubernetes.io/affinity: cookie"} \
+        --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"\,"nginx.ingress.kubernetes.io/backend-protocol: HTTPS"} \
         --set license=true --set usersPassword=<password>
 ```
+
+> **Note**
+> By default, the NGINX Ingress controller does not enable sticky session. If you want to use sticky session to connect to DC, refer to [Using sticky session for Decision Center connection](../../contrib/sticky-session/README.md)
 
 ### Edit your /etc/hosts
 
