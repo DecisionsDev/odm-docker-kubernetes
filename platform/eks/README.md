@@ -58,7 +58,7 @@ eksctl create cluster <CLUSTER_NAME> --version 1.26 --alb-ingress-access
 ```
 
 > **Note**
-> Use the latest kubernetes version available in AWS. Refer to [Amazon EKS Kubernetes versions](https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions.html).
+> The tutorial has been tested with the Kubernetes version 1.26. Check the supported kubernetes version in the [system requirement](https://www.ibm.com/support/pages/ibm-operational-decision-manager-detailed-system-requirements) page.
 
 For more information, refer to [Creating an Amazon EKS cluster](https://docs.aws.amazon.com/eks/latest/userguide/create-cluster.html).
 

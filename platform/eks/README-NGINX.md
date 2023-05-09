@@ -45,7 +45,7 @@ To install ODM with the AWS RDS PostgreSQL database created in [step 2](README.m
   - `<RDS_DATABASE_NAME>`: the initial database name defined when creating the RDS database
 
 ```bash
-helm install mycompany ibm-helm/ibm-odm-prod --version 22.2.0 -f eks-rds-nginx-values.yaml
+helm install mycompany ibm-helm/ibm-odm-prod --version 23.1.0 -f eks-rds-nginx-values.yaml
 ```
 
 > **Note**
@@ -54,7 +54,7 @@ helm install mycompany ibm-helm/ibm-odm-prod --version 22.2.0 -f eks-rds-nginx-v
 > - Get the [eks-nginx-values.yaml](./eks-nginx-values.yaml) file:
 >
 > ```bash
-> helm install mycompany ibm-helm/ibm-odm-prod --version 22.2.0 -f eks-nginx-values.yaml
+> helm install mycompany ibm-helm/ibm-odm-prod --version 23.1.0 -f eks-nginx-values.yaml
 > ```
 
 ## Track ODM usage with the IBM License Service with NGINX Ingress Controller
