@@ -395,7 +395,7 @@ After activating your account by email, you should have access to your Aure AD i
   ```shell
   helm search repo ibm-odm-prod
   NAME                  	CHART VERSION	APP VERSION	DESCRIPTION                     
-  ibmcharts/ibm-odm-prod	22.2.0       	8.11.1.0   	IBM Operational Decision Manager
+  ibmcharts/ibm-odm-prod	23.1.0       	8.12.0.0   	IBM Operational Decision Manager
   ```
 
 ### Run the `helm install` command
@@ -435,8 +435,11 @@ After activating your account by email, you should have access to your Aure AD i
           --set customization.trustedCertificateList='{ms-secret,digicert-secret}' \
           --set customization.authSecretRef=azuread-auth-secret \
           --set service.ingress.enabled=true \
-          --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"\,"nginx.ingress.kubernetes.io/backend-protocol: HTTPS"\,"nginx.ingress.kubernetes.io/affinity: cookie"}
+          --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"\,"nginx.ingress.kubernetes.io/backend-protocol: HTTPS"}
   ```
+
+> **Note**
+> By default, NGINX does not enable sticky session. If you want to use sticky session to connect to DC, refer to [Using sticky session for Decision Center connection](../../contrib/sticky-session/README.md)
 
 ## Complete post-deployment tasks
 
