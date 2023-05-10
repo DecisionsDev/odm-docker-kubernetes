@@ -71,7 +71,7 @@ else
   AZUREAD_SERVER_URL=${AZUREAD_SERVER_NAME}
 fi
 echo "Use Authentication URL Server : $AZUREAD_SERVER_URL"
-RESULT=$(curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d "client_id=$AZUREAD_CLIENT_ID&username=myodmusertest@ibmodmdev.onmicrosoft.com&scope=openid&password=My2ODMPassword?1&client_secret=$AZUREAD_CLIENT_SECRET&grant_type=password" \
+RESULT=$(curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d "client_id=$AZUREAD_CLIENT_ID&username=$USERNAME&scope=openid&password=$PASSWORD&client_secret=$AZUREAD_CLIENT_SECRET&grant_type=password" \
   "$AZUREAD_SERVER_URL/oauth2/v2.0/token")
 
 echo "Retrieve this Token : $RESULT"
