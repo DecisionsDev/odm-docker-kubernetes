@@ -9,7 +9,7 @@ Minikube is a local Kubernetes that makes it easy to learn and develop for Kuber
 The ODM on Kubernetes Docker images are available in the [IBM Entitled Registry](https://www.ibm.com/cloud/container-registry). The ODM Helm chart is available in the [IBM Helm charts repository](https://github.com/IBM/charts).
 
 ## Included Components
-- [IBM Operational Decision Manager](https://www.ibm.com/docs/en/odm/8.11.1)
+- [IBM Operational Decision Manager](https://www.ibm.com/docs/en/odm/8.12.0)
 - [Kubernetes Minikube](https://github.com/kubernetes/minikube)
 
 ## Test environment
@@ -33,10 +33,13 @@ This tutorial was tested on macOS and Linux.
 #### a. Start Minikube with sufficient resources
 
   ```
-  minikube start --cpus 6 --memory 8GB
+  minikube start --cpus 6 --memory 8GB --kubernetes-version=v1.23.0
   ```
 
   The kubectl context is automatically set to point to the created Minikube cluster.
+
+    > **Note** 
+    > This installation guide has been tested with the Kubernetes version v1.23.0 to v1.25.0 
 
 #### b. Check your environment
 
@@ -89,7 +92,7 @@ helm repo update
 ```
 $ helm search repo ibm-odm-prod
 NAME                             	CHART VERSION	APP VERSION	DESCRIPTION
-ibmcharts/ibm-odm-prod           	22.2.0       	8.11.1.0   	IBM Operational Decision Manager
+ibmcharts/ibm-odm-prod           	23.1.0       	8.12.0.0   	IBM Operational Decision Manager
 ```
 
 ### 3. Install an IBM Operational Decision Manager release
@@ -99,7 +102,7 @@ ibmcharts/ibm-odm-prod           	22.2.0       	8.11.1.0   	IBM Operational Deci
 Get the [minikube-values.yaml](./minikube-values.yaml) file and run the following command:
 
 ```
-helm install my-odm-release ibmcharts/ibm-odm-prod --version 22.2.0 -f minikube-values.yaml
+helm install my-odm-release ibmcharts/ibm-odm-prod --version 23.1.0 -f minikube-values.yaml
 ```
 
 #### b. Check the topology
@@ -142,6 +145,8 @@ You can directly open the URL corresponding to a component in a new browser tab 
 ```
 $ minikube service my-odm-release-odm-decisioncenter -n default --https
 ```
+
+You can access the ODM components with the username / password : odmAdmin/odmAdmin
 
 ## Troubleshooting
 

@@ -49,6 +49,9 @@ helm install mycompany ibm-helm/ibm-odm-prod --version 23.1.0 -f eks-rds-nginx-v
 ```
 
 > **Note**
+> By default, NGINX does not enable sticky session. If you want to use sticky session to connect to DC, refer to [Using sticky session for Decision Center connection](../../contrib/sticky-session/README.md)
+
+> **Note**
 > If you prefer to install ODM for prototyping (not for production) with the ODM PostgreSQL internal database:
 >
 > - Get the [eks-nginx-values.yaml](./eks-nginx-values.yaml) file:

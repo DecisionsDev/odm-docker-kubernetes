@@ -1,0 +1,36 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ${RELEASE_NAME}-odm-ds-ingress
+  labels:
+    app: ibm-odm-prod
+    ingressroutes: ${RELEASE_NAME}
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/backend-protocol: https
+
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /res
+        pathType: Prefix
+        backend:
+          service:
+            name: ${RELEASE_NAME}-odm-decisionserverconsole
+            port:
+              number: 9443
+      - path: /DecisionService
+        pathType: Prefix
+        backend:
+          service:
+            name: ${RELEASE_NAME}-odm-decisionserverruntime
+            port:
+              number: 9443
+      - path: /DecisionRunner
+        pathType: Prefix
+        backend:
+          service:
+            name: ${RELEASE_NAME}-odm-decisionrunner
+            port:
+              number: 9443
