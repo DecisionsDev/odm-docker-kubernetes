@@ -99,7 +99,7 @@ In this section, we explain how to:
 
 ## Log into the Azure AD instance
 
-After activating your account by email, you should have access to your Aure AD instance. Sign in to Azure.
+After activating your account by email, you should have access to your Aure AD instance. [Sign in to Azure](https://portal.azure.com/#home).
 
 ## Manage groups and users
 
@@ -110,7 +110,6 @@ After activating your account by email, you should have access to your Aure AD i
         * Group type: Security
         * Group name: *odm-admin*
         * Group description: *ODM Admin group*
-        * Azure AD roles can be assigned to the group: No
         * Membership type: Assigned
         * Click **Create**
 
