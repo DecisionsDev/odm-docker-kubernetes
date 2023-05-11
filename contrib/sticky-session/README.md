@@ -28,11 +28,15 @@ helm install mycompany ibm-helm/ibm-odm-prod --version 23.1.0 -f my-nginx-values
 
 ## Configuring Ingress to use sticky sessions
 
-To be able to use sticky session in Decision Center but not enabling it in Decision Server, you will have to create to different Ingress instances:
+To be able to use sticky session in Decision Center but not enabling it in Decision Server, you must create to different Ingress instances.
+
+Replace the `RELEASE_NAME` environment variable in both file and apply them:
 
 ```bash
-kubeclt apply -f ingress-dc.yaml
-kubeclt apply -f ingress-ds.yaml
+export RELEASE_NAME=mycompany
+
+envsubst < ingress-dc.yaml | kubectl apply -f -
+envsubst < ingress-ds.yaml | kubectl apply -f -
 ```
 
 The [ingress-dc.yaml](ingress-dc.yaml) configuration file uses the `nginx.ingress.kubernetes.io/affinity: cookie` annotation that enable sticky sessions.
