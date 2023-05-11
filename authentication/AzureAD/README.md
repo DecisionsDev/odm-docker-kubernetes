@@ -122,17 +122,24 @@ After activating your account by email, you should have access to your Aure AD i
 2. Create at least one user that belongs to this new group.
 
     In Menu **Azure Active Directory** / **Users**:
-      * Click **New User**
-        * User name: *myodmuser*@YOURDOMAIN
-        * Name: ``myodmuser``
-        * First name: ``<YourFirstName>``
-        * Last name: ``<YourLastName>``
-        * Password: ``My2ODMPassword?``
-        * Groups (optional): ***odm-admin***
-        * Click **Create**
-      ![New User](/images/AzureAD/NewUser.png)
+
+      * Click **New User** and in Basics fill in:
+        * User principal name: *myodmuser*@YOURDOMAIN
+        * Mail nickname / Derive from user principal name: checked
+        * Display name: `<YourFirstName> <YourLastName>`
+        * Password: `My2ODMPassword?`
+        * Account enabled: checked
+
+      * In Assignments fill in:
+        * Click on Add group and select odm-admin
+
+      * Click **Review + create** and then **Create**.
+
+      ![New User Basics](/images/AzureAD/NewUserBasics.png)
+      ![New User Assignments](/images/AzureAD/NewUserAssignments.png)
 
       * Click the **myodmuser** user previously created
+
         * Edit properties
         * Fill the email field with *myodmuser*@YOURDOMAIN
 
