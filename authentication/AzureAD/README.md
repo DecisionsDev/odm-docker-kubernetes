@@ -115,9 +115,9 @@ After activating your account by email, you should have access to your Aure AD i
 
     ![Add Group](/images/AzureAD/NewGroup.png)
 
-    In Menu **Azure Active Directory** / **Groups** take note of the Object ID. It will be referenced as ``GROUP_GUID`` later in this tutorial.
+    In Menu **Azure Active Directory** / **Groups** take note of the Object ID. It will be referenced as ``GROUP_ID`` later in this tutorial.
 
-    ![GroupID](/images/AzureAD/GroupGUID.png)
+    ![GroupID](/images/AzureAD/GroupID.png)
 
 2. Create at least one user that belongs to this new group.
 
@@ -339,19 +339,19 @@ After activating your account by email, you should have access to your Aure AD i
     Generate the files with the following command:
 
     ```shell
-    ./generateTemplate.sh -i <CLIENT_ID> -x <CLIENT_SECRET> -n <TENANT_ID> -g <GROUP_GUID> [-a <SSO_DOMAIN>]
+    ./generateTemplate.sh -i <CLIENT_ID> -x <CLIENT_SECRET> -n <TENANT_ID> -g <GROUP_ID> [-a <SSO_DOMAIN>]
     ```
 
     Where:
     - *TENANT_ID* and *CLIENT_ID* have been obtained from [previous step](#retrieve-tenant-and-client-information)
     - *CLIENT_SECRET* is listed in your ODM Application, section **General** / **Client Credentials**
-    - *GROUP_GUID* is the ODM Admin group created in a [previous step](#manage-group-and-user) (*odm-admin*)
+    - *GROUP_ID* is the ODM Admin group created in a [previous step](#manage-group-and-user) (*odm-admin*)
     - *SSO_DOMAIN* is the domain name of your SSO. If your AzureAD is connected to another SSO, you should add the SSO domain name in this parameter. If your user has been declared as explained in step **Create at least one user that belongs to this new group**, you can omit this parameter.
 
     The following four files are generated into the `output` directory:
 
     - webSecurity.xml contains the mapping between Liberty J2EE ODM roles and Azure AD groups and users:
-      * All ODM roles are given to the GROUP_GUID group
+      * All ODM roles are given to the GROUP_ID group
       * rtsAdministrators/resAdministrators/resExecutors ODM roles are given to the CLIENT_ID (which is seen as a user) to manage the client-credentials flow
     - openIdWebSecurity.xml contains two openIdConnectClient Liberty configurations:
       * For web access to the Decision Center an Decision Server consoles using userIdentifier="email" with the Authorization Code flow
