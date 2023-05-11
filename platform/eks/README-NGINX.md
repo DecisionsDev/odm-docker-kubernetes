@@ -18,14 +18,7 @@ helm install my-odm-nginx ingress-nginx/ingress-nginx
 
 For more information, refer to the [ingress-nginx readme](https://github.com/kubernetes/ingress-nginx/tree/main/charts/ingress-nginx#install-chart).
 
-If your AWS subnets have been well tagged by using:
-
-```
-Key: kubernetes.io/cluster/<cluster-name> | Value: shared
-Key: kubernetes.io/role/elb | Value: 1
-```
-
-`my-odm-nginx` should have an available `External-IP` when you run the command:
+The `my-odm-nginx` service should have an available `External-IP` when you run the command:
 
 ```bash
 kubectl get service my-odm-nginx-ingress-nginx-controller
