@@ -138,12 +138,7 @@ After activating your account by email, you should have access to your Aure AD i
       ![New User Basics](/images/AzureAD/NewUserBasics.png)
       ![New User Assignments](/images/AzureAD/NewUserAssignments.png)
 
-      * Click the **myodmuser** user previously created
-
-        * Edit properties
-        * Fill the email field with *myodmuser*@YOURDOMAIN
-
-      * Try to log in to the [azure portal](https://portal.azure.com/) with the user.
+      * Try to log in to the [azure portal](https://portal.azure.com/) with the user principal name.
        This may require to enable 2FA and/or change the password for the first time.
 
     Repeat this step for each user that you want to add.
@@ -152,9 +147,10 @@ After activating your account by email, you should have access to your Aure AD i
 
 1. Create the *ODM application*.
 
-    In Menu **Azure Active Directory** / **App Registration**, click **New Registration**:
+    In Menu **Azure Active Directory** / **App registration**, click **New Registration**:
+
     * Name: **ODM Application**
-    * Who can use this application or access this API: 	Accounts in this organizational directory only (ibmodmdev only - Single tenant)
+    * Supported account types / Who can use this application or access this API?: select `Accounts in this organizational directory only (Default Directory only - Single tenant)`
     * Click **Register**
 
     ![New Web Application](/images/AzureAD/RegisterApp.png)
