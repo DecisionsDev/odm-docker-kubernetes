@@ -84,7 +84,7 @@ You need the following elements:
 ### Install a Keycloak Instance
 
 For this tutorial, we followed the documented procedure explaining how to install [Keycloak on OpenShift](https://www.keycloak.org/getting-started/getting-started-openshift)
-We tested with the Keycloak version 20.0.1
+We tested with the Keycloak version 21.1.1
 
 You can follow this installation the [Get started with Keycloak on Openshift](https://www.keycloak.org/getting-started/getting-started-openshift) instructions.
 
@@ -102,7 +102,7 @@ In this section, we explain how to:
 
 ## Log into the Keycloak Admin Console
 
-When, it's done,using Openshiftroutes you should be able to access the Keycloak Admin Console using the following URL with the **admin** username and **admin** password:
+When, it's done,using Openshift routes you should be able to access the Keycloak Admin Console using the following URL with the **admin** username and **admin** password:
 
     ```
     KEYCLOAK_URL=https://$(oc get route keycloak --template='{{ .spec.host }}') &&
@@ -189,7 +189,7 @@ For more details about ODM groups and roles, have a look at [ODM on k8s document
 	* Click **Save**
     
     (Optional) Every user is created with a predefined role named **default-roles-<CLIENT_ID>** 
-    This role has no interest. So, we here is the way to unassign this role.
+    This role has no interest. So, here is the way to unassign this role.
     
       * In User Details, select the **Role mapping** tab 
         * Select **default-roles-<CLIENT_ID>**
@@ -208,7 +208,7 @@ For more details about ODM groups and roles, have a look at [ODM on k8s document
     * Client type: **OpenID Connect**
     * Client ID: **odm**
     * Name: **ODM Application**
-    * Always display in console: On
+    * Always display in UI: On
 
     ![Create Client 1](/images/Keycloak/create_client_1.png)
     
@@ -263,7 +263,17 @@ For more details about ODM groups and roles, have a look at [ODM on k8s document
     - *CLIENT_SECRET* is listed in your ODM Application, in the **Credentials** tab
     - *KEYCLOAK_SERVER_URL* is the issuer that can be retrieved using the **OpenID Endpoint Configuration** link of the **General** tab in the **Configure**/**Realm settings** menu
     
-    **TOOD What do we needs to check**
+    by introspecting the id_token value with this online tool [https://jwt.io](https://jwt.io). You should get:
+     You should get :
+
+    ```
+    {
+      ..
+      "iss": "<KEYCLOAK_SERVER_URL>",
+     ....
+      "preferred_username": "service-account-<KEYCLOAK_CLIENT_ID>",
+      ...
+    }
     
     
     7.2 Verify the Client Password Token 
@@ -302,7 +312,7 @@ For more details about ODM groups and roles, have a look at [ODM on k8s document
         "resExecutors"
       ],
       ...
-   }
+    }
     ```
 
 # Deploy ODM on a container configured with Keycloak (Part 2)
@@ -347,8 +357,9 @@ For more details about ODM groups and roles, have a look at [ODM on k8s document
     keytool -printcert -sslserver <KEYCLOAK_SERVER_URL_WITHOUT_HTTPS> -rfc > keycloak.crt
     kubectl create secret generic keycloak-secret --from-file=tls.crt=keycloak.crt
     ```
-    
-    **TODO Explain the KEYCLOAK_SERVER_URL_WITHOUT_HTTPS parameter**
+
+    Where:
+    - *KEYCLOAK_SERVER_URL_WITHOUT_HTTPS* is KEYCLOAK_SERVER_URL by removing https://
      
 2. Generate the ODM configuration file for Keycloak
 
@@ -387,7 +398,7 @@ For more details about ODM groups and roles, have a look at [ODM on k8s document
 ### 1. Add the public IBM Helm charts repository
 
   ```shell
-  helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo/entitled
+  helm repo add ibm-helm https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm
   helm repo update
   ```
 
@@ -396,7 +407,7 @@ For more details about ODM groups and roles, have a look at [ODM on k8s document
   ```shell
   helm search repo ibm-odm-prod
   NAME                  	CHART VERSION	APP VERSION	DESCRIPTION                     
-  ibmcharts/ibm-odm-prod	22.2.0       	8.11.1.0   	IBM Operational Decision Manager
+  ibm-helm/ibm-odm-prod	        23.1.0       	8.12.0.0   	IBM Operational Decision Manager
   ```
 
 ### 3. Run the `helm install` command
