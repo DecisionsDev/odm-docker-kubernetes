@@ -176,7 +176,7 @@ helm repo update
 ```bash
 $ helm search repo ibm-odm-prod
 NAME                             	CHART VERSION	APP VERSION	DESCRIPTION
-ibm-helm/ibm-odm-prod           	22.2.0       	8.11.1.0   	IBM Operational Decision Manager
+ibm-helm/ibm-odm-prod           	23.1.0       	8.12.0.0   	IBM Operational Decision Manager
 ```
 
 ### 4. Manage a  digital certificate (10 min)
@@ -228,7 +228,7 @@ To install ODM with the AWS RDS PostgreSQL database created in [step 3](#3-creat
   - `<RDS_DATABASE_NAME>` is the initial database name defined when creating the RDS database
 
 ```bash
-helm install mycompany ibm-helm/ibm-odm-prod --version 22.2.0 -f eks-rds-values.yaml
+helm install mycompany ibm-helm/ibm-odm-prod --version 23.1.0 -f eks-rds-values.yaml
 ```
 
 > **Note**
@@ -238,7 +238,7 @@ helm install mycompany ibm-helm/ibm-odm-prod --version 22.2.0 -f eks-rds-values.
 >   - `<AWS-AccountId>` is your AWS Account Id
 >
 >```bash
->helm install mycompany ibm-helm/ibm-odm-prod --version 22.2.0 -f eks-values.yaml
+>helm install mycompany ibm-helm/ibm-odm-prod --version 23.1.0 -f eks-values.yaml
 >```
 
 > **Note**
