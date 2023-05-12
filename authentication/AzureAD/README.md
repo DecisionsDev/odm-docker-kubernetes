@@ -386,7 +386,7 @@ After activating your account by email, you should have access to your Aure AD i
 ### Add the public IBM Helm charts repository
 
   ```shell
-  helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm
+  helm repo add ibm-helm https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm
   helm repo update
   ```
 
@@ -395,7 +395,7 @@ After activating your account by email, you should have access to your Aure AD i
   ```shell
   helm search repo ibm-odm-prod
   NAME                  	CHART VERSION	APP VERSION	DESCRIPTION                     
-  ibmcharts/ibm-odm-prod	23.1.0       	8.12.0.0   	IBM Operational Decision Manager
+  ibm-helm/ibm-odm-prod	        23.1.0       	8.12.0.0   	IBM Operational Decision Manager
   ```
 
 ### Run the `helm install` command
@@ -407,7 +407,7 @@ After activating your account by email, you should have access to your Aure AD i
   See the [Preparing to install](https://www.ibm.com/docs/en/odm/8.11.1?topic=production-preparing-install-operational-decision-manager) documentation for additional information.
   
   ```shell
-  helm install my-odm-release ibmcharts/ibm-odm-prod \
+  helm install my-odm-release ibm-helm/ibm-odm-prod \
           --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
           --set oidc.enabled=true \
           --set license=true \
@@ -427,7 +427,7 @@ After activating your account by email, you should have access to your Aure AD i
   When the NGINX Ingress Controller is ready, you can install the ODM release with:
   
   ```
-  helm install my-odm-release ibmcharts/ibm-odm-prod \
+  helm install my-odm-release ibm-helm/ibm-odm-prod \
           --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
           --set oidc.enabled=true \
           --set license=true \
