@@ -105,7 +105,7 @@ After activating your account by email, you should have access to your Aure AD i
 
 1. Create a group for ODM administrators.
 
-    In Menu **Azure Active Directory** / **Groups**:
+    In **Azure Active Directory** / **Groups**:
       * Click **New Group**
         * Group type: Security
         * Group name: *odm-admin*
@@ -115,13 +115,13 @@ After activating your account by email, you should have access to your Aure AD i
 
     ![Add Group](/images/AzureAD/NewGroup.png)
 
-    In Menu **Azure Active Directory** / **Groups** take note of the Object ID. It will be referenced as ``GROUP_ID`` later in this tutorial.
+    In **Azure Active Directory** / **Groups** take note of the Object ID. It will be referenced as ``GROUP_ID`` later in this tutorial.
 
     ![GroupID](/images/AzureAD/GroupID.png)
 
 2. Create at least one user that belongs to this new group.
 
-    In Menu **Azure Active Directory** / **Users**:
+    In **Azure Active Directory** / **Users**:
 
       * Click **New User** and in Basics fill in:
         * User principal name: *myodmuser*@YOURDOMAIN
@@ -151,7 +151,7 @@ After activating your account by email, you should have access to your Aure AD i
 
 1. Create the *ODM application*.
 
-    In Menu **Azure Active Directory** / **App registration**, click **New Registration**:
+    In **Azure Active Directory** / **App registration**, click **New Registration**:
 
     * Name: **ODM Application**
     * Supported account types / Who can use this application or access this API?: select `Accounts in this organizational directory only (Default Directory only - Single tenant)`
@@ -161,7 +161,7 @@ After activating your account by email, you should have access to your Aure AD i
 
 2. Generate an OpenID client secret.
 
-    In Menu **Azure Active Directory** / **App registrations**, select **ODM Application**:
+    In **Azure Active Directory** / **App registrations**, select **ODM Application**:
 
     * From the Overview page, click on the link Client credentials: **Add a certificate or secret** or on the **Manage / Certificates & secrets** tab
     * Click + New Client Secret
@@ -171,7 +171,7 @@ After activating your account by email, you should have access to your Aure AD i
 
 3. Add Claims.
 
-    In Menu **Azure Active Directory** / **App registrations**, click **ODM Application**, and in **Manage / Token Configuration**:
+    In **Azure Active Directory** / **App registrations**, select **ODM Application**, and in **Manage / Token Configuration**:
 
   * Add Optional Email ID Claim
     * Click +Add optional claim
@@ -196,13 +196,13 @@ After activating your account by email, you should have access to your Aure AD i
 
 4. API Permissions.
 
-    In Menu **Azure Active Directory** / **App Registration**, click **ODM Application**, and then click **API Permissions**.
+    In **Azure Active Directory** / **App Registration**, select **ODM Application**, and then click **API Permissions**.
 
     * Click Grant Admin Consent for Default Directory
 
 5. Manifest change.
 
-    In Menu **Azure Active Directory** / **App Registration**, click **ODM Application**, and then click **Manifest**.
+    In **Azure Active Directory** / **App Registration**, select **ODM Application**, and then click **Manifest**.
 
     As explained in [accessTokenAcceptedVersion attribute explanation](https://docs.microsoft.com/en-us/azure/active-directory/develop/reference-app-manifest#accesstokenacceptedversion-attribute), change the value to 2 and then click Save.
 
@@ -210,10 +210,10 @@ After activating your account by email, you should have access to your Aure AD i
 
 6. Retrieve Tenant and Client information.
 
-    From the Azure console, in **Azure Active Directory** / **App Registrations** / **ODM Application**:
-    - Click Overview
-    - Directory (tenant) ID: **Your Tenant ID**. It will be referenced as `TENANT_ID` in the next steps.
-    - Application (client) ID: **Client ID**. It will be referenced as `CLIENT_ID` in the next steps.
+    In **Azure Active Directory** / **App Registration**, select **ODM Application** and click **Overview**:
+
+    * Application (client) ID: **Client ID**. It will be referenced as `CLIENT_ID` in the next steps.
+    * Directory (tenant) ID: **Your Tenant ID**. It will be referenced as `TENANT_ID` in the next steps.
 
     ![Tenant ID](/images/AzureAD/GetTenantID.png)
 
