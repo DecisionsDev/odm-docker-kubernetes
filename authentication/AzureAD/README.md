@@ -222,12 +222,12 @@ After activating your account by email, you should have access to your Aure AD i
 
 7. Check the configuration.
 
-     Download the [azuread-odm-script.zip](azuread-odm-script.zip) file to your machine and unzip it in your working directory. This .zip file contains scripts and templates to verify and set up ODM.
+    Download the [azuread-odm-script.zip](azuread-odm-script.zip) file to your machine and unzip it in your working directory. This .zip file contains scripts and templates to verify and set up ODM.
 
     7.1 Verify the Client Credential Token
 
-     You can request an access token using the Client-Credentials flow to verify the token format.
-     This token is used for the deployment between Decision Cennter and the Decision Server console:
+    You can request an access token using the Client-Credentials flow to verify the token format.
+    This token is used for the deployment between Decision Cennter and the Decision Server console:
 
     ```shell
     $ ./get-client-credential-token.sh -i <CLIENT_ID> -x <CLIENT_SECRET> -n <TENANT_ID>
@@ -283,6 +283,7 @@ After activating your account by email, you should have access to your Aure AD i
 
     ```json
     {
+      "aud": "<CLIENT_ID>",
       ...
       "iss": "https://login.microsoftonline.com/<TENANT_ID>/v2.0",
       ...
@@ -292,17 +293,17 @@ After activating your account by email, you should have access to your Aure AD i
       ],
       ...
       "ver": "2.0"
-   }
+    }
     ```
 
     Verify:
-    - *email* : should be present. Otherwise you should verify the creation of your user and fill the Email field.
-    - * : should be present. Otherwise you should verify the creation of your user and fill the Email field.
-    - *ver* : should be 2.0. Otherwise you should verify the previous step **Manifest change**
-    - *aud* : should be your CLIENT_ID
-    - *iss* : should end with 2.0. Otherwise you should verify the previous step **Manifest change**
+    - *aud*: should be your CLIENT_ID
+    - *email*: should be present. Otherwise you should verify the creation of your user and fill the Email field.
+    - *groups*: should contain your GROUP_ID
+    - *iss*: should end with 2.0. Otherwise you should verify the previous step **Manifest change**
+    - *ver*: should be 2.0. Otherwise you should verify the previous step **Manifest change**
 
-  > If this command failed, try to log in to the [Azure Portal](https://portal.azure.com/). You may have to enable 2FA and/or change the password for the first time.
+  > If this command failed, try to log in to the [Azure portal](https://portal.azure.com/). You may have to enable 2FA and/or change the password for the first time.
 
 # Deploy ODM on a container configured with Azure AD (Part 2)
 
