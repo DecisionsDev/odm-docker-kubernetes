@@ -26,63 +26,62 @@ Options:
 -i : Client ID
 -n : AZUREAD domain (AZUREAD server name)
 -x : Cient Secret
--u : Username 
--p : Password
+-u : AZUREAD_USERNAME
+-p : AZUREAD_PASSWORD
 
-Usage example: $0 -i AzureADClientId -x AzureADClientSecret -n <Application ID (GUID)> -u <USERNAME> -p <PASSWORD>"
+Usage example: $0 -i AzureADClientId -x AzureADClientSecret -n <Application ID (GUID)> -u <AZUREAD_USERNAME> -p <AZUREAD_PASSWORD>"
 EOF
 }
 
 while getopts "x:i:n:s:u:p:h" option; do
     case "${option}" in
-        u) USERNAME=${OPTARG};;
-        p) PASSWORD=${OPTARG};;
+        u) AZUREAD_USERNAME=${OPTARG};;
+        p) AZUREAD_PASSWORD=${OPTARG};;
         i) AZUREAD_CLIENT_ID=${OPTARG};;
-        n) AZUREAD_SERVER_NAME=${OPTARG};;
+        n) AZUREAD_TENANT_ID=${OPTARG};;
         x) AZUREAD_CLIENT_SECRET=${OPTARG};;
         h) usage; exit 0;;
         *) usage; exit 1;;
     esac
 done
 
-if [[ -z $USERNAME} ]]; then
-  echo "USERNAME has to be provided, either as in environment or with -u."
+if [[ -z ${AZUREAD_USERNAME}} ]]; then
+  echo "AZUREAD_USERNAME has to be provided, either as in environment or with -u."
   exit 1
 fi
-if [[ -z $PASSWORD} ]]; then
-  echo "PASSWORD has to be provided, either as in environment or with -p."
+if [[ -z ${AZUREAD_PASSWORD}} ]]; then
+  echo "AZUREAD_PASSWORD has to be provided, either as in environment or with -p."
   exit 1
 fi
 if [[ -z ${AZUREAD_CLIENT_ID} ]]; then
   echo "AZUREAD_CLIENT_ID has to be provided, either as in environment or with -i."
   exit 1
 fi
-if [[ -z ${AZUREAD_SERVER_NAME} ]]; then
-  echo "AZUREAD_SERVER_NAME has to be provided, either as in environment or with -n."
+if [[ -z ${AZUREAD_TENANT_ID} ]]; then
+  echo "AZUREAD_TENANT_ID has to be provided, either as in environment or with -n."
   exit 1
 fi
 if [[ -z ${AZUREAD_CLIENT_SECRET} ]]; then
   echo "AZUREAD_CLIENT_SECRET has to be provided, either as in environment or with -x."
   exit 1
 fi
-if [[ ${AZUREAD_SERVER_NAME} != "https://.*" ]]; then
-  AZUREAD_SERVER_URL=https://login.microsoftonline.com/${AZUREAD_SERVER_NAME}
+if [[ ${AZUREAD_TENANT_ID} != "https://.*" ]]; then
+  AZUREAD_SERVER_URL=https://login.microsoftonline.com/${AZUREAD_TENANT_ID}
 else
-  AZUREAD_SERVER_URL=${AZUREAD_SERVER_NAME}
+  AZUREAD_SERVER_URL=${AZUREAD_TENANT_ID}
 fi
 echo "Use Authentication URL Server : $AZUREAD_SERVER_URL"
-RESULT=$(curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d "client_id=$AZUREAD_CLIENT_ID&username=$USERNAME&scope=openid&password=$PASSWORD&client_secret=$AZUREAD_CLIENT_SECRET&grant_type=password" \
+RESULT=$(curl --silent -X POST -H "Content-Type: application/x-www-form-urlencoded" -d "client_id=${AZUREAD_CLIENT_ID}&username=${AZUREAD_USERNAME}&scope=openid&password=${AZUREAD_PASSWORD}&client_secret=${AZUREAD_CLIENT_SECRET}&grant_type=password" \
   "$AZUREAD_SERVER_URL/oauth2/v2.0/token")
 
-echo "Retrieve this Token : $RESULT"
-echo "-------------------------------------------"  
-echo "Open a browser at this URL : https://jwt.ms"
-echo "-------------------------------------------"
-echo " Copy paste the id_token : "
-echo $RESULT | sed "s/.*id_token\"://g"
-echo "====> "
-echo " Verify this fields exists in your Token :"
-echo " ver = should be 2.0. "
-echo " iss = should contains the v2.0 suffix"
-echo " email = Should correspond to your email "
-echo " groups = List of group for your User."
+echo "============================================="
+echo "1. Open a browser at this URL: https://jwt.ms"
+echo "============================================="
+echo "2. Copy paste the id_token:"
+echo ${RESULT//\}} | sed "s/.*id_token\"://g" |tr -d \"
+echo "============================================="
+echo "3. Verify this fields exists in your Token :"
+echo "   - email = Should correspond to your email "
+echo "   - groups = List of group for your User."
+echo "   - iss = should contains the v2.0 suffix"
+echo "   - ver = should be 2.0. "

@@ -22,7 +22,6 @@ Usage: $(basename "$0") [-<option letter> <option value>] [-h]
 
 Options:
 
-
 -i : Client ID
 -n : AZUREAD domain (AZUREAD server name)
 -x : Cient Secret
@@ -36,7 +35,7 @@ EOF
 while getopts "x:i:n:s:h" option; do
     case "${option}" in
         i) AZUREAD_CLIENT_ID=${OPTARG};;
-        n) AZUREAD_SERVER_NAME=${OPTARG};;
+        n) AZUREAD_TENANT_ID=${OPTARG};;
         x) AZUREAD_CLIENT_SECRET=${OPTARG};;
         h) usage; exit 0;;
         *) usage; exit 1;;
@@ -47,18 +46,18 @@ if [[ -z ${AZUREAD_CLIENT_ID} ]]; then
   echo "AZUREAD_CLIENT_ID has to be provided, either as in environment or with -i."
   exit 1
 fi
-if [[ -z ${AZUREAD_SERVER_NAME} ]]; then
-  echo "AZUREAD_SERVER_NAME has to be provided, either as in environment or with -n."
+if [[ -z ${AZUREAD_TENANT_ID} ]]; then
+  echo "AZUREAD_TENANT_ID has to be provided, either as in environment or with -n."
   exit 1
 fi
 if [[ -z ${AZUREAD_CLIENT_SECRET} ]]; then
   echo "AZUREAD_CLIENT_SECRET has to be provided, either as in environment or with -x."
   exit 1
 fi
-if [[ ${AZUREAD_SERVER_NAME} != "https://.*" ]]; then
-  AZUREAD_SERVER_URL=https://login.microsoftonline.com/${AZUREAD_SERVER_NAME}
+if [[ ${AZUREAD_TENANT_ID} != "https://.*" ]]; then
+  AZUREAD_SERVER_URL=https://login.microsoftonline.com/${AZUREAD_TENANT_ID}
 else
-  AZUREAD_SERVER_URL=${AZUREAD_SERVER_NAME}
+  AZUREAD_SERVER_URL=${AZUREAD_TENANT_ID}
 fi
 echo "Use Authentication URL Server: $AZUREAD_SERVER_URL"
 
@@ -70,7 +69,7 @@ RESULT=$(curl --silent -X POST -H "Content-Type: application/x-www-form-urlencod
 echo "============================================="
 echo "1. Open a browser at this URL: https://jwt.ms"
 echo "============================================="
-echo "2. Copy paste the id_token:"
+echo "2. Copy paste the access_token:"
 echo ${RESULT//\}} | sed "s/.*access_token\"://g" |tr -d \"
 echo "============================================="
 echo "3. Verify these fields exist in your token:"
