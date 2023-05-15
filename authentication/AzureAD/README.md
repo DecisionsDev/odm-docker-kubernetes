@@ -142,7 +142,7 @@ After activating your account by email, you should have access to your Aure AD i
         * Edit properties
         * Fill the email field with *myodmuser*@YOURDOMAIN
 
-      * Try to log in to the [azure portal](https://portal.azure.com/) with the user principal name.
+      * Try to log in to the [Azure portal](https://portal.azure.com/) with the user principal name.
        This may require to enable 2FA and/or change the password for the first time.
 
     Repeat this step for each user that you want to add.
@@ -238,20 +238,28 @@ After activating your account by email, you should have access to your Aure AD i
     - *TENANT_ID* and *CLIENT_ID* have been obtained from 'Retrieve Tenant and Client information' section.
     - *CLIENT_SECRET* is listed in your ODM Application, section **General** / **Client Credentials**
 
-    You should get a token and by introspecting the value with this online tool [https://jwt.ms](https://jwt.ms) you should get:
+    You should get a token and by introspecting the value with [this online tool](https://jwt.ms) or with some [JWT cli](https://github.com/mike-engel/jwt-cli) you should get:
 
+    **Token header**
     ```json
     {
       "typ": "JWT",
       "alg": "RS256",
-      "kid": "jS1Xo1OWDj_52vbwGNgvQO2VzMc"
-    }.{
+      "kid": "-KI3Q9nNR7bRofxmeZoXqbHZGew"
+    }
+    ```
+
+    **Token claims**
+    ```json
+    {
       "aud": "<CLIENT_ID>",
+      ...
       "iss": "https://login.microsoftonline.com/<TENANT_ID>/v2.0",
       ...
       "ver": "2.0"
     }
     ```
+
     - *ver*: should be 2.0. otherwise you should verify the previous step **Manifest change**
     - *aud*: should be your CLIENT_ID
     - *iss*: should end with 2.0. otherwise you should verify the previous step **Manifest change**

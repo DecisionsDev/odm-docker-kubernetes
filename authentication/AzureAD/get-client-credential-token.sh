@@ -26,7 +26,7 @@ Options:
 -i : Client ID
 -n : AZUREAD domain (AZUREAD server name)
 -x : Cient Secret
--u : Username 
+-u : Username
 -p : Password
 
 Usage example: $0 -i AzureADClientId -x AzureADClientSecret -n <Application ID (GUID)> -u <USERNAME> -p <PASSWORD>"
@@ -60,20 +60,18 @@ if [[ ${AZUREAD_SERVER_NAME} != "https://.*" ]]; then
 else
   AZUREAD_SERVER_URL=${AZUREAD_SERVER_NAME}
 fi
-echo "Use Authentication URL Server : $AZUREAD_SERVER_URL"
+echo "Use Authentication URL Server: $AZUREAD_SERVER_URL"
 
 
-RESULT=$(curl -X POST -H "Content-Type: application/x-www-form-urlencoded" \
+RESULT=$(curl --silent -X POST -H "Content-Type: application/x-www-form-urlencoded" \
   -d "client_id=$AZUREAD_CLIENT_ID&scope=$AZUREAD_CLIENT_ID%2F.default&client_secret=$AZUREAD_CLIENT_SECRET&grant_type=client_credentials" \
   "$AZUREAD_SERVER_URL/oauth2/v2.0/token")
 
-
-echo "Retrieve this Token : $RESULT"
-echo "-------------------------------------------"  
+echo "-------------------------------------------"
 echo "Open a browser at this URL : https://jwt.ms"
 echo "-------------------------------------------"
 echo " Copy paste the id_token : "
-echo $RESULT | sed "s/.*access_token\"://g"
+echo ${RESULT//\}} | sed "s/.*access_token\"://g" |tr -d \"
 echo "====> "
 echo " Verify this fields exists in your Token :"
 echo " ver = should be 2.0. "
