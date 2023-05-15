@@ -222,87 +222,87 @@ After activating your account by email, you should have access to your Aure AD i
 
 7. Check the configuration.
 
-     Download the [azuread-odm-script.zip](azuread-odm-script.zip) file to your machine and unzip it in your working directory. This .zip file contains scripts and templates to verify and set up ODM.
+Download the [azuread-odm-script.zip](azuread-odm-script.zip) file to your machine and unzip it in your working directory. This .zip file contains scripts and templates to verify and set up ODM.
 
-    7.1 Verify the Client Credential Token
+7.1 Verify the Client Credential Token
 
-     You can request an access token using the Client-Credentials flow to verify the token format.
-     This token is used for the deployment between Decision Cennter and the Decision Server console:
+You can request an access token using the Client-Credentials flow to verify the token format.
+This token is used for the deployment between Decision Cennter and the Decision Server console:
 
-    ```shell
-    $ ./get-client-credential-token.sh -i <CLIENT_ID> -x <CLIENT_SECRET> -n <TENANT_ID>
-    ```
+```shell
+$ ./get-client-credential-token.sh -i <CLIENT_ID> -x <CLIENT_SECRET> -n <TENANT_ID>
+```
 
-    Where:
+Where:
 
-    - *TENANT_ID* and *CLIENT_ID* have been obtained from 'Retrieve Tenant and Client information' section.
-    - *CLIENT_SECRET* is listed in your ODM Application, section **General** / **Client Credentials**
+- *TENANT_ID* and *CLIENT_ID* have been obtained from 'Retrieve Tenant and Client information' section.
+- *CLIENT_SECRET* is listed in your ODM Application, section **General** / **Client Credentials**
 
-    You should get a token and by introspecting the value with [this online tool](https://jwt.ms) or with some [JWT cli](https://github.com/mike-engel/jwt-cli) you should get:
+You should get a token and by introspecting the value with [this online tool](https://jwt.ms) or with some [JWT cli](https://github.com/mike-engel/jwt-cli) you should get:
 
-    **Token header**
-    ```json
-    {
-      "typ": "JWT",
-      "alg": "RS256",
-      "kid": "-KI3Q9nNR7bRofxmeZoXqbHZGew"
-    }
-    ```
+**Token header**
+```json
+{
+"typ": "JWT",
+"alg": "RS256",
+"kid": "-KI3Q9nNR7bRofxmeZoXqbHZGew"
+}
+```
 
-    **Token claims**
-    ```json
-    {
-      "aud": "<CLIENT_ID>",
-      ...
-      "iss": "https://login.microsoftonline.com/<TENANT_ID>/v2.0",
-      ...
-      "ver": "2.0"
-    }
-    ```
+**Token claims**
+```json
+{
+"aud": "<CLIENT_ID>",
+...
+"iss": "https://login.microsoftonline.com/<TENANT_ID>/v2.0",
+...
+"ver": "2.0"
+}
+```
 
-    - *ver*: should be 2.0. otherwise you should verify the previous step **Manifest change**
-    - *aud*: should be your CLIENT_ID
-    - *iss*: should end with 2.0. otherwise you should verify the previous step **Manifest change**
+- *aud*: should be your CLIENT_ID
+- *iss*: should end with 2.0. otherwise you should verify the previous step **Manifest change**
+- *ver*: should be 2.0. otherwise you should verify the previous step **Manifest change**
 
-    7.2 Verify the Client Password Token.
+7.2 Verify the Client Password Token.
 
-   To check that it has been correctly taken into account, you can request an access token using the Client password flow.
-   This token is used for the invocation of the ODM components like Decision Center, Decision Servcer console, and the invocation of the Decision Server Runtime REST API.
+To check that it has been correctly taken into account, you can request an access token using the Client password flow.
+This token is used for the invocation of the ODM components like Decision Center, Decision Servcer console, and the invocation of the Decision Server Runtime REST API.
 
-    ```shell
-    $ ./get-user-password-token.sh -i <CLIENT_ID> -x <CLIENT_SECRET> -n <TENANT_ID> -u <USERNAME> -p <PASSWORD>
-    ```
+```shell
+$ ./get-user-password-token.sh -i <CLIENT_ID> -x <CLIENT_SECRET> -n <TENANT_ID> -u <USERNAME> -p <PASSWORD>
+```
 
-   Where:
+Where:
 
-    - *TENANT_ID* and *CLIENT_ID* have been obtained from 'Retrieve Tenant and Client information' section.
-    - *CLIENT_SECRET* is listed in your ODM Application, section **General** / **Client Credentials**
-    - *USERNAME* *PASSWORD* have been created from 'Create at least one user that belongs to this new group.' section.
+- *TENANT_ID* and *CLIENT_ID* have been obtained from 'Retrieve Tenant and Client information' section.
+- *CLIENT_SECRET* is listed in your ODM Application, section **General** / **Client Credentials**
+- *USERNAME* *PASSWORD* have been created from 'Create at least one user that belongs to this new group.' section.
 
-     By introspecting the id_token value with this online tool [https://jwt.ms](https://jwt.ms), you should get:
+By introspecting the id_token value with this online tool [https://jwt.ms](https://jwt.ms), you should get:
 
-    ```json
-    {
-      ...
-      "iss": "https://login.microsoftonline.com/<TENANT_ID>/v2.0",
-      ...
-      "email": "<USERNAME>",
-      "groups": [
-        "<GROUP>"
-      ],
-      ...
-      "ver": "2.0"
-   }
-    ```
+```json
+{
+...
+"iss": "https://login.microsoftonline.com/<TENANT_ID>/v2.0",
+...
+"email": "<USERNAME>",
+"groups": [
+  "<GROUP>"
+],
+...
+"ver": "2.0"
+}
+```
 
-    Verify:
-    - *email* : should be present. Otherwise you should verify the creation of your user and fill the Email field.
-    - * : should be present. Otherwise you should verify the creation of your user and fill the Email field.
-    - *ver* : should be 2.0. Otherwise you should verify the previous step **Manifest change**
-    - *aud* : should be your CLIENT_ID
-    - *iss* : should end with 2.0. Otherwise you should verify the previous step **Manifest change**
+Verify:
+- *email* : should be present. Otherwise you should verify the creation of your user and fill the Email field.
+- * : should be present. Otherwise you should verify the creation of your user and fill the Email field.
+- *ver* : should be 2.0. Otherwise you should verify the previous step **Manifest change**
+- *aud* : should be your CLIENT_ID
+- *iss* : should end with 2.0. Otherwise you should verify the previous step **Manifest change**
 
-  > If this command failed, try to log in to the [Azure Portal](https://portal.azure.com/). You may have to enable 2FA and/or change the password for the first time.
+> If this command failed, try to log in to the [Azure Portal](https://portal.azure.com/). You may have to enable 2FA and/or change the password for the first time.
 
 # Deploy ODM on a container configured with Azure AD (Part 2)
 
