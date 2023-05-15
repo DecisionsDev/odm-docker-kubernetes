@@ -151,13 +151,13 @@ After activating your account by email, you should have access to your Aure AD i
 
 1. Create the *ODM application*.
 
-  In **Azure Active Directory** / **App registration**, click **New Registration**:
+    In **Azure Active Directory** / **App registration**, click **New Registration**:
 
-  * Name: **ODM Application**
-  * Supported account types / Who can use this application or access this API?: select `Accounts in this organizational directory only (Default Directory only - Single tenant)`
-  * Click **Register**
+    * Name: **ODM Application**
+    * Supported account types / Who can use this application or access this API?: select `Accounts in this organizational directory only (Default Directory only - Single tenant)`
+    * Click **Register**
 
-  ![New Web Application](/images/AzureAD/RegisterApp.png)
+    ![New Web Application](/images/AzureAD/RegisterApp.png)
 
 2. Generate an OpenID client secret.
 
