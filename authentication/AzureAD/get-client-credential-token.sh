@@ -67,12 +67,12 @@ RESULT=$(curl --silent -X POST -H "Content-Type: application/x-www-form-urlencod
   -d "client_id=$AZUREAD_CLIENT_ID&scope=$AZUREAD_CLIENT_ID%2F.default&client_secret=$AZUREAD_CLIENT_SECRET&grant_type=client_credentials" \
   "$AZUREAD_SERVER_URL/oauth2/v2.0/token")
 
-echo "-------------------------------------------"
-echo "Open a browser at this URL : https://jwt.ms"
-echo "-------------------------------------------"
-echo " Copy paste the id_token : "
+echo "============================================="
+echo "1. Open a browser at this URL: https://jwt.ms"
+echo "============================================="
+echo "2. Copy paste the id_token:"
 echo ${RESULT//\}} | sed "s/.*access_token\"://g" |tr -d \"
-echo "====> "
-echo " Verify this fields exists in your Token :"
-echo " ver = should be 2.0. "
-echo " iss = should contains the v2.0 suffix"
+echo "============================================="
+echo "3. Verify these fields exist in your token:"
+echo "   - iss = should contains the v2.0 suffix"
+echo "   - ver = should be 2.0"
