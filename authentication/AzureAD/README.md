@@ -138,6 +138,10 @@ After activating your account by email, you should have access to your Aure AD i
       ![New User Basics](/images/AzureAD/NewUserBasics.png)
       ![New User Assignments](/images/AzureAD/NewUserAssignments.png)
 
+      * Click the **myodmuser** user previously created
+        * Edit properties
+        * Fill the email field with *myodmuser*@YOURDOMAIN
+
       * Try to log in to the [azure portal](https://portal.azure.com/) with the user principal name.
        This may require to enable 2FA and/or change the password for the first time.
 
@@ -181,9 +185,10 @@ After activating your account by email, you should have access to your Aure AD i
     * Check Email
     * Click Add
 
-  * Turn on Microsoft Graph email permission
-    * Check Turn on the Microsoft Graph email permission
-    * Click Add
+    * Turn on Microsoft Graph email permission
+      * Check Turn on the Microsoft Graph email permission
+      * Click Add
+
   * Add Group Claim
     * Click +Add groups claim
     * Check Security Groups
@@ -192,7 +197,8 @@ After activating your account by email, you should have access to your Aure AD i
 4. API Permissions.
 
     In Menu **Azure Active Directory** / **App Registration**, click **ODM Application**, and then click **API Permissions**.
-    * Click Grant Admin Consent for **YourOrg**
+
+    * Click Grant Admin Consent for Default Directory
 
 5. Manifest change.
 
