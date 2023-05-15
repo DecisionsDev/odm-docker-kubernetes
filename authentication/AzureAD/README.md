@@ -167,7 +167,10 @@ After activating your account by email, you should have access to your Aure AD i
     * Click + New Client Secret
       * Description: `For ODM integration`
       * Click Add
+
    * Take note of the **Value**. It will be referenced as `CLIENT_SECRET` in the next steps.
+
+   >Important: This client secret can not be revealed later. If you forgot to take note of it, you'll have to create another one.
 
 3. Add Claims.
 
