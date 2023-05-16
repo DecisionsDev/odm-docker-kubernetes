@@ -238,7 +238,7 @@ After activating your account by email, you should have access to your Aure AD i
     - *TENANT_ID* and *CLIENT_ID* have been obtained from 'Retrieve Tenant and Client information' section.
     - *CLIENT_SECRET* is listed in your ODM Application, section **General** / **Client Credentials**
 
-    You should get a token and by introspecting the value with [this online tool](https://jwt.ms) or with some [JWT cli](https://github.com/mike-engel/jwt-cli) you should get:
+    You should get a token and by introspecting its value with [this online tool](https://jwt.ms) or with some [JWT cli](https://github.com/mike-engel/jwt-cli) you should get:
 
     **Token header**
     ```json
@@ -266,7 +266,8 @@ After activating your account by email, you should have access to your Aure AD i
 
     7.2 Verify the Client Password Token.
 
-   To check that it has been correctly taken into account, you can request an access token using the Client password flow.
+   To check that it has been correctly taken into account, you can request an ID token using the Client password flow.
+
    This token is used for the invocation of the ODM components like Decision Center, Decision Servcer console, and the invocation of the Decision Server Runtime REST API.
 
     ```shell
@@ -277,9 +278,9 @@ After activating your account by email, you should have access to your Aure AD i
 
     - *TENANT_ID* and *CLIENT_ID* have been obtained from 'Retrieve Tenant and Client information' section.
     - *CLIENT_SECRET* is listed in your ODM Application, section **General** / **Client Credentials**
-    - *USERNAME* *PASSWORD* have been created from 'Create at least one user that belongs to this new group.' section.
+    - *USERNAME* and *PASSWORD* have been created from 'Create at least one user that belongs to this new group.' section.
 
-     By introspecting the id_token value with this online tool [https://jwt.ms](https://jwt.ms), you should get:
+     By introspecting the token value with this online tool [https://jwt.ms](https://jwt.ms), you should get:
 
     ```json
     {
@@ -347,10 +348,12 @@ After activating your account by email, you should have access to your Aure AD i
     ```
 
     Introspecting the Azure AD login.microsoftonline.com certificate, you can see it has been signed by the Digicert Root CA authorithy.
-    So we will also add the [Digicert Root CA certificate](resources/digicert.crt):
+
+    So we will also add the DigiCert Global Root CA from [this page](https://www.digicert.com/kb/digicert-root-certificates.htm):
 
     ```shell
-    kubectl create secret generic digicert-secret --from-file=tls.crt=digicert.crt
+    curl --silent --remote-name https://cacerts.digicert.com/DigiCertGlobalRootCA.crt.pem
+    kubectl create secret generic digicert-secret --from-file=tls.crt=DigiCertGlobalRootCA.crt.pem
     ```
 
 2. Generate the ODM configuration file for Azure AD.
