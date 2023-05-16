@@ -310,17 +310,17 @@ You can find more information and use cases on [this page](https://www.ibm.com/d
 After a couple of minutes, the ALB reflects the Ingress configuration. You will be able to access the IBM License Service by retrieving the URL with this command:
 
 ```bash
-export LICENSING_URL=$(kubectl get ingress ibm-licensing-service-instance -n ibm-common-services -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+export LICENSING_URL=$(kubectl get ingress ibm-licensing-service-instance -n ibm-common-services -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')/ibm-licensing-service-instance
 export TOKEN=$(kubectl get secret ibm-licensing-token -n ibm-common-services -o jsonpath='{.data.token}' |base64 -d)
 ```
 
 > **Note**
 > If `LICENSING_URL` is empty, take a look at the [troubleshooting](#troubleshooting) section.
 
-You can access the `http://${LICENSING_URL}/ibm-licensing-service-instance/status?token=${TOKEN}` URL to view the licensing usage or retrieve the licensing report .zip file by running:
+You can access the `http://${LICENSING_URL}/status?token=${TOKEN}` URL to view the licensing usage or retrieve the licensing report .zip file by running:
 
 ```bash
-curl "http://${LICENSING_URL}/ibm-licensing-service-instance/snapshot?token=${TOKEN}" --output report.zip
+curl "http://${LICENSING_URL}/snapshot?token=${TOKEN}" --output report.zip
 ```
 
 ## Troubleshooting
