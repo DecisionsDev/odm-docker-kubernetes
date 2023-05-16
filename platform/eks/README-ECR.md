@@ -43,12 +43,12 @@ aws ecr create-repository --repository-name odm-decisionserverconsole --image-sc
     $ mkdir ODM-PPA
     $ cd ODM-PPA
     $ tar zxvf PPA_NAME.tar.gz
-    charts/ibm-odm-prod-22.2.0.tgz
-    images/odm-decisionserverconsole_8.11.1.0-amd64.tar.gz
-    images/odm-decisionserverruntime_8.11.1.0-amd64.tar.gz
-    images/odm-decisionrunner_8.11.1.0-amd64.tar.gz
-    images/odm-decisioncenter_8.11.1.0-amd64.tar.gz
-    images/dbserver_8.11.1.0-amd64.tar.gz
+    charts/ibm-odm-prod-23.1.0.tgz
+    images/odm-decisionserverconsole_8.12.0.0-amd64.tar.gz
+    images/odm-decisionserverruntime_8.12.0.0-amd64.tar.gz
+    images/odm-decisionrunner_8.12.0.0-amd64.tar.gz
+    images/odm-decisioncenter_8.12.0.0-amd64.tar.gz
+    images/dbserver_8.12.0.0-amd64.tar.gz
     manifest.json
     manifest.yaml
     ```
@@ -71,21 +71,21 @@ aws ecr create-repository --repository-name odm-decisionserverconsole --image-sc
 - Tag the images to the ECR registry previously created
 
     ```bash
-    docker tag dbserver:8.11.1.0-amd64 ${AWSACCOUNTID}.dkr.ecr.${REGION}.amazonaws.com/dbserver:8.11.1.0-amd64
-    docker tag odm-decisioncenter:8.11.1.0-amd64 ${AWSACCOUNTID}.dkr.ecr.${REGION}.amazonaws.com/odm-decisioncenter:8.11.1.0-amd64
-    docker tag odm-decisionserverruntime:8.11.1.0-amd64 ${AWSACCOUNTID}.dkr.ecr.${REGION}.amazonaws.com/odm-decisionserverruntime:8.11.1.0-amd64
-    docker tag odm-decisionserverconsole:8.11.1.0-amd64 ${AWSACCOUNTID}.dkr.ecr.${REGION}.amazonaws.com/odm-decisionserverconsole:8.11.1.0-amd64
-    docker tag odm-decisionrunner:8.11.1.0-amd64 ${AWSACCOUNTID}.dkr.ecr.${REGION}.amazonaws.com/odm-decisionrunner:8.11.1.0-amd64
+    docker tag dbserver:8.12.0.0-amd64 ${AWSACCOUNTID}.dkr.ecr.${REGION}.amazonaws.com/dbserver:8.12.0.0-amd64
+    docker tag odm-decisioncenter:8.12.0.0-amd64 ${AWSACCOUNTID}.dkr.ecr.${REGION}.amazonaws.com/odm-decisioncenter:8.12.0.0-amd64
+    docker tag odm-decisionserverruntime:8.12.0.0-amd64 ${AWSACCOUNTID}.dkr.ecr.${REGION}.amazonaws.com/odm-decisionserverruntime:8.12.0.0-amd64
+    docker tag odm-decisionserverconsole:8.12.0.0-amd64 ${AWSACCOUNTID}.dkr.ecr.${REGION}.amazonaws.com/odm-decisionserverconsole:8.12.0.0-amd64
+    docker tag odm-decisionrunner:8.12.0.0-amd64 ${AWSACCOUNTID}.dkr.ecr.${REGION}.amazonaws.com/odm-decisionrunner:8.12.0.0-amd64
     ```
 
 - Push the images to the ECR registry
 
     ```bash
-    docker push ${AWSACCOUNTID}.dkr.ecr.${REGION}.amazonaws.com/dbserver:8.11.1.0-amd64
-    docker push ${AWSACCOUNTID}.dkr.ecr.${REGION}.amazonaws.com/odm-decisioncenter:8.11.1.0-amd64
-    docker push ${AWSACCOUNTID}.dkr.ecr.${REGION}.amazonaws.com/odm-decisionserverconsole:8.11.1.0-amd64
-    docker push ${AWSACCOUNTID}.dkr.ecr.${REGION}.amazonaws.com/odm-decisionserverruntime:8.11.1.0-amd64
-    docker push ${AWSACCOUNTID}.dkr.ecr.${REGION}.amazonaws.com/odm-decisionrunner:8.11.1.0-amd64
+    docker push ${AWSACCOUNTID}.dkr.ecr.${REGION}.amazonaws.com/dbserver:8.12.0.0-amd64
+    docker push ${AWSACCOUNTID}.dkr.ecr.${REGION}.amazonaws.com/odm-decisioncenter:8.12.0.0-amd64
+    docker push ${AWSACCOUNTID}.dkr.ecr.${REGION}.amazonaws.com/odm-decisionserverconsole:8.12.0.0-amd64
+    docker push ${AWSACCOUNTID}.dkr.ecr.${REGION}.amazonaws.com/odm-decisionserverruntime:8.12.0.0-amd64
+    docker push ${AWSACCOUNTID}.dkr.ecr.${REGION}.amazonaws.com/odm-decisionrunner:8.12.0.0-amd64
     ```
 
 #### e. Create a pull secret for the ECR registry
@@ -103,7 +103,7 @@ kubectl create secret docker-registry ecrodm \
 When you reach the step [Install an IBM Operational Decision Manager release](README.md#5-install-an-ibm-operational-decision-manager-release-10-min), if you want to move the ODM pulled images from the IBM Entitled Registry to the ECR registry, choose the relevant .yaml file depending on whether you want to try the NGINX or the ALB Ingress controller, the internal database or the RDS PostgreSQL database. All you have to do is to override the `image.pullSecrets` and `image.repository` properties when you install the Helm chart:
 
 ```bash
-helm install mycompany ibmcharts/ibm-odm-prod --version 22.2.0 \
+helm install mycompany ibm-helm/ibm-odm-prod --version 23.1.0 \
              --set image.pullSecrets=ecrodm \
              --set image.repository=${AWSACCOUNTID}.dkr.ecr.${REGION}.amazonaws.com \
              --values eks-values.yaml
