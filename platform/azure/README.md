@@ -111,7 +111,7 @@ After a few minutes, the command completes and returns JSON-formatted informatio
 
 ```shell
 az group update --name <noderesourcegroup> \
-    --tags Owner=<email> Team=DBA Usage=demo Usage_desc="Azure customers support" Delete_date=2022-12-31
+    --tags Owner=<email> Team=DBA Usage=demo Usage_desc="Azure customers support" Delete_date=2023-12-31
 ```
        
 ### Set up your environment to this cluster
@@ -262,8 +262,8 @@ Check that you can access the ODM charts:
 
 ```shell
 helm search repo ibm-odm-prod
-NAME                  	CHART VERSION	APP VERSION	DESCRIPTION
-ibmcharts/ibm-odm-prod  22.2.0          8.11.1.0        IBM Operational Decision Manager
+NAME                        	CHART VERSION	APP VERSION	DESCRIPTION
+ibmcharts/ibm-odm-prod      	23.1.0       	8.12.0.0   	IBM Operational Decision Manager  License By in...
 ```
 
 ### Create the database credentials secret for Azure PostgreSQL
@@ -311,9 +311,9 @@ az aks update --name <cluster> --resource-group <resourcegroup> --load-balancer-
 You can now install the product:
 
 ```shell
-helm install <release> ibmcharts/ibm-odm-prod --version 22.2.0 \
+helm install <release> ibmcharts/ibm-odm-prod --version 23.1.0 \
         --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=<registrysecret> \
-        --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.11.1.0} --set service.type=LoadBalancer \
+        --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.12.0.0} --set service.type=LoadBalancer \
         --set externalDatabase.type=postgres \
         --set externalDatabase.serverName=<postgresqlserver>.postgres.database.azure.com \
         --set externalDatabase.databaseName=postgres \
@@ -355,31 +355,26 @@ kubernetes                                  ClusterIP      10.0.0.1       <none>
 <release>-odm-decisionserverruntime         LoadBalancer   10.0.177.153   xxx.xxx.xxx.xxx   9443:31921/TCP   22m
 ```
 
-You can then open a browser on https://xxx.xxx.xxx.xxx:9443 to access Decision Server console, Decision Server Runtime, and Decision Runner, and on https://xxx.xxx.xxx.xxx:9453 to access Decision Center.
+You can then open a browser on https://xxx.xxx.xxx.xxx:9453 to access Decision Center, and on https://xxx.xxx.xxx.xxx:9443 to access Decision Server console, Decision Server Runtime, and Decision Runner.
 
 ## Create an NGINX Ingress controller
 
 Installing an NGINX Ingress controller allows you to access ODM components through a single external IP address instead of the different IP addresses as seen above.  It is also mandatory to retrieve license usage through the IBM License Service.
 
-1. Add the official stable repository.
+1. Use Helm to [deploy the NGINX Ingress controller](https://kubernetes.github.io/ingress-nginx/deploy/):
 
     ```shell
-    helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+    helm upgrade --install ingress-nginx ingress-nginx \
+      --repo https://kubernetes.github.io/ingress-nginx
     ```
 
-2. Use Helm to deploy the NGINX Ingress controller.
-
-    ```shell
-    helm install nginx-ingress ingress-nginx/ingress-nginx
-    ```
-
-3. Get the Ingress controller external IP address.
+2. Get the Ingress controller external IP address:
 
     ```shell
     kubectl get service -l app.kubernetes.io/name=ingress-nginx
-    NAME                                               TYPE           CLUSTER-IP     EXTERNAL-IP    PORT(S)                      AGE
-    nginx-ingress-ingress-nginx-controller             LoadBalancer   10.0.191.246   <externalip>   80:30222/TCP,443:31103/TCP   3m8s
-    nginx-ingress-ingress-nginx-controller-admission   ClusterIP      10.0.214.250   <none>         443/TCP                      3m8s
+    NAME                                 TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)                      AGE
+    ingress-nginx-controller             LoadBalancer   10.0.78.246    20.19.105.130   80:32208/TCP,443:30249/TCP   2m12s
+    ingress-nginx-controller-admission   ClusterIP      10.0.229.164   <none>          443/TCP                      2m12s
     ```
 
 ## (Optional) Install an ODM Helm release and expose it with the NGINX Ingress controller (10 min)
@@ -391,9 +386,9 @@ You might want to access ODM components through a single external IP address.
 You can reuse the secret with TLS certificate created [above](#manage-adigital-certificate-10-min):
 
 ```shell
-helm install <release> ibmcharts/ibm-odm-prod --version 22.1.0 \
+helm install <release> ibmcharts/ibm-odm-prod --version 23.1.0 \
         --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=<registrysecret> \
-        --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.11.1.0} \
+        --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.12.0.0} \
         --set externalDatabase.type=postgres \
         --set externalDatabase.serverName=<postgresqlserver>.postgres.database.azure.com \
         --set externalDatabase.databaseName=postgres \
@@ -420,15 +415,13 @@ helm install <release> ibmcharts/ibm-odm-prod --version 22.1.0 \
 Check that ODM services are in NodePort type:
 
 ```shell
-kubectl get services
+kubectl get services -l app.kubernetes.io/name=ibm-odm-prod
 NAME                                               TYPE           CLUSTER-IP     EXTERNAL-IP    PORT(S)                      AGE
 mycompany-odm-decisioncenter                       NodePort       10.0.178.43    <none>         9453:32720/TCP               16m
 mycompany-odm-decisionrunner                       NodePort       10.0.171.46    <none>         9443:30223/TCP               16m
 mycompany-odm-decisionserverconsole                NodePort       10.0.106.222   <none>         9443:30280/TCP               16m
 mycompany-odm-decisionserverconsole-notif          ClusterIP      10.0.115.118   <none>         1883/TCP                     16m
 mycompany-odm-decisionserverruntime                NodePort       10.0.232.212   <none>         9443:30082/TCP               16m
-nginx-ingress-ingress-nginx-controller             LoadBalancer   10.0.191.246   51.103.3.254   80:30222/TCP,443:31103/TCP   3d
-nginx-ingress-ingress-nginx-controller-admission   ClusterIP      10.0.214.250   <none>         443/TCP                      3d
 ```
 
 ODM services are available through the following URLs:
