@@ -287,7 +287,7 @@ openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mycompany.key \
         -addext "subjectAltName = DNS:myodmcompany.com"
 ```
 
->Note:  You can use -addext only with actual OpenSSL, not with LibreSSL (yet).
+> Note: You can use -addext only with actual OpenSSL, not with LibreSSL (yet).
 
 2. Create a Kubernetes secret with the certificate.
 
@@ -371,7 +371,7 @@ Installing an NGINX Ingress controller allows you to access ODM components throu
 2. Get the Ingress controller external IP address:
 
     ```shell
-    kubectl get service -l app.kubernetes.io/name=ingress-nginx
+    kubectl get service -l app.kubernetes.io/name=ingress-nginx -n ingress-nginx
     NAME                                 TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)                      AGE
     ingress-nginx-controller             LoadBalancer   10.0.78.246    20.19.105.130   80:32208/TCP,443:30249/TCP   2m12s
     ingress-nginx-controller-admission   ClusterIP      10.0.229.164   <none>          443/TCP                      2m12s
@@ -400,8 +400,7 @@ helm install <release> ibmcharts/ibm-odm-prod --version 23.1.0 \
         --set license=true --set usersPassword=<password>
 ```
 
-> **Note**
-> By default, the NGINX Ingress controller does not enable sticky session. If you want to use sticky session to connect to DC, refer to [Using sticky session for Decision Center connection](../../contrib/sticky-session/README.md)
+> Note: By default, the NGINX Ingress controller does not enable sticky session. If you want to use sticky session to connect to DC, refer to [Using sticky session for Decision Center connection](../../contrib/sticky-session/README.md)
 
 ### Edit your /etc/hosts
 
