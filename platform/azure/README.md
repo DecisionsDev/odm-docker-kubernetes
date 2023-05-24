@@ -271,21 +271,20 @@ ibmcharts/ibm-odm-prod      	23.1.0       	8.12.0.0   	IBM Operational Decision 
 To secure the access to the database, create a secret that encrypts the database user and password before you install the Helm release.
 
 ```shell
-kubectl create secret generic <odmdbsecret> \
-  --from-literal=db-user=myadmin@<postgresqlserver> \
-  --from-literal=db-password='passw0rd!'
+kubectl create secret generic <odmdbsecret> --from-literal=db-user=myadmin@<postgresqlserver> \
+                                            --from-literal=db-password='passw0rd!'
 ```
 
 ### Manage a digital certificate (10 min)
 
 1. (Optional) Generate a self-signed certificate.
 
-If you do not have a trusted certificate, you can use OpenSSL and other cryptography and certificate management libraries to generate a certificate file and a private key, to define the domain name, and to set the expiration date. The following command creates a self-signed certificate (.crt file) and a private key (.key file) that accept the domain name *mycompany.com*. The expiration is set to 1000 days:
+If you do not have a trusted certificate, you can use OpenSSL and other cryptography and certificate management libraries to generate a certificate file and a private key, to define the domain name, and to set the expiration date. The following command creates a self-signed certificate (.crt file) and a private key (.key file) that accept the domain name *myodmcompany.com*. The expiration is set to 1000 days:
 
 ```shell
 openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mycompany.key \
-        -out mycompany.crt -subj "/CN=mycompany.com/OU=it/O=mycompany/L=Paris/C=FR" \
-        -addext "subjectAltName = DNS:mycompany.com"
+        -out mycompany.crt -subj "/CN=myodmcompany.com/OU=it/O=mycompany/L=Paris/C=FR" \
+        -addext "subjectAltName = DNS:myodmcompany.com"
 ```
 
 >Note:  You can use -addext only with actual OpenSSL, not with LibreSSL (yet).
@@ -361,12 +360,13 @@ You can then open a browser on https://xxx.xxx.xxx.xxx:9453 to access Decision C
 
 Installing an NGINX Ingress controller allows you to access ODM components through a single external IP address instead of the different IP addresses as seen above.  It is also mandatory to retrieve license usage through the IBM License Service.
 
-1. Use Helm to [deploy the NGINX Ingress controller](https://kubernetes.github.io/ingress-nginx/deploy/):
+1. Use the official YAML manifest:
 
     ```shell
-    helm upgrade --install ingress-nginx ingress-nginx \
-      --repo https://kubernetes.github.io/ingress-nginx
+    kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.7.1/deploy/static/provider/cloud/deploy.yaml
     ```
+
+    > Note: The version will probably change after the publication of our documentation so please refer to the actual [documentation](https://kubernetes.github.io/ingress-nginx/deploy/#azure)!
 
 2. Get the Ingress controller external IP address:
 
@@ -395,7 +395,7 @@ helm install <release> ibmcharts/ibm-odm-prod --version 23.1.0 \
         --set externalDatabase.port=5432 \
         --set externalDatabase.secretCredentials=<odmdbsecret> \
         --set service.ingress.enabled=true --set service.ingress.tlsSecretRef=<mycompanytlssecret> \
-        --set service.ingress.tlsHosts={mycompany.com} --set service.ingress.host=mycompany.com \
+        --set service.ingress.tlsHosts={myodmcompany.com} --set service.ingress.host=myodmcompany.com \
         --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"\,"nginx.ingress.kubernetes.io/backend-protocol: HTTPS"} \
         --set license=true --set usersPassword=<password>
 ```
@@ -407,7 +407,7 @@ helm install <release> ibmcharts/ibm-odm-prod --version 23.1.0 \
 
 ```shell
 # vi /etc/hosts
-<externalip> mycompany.com
+<externalip> myodmcompany.com
 ```
 
 ### Access the ODM services
@@ -428,10 +428,10 @@ ODM services are available through the following URLs:
 
 | SERVICE NAME | URL | USERNAME/PASSWORD
 | --- | --- | ---
-| Decision Server Console | https://mycompany.com/res | odmAdmin/\<password\>
-| Decision Center | https://mycompany.com/decisioncenter | odmAdmin/\<password\>
-| Decision Server Runtime | https://mycompany.com/DecisionService | odmAdmin/\<password\>
-| Decision Runner | https://mycompany.com/DecisionRunner | odmAdmin/\<password\>
+| Decision Server Console | https://myodmcompany.com/res | odmAdmin/\<password\>
+| Decision Center | https://myodmcompany.com/decisioncenter | odmAdmin/\<password\>
+| Decision Server Runtime | https://myodmcompany.com/DecisionService | odmAdmin/\<password\>
+| Decision Runner | https://myodmcompany.com/DecisionRunner | odmAdmin/\<password\>
 
 Where:
 
