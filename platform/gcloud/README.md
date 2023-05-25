@@ -195,7 +195,7 @@ Take note of the secret name so that you can set it for the *image.pullSecrets* 
 #### c. Add the public IBM Helm charts repository
 
 ```
-helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm
+helm repo add ibm-helm https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm
 helm repo update
 ```
 
@@ -204,7 +204,7 @@ helm repo update
 ```
 helm search repo ibm-odm-prod
 NAME                  	CHART VERSION   APP VERSION     DESCRIPTION
-ibmcharts/ibm-odm-prod	22.2.0          8.11.1.0        IBM Operational Decision Manager
+ibm-helm/ibm-odm-prod	23.1.0          8.12.0.0        IBM Operational Decision Manager
 ```
 
 ### 4. Manage a digital certificate (2 min)
@@ -247,7 +247,7 @@ It automatically creates an HTTPS GKE load balancer. We will disable the ODM int
 - Install the chart from IBM's public Helm charts repository:
 
     ```
-    helm install <release> ibmcharts/ibm-odm-prod --version 22.2.0 -f gcp-values.yaml
+    helm install <release> ibm-helm/ibm-odm-prod --version 23.1.0 -f gcp-values.yaml
     ```
 
   > NOTE: You might prefer to access ODM components through the NGINX Ingress controller instead of using the IP addresses. If so, please follow [these instructions](README_NGINX.md).

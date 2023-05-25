@@ -398,58 +398,58 @@ After activating your account by email, you should have access to your Aure AD i
 
 ### Add the public IBM Helm charts repository
 
-```shell
-helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm
-helm repo update
-```
+  ```shell
+  helm repo add ibm-helm https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm
+  helm repo update
+  ```
 
 ### Check that you can access the ODM chart
 
-```shell
-helm search repo ibm-odm-prod
-NAME                  	CHART VERSION	APP VERSION	DESCRIPTION
-ibmcharts/ibm-odm-prod	23.1.0       	8.12.0.0   	IBM Operational Decision Manager
-```
+  ```shell
+  helm search repo ibm-odm-prod
+  NAME                  	CHART VERSION	APP VERSION	DESCRIPTION                     
+  ibm-helm/ibm-odm-prod	        23.1.0       	8.12.0.0   	IBM Operational Decision Manager
+  ```
 
 ### Run the `helm install` command
 
 You can now install the product. We will use the PostgreSQL internal database and disable the data persistence (`internalDatabase.persistence.enabled=false`) to avoid any platform complexity concerning persistent volume allocation.
 
 #### a. Installation on OpenShift using Routes
-
-See the [Preparing to install](https://www.ibm.com/docs/en/odm/8.11.1?topic=production-preparing-install-operational-decision-manager) documentation for additional information.
-
-```shell
-helm install my-odm-release ibmcharts/ibm-odm-prod \
-    --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
-    --set oidc.enabled=true \
-    --set license=true \
-    --set internalDatabase.persistence.enabled=false \
-    --set customization.trustedCertificateList='{ms-secret,digicert-secret}' \
-    --set customization.authSecretRef=azuread-auth-secret \
-    --set internalDatabase.runAsUser='' --set customization.runAsUser='' --set service.enableRoute=true
-```
+  
+  See the [Preparing to install](https://www.ibm.com/docs/en/odm/8.11.1?topic=production-preparing-install-operational-decision-manager) documentation for additional information.
+  
+  ```shell
+  helm install my-odm-release ibm-helm/ibm-odm-prod \
+          --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
+          --set oidc.enabled=true \
+          --set license=true \
+          --set internalDatabase.persistence.enabled=false \
+          --set customization.trustedCertificateList='{ms-secret,digicert-secret}' \
+          --set customization.authSecretRef=azuread-auth-secret \
+          --set internalDatabase.runAsUser='' --set customization.runAsUser='' --set service.enableRoute=true
+  ```
 
 #### b. Installation using Ingress
-
-Refer to the following documentation to install an NGINX Ingress Controller on:
-- [Microsoft Azure Kubernetes Service](../../platform/azure/README.md#create-a-nginx-ingress-controller)
-- [Amazon Elastic Kubernetes Service](../../platform/eks/README-NGINX.md)
-- [Google Kubernetes Engine](../../platform/gcloud/README_NGINX.md)
-
-When the NGINX Ingress Controller is ready, you can install the ODM release with:
-
-```shell
-helm install my-odm-release ibmcharts/ibm-odm-prod \
-    --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
-    --set oidc.enabled=true \
-    --set license=true \
-    --set internalDatabase.persistence.enabled=false \
-    --set customization.trustedCertificateList='{ms-secret,digicert-secret}' \
-    --set customization.authSecretRef=azuread-auth-secret \
-    --set service.ingress.enabled=true \
-    --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"\,"nginx.ingress.kubernetes.io/backend-protocol: HTTPS"}
-```
+  
+  Refer to the following documentation to install an NGINX Ingress Controller on:
+  - [Microsoft Azure Kubernetes Service](../../platform/azure/README.md#create-a-nginx-ingress-controller)
+  - [Amazon Elastic Kubernetes Service](../../platform/eks/README-NGINX.md)
+  - [Google Kubernetes Engine](../../platform/gcloud/README_NGINX.md)
+  
+  When the NGINX Ingress Controller is ready, you can install the ODM release with:
+  
+  ```
+  helm install my-odm-release ibm-helm/ibm-odm-prod \
+          --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
+          --set oidc.enabled=true \
+          --set license=true \
+          --set internalDatabase.persistence.enabled=false \
+          --set customization.trustedCertificateList='{ms-secret,digicert-secret}' \
+          --set customization.authSecretRef=azuread-auth-secret \
+          --set service.ingress.enabled=true \
+          --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"\,"nginx.ingress.kubernetes.io/backend-protocol: HTTPS"}
+  ```
 
 > **Note**
 > By default, NGINX does not enable sticky session. If you want to use sticky session to connect to DC, refer to [Using sticky session for Decision Center connection](../../contrib/sticky-session/README.md)
