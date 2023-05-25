@@ -89,7 +89,7 @@ You need the following elements:
 ### Install a Keycloak instance
 
 For this tutorial, we followed the procedure explaining how to install [Keycloak on OpenShift](https://www.keycloak.org/getting-started/getting-started-openshift).
-We tested with the Keycloak version 20.0.1.
+We tested with the Keycloak version 21.1.1.
 
 You can follow the [Get started with Keycloak on Openshift](https://www.keycloak.org/getting-started/getting-started-openshift) instructions.
 
@@ -221,7 +221,7 @@ You can also create groups and do a mapping between groups and roles. This way, 
     * Client type: **OpenID Connect**
     * Client ID: **odm**
     * Name: **ODM Application**
-    * Always display in console: On
+    * Always display in UI: On
 
     ![Create Client 1](/images/Keycloak/create_client_1.png)
     
@@ -410,7 +410,7 @@ You can also create groups and do a mapping between groups and roles. This way, 
 ### 1. Add the public IBM Helm charts repository
 
   ```shell
-  helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm
+  helm repo add ibm-helm https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm
   helm repo update
   ```
 
@@ -419,7 +419,7 @@ You can also create groups and do a mapping between groups and roles. This way, 
   ```shell
   helm search repo ibm-odm-prod
   NAME                  	CHART VERSION	APP VERSION	DESCRIPTION                     
-  ibmcharts/ibm-odm-prod	22.2.0       	8.11.1.0   	IBM Operational Decision Manager
+  ibm-helm/ibm-odm-prod	        23.1.0       	8.12.0.0   	IBM Operational Decision Manager
   ```
 
 ### 3. Run the `helm install` command
