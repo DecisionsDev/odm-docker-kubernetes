@@ -282,8 +282,8 @@ kubectl create secret generic <odmdbsecret> --from-literal=db-user=myadmin@<post
 If you do not have a trusted certificate, you can use OpenSSL and other cryptography and certificate management libraries to generate a certificate file and a private key, to define the domain name, and to set the expiration date. The following command creates a self-signed certificate (.crt file) and a private key (.key file) that accept the domain name *myodmcompany.com*. The expiration is set to 1000 days:
 
 ```shell
-openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mycompany.key \
-        -out mycompany.crt -subj "/CN=myodmcompany.com/OU=it/O=mycompany/L=Paris/C=FR" \
+openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout myodmcompany.key \
+        -out myodmcompany.crt -subj "/CN=myodmcompany.com/OU=it/O=mycompany/L=Paris/C=FR" \
         -addext "subjectAltName = DNS:myodmcompany.com"
 ```
 
@@ -292,7 +292,7 @@ openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mycompany.key \
 2. Create a Kubernetes secret with the certificate.
 
 ```shell
-kubectl create secret generic <mycompanytlssecret> --from-file=tls.crt=mycompany.crt --from-file=tls.key=mycompany.key
+kubectl create secret generic <mycompanytlssecret> --from-file=tls.crt=myodmcompany.crt --from-file=tls.key=myodmcompany.key
 ```
 
 The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://www.ibm.com/docs/en/odm/8.11.1?topic=servers-server-certificates).
