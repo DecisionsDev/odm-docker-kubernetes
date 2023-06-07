@@ -283,16 +283,16 @@ If you do not have a trusted certificate, you can use OpenSSL and other cryptogr
 
 ```shell
 openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout myodmcompany.key \
-        -out myodmcompany.crt -subj "/CN=myodmcompany.com/OU=it/O=mycompany/L=Paris/C=FR" \
+        -out myodmcompany.crt -subj "/CN=myodmcompany.com/OU=it/O=myodmcompany/L=Paris/C=FR" \
         -addext "subjectAltName = DNS:myodmcompany.com"
 ```
 
-> Note: You can use -addext only with actual OpenSSL, not with LibreSSL (yet).
+> Note: You can use -addext only with actual OpenSSL and from from LibreSSL 3.1.0.
 
 2. Create a Kubernetes secret with the certificate.
 
 ```shell
-kubectl create secret generic <mycompanytlssecret> --from-file=tls.crt=myodmcompany.crt --from-file=tls.key=myodmcompany.key
+kubectl create secret generic <myodmcompanytlssecret> --from-file=tls.crt=myodmcompany.crt --from-file=tls.key=myodmcompany.key
 ```
 
 The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://www.ibm.com/docs/en/odm/8.11.1?topic=servers-server-certificates).
@@ -318,7 +318,7 @@ helm install <release> ibmcharts/ibm-odm-prod --version 23.1.0 \
         --set externalDatabase.databaseName=postgres \
         --set externalDatabase.port=5432 \
         --set externalDatabase.secretCredentials=<odmdbsecret> \
-        --set customization.securitySecretRef=<mycompanytlssecret> \
+        --set customization.securitySecretRef=<myodmcompanytlssecret> \
         --set license=true --set usersPassword=<password>
 ```
 
@@ -394,7 +394,7 @@ helm install <release> ibmcharts/ibm-odm-prod --version 23.1.0 \
         --set externalDatabase.databaseName=postgres \
         --set externalDatabase.port=5432 \
         --set externalDatabase.secretCredentials=<odmdbsecret> \
-        --set service.ingress.enabled=true --set service.ingress.tlsSecretRef=<mycompanytlssecret> \
+        --set service.ingress.enabled=true --set service.ingress.tlsSecretRef=<myodmcompanytlssecret> \
         --set service.ingress.tlsHosts={myodmcompany.com} --set service.ingress.host=myodmcompany.com \
         --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"\,"nginx.ingress.kubernetes.io/backend-protocol: HTTPS"} \
         --set license=true --set usersPassword=<password>
@@ -415,12 +415,12 @@ Check that ODM services are in NodePort type:
 
 ```shell
 kubectl get services -l app.kubernetes.io/name=ibm-odm-prod
-NAME                                               TYPE           CLUSTER-IP     EXTERNAL-IP    PORT(S)                      AGE
-mycompany-odm-decisioncenter                       NodePort       10.0.178.43    <none>         9453:32720/TCP               16m
-mycompany-odm-decisionrunner                       NodePort       10.0.171.46    <none>         9443:30223/TCP               16m
-mycompany-odm-decisionserverconsole                NodePort       10.0.106.222   <none>         9443:30280/TCP               16m
-mycompany-odm-decisionserverconsole-notif          ClusterIP      10.0.115.118   <none>         1883/TCP                     16m
-mycompany-odm-decisionserverruntime                NodePort       10.0.232.212   <none>         9443:30082/TCP               16m
+NAME                                             TYPE           CLUSTER-IP     EXTERNAL-IP    PORT(S)                      AGE
+release-odm-decisioncenter                       NodePort       10.0.178.43    <none>         9453:32720/TCP               16m
+release-odm-decisionrunner                       NodePort       10.0.171.46    <none>         9443:30223/TCP               16m
+release-odm-decisionserverconsole                NodePort       10.0.106.222   <none>         9443:30280/TCP               16m
+release-odm-decisionserverconsole-notif          ClusterIP      10.0.115.118   <none>         1883/TCP                     16m
+release-odm-decisionserverruntime                NodePort       10.0.232.212   <none>         9443:30082/TCP               16m
 ```
 
 ODM services are available through the following URLs:
