@@ -42,7 +42,7 @@ Refer to the [the main README](README.md#b-check-the-topology) to check the depl
 
 ## Troubleshooting
 
-If your ODM instances are not running properly, please refer to [our dedicated troubleshooting page](https://www.ibm.com/docs/en/odm/8.11.1?topic=8111-troubleshooting-support).
+If your ODM instances are not running properly, please refer to [our dedicated troubleshooting page](https://ibmdocs-test.dcs.ibm.com/docs/en/odm/8.12.0?topic=8111-troubleshooting-support).
 
 # License
 

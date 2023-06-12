@@ -8,7 +8,7 @@ The ODM on Kubernetes Docker images are available in the [IBM Entitled Registry]
 
 ## Included components
 The project uses the following components:
-- [IBM Operational Decision Manager](https://www.ibm.com/docs/en/odm/8.12.0)
+- [IBM Operational Decision Manager](https://ibmdocs-test.dcs.ibm.com/docs/en/odm/8.12.0)
 - [Amazon Elastic Kubernetes Service (Amazon EKS)](https://aws.amazon.com/eks/)
 - [Amazon Relational Database Service (Amazon RDS)](https://aws.amazon.com/rds/)
 - [AWS Application Load Balancer (ALB)](https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html)
@@ -287,7 +287,7 @@ The ODM services are accessible from the following URLs:
 
 #### a. Install the IBM License Service
 
-Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cpfs?topic=software-manual-installation-without-operator-lifecycle-manager-olm) documentation.
+Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://ibmdocs-test.dcs.ibm.com/docs/en/cpfs?topic=software-manual-installation-without-operator-lifecycle-manager-olm) documentation.
 
 > **Warning**
 > Make sure you do not follow the **Creating an IBM Licensing instance** part!
@@ -300,7 +300,7 @@ Get the [licensing-instance.yaml](./licensing-instance.yaml) file and run the co
 kubectl create -f licensing-instance.yaml
 ```
 
-You can find more information and use cases on [this page](https://www.ibm.com/docs/en/cpfs?topic=software-configuration).
+You can find more information and use cases on [this page](https://ibmdocs-test.dcs.ibm.com/docs/en/cpfs?topic=software-configuration).
 
 > **Note**
 > If you choose to use the NGINX Ingress Controller, you must use the [licensing-instance-nginx.yaml](./licensing-instance-nginx.yaml) file. Refer to [Track ODM usage with the IBM License Service with NGINX Ingress Controller](README-NGINX.md#track-odm-usage-with-the-ibm-license-service-with-nginx-ingress-controller).

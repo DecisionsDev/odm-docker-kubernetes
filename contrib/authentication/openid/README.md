@@ -4,7 +4,7 @@ In the context of the IBM Cloud Pak for Business Automation, Operational Decisio
 
 ## Before you begin
 
-You must configure a basic or LDAP authentication registry for your ODM services before you can configure ODM with an OIDC provider. To understand better ODM roles, see [Understanding user roles and user groups](https://www.ibm.com/docs/cloud-paks/cp-biz-automation/21.0.x?topic=access-understanding-user-roles-user-groups).
+You must configure a basic or LDAP authentication registry for your ODM services before you can configure ODM with an OIDC provider. To understand better ODM roles, see [Understanding user roles and user groups](https://ibmdocs-test.dcs.ibm.com/docs/cloud-paks/cp-biz-automation/21.0.x?topic=access-understanding-user-roles-user-groups).
 
 ODM uses hardcoded roles with three users and three groups for each role. All authenticated users have by default the `rtsUser` role.
 
@@ -71,7 +71,7 @@ The following procedure describes how to manually configure ODM with an external
 
 3.  Provide the certificate of the OpenID server.
 
-    For more information, see [Importing the certificate of an external service](https://www.ibm.com/docs/cloud-paks/cp-biz-automation/21.0.x?topic=services-importing-certificate-external-service).
+    For more information, see [Importing the certificate of an external service](https://ibmdocs-test.dcs.ibm.com/docs/cloud-paks/cp-biz-automation/21.0.x?topic=services-importing-certificate-external-service).
 
 4.  Provide the URL of the external OpenID server.
 
@@ -209,14 +209,14 @@ If you need to add or modify a parameter to the `openidConnectClient` tag in the
     kubectl apply -f custom_resource.yaml
     ```
 
-    For more information about Liberty endpoints, see [OpenID Connect endpoint URLs](https://www.ibm.com/docs/en/was-liberty/zos?topic=connect-openid-endpoint-urls).
+    For more information about Liberty endpoints, see [OpenID Connect endpoint URLs](https://ibmdocs-test.dcs.ibm.com/docs/en/was-liberty/zos?topic=connect-openid-endpoint-urls).
 
 
 ## Results
 
-- [Optional] To use an external OIDC provider with Rule Designer, see [Configuring Rule Designer](https://www.ibm.com/docs/en/odm/8.11.1?topic=parties-configuring-rule-designer).
+- [Optional] To use an external OIDC provider with Rule Designer, see [Configuring Rule Designer](https://ibmdocs-test.dcs.ibm.com/docs/en/odm/8.12.0?topic=parties-configuring-rule-designer).
 
-  You must import the security certificate that is used in the ODM instance into Rule Designer. For more information, see [Importing a security certificate in Rule Designer](https://www.ibm.com/docs/en/cloud-paks/cp-biz-automation/21.0.x?topic=designer-importing-security-certificate-in-rule). To provide the truststore.jks file to the eclipse.ini, you can identify the ODM pods with the `oc get pods | grep odm` command, and then copy the file by running the `oc cp` command.
+  You must import the security certificate that is used in the ODM instance into Rule Designer. For more information, see [Importing a security certificate in Rule Designer](https://ibmdocs-test.dcs.ibm.com/docs/en/cloud-paks/cp-biz-automation/21.0.x?topic=designer-importing-security-certificate-in-rule). To provide the truststore.jks file to the eclipse.ini, you can identify the ODM pods with the `oc get pods | grep odm` command, and then copy the file by running the `oc cp` command.
 
   ```
   oc cp <project name>/<ODM pod name>:/config/security/truststore.jks ./truststore.jks
@@ -258,7 +258,7 @@ If you need to add or modify a parameter to the `openidConnectClient` tag in the
 
   ![ODM service API invocations](images/diag_oidc_other_interaction_api.jpg)
 
-  For more information, see [Invoking the Token Endpoint for OpenID Connect](https://www.ibm.com/docs/en/was-liberty/zos?topic=liberty-invoking-token-endpoint-openid-connect).
+  For more information, see [Invoking the Token Endpoint for OpenID Connect](https://ibmdocs-test.dcs.ibm.com/docs/en/was-liberty/zos?topic=liberty-invoking-token-endpoint-openid-connect).
 
 - The following OIDC groups provide an example of how to map these ODM roles.
   -   oidcFullAccess, a group to manage all ODM roles.
@@ -320,12 +320,12 @@ If you need to add or modify a parameter to the `openidConnectClient` tag in the
 
 ## Related information
 
-- [Configuring user access with UMS](https://www.ibm.com/docs/cloud-paks/cp-biz-automation/21.0.x?topic=access-configuring-user-ums)
+- [Configuring user access with UMS](https://ibmdocs-test.dcs.ibm.com/docs/cloud-paks/cp-biz-automation/21.0.x?topic=access-configuring-user-ums)
 
-- [Configuring user access](https://www.ibm.com/docs/cloud-paks/cp-biz-automation/21.0.x?topic=manager-configuring-user-access)
+- [Configuring user access](https://ibmdocs-test.dcs.ibm.com/docs/cloud-paks/cp-biz-automation/21.0.x?topic=manager-configuring-user-access)
 
-- [ODM configuration parameters](https://www.ibm.com/docs/cloud-paks/cp-biz-automation/21.0.x?topic=parameters-operational-decision-manager)
+- [ODM configuration parameters](https://ibmdocs-test.dcs.ibm.com/docs/cloud-paks/cp-biz-automation/21.0.x?topic=parameters-operational-decision-manager)
 
-- [Preparing to install ODM](https://www.ibm.com/docs/cloud-paks/cp-biz-automation/21.0.x?topic=capabilities-preparing-install-operational-decision-manager)
+- [Preparing to install ODM](https://ibmdocs-test.dcs.ibm.com/docs/cloud-paks/cp-biz-automation/21.0.x?topic=capabilities-preparing-install-operational-decision-manager)
 
-- [User Management Services](https://www.ibm.com/docs/en/cloud-paks/cp-biz-automation/21.0.x?topic=services-ums-single-sign)
+- [User Management Services](https://ibmdocs-test.dcs.ibm.com/docs/en/cloud-paks/cp-biz-automation/21.0.x?topic=services-ums-single-sign)
