@@ -64,7 +64,7 @@ aws ecr create-repository --repository-name odm-decisionserverconsole --image-sc
     for name in images/*.tar.gz; do docker image load --input ${name}; done
     ```
 
-   For more information, refer to the [ODM knowledge center](hhttps://ibmdocs-test.dcs.ibm.com/docs/en/odm/8.12.0?topic=production-installing-helm-release-odm).
+   For more information, refer to the [ODM knowledge center](hhttps://www.ibm.com/docs/en/odm/8.12.0?topic=production-installing-helm-release-odm).
 
 #### d. Tag and push the images to the ECR registry
 

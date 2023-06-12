@@ -14,7 +14,7 @@ The ODM on Kubernetes Docker images are available in the [IBM Entitled Registry]
 
 The project comes with the following components:
 
-- [IBM Operational Decision Manager](https://ibmdocs-test.dcs.ibm.com/docs/en/odm/8.12.0?topic=operational-decision-manager-certified-kubernetes-8120)
+- [IBM Operational Decision Manager](https://www.ibm.com/docs/en/odm/8.12.0?topic=operational-decision-manager-certified-kubernetes-8120)
 - [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine)
 - [Google Cloud SQL for PostgreSQL](https://cloud.google.com/sql)
 - [IBM License Service](https://github.com/IBM/ibm-licensing-operator)
@@ -226,7 +226,7 @@ openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mycompany.key \
 kubectl create secret tls mycompany-crt-secret --key mycompany.key --cert mycompany.crt
 ```
 
-The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://ibmdocs-test.dcs.ibm.com/docs/en/odm/8.12.0?topic=servers-server-certificates) and [Working with certificates and SSL](https://docs.oracle.com/cd/E19830-01/819-4712/ablqw/index.html).
+The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://www.ibm.com/docs/en/odm/8.12.0?topic=servers-server-certificates) and [Working with certificates and SSL](https://docs.oracle.com/cd/E19830-01/819-4712/ablqw/index.html).
 
 ### 5. Install the ODM release (10 min)
 
@@ -362,7 +362,7 @@ This section explains how to track ODM usage with the IBM License Service.
 
 #### b. Install the IBM License Service
 
-Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://ibmdocs-test.dcs.ibm.com/docs/en/cpfs?topic=software-manual-installation-without-operator-lifecycle-manager-olm)
+Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cpfs?topic=software-manual-installation-without-operator-lifecycle-manager-olm)
 
 > NOTE: Make sure you do not follow the instantiation part!
 
@@ -374,7 +374,7 @@ Get the [licensing-instance.yaml](./licensing-instance.yaml) file and run the fo
 kubectl create -f licensing-instance.yaml
 ```
 
-> NOTE: You can find more information and use cases on [this page](https://ibmdocs-test.dcs.ibm.com/docs/en/cpfs?topic=software-configuration).
+> NOTE: You can find more information and use cases on [this page](https://www.ibm.com/docs/en/cpfs?topic=software-configuration).
 
 #### d. Retrieving license usage
 
@@ -391,11 +391,11 @@ You can access the `http://${LICENSING_URL}/status?token=${TOKEN}` URL to view t
 curl -v "http://${LICENSING_URL}/snapshot?token=${TOKEN}" --output report.zip
 ```
 
-If your IBM License Service instance is not running properly, refer to this [troubleshooting page](https://ibmdocs-test.dcs.ibm.com/docs/en/cpfs?topic=software-troubleshooting).
+If your IBM License Service instance is not running properly, refer to this [troubleshooting page](https://www.ibm.com/docs/en/cpfs?topic=software-troubleshooting).
 
 ## Troubleshooting
 
-If your ODM instances are not running properly, refer to [our dedicated troubleshooting page](https://ibmdocs-test.dcs.ibm.com/docs/en/odm/8.12.0?topic=8120-troubleshooting-support).
+If your ODM instances are not running properly, refer to [our dedicated troubleshooting page](https://www.ibm.com/docs/en/odm/8.12.0?topic=8120-troubleshooting-support).
 
 ## Getting Started with IBM Operational Decision Manager for Containers
 
