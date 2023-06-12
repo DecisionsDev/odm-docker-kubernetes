@@ -16,11 +16,11 @@ IBM Operational Decision Manager on Certified Kubernetes
 
 ##  Deploying IBM Operational Decision Manager on a Certified Kubernetes Cluster
 
-This repository centralizes materials to deploy [IBM® Operational Decision Manager](https://www.ibm.com/support/knowledgecenter/SSQP76_8.9.0/welcome/kc_welcome_odmV.html) ODM on Certified Kubernetes. It is deployed in a clustered topology that uses WebSphere® Application Server Liberty on a Kubernetes cluster.
+This repository centralizes materials to deploy [IBM® Operational Decision Manager](https://ibmdocs-test.dcs.ibm.com/docs/en/odm/8.12.0) ODM on Certified Kubernetes. It is deployed in a clustered topology that uses WebSphere® Application Server Liberty on a Kubernetes cluster.
 
 ODM is a decisioning platform to automate your business policies. Business rules are used at the heart of the platform to implement decision logic on a business vocabulary and run it as web decision services.
 
-The ODM Docker material is used here, which is available in the [odm-ondocker](https://github.com/lgrateau/odm-ondocker) repository. It includes Docker files and Docker Compose descriptors. The Docker files are used to build images of ODM runtimes. The Docker Compose descriptors can be used to group these images and push to your repository for a Kubernetes provisioning. Docker Compose and Kubernetes are two distinct technology paths to provision a container-based topology supported by ODM.
+The ODM Docker material is used here, which is available in the [odm-ondocker](https://github.com/DecisionsDev/odm-ondocker) repository. It includes Docker files and Docker Compose descriptors. The Docker files are used to build images of ODM runtimes. The Docker Compose descriptors can be used to group these images and push to your repository for a Kubernetes provisioning. Docker Compose and Kubernetes are two distinct technology paths to provision a container-based topology supported by ODM.
 
 ![Flow](images/ODMinKubernetes-DeploymentOverview.png)
 

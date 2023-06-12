@@ -17,7 +17,6 @@ spec:
 
     oidc:
       # Configuring the OPENID parameters
-      # Following instructions at https://www.ibm.com/support/knowledgecenter/SSYHZ8_20.0.x/com.ibm.dba.offerings/topics/tsk_config_odm_ums.html
       enabled: true
       serverUrl: "https://openid-hostname:openid-port" 
       adminRef: my-openid-admin-secret 
@@ -25,5 +24,4 @@ spec:
 
     customization:
       # Configuring the OPENID user registry
-      # Following instructions at https://www.ibm.com/support/knowledgecenter/SSYHZ8_20.0.x/com.ibm.dba.offerings/topics/tsk_config_odm_ums.html
       authSecretRef: my-openid-auth-secret
