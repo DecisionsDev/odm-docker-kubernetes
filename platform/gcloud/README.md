@@ -14,7 +14,7 @@ The ODM on Kubernetes Docker images are available in the [IBM Entitled Registry]
 
 The project comes with the following components:
 
-- [IBM Operational Decision Manager](https://www.ibm.com/docs/en/odm/8.11.1?topic=operational-decision-manager-certified-kubernetes-8110)
+- [IBM Operational Decision Manager](https://www.ibm.com/docs/en/odm/8.12.0?topic=operational-decision-manager-certified-kubernetes-8120)
 - [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine)
 - [Google Cloud SQL for PostgreSQL](https://cloud.google.com/sql)
 - [IBM License Service](https://github.com/IBM/ibm-licensing-operator)
@@ -40,7 +40,7 @@ Then, perform the following tasks:
 
 Without the relevant billing level, some Google Cloud resources will not be created.
 
-> NOTE:  Prerequisites and software supported by ODM 8.11 are listed on [the Detailed System Requirements page](https://www.ibm.com/software/reports/compatibility/clarity-reports/report/html/softwareReqsForProduct?deliverableId=2D28A510507B11EBBBEA1195F7E6DF31&osPlatforms=AIX%7CLinux%7CMac%20OS%7CWindows&duComponentIds=D002%7CS003%7CS006%7CS005%7CC006&mandatoryCapIds=30%7C1%7C13%7C25%7C26&optionalCapIds=341%7C47%7C9%7C1%7C15).
+> NOTE:  Prerequisites and software supported by ODM 8.12.0 are listed on [the Detailed System Requirements page](https://www.ibm.com/support/pages/ibm-operational-decision-manager-detailed-system-requirements).
 
 ## Steps to deploy ODM on Kubernetes from Google GKE
 
@@ -195,7 +195,7 @@ Take note of the secret name so that you can set it for the *image.pullSecrets* 
 #### c. Add the public IBM Helm charts repository
 
 ```
-helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm
+helm repo add ibm-helm https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm
 helm repo update
 ```
 
@@ -204,7 +204,7 @@ helm repo update
 ```
 helm search repo ibm-odm-prod
 NAME                  	CHART VERSION   APP VERSION     DESCRIPTION
-ibmcharts/ibm-odm-prod	22.2.0          8.11.1.0        IBM Operational Decision Manager
+ibm-helm/ibm-odm-prod	23.1.0          8.12.0.0        IBM Operational Decision Manager
 ```
 
 ### 4. Manage a digital certificate (2 min)
@@ -226,7 +226,7 @@ openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mycompany.key \
 kubectl create secret tls mycompany-crt-secret --key mycompany.key --cert mycompany.crt
 ```
 
-The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://www.ibm.com/docs/en/odm/8.11.1?topic=servers-server-certificates) and [Working with certificates and SSL](https://docs.oracle.com/cd/E19830-01/819-4712/ablqw/index.html).
+The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://www.ibm.com/docs/en/odm/8.12.0?topic=servers-server-certificates) and [Working with certificates and SSL](https://docs.oracle.com/cd/E19830-01/819-4712/ablqw/index.html).
 
 ### 5. Install the ODM release (10 min)
 
@@ -247,7 +247,7 @@ It automatically creates an HTTPS GKE load balancer. We will disable the ODM int
 - Install the chart from IBM's public Helm charts repository:
 
     ```
-    helm install <release> ibmcharts/ibm-odm-prod --version 22.2.0 -f gcp-values.yaml
+    helm install <release> ibm-helm/ibm-odm-prod --version 23.1.0 -f gcp-values.yaml
     ```
 
   > NOTE: You might prefer to access ODM components through the NGINX Ingress controller instead of using the IP addresses. If so, please follow [these instructions](README_NGINX.md).
@@ -395,7 +395,7 @@ If your IBM License Service instance is not running properly, refer to this [tro
 
 ## Troubleshooting
 
-If your ODM instances are not running properly, refer to [our dedicated troubleshooting page](https://www.ibm.com/docs/en/odm/8.11.1?topic=8110-troubleshooting-support).
+If your ODM instances are not running properly, refer to [our dedicated troubleshooting page](https://www.ibm.com/docs/en/odm/8.12.0?topic=8120-troubleshooting-support).
 
 ## Getting Started with IBM Operational Decision Manager for Containers
 

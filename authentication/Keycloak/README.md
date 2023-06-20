@@ -89,7 +89,7 @@ You need the following elements:
 ### Install a Keycloak instance
 
 For this tutorial, we followed the procedure explaining how to install [Keycloak on OpenShift](https://www.keycloak.org/getting-started/getting-started-openshift).
-We tested with the Keycloak version 20.0.1.
+We tested with the Keycloak version 21.1.1.
 
 You can follow the [Get started with Keycloak on Openshift](https://www.keycloak.org/getting-started/getting-started-openshift) instructions.
 
@@ -157,7 +157,7 @@ You can also create groups and do a mapping between groups and roles. This way, 
       * resDeployers
       * resExecutors
 
-    For more information about ODM groups and roles, refer to the [ODM on Kubernetes documentation](https://www.ibm.com/docs/en/odm/8.11.1?topic=access-user-roles-user-groups).
+    For more information about ODM groups and roles, refer to the [ODM on Kubernetes documentation](https://www.ibm.com/docs/en/odm/8.12.0?topic=access-user-roles-user-groups).
 
 
 2. Create a group for ODM administrators.
@@ -221,7 +221,7 @@ You can also create groups and do a mapping between groups and roles. This way, 
     * Client type: **OpenID Connect**
     * Client ID: **odm**
     * Name: **ODM Application**
-    * Always display in console: On
+    * Always display in UI: On
 
     ![Create Client 1](/images/Keycloak/create_client_1.png)
     
@@ -410,7 +410,7 @@ You can also create groups and do a mapping between groups and roles. This way, 
 ### 1. Add the public IBM Helm charts repository
 
   ```shell
-  helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm
+  helm repo add ibm-helm https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm
   helm repo update
   ```
 
@@ -419,7 +419,7 @@ You can also create groups and do a mapping between groups and roles. This way, 
   ```shell
   helm search repo ibm-odm-prod
   NAME                  	CHART VERSION	APP VERSION	DESCRIPTION                     
-  ibmcharts/ibm-odm-prod	22.2.0       	8.11.1.0   	IBM Operational Decision Manager
+  ibm-helm/ibm-odm-prod	        23.1.0       	8.12.0.0   	IBM Operational Decision Manager
   ```
 
 ### 3. Run the `helm install` command
@@ -428,7 +428,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 
 #### a. Installation on OpenShift using Routes
   
-  See the [Preparing to install](https://www.ibm.com/docs/en/odm/8.11.1?topic=production-preparing-install-operational-decision-manager) documentation for more information.
+  See the [Preparing to install](https://www.ibm.com/docs/en/odm/8.12.0?topic=production-preparing-install-operational-decision-manager) documentation for more information.
   
   ```shell
   helm install my-odm-release ibmcharts/ibm-odm-prod \
@@ -470,7 +470,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 
     
 1. Get the ODM endpoints.
-    Refer to [this documentation](https://www.ibm.com/docs/en/odm/8.11.1?topic=production-configuring-external-access) to retrieve the endpoints.
+    Refer to [this documentation](https://www.ibm.com/docs/en/odm/8.12.0?topic=production-configuring-external-access) to retrieve the endpoints.
     For example, on OpenShift you can get the route names and hosts with:
 
     ```
@@ -552,7 +552,7 @@ To be able to securely connect your Rule Designer to the Decision Server and Dec
 
 4. Restart Rule Designer.
 
-For more information, refer to [this documentation](https://www.ibm.com/docs/en/odm/8.11.1?topic=designer-importing-security-certificate-in-rule).
+For more information, refer to [this documentation](https://www.ibm.com/docs/en/odm/8.12.0?topic=designer-importing-security-certificate-in-rule).
   
 ### Getting Started with IBM Operational Decision Manager for Containers
 
@@ -572,7 +572,7 @@ Deploy the **Loan Validation Service** production_deployment ruleapps using the 
 
 You can retrieve the payload.json from the ODM Decision Server Console or use [the provided payload](payload.json).
   
-As explained in the ODM on Certified Kubernetes documentation [Configuring user access with OpenID](https://www.ibm.com/docs/en/odm/8.11.1?topic=access-configuring-user-openid), we advise you to use basic authentication for the ODM runtime call for better performance and to avoid token expiration and revocation.
+As explained in the ODM on Certified Kubernetes documentation [Configuring user access with OpenID](https://www.ibm.com/docs/en/odm/8.12.0?topic=access-configuring-user-openid), we advise you to use basic authentication for the ODM runtime call for better performance and to avoid token expiration and revocation.
 
 You perform a basic authentication ODM runtime call in the following way:
   
