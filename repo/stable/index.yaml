@@ -112,4 +112,5 @@ entries:
     urls:
     - https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm/ibm-odm-prod-23.1.0.tgz
     version: 23.1.0
+
 generated: "2023-06-09T09:25:47.579117+02:00"
