@@ -36,7 +36,6 @@ The ODM Docker material is used here, which is available in the [odm-ondocker](h
 - [Configure ODM with an OpenID Okta service](authentication/Okta/README.md)
 - [Configure ODM with an Azure Active Directory service](authentication/AzureAD/README.md)
 - [Configure ODM with a Keycloak service](authentication/Keycloak/README.md)
-- [Configure user access with external OIDC providers](contrib/authentication/openid/README.md)
 - [Scope the Decision Server Console to a dedicated node with `kustomize`](contrib/kustomize/ds-console-dedicated-node/README.md)
 
 ## Issues and contributions
