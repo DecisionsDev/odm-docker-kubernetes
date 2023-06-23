@@ -8,7 +8,7 @@ The ODM on Kubernetes Docker images are available in the [IBM Entitled Registry]
 
 ## Included components
 The project uses the following components:
-- [IBM Operational Decision Manager](https://www.ibm.com/docs/en/odm/8.12.0)
+- [IBM Operational Decision Manager](https://www.ibm.com/docs/en/odm/8.12.0?topic=operational-decision-manager-certified-kubernetes-8120)
 - [Amazon Elastic Kubernetes Service (Amazon EKS)](https://aws.amazon.com/eks/)
 - [Amazon Relational Database Service (Amazon RDS)](https://aws.amazon.com/rds/)
 - [AWS Application Load Balancer (ALB)](https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html)
@@ -140,7 +140,7 @@ kubectl create secret generic odm-db-secret \
 To get access to the ODM material, you must have an IBM entitlement key to pull the images from the IBM Entitled registry.
 This is what will be used in the next step of this tutorial.
 
-You can also download the ODM on Kubernetes package (.tgz file) from Passport Advantage® (PPA), and then push the contained images to the EKS Container Registry (ECR). If you prefer to manage the ODM images this way, see the details [here](README-ECR-REGISTRY.md)
+You can also download the ODM on Kubernetes package (.tgz file) from Passport Advantage® (PPA), and then push the contained images to the EKS Container Registry (ECR). If you prefer to manage the ODM images this way, see the details [here](README-ECR.md)
 
 #### a. Retrieve your entitled registry key
 
@@ -220,7 +220,7 @@ The output of the command is:
 
 Install a Kubernetes release with the default configuration and a name of `mycompany`.
 
-To install ODM with the AWS RDS PostgreSQL database created in [step 3](#3-create-an-rds-database-20-min):
+To install ODM with the AWS RDS PostgreSQL database created in [step 2](#2-create-an-rds-database-10-min):
 
 - Get the [eks-rds-values.yaml](./eks-rds-values.yaml) file and replace the following keys:
   - `<AWS-AccountId>` is your AWS Account Id
