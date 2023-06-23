@@ -460,8 +460,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 
 1. Get the ODM endpoints.
 
-    Refer to the [documentation](https://www.ibm.com/docs/en/odm/8.12.0?topic=production-configuring-external-access) to retrieve the endpoints.
-    For example, on OpenShift you can get the route names and hosts with:
+    If you are on OpenShift using routes, you can get them this way :
 
     ```shell
     kubectl get routes --no-headers --output custom-columns=":metadata.name,:spec.host"
@@ -489,7 +488,7 @@ You can now install the product. We will use the PostgreSQL internal database an
     my-odm-release-odm-ingress <none>   *       <INGRESS_ADDRESS>   80      14d
     ```
 
-2. Register the redirect URIs into your Azure AD application.
+3. Register the redirect URIs into your Azure AD application.
 
     The redirect URIs are built the following way:
 
