@@ -16,4 +16,4 @@ jobs:
         with:
           PATTERNS: |
             **/**.md
-      - uses: creachadair/github-action-markdown-link-check@master
+      - uses: aurav-nelson/github-action-markdown-link-check@v1
