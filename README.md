@@ -5,6 +5,7 @@ IBM Operational Decision Manager on Certified Kubernetes
 [![GitHub release](https://img.shields.io/github/release/ODMDev/odm-docker-kubernetes.svg)](https://github.com/ODMDev/odm-docker-kubernetes/releases)
 ![GitHub last commit](https://img.shields.io/github/last-commit/ODMDev/odm-docker-kubernetes)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/ibm-odm-charts)](https://artifacthub.io/packages/search?repo=ibm-odm-charts)
 
 <p align="center">
   <a href="https://join.slack.com/t/odmdev/shared_invite/zt-390luncg-V2TuIrNP4cpWsCgaBgEduA">
