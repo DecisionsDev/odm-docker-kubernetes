@@ -86,7 +86,7 @@ In order to load the container images from the extracted folder into your Docker
 
   Make a note of the secret name so that you can set it for the image.pullSecrets parameter when you run a helm install of your containers. The image.repository parameter must be set to \<loginServer\> (ie ${DOCKER_REGISTRY}).
 
-You can now proceed to the [datasource secret's creation](README.md#create-the-datasource-secrets-for-azure-postgresql).
+You can now proceed to the [datasource secret's creation](README.md#create-the-database-credentials-secret-for-azure-postgresql).
 
 Note that instead of using
 
