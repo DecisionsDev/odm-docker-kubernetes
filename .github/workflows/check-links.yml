@@ -6,7 +6,7 @@ name: Check Markdown links
 #      - master
 #  pull_request:
 #    branches: [master]
-
+on: push
 jobs:
   markdown-link-check:
     runs-on: ubuntu-latest
