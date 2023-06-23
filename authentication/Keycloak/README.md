@@ -470,7 +470,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 
     
 1. Get the ODM endpoints.
-    Refer to [this documentation](https://www.ibm.com/docs/en/odm/8.12.0?topic=production-configuring-external-access) to retrieve the endpoints.
+    Refer to [this documentation](https://www.ibm.com/docs/en/odm/8.12.0?topic=tasks-configuring-external-access) to retrieve the endpoints.
     For example, on OpenShift you can get the route names and hosts with:
 
     ```
