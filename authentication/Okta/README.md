@@ -322,7 +322,7 @@ In this step, we augment the token with meta-information that is required by the
 ### Register the ODM redirect URLs
 
 1. Get the ODM endpoints.
-    You can refer to the [documentation](https://www.ibm.com/docs/en/odm/8.12.0?topic=production-configuring-external-access) to retrieve the ODM endpoints.
+    You can refer to the [documentation](https://www.ibm.com/docs/en/odm/8.12.0?topic=production-configuring-user-access) to retrieve the ODM endpoints.
     For example, on OpenShift you can get the route names and hosts with:
 
     ```
