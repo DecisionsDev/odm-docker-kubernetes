@@ -244,7 +244,7 @@ request.
 
 
 [help documentation]: http://help.github.com/send-pull-requests
-[bug database]: ../../issues
+[bug database]: https://github.com/DecisionsDev/odm-docker-kubernetes/issues
 [ml-users]: mailto:odmdev_open_source_user@wwpdl.vnet.ibm.com
 [Creating a Pull Request]: https://help.github.com/articles/creating-a-pull-request
 [Fork a Repo]: https://help.github.com/articles/fork-a-repo
