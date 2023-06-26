@@ -252,7 +252,7 @@ If you need to add or modify a parameter to the `openidConnectClient` tag in the
 - If you want to call the REST API, you must get an access token by running a cURL command with the following endpoint:
 `https://<oidc.serverUrl\>/oidc/endpoint/<oidc.provider\>/token`.
 
-  You can then authenticate with the "Bearer <access-token\>". For more information, see [How a Liberty-based application obtains an access token from UMS SSO](con_ums_sso_liberty.dita).
+  You can then authenticate with the "Bearer <access-token\>". For more information, see How a Liberty-based application obtains an access token from UMS SSO.
 
   The following diagram shows the API invocations with an external OIDC provider.
 
@@ -307,7 +307,7 @@ If you need to add or modify a parameter to the `openidConnectClient` tag in the
   </server>
   ```
 
-  The mapping itself is done with variable definitions and key-value pairs. A cert-kubernetes/ODM/configuration/security/sample-webSecurity-OIDC.xml file can be used as a starting point to map your ODM users and groups to the users and groups. For more information about downloading cert-kubernetes, see [Preparing for an Enterprise deployment](../../com.ibm.dba.install/op_topics/tsk_prep_operator.html). The variable definitions in the sample file use the following scenario:
+  The mapping itself is done with variable definitions and key-value pairs. A cert-kubernetes/ODM/configuration/security/sample-webSecurity-OIDC.xml file can be used as a starting point to map your ODM users and groups to the users and groups. For more information about downloading cert-kubernetes, see "Preparing for an Enterprise deployment". The variable definitions in the sample file use the following scenario:
 
   -   A user `generalAdmin` (defined through an LDAP registry). A user that has access to all applications.
   -   A group `oidcAllRoles` (defined through a basic registry). A group of users that has access to all applications.

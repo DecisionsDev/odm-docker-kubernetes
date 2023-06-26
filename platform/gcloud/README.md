@@ -330,6 +330,7 @@ We only have to manage a configuration to simulate the mycompany.com access.
 
 - You can now access all ODM services with the following URLs:
 
+<!-- markdown-link-check-disable -->
   | SERVICE NAME | URL | USERNAME/PASSWORD
   | --- | --- | ---
   | Decision Server Console | https://mycompany.com/res | odmAdmin/odmAdmin
@@ -337,7 +338,7 @@ We only have to manage a configuration to simulate the mycompany.com access.
   | Decision Center REST-API | https://mycompany.com/decisioncenter-api | odmAdmin/odmAdmin
   | Decision Server Runtime | https://mycompany.com/DecisionService | odmAdmin/odmAdmin
   | Decision Runner | https://mycompany.com/DecisionRunner | odmAdmin/odmAdmin
-
+<!-- markdown-link-check-enable -->
   > NOTE:You can also click the Ingress routes accessible from the Google Cloud console under the [Kubernetes Engine/Services & Ingress Details Panel](https://console.cloud.google.com/kubernetes/ingresses).
   > <img width="1000" height="532" src='./images/ingress_routes.png'/>
 
