@@ -1,8 +1,8 @@
 {
     "replacementPatterns": [
       {
-        "pattern": "^/",
-        "replacement": "{{BASEURL}}/"
+        "pattern": "^/LICENSE",
+        "replacement": "{{BASEURL}}/LICENSE"
       }
     ]
   }
