@@ -3,10 +3,10 @@ entries:
   ibm-odm-dev:
   - apiVersion: v2
     appVersion: 8.12.0.0
-    created: "2023-06-09T09:25:47.580521+02:00"
+    created: "2023-06-27T13:55:07.357623+02:00"
     description: 'IBM Operational Decision Manager for Developers    License   By
       installing this product you accept the following license terms: https://www14.software.ibm.com/cgi-bin/weblap/lap.pl?li_formnum=L-AMWV-QRBWQJ'
-    digest: ccaea3c95165b8f7fad0f5cd6096193e9b7b9a09d99db4e897f1282734449dc2
+    digest: ffd4e4dd18e6bd8d4d70e6f06b2d9da0602011d96b5059c10a61bef16ac94e8f
     home: https://developer.ibm.com/odm/
     icon: https://raw.githubusercontent.com/ODMDev/ruledesigner/master/icons/automation-decision.png
     keywords:
