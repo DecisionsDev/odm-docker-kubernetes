@@ -377,6 +377,16 @@ Installing an NGINX Ingress controller allows you to access ODM components throu
     ingress-nginx-controller-admission   ClusterIP      10.0.229.164   <none>          443/TCP                      2m12s
     ```
 
+3. Verify the name of the new IngressClass:
+
+    ```shell
+    kubectl get ingressclass
+    NAME    CONTROLLER             PARAMETERS   AGE
+    nginx   k8s.io/ingress-nginx   <none>       5h38m
+    ```
+
+    It should be "nginx" but if different please update the next command accordingly.
+
 ## (Optional) Install an ODM Helm release and expose it with the NGINX Ingress controller (10 min)
 
 You might want to access ODM components through a single external IP address.
@@ -396,7 +406,8 @@ helm install <release> ibmcharts/ibm-odm-prod --version 23.1.0 \
         --set externalDatabase.secretCredentials=<odmdbsecret> \
         --set service.ingress.enabled=true --set service.ingress.tlsSecretRef=<myodmcompanytlssecret> \
         --set service.ingress.tlsHosts={myodmcompany.com} --set service.ingress.host=myodmcompany.com \
-        --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"\,"nginx.ingress.kubernetes.io/backend-protocol: HTTPS"} \
+        --set service.ingress.annotations={"nginx.ingress.kubernetes.io/backend-protocol: HTTPS"} \
+        --set service.ingress.class=nginx \
         --set license=true --set usersPassword=<password>
 ```
 
