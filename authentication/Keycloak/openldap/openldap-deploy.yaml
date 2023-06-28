@@ -1,0 +1,227 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: openldap-deploy
+  labels:
+    app: openldap-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: openldap-deploy
+  template:
+    metadata:
+      labels:
+        app: openldap-deploy
+    spec:
+      restartPolicy: Always
+      initContainers:
+        - resources:
+            limits:
+              cpu: 100m
+              memory: 128Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          terminationMessagePath: /dev/termination-log
+          name: openldap-init-ldif
+          command:
+            - sh
+            - '-c'
+            - cp /customldif/* /ldifworkingdir
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: customldif
+              mountPath: /customldif/ldap_user.ldif
+              subPath: ldap_user.ldif
+            - name: ldifworkingdir
+              mountPath: /ldifworkingdir
+          terminationMessagePolicy: File
+          image: 'osixia/openldap:latest'
+        - resources:
+            limits:
+              cpu: 100m
+              memory: 128Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          terminationMessagePath: /dev/termination-log
+          name: folder-prepare-container
+          command:
+            - /bin/bash
+            - '-ecx'
+            - >
+              rm -rf /etc-folder/* && cp -rp /etc/* /etc-folder || true && rm
+              -rf /var-lib-folder/* && cp -rp /var/lib/* /var-lib-folder || true
+              && (rm -rf /usr-folder/* && cp -rp /usr/sbin/* /usr-folder && rm
+              -rf /var-cache-folder/* && cp -rp /var/cache/debconf/*
+              /var-cache-folder || true) && rm -rf /container-run-folder/* && cp
+              -rp /container/* /container-run-folder || true
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: usr-folder-pvc
+              mountPath: usr-folder
+            - name: var-cache-folder-pvc
+              mountPath: var-cache-folder
+            - name: container-run-folder-pvc
+              mountPath: container-run-folder
+            - name: etc-ldap-folder-pvc
+              mountPath: etc-folder
+            - name: var-lib-folder-pvc
+              mountPath: var-lib-folder
+          terminationMessagePolicy: File
+          image: 'osixia/openldap:latest'
+      serviceAccountName: openldap-anyuid
+      schedulerName: default-scheduler
+      enableServiceLinks: false
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/arch
+                    operator: In
+                    values:
+                      - amd64
+                      - s390x
+                      - ppc64le
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 3
+              preference:
+                matchExpressions:
+                  - key: kubernetes.io/arch
+                    operator: In
+                    values:
+                      - amd64
+                      - s390x
+                      - ppc64le
+      terminationGracePeriodSeconds: 30
+      securityContext: {}
+      containers:
+        - resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+          readinessProbe:
+            tcpSocket:
+              port: ldap-port
+            initialDelaySeconds: 20
+            timeoutSeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 10
+          terminationMessagePath: /dev/termination-log
+          name: openldap-deploy
+          livenessProbe:
+            tcpSocket:
+              port: ldap-port
+            initialDelaySeconds: 20
+            timeoutSeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 10
+          ports:
+            - name: ldap-port
+              containerPort: 389
+              protocol: TCP
+            - name: ssl-ldap-port
+              containerPort: 636
+              protocol: TCP
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/ldap
+              subPath: data
+            - name: data
+              mountPath: /etc/ldap/slapd.d
+              subPath: config-data
+            - name: ldifworkingdir
+              mountPath: /container/service/slapd/assets/config/bootstrap/ldif/custom
+            - name: etc-ldap-folder-pvc
+              mountPath: /etc
+            - name: temp-pvc
+              mountPath: /tmp
+            - name: usr-folder-pvc
+              mountPath: /usr/sbin
+            - name: var-backup-folder-pvc
+              mountPath: /var/backups/slapd-2.4.57+dfsg-3~bpo10+1
+            - name: var-lib-folder-pvc
+              mountPath: /var/lib
+            - name: var-cache-folder-pvc
+              mountPath: /var/cache/debconf
+            - name: container-run-folder-pvc
+              mountPath: /container
+            - name: ldap-cert-secret
+              mountPath: /container/service/slapd/assets/certs/tls.key
+              subPath: tls.key
+            - name: ldap-cert-secret
+              mountPath: /container/service/slapd/assets/certs/tls.crt
+              subPath: tls.crt
+            - name: ldap-cert-secret
+              mountPath: /container/service/slapd/assets/certs/ca.crt
+              subPath: ca.crt
+          terminationMessagePolicy: File
+          envFrom:
+            - configMapRef:
+                name: openldap-env
+            - secretRef:
+                name: openldap-secret
+          image: 'osixia/openldap:latest'
+          args:
+            - '--copy-service'
+      serviceAccount: openldap-anyuid
+      volumes:
+        - name: customldif
+          secret:
+            secretName: openldap-customldif
+            defaultMode: 420
+        - name: ldifworkingdir
+          emptyDir: {}
+        - name: certs
+          emptyDir:
+            medium: Memory
+        - name: data
+          emptyDir: {}
+        - name: etc-ldap-folder-pvc
+          emptyDir: {}
+        - name: temp-pvc
+          emptyDir: {}
+        - name: usr-folder-pvc
+          emptyDir: {}
+        - name: var-backup-folder-pvc
+          emptyDir: {}
+        - name: var-cache-folder-pvc
+          emptyDir: {}
+        - name: var-lib-folder-pvc
+          emptyDir: {}
+        - name: container-run-folder-pvc
+          emptyDir: {}
+        - name: ldap-cert-secret
+          secret:
+            secretName: ldap-custom-ssl-secret
+            defaultMode: 420
+      dnsPolicy: ClusterFirst
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600

@@ -12,11 +12,11 @@ As the project [https://scim-for-keycloak.de/](https://scim-for-keycloak.de) wil
 ## Build the Keycloak docker image embbeding the open source SCIM plug-in
 
 - Get the [SCIM for Keycloak scim-for-keycloak-kc-20-b1.jar file](https://github.com/Captain-P-Goldfish/scim-for-keycloak/releases/download/kc-20-b1/scim-for-keycloak-kc-20-b1.jar)
-- Get the [Dockerfile]()
+- Get the [Dockerfile](Dockerfile)
 - Build the image locally:
 
 ```shell
-   docker buildx build . --build-arg KEYCLOAK_IMAGE=quay.io/keycloak/keycloak:20.0.5 --platform linux/amd64 -t keycloak-scim:latest
+   docker build . --build-arg KEYCLOAK_IMAGE=quay.io/keycloak/keycloak:20.0.5 --build-arg SCIM_JAR_FILE=scim-for-keycloak-kc-20-b1.jar -t keycloak-scim:latest
 ```
 
 ## Push the image on the OpenShift Cluster
@@ -72,4 +72,46 @@ Note: To avoid an error on the image push, perhaps you will have to add $REGITRY
     -p NAMESPACE=<my-keycloak-project> \
 | oc create -f -
 ```
+## Configure an ODM Application with Keycloak dashboard
 
+## Deploy an Open LDAP Service
+
+- Create a Service Account with the anyuid policy
+
+```shell
+oc apply -f ./openldap/service-account-for-anyuid.yaml
+oc adm policy add-scc-to-user anyuid -z openldap-anyuid
+```
+
+- Install the OpenLDAP Service
+
+```shell
+oc apply -f ./openldap/ldap-custom-ssl-secret.yaml
+oc apply -f ./openldap/openldap-env.yaml
+oc apply -f ./openldap/openldap-secret.yaml
+oc apply -f ./openldap/openldap-customldif.yaml
+oc apply -f ./openldap/openldap-deploy.yaml
+oc apply -f ./openldap/ldap-service.yaml
+
+```
+
+- Check the OpenLDAP Service
+
+The following command should return the OpenLDAP Schema :
+
+    ```shell
+    oc exec -ti <OPENLDAP_POD> bash -- ldapsearch -x -Z -H ldap://ldap-service.<PROJECT>.svc:389  -D 'cn=admin,dc=example,dc=org' -b 'dc=example,dc=org' -w xNxICc74qG24x3GoW03n
+    ```
+
+    Where:
+
+    - OPENLDAP_POD is the name of the OpenLDAP pod
+    - PROJECT is the name of the current project
+
+
+## Add an LDAP User Federation to Keycloak
+
+- Connect at the Keycloak Admin Dashboard using the odm realm with login/pass admin/admin
+- Select "User federation" and click Add Provider > LDAP
+
+ 
