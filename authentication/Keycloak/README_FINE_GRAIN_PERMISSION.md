@@ -74,6 +74,10 @@ Note: To avoid an error on the image push, perhaps you will have to add $REGITRY
 ```
 ## Configure an ODM Application with Keycloak dashboard
 
+Follow the Configure a [Keycloak instance for ODM (Part 1)](README.md#configure-a-keycloak-instance-for-odm-part-1).
+If it has already be managed following the entire [Configuration of ODM with Keycloak](README.md) tutorial, then you can go to the next step.
+
+
 ## Deploy an Open LDAP Service
 
 - Create a Service Account with the anyuid policy
@@ -286,4 +290,18 @@ The following command should return the OpenLDAP Schema :
   ...
   ```
 
-     
+# Deploy ODM on a container configured with Keycloak
+  
+Follow - [Deploy ODM on a container configured with Keycloak (Part 2)](README.md#deploy-odm-on-a-container-configured-with-keycloak-part-2).
+
+But replace the previous step "3. Create the Keycloak authentication secret" of the section [Create secrets to configure ODM with Keycloak](REDAME.md#create-secrets-to-configure-odm-with-keycloak) by :
+
+    ```
+    kubectl create secret generic keycloak-auth-secret \
+        --from-file=ldap-configurations.xml=./output/ldap-configurations.xml \
+        --from-file=openIdParameters.properties=./output/openIdParameters.properties \
+        --from-file=openIdWebSecurity.xml=./output/openIdWebSecurity.xml \
+        --from-file=webSecurity.xml=./output/webSecurity.xml
+    ```
+
+   
