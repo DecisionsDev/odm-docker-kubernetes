@@ -249,5 +249,41 @@ The following command should return the OpenLDAP Schema :
 
   ![SCIM User Authorization Tab](/images/Keycloak/scim_user_authorization.png)
 
+### Check the SCIM Group and User endpoints
+
+  Download the [keycloak-odm-script.zip](keycloak-odm-script.zip) file to your machine and unzip it in your working directory.
+  This .zip file contains scripts and templates to verify and set up ODM.
+
+  Request an access token using the Client-Credentials flow
+
+  ```shell
+  $ ./get-client-credential-token.sh -i <CLIENT_ID> -x <CLIENT_SECRET> -n <KEYCLOAK_SERVER_URL>
+  ```
+
+  Call the SCIM Group endpoint using this <ACCESS_TOKEN>
+
+  ```shell
+  $ curl -k -H "Authorization: Bearer <ACCESS_TOKEN>" <KEYCLOAK_SERVER_URL>/scim/v2/Groups 
+  ```
  
+  Result should looks like : 
+
+  ```shell
+{"schemas":["urn:ietf:params:scim:api:messages:2.0:ListResponse"],"totalResults":10,"itemsPerPage":10,"startIndex":1,"Resources":[{"schemas":["urn:ietf:params:scim:schemas:core:2.0:Group"],"id":"ef20202e-20e3-44f3-8d70-b1cf2d2c2d7d","displayName":"ADPEnvironmentOwners","members":[{"value":"35560439-88a3-4a56-bb67-384f024bfd7a","$ref":"https://9.46.78.129:8443/realms/odm/scim/v2/Users/35560439-88a3-4a56-bb67-384f024bfd7a","type":"User"},{"value":"7d995178-294a-4175-91f4-43cd9f5906aa","$ref":"https://9.46.78.129:8443/realms/odm/scim/v2/Users/7d995178-294a-4175-91f4-43cd9f5906aa","type":"User"},{"value":"6c74e271-ae1c-4849-aa67-8351f1c816c5","$ref":"https://9.46.78.129:8443/realms/odm/scim/v2/Users/6c74e271-ae1c-4849-aa67-8351f1c816c5","type":"User"}],"meta":{"resourceType":"Group","created":"2023-08-09T13:09:44.164Z","lastModified":"2023-08-09T13:09:44.164Z","location":"https://9.46.78.129:8443/realms/odm/scim/v2/Groups/ef20202e-20e3-44f3-8d70-b1cf2d2c2d7d"}},{"schemas":["urn:ietf:params:scim:schemas:core:2.0:Group"],"id":"f671e618-ef45-41d4-bd0b-c134536edf45","displayName":"CE_EnvironmentOwners","members":[{"value":"35560439-88a3-4a56-bb67-384f024bfd7a","$ref":"https://9.46.78.129:8443/realms/odm/scim/v2/Users/35560439-88a3-4a56-bb67-384f024bfd7a","type":"User"}],"meta":{"resourceType":"Group","created":"2023-08-09T13:09:44.207Z","lastModified":"2023-08-09T13:09:44.207Z","location":"https://9.46.78.129:8443/realms/odm/scim/v2/Groups/f671e618-ef45-41d4-bd0b-c134536edf45"}},{"schemas":["urn:ietf:params:scim:schemas:core:2.0:Group"],"id":"7f767eac-0950-4e71-b2ec-b9e04a10be04","displayName":"GeneralUsers","members":[{"value":"88094536-a059-4383-8bf4-1dcb65457bb9","$ref":"https://9.46.78.129:8443/realms/odm/scim/v2/Users/88094536-a059-4383-8bf4-1dcb65457bb9","type":"User"},{"value":"94a6b972-04aa-4394-89b8-f16a875fe54d","$ref":"https://9.46.78.129:8443/realms/odm/scim/v2/Users/94a6b972-04aa-4394-89b8-f16a875fe54d","type":"User"},{"value":"9a37726a-2a69-4f97-a892-ef38d566c94f","$ref":"https://9.46.78.129:8443/realms/odm/scim/v2/Users/9a37726a-2a69-4f97-a892-ef38d566c94f","type":"User"},{"value":"35774b15-42bc-4c05-bcc9-145fbf075ace","$ref":"https://9.46.78.129:8443/realms/odm/scim/v2/Users/35774b15-42bc-4c05-bcc9-145fbf075ace","type":"User"},
+  ...
+  ```
+
+  Call the SCIM Group endpoint using this <ACCESS_TOKEN>
+
+  ```shell
+  $ curl -k -H "Authorization: Bearer <ACCESS_TOKEN>" <KEYCLOAK_SERVER_URL>/scim/v2/Users
+  ```
+
+  Result should looks like :
+
+  ```shell
+{"schemas":["urn:ietf:params:scim:api:messages:2.0:ListResponse"],"totalResults":23,"itemsPerPage":23,"startIndex":1,"Resources":[{"schemas":["urn:ietf:params:scim:schemas:core:2.0:User"],"id":"def4784e-7b1d-460b-86b3-8cf4d95e47e2","userName":"caserviceuser","name":{"familyName":"caServiceUser","givenName":"caServiceUser"},"active":true,"emails":[{"value":"caserviceuser@example.org","primary":true}],"meta":{"resourceType":"User","created":"2022-12-09T14:07:02.529Z","lastModified":"2022-12-09T14:07:02.529Z","location":"https://9.46.78.129:8443/realms/odm/scim/v2/Users/def4784e-7b1d-460b-86b3-8cf4d95e47e2"}},{"schemas":["urn:ietf:params:scim:schemas:core:2.0:User"],"id":"7d995178-294a-4175-91f4-43cd9f5906aa","userName":"cp4admin","name":{"familyName":"cp4admin","givenName":"cp4admin"},"active":true,"emails":[{"value":"cp4admin@example.org","primary":true}],"groups":[{"value":"da45f301-9b11-4367-be98-ecf63b677c45","display":"TaskAdmins","type":"direct"},{"value":"ef20202e-20e3-44f3-8d70-b1cf2d2c2d7d","display":"ADPEnvironmentOwners","type":"direct"},{"value":"8a0a6948-1c07-4c5c-8e17-c445a12572b8","display":"P8Administrators","type":"direct"},{"value":"ee18a23d-ba39-466a-a4f6-8d7ebc53825b","display":"TeamsAdmins","type":"direct"}],"meta":{"resourceType":"User","created":"2022-12-09T14:06:54.231Z","lastModified":"2022-12-09T14:06:54.231Z","location":"https://9.46.78.129:8443/realms/odm/scim/v2/Users/7d995178-294a-4175-91f4-43cd9f5906aa"}},{"schemas":["urn:ietf:params:scim:schemas:core:2.0:User"],"id":"35560439-88a3-4a56-bb67-384f024bfd7a","userName":"environmentowner","name":{"familyName":"environmentOwner","givenName":"environmentOwner"},"active":true,"emails":[{"value":"environmentowner@example.org","primary":true}],"groups":[{"value":"f671e618-ef45-41d4-bd0b-c134536edf45","display":"CE_EnvironmentOwners","type":"direct"},{"value":"ef20202e-20e3-44f3-8d70-b1cf2d2c2d7d","display":"ADPEnvironmentOwners","type":"direct"},
+  ...
+  ```
+
      
