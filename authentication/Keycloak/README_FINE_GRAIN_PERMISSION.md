@@ -167,7 +167,7 @@ The following command should return the OpenLDAP Schema :
   At this step, all openldap users have been imported. You can check it by clicking on the "Users" tab, put "*" in the Search user box and click on the search button.
   You should see:
 
-
+  ![OpenLdap Users Import](/images/Keycloak/import_openldap_users.png)
 
   Now, we will import groups.
 
@@ -196,3 +196,5 @@ The following command should return the OpenLDAP Schema :
   - Click on Action>Sync All users
 
   Now you can check the openldap groups have been imported using the Groups tab. You shoud see :
+
+  ![OpenLdap Groups Import](/images/Keycloak/import_openldap_groups.png)
