@@ -116,53 +116,53 @@ The following command should return the OpenLDAP Schema :
 
 - Fill "Add LDAP provider" dialog
 
-  - General options
-    > Console display name: openldap
-    > Vendor: "Red Hat Directory Server"
+   * General options
+     * Console display name: openldap
+     * Vendor: "Red Hat Directory Server"
   
-  - Connection and authentication settings
-    > Connection URL: ldap://ldap-service.<PROJECT>.svc:389
+   * Connection and authentication settings
+     * Connection URL: ldap://ldap-service.<PROJECT>.svc:389
 
   Click on the "Test connection" button => "Successfully connected to LDAP" message is displayed
 
-    > Bind type: simple
-    > Bind DN: cn=admin,dc=example,dc=org
-    > Bind credentials: xNxICc74qG24x3GoW03n
+     * Bind type: simple
+     * Bind DN: cn=admin,dc=example,dc=org
+     * Bind credentials: xNxICc74qG24x3GoW03n
 
   Click on the "Test authentication" button => "Successfully connected to LDAP" message is displayed
 
-  - LDAP searching and updating
-    > Edit mode: READ_ONLY
-    > Users DN: dc=example,dc=org
-    > Username LDAP attribute: uid
-    > RDN LDAP attribute: uid
-    > UUID LDAP attribute: uid
-    > User object classes: inetOrgPerson, organizationalPerson
-    > User LDAP Filter:
-    > Search scope: Subtree
-    > Read timeout:
-    > Pagination: Off
+   * LDAP searching and updating
+     * Edit mode: READ_ONLY
+     * Users DN: dc=example,dc=org
+     * Username LDAP attribute: uid
+     * RDN LDAP attribute: uid
+     * UUID LDAP attribute: uid
+     * User object classes: inetOrgPerson, organizationalPerson
+     * User LDAP Filter:
+     * Search scope: Subtree
+     * Read timeout:
+     * Pagination: Off
 
-  - Synchronization settings
-    > Import users: On
-    > Sync Registrations: On
-    > Batch size:
-    > Periodic full sync: Off
-    > Periodic changed users sync: Off
+   * Synchronization settings
+     * Import users: On
+     * Sync Registrations: On
+     * Batch size:
+     * Periodic full sync: Off
+     * Periodic changed users sync: Off
 
-  - Kerberos integration
-    > Allow Kerberos authentication: Off
-    > Use Kerberos for password authentication: Off
+   * Kerberos integration
+     * Allow Kerberos authentication: Off
+     * Use Kerberos for password authentication: Off
 
-  - Cache settings
-    > Cache policy: DEFAULT
+   * Cache settings
+     * Cache policy: DEFAULT
 
-  - Advanced settings
-    > Enable the LDAPv3 password modify extended operation: Off
-    > Validate password policy: Off
-    > Trust email: On
+   * Advanced settings
+     * Enable the LDAPv3 password modify extended operation: Off
+     * Validate password policy: Off
+     * Trust email: On
 
-  Click on the "Save" button
+  - Click on the "Save" button
 
   At this step, all openldap users have been imported. You can check it by clicking on the "Users" tab, put "*" in the Search user box and click on the search button.
   You should see:
@@ -171,28 +171,28 @@ The following command should return the OpenLDAP Schema :
 
   Now, we will import groups.
 
-  Edit the "openldap" User federation
-  Click on the "Mappers" tab
-  Click "Add mapper"
-    > Name: groups
-    > Mapper type: group-ldap-mapper
-    > LDAP Groups DN: dc=example,dc=org
-    > Group Name LDAP Attribute: cn
-    > Grouyp Object Classes: groupOfNames
-    > Preserve Group Inheritance: Off
-    > Ignore Missing Groups: Off
-    > Membership LDAP Attribute: member
-    > Membership Attribute Type: DN
-    > Membership User LDAP Attribute: uid
-    > LDAP Filter:
-    > Mode: READ_ONLY
-    > User Groups Retrieve Strategy: LOAD_GROUPS_BY_MEMBER_ATTRIBUTE
-    > Member-Of LDAP Attribute: memberOf
-    > Mapped Group Attributes:
-    > Drop non-existing groups during sync: Off
-    > Groups Path: /
+  - Edit the "openldap" User federation
+  - Click on the "Mappers" tab
+  - Click "Add mapper"
+     * Name: groups
+     * Mapper type: group-ldap-mapper
+     * LDAP Groups DN: dc=example,dc=org
+     * Group Name LDAP Attribute: cn
+     * Grouyp Object Classes: groupOfNames
+     * Preserve Group Inheritance: Off
+     * Ignore Missing Groups: Off
+     * Membership LDAP Attribute: member
+     * Membership Attribute Type: DN
+     * Membership User LDAP Attribute: uid
+     * LDAP Filter:
+     * Mode: READ_ONLY
+     * User Groups Retrieve Strategy: LOAD_GROUPS_BY_MEMBER_ATTRIBUTE
+     * Member-Of LDAP Attribute: memberOf
+     * Mapped Group Attributes:
+     * Drop non-existing groups during sync: Off
+     * Groups Path: /
 
-  Click the "Save" button
-  Click on Action>Sync All users
+  - Click the "Save" button
+  - Click on Action>Sync All users
 
   Now you can check the openldap groups have been imported using the Groups tab. You shoud see :
