@@ -198,3 +198,56 @@ The following command should return the OpenLDAP Schema :
   Now you can check the openldap groups have been imported using the Groups tab. You shoud see :
 
   ![OpenLdap Groups Import](/images/Keycloak/import_openldap_groups.png)
+
+## SCIM Configuration
+
+
+### Enable the SCIM ConsoleTheme
+
+  To access the SCIM Configuration User Interface, you have to change the Admin Console Theme.
+  - Select the "Realm settings" Tab
+  - Select "scim" for the "Admin console theme"
+  - Click the "Save" button => the "Realm sucessfully updated" message is displayed
+  - Refresh the browser page => a "Page not found..." message is displayed
+  - Click on the "Go to the home page >>" hyperlink
+
+  Now, the Admin console theme has changed and you should be able to access the SCIM Configuration tab :
+
+  ![SCIM Configuration Tab](/images/Keycloak/scim_configuration.png)
+
+### Configure the odm client application authorization
+
+  - Select the "Service Provider" tab
+
+   - Select "Settings"
+   - Set "SCIM enabled" to "ON"
+   - Click on the "Save" Button
+
+   - Select "Authorization"
+   - Select"odm" (clientId of the application) in the "Available Clients" list and click on "Add selected" to move it to the "Assigned Clients" list
+
+
+  By default, the SCIM Groups and Users Endpoints recquires authentication. 
+
+  ![SCIM Resources Tab](/images/Keycloak/scim_resources.png)
+
+  Now, we will configure these endpoints to authorize authenticated users that have the rtsAdministrators role. In the ODM client application, we will use the client_credentials flow using the "service-account-odm" service account having assigned the rtsAdministrators role. We just have to configure authorization for the "Get" endpoint as the ODM SCIM Import is a read only mode and doesn't need the other endpoints (Create, Update, Delete) 
+
+  - Select the "Resource Type" tab
+   
+   - Click on "Group" inside the table
+   - Click on the "Authorization" tab
+   - Expand "Common Roles", select "rtsAdministrators" in the "Available Roles" and click on "Add selected" to move it to the "Assigned Roles" list
+   - Expand "Roles for Get", select "rtsAdministrators" in the "Available Roles" and click on "Add selected" to move it to the "Assigned Roles" list
+
+  ![SCIM Group Authorization Tab](/images/Keycloak/scim_groups_authorization.png)
+
+   - Click on "User" inside the table
+   - Click on the "Authorization" tab
+   - Expand "Common Roles", select "rtsAdministrators" in the "Available Roles" and click on "Add selected" to move it to the "Assigned Roles" list
+   - Expand "Roles for Get", select "rtsAdministrators" in the "Available Roles" and click on "Add selected" to move it to the "Assigned Roles" list
+
+  ![SCIM User Authorization Tab](/images/Keycloak/scim_user_authorization.png)
+
+ 
+     
