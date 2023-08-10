@@ -1,19 +1,23 @@
 # How to import Keycloak Groups and Users using SCIM
 
 ## Table of Contents
-<!-- TOC titleSize:2 tabSpaces:2 depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 skip:0 title:1 charForUnorderedList:- -->
-- [Introduction](#introduction)
-    - [Build the Keycloak docker image embbeding the open source SCIM plug-in](#build-the-keycloak-docker-image-embbeding-the-open-source-scim-plug-in)
-    - [Push the image on the OpenShift Cluster](#push-the-image-on-the-openshift-cluster)
-    - [Deploy Keycloak Service using the keycloak-scim image](#deploy-keycloak-service-using-the-keycloak-scim-image)
-    - [Configure an ODM Application with Keycloak dashboard](#configure-an-odm-application-with-keycloak-dashboard)
-    - [Deploy an Open LDAP Service](#deploy-an-open-ldap-service)
-    - [Add an LDAP User Federation to Keycloak](#add-an-ldap-user-federation-to-keycloak)
-    - [SCIM Configuration](#scim-configuration)
-        - [Enable the SCIM ConsoleTheme](#enable-the-scim-consoletheme)
-        - [Configure the odm client application authorization](#configure-the-odm-client-application-authorization)
-        - [Check the SCIM Group and User endpoints](#check-the-scim-group-and-user-endpoints)
-- [Deploy ODM on a container configured with Keycloak](#deploy-odm-on-a-container-configured-with-keycloak)
+<!-- TOC depthfrom:1 depthto:6 withlinks:false updateonsave:false orderedlist:false -->
+
+- How to import Keycloak Groups and Users using SCIM
+    - Table of Contents
+- Introduction
+- Deploy on OpenShift a custom Keycloak service with a SCIM Server
+    - Build the Keycloak docker image embbeding the open source SCIM plug-in
+    - Push the image on the OpenShift Cluster
+    - Deploy Keycloak Service using the keycloak-scim image
+- Configure an ODM Application with Keycloak dashboard
+- Deploy an Open LDAP Service
+- Add an LDAP User Federation to Keycloak
+- SCIM Configuration
+    - Enable the SCIM ConsoleTheme
+    - Configure the odm client application authorization
+    - Check the SCIM Group and User endpoints
+- Deploy ODM on a container configured with Keycloak
 
 <!-- /TOC -->
 
@@ -25,6 +29,8 @@ But, if the openId server also provides a SCIM server, then it can also be manag
 
 Keycloak server doesn't provide a SCIM server by default. But, it's possible to manage it using the following opensource contribution [https://github.com/Captain-P-Goldfish/scim-for-keycloak](https://github.com/Captain-P-Goldfish/scim-for-keycloak).
 As the project [https://scim-for-keycloak.de/](https://scim-for-keycloak.de) will become Enterprise ready soon, we realized this tutorial using the last available open source version : kc-20-b1 for Keycloak 20.0.5.
+
+# Deploy on OpenShift a custom Keycloak service with a SCIM Server 
 
 ## Build the Keycloak docker image embbeding the open source SCIM plug-in
 
@@ -89,13 +95,13 @@ Note: To avoid an error on the image push, perhaps you will have to add $REGITRY
     -p NAMESPACE=<my-keycloak-project> \
 | oc create -f -
 ```
-## Configure an ODM Application with Keycloak dashboard
+# Configure an ODM Application with Keycloak dashboard
 
 Follow the Configure a [Keycloak instance for ODM (Part 1)](README.md#configure-a-keycloak-instance-for-odm-part-1).
 If it has already be managed following the entire [Configuration of ODM with Keycloak](README.md) tutorial, then you can go to the next step.
 
 
-## Deploy an Open LDAP Service
+# Deploy an Open LDAP Service
 
 - Create a Service Account with the anyuid policy
 
@@ -130,7 +136,7 @@ The following command should return the OpenLDAP Schema :
     - PROJECT is the name of the current project
 
 
-## Add an LDAP User Federation to Keycloak
+# Add an LDAP User Federation to Keycloak
 
 - Connect at the Keycloak Admin Dashboard using the odm realm with login/pass admin/admin
 - Select "User federation" and click Add Provider > LDAP
@@ -220,10 +226,10 @@ The following command should return the OpenLDAP Schema :
 
   ![OpenLdap Groups Import](/images/Keycloak/import_openldap_groups.png)
 
-## SCIM Configuration
+# SCIM Configuration
 
 
-### Enable the SCIM ConsoleTheme
+## Enable the SCIM ConsoleTheme
 
   To access the SCIM Configuration User Interface, you have to change the Admin Console Theme.
   - Select the "Realm settings" Tab
@@ -236,7 +242,7 @@ The following command should return the OpenLDAP Schema :
 
   ![SCIM Configuration Tab](/images/Keycloak/scim_configuration.png)
 
-### Configure the odm client application authorization
+## Configure the odm client application authorization
 
   - Select the "Service Provider" tab
 
@@ -270,7 +276,7 @@ The following command should return the OpenLDAP Schema :
 
   ![SCIM User Authorization Tab](/images/Keycloak/scim_user_authorization.png)
 
-### Check the SCIM Group and User endpoints
+## Check the SCIM Group and User endpoints
 
   Download the [keycloak-odm-script.zip](keycloak-odm-script.zip) file to your machine and unzip it in your working directory.
   This .zip file contains scripts and templates to verify and set up ODM.
