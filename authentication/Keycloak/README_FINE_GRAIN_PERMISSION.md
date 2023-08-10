@@ -2,9 +2,6 @@
 
 ## Table of Contents
 <!-- TOC depthfrom:1 depthto:6 withlinks:false updateonsave:false orderedlist:false -->
-
-- How to import Keycloak Groups and Users using SCIM
-    - Table of Contents
 - Introduction
 - Deploy on OpenShift a custom Keycloak service with a SCIM Server
     - Build the Keycloak docker image embbeding the open source SCIM plug-in
