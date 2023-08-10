@@ -1,3 +1,21 @@
+<!-- TOC -->
+
+- [How to import Keycloak Groups and Users using SCIM](#how-to-import-keycloak-groups-and-users-using-scim)
+- [Introduction](#introduction)
+    - [Build the Keycloak docker image embbeding the open source SCIM plug-in](#build-the-keycloak-docker-image-embbeding-the-open-source-scim-plug-in)
+    - [Push the image on the OpenShift Cluster](#push-the-image-on-the-openshift-cluster)
+    - [Deploy Keycloak Service using the keycloak-scim image](#deploy-keycloak-service-using-the-keycloak-scim-image)
+    - [Configure an ODM Application with Keycloak dashboard](#configure-an-odm-application-with-keycloak-dashboard)
+    - [Deploy an Open LDAP Service](#deploy-an-open-ldap-service)
+    - [Add an LDAP User Federation to Keycloak](#add-an-ldap-user-federation-to-keycloak)
+    - [SCIM Configuration](#scim-configuration)
+        - [Enable the SCIM ConsoleTheme](#enable-the-scim-consoletheme)
+        - [Configure the odm client application authorization](#configure-the-odm-client-application-authorization)
+        - [Check the SCIM Group and User endpoints](#check-the-scim-group-and-user-endpoints)
+- [Deploy ODM on a container configured with Keycloak](#deploy-odm-on-a-container-configured-with-keycloak)
+
+<!-- /TOC -->
+
 # How to import Keycloak Groups and Users using SCIM
 
 # Introduction
