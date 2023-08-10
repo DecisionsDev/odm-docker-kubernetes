@@ -1,6 +1,7 @@
-<!-- TOC -->
+# How to import Keycloak Groups and Users using SCIM
 
-- [How to import Keycloak Groups and Users using SCIM](#how-to-import-keycloak-groups-and-users-using-scim)
+## Table of Contents
+<!-- TOC titleSize:2 tabSpaces:2 depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 skip:0 title:1 charForUnorderedList:- -->
 - [Introduction](#introduction)
     - [Build the Keycloak docker image embbeding the open source SCIM plug-in](#build-the-keycloak-docker-image-embbeding-the-open-source-scim-plug-in)
     - [Push the image on the OpenShift Cluster](#push-the-image-on-the-openshift-cluster)
@@ -15,8 +16,6 @@
 - [Deploy ODM on a container configured with Keycloak](#deploy-odm-on-a-container-configured-with-keycloak)
 
 <!-- /TOC -->
-
-# How to import Keycloak Groups and Users using SCIM
 
 # Introduction
 
