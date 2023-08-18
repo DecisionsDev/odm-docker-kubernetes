@@ -324,4 +324,90 @@ But replace the previous step "3. Create the Keycloak authentication secret" of 
         --from-file=webSecurity.xml=./output/webSecurity.xml
     ```
 
+# Manage Security on ODM Decision Service Project
+
+ODM Decision Center allows to [manage users and groups from the Business console](https://www.ibm.com/docs/en/odm/8.11.1?topic=center-managing-users-groups-from-business-console) in order to set access security on specific projects.
+Now, we will manage the following scenario. We will load the "Loan Validation Service" and "Miniloan Service" projects that are available at the getting started repository.
+We will only provide access to the "Loan Validation Service" project for users belonging at the "TaskAuditors" group
+We will only provide access to the "Miniloan Service" project for users belonging at the "TaskUsers" group
+
+## Provide the relevant roles on groups
+
+The first step is to declare groups of users that will be Decision Center Administrators, having access to the Business Console Adminitration Tab.
+
+  - Select the Manage>Groups Tab
+  - Double-Click on TaskAdmins
+  - Select the Role Mappins Tab
+  - Select all rts*** and res*** roles in the "Available Roles" list and click on "Add selected" to move it to the "Assigned Roles" list 
+
+  ![Assign Admin Roles](/images/Keycloak/assign_rtsadminitrators_role.png)
+
+We also need to declare TaskAuditors and TaskUsers groups having rtsUSers roles. If you dn't do this, users are not authorized to login into the Business Console. 
+  
+  - Select the Manage>Groups Tab
+  - Double-Click on TaskAuditors
+  - Select the Role Mappins Tab
+  - Select the "rtsUsers" role in the "Available Roles" list and click on "Add selected" to move it to the "Assigned Roles" list
+  - Repeat the same for the TaskUsers group
+
+  ![Assign User Roles](/images/Keycloak/assign_rtsusers_role.png)
+
+## Load projects
+
+  - Log into the ODM Decision Center Business Console using the cp4admin user
+  - Select the LIBRARY tab
+  - Import "Loan Validation Service" and "Miniloan Service" projects
+
+## Import Groups and Users
+
+  - Select the ADMINISTRATION tab
+  - Select the "Connection Settings" sub-tab
+  - Check the KEYCLOAK_SCIM connection status is green
+  - Select the "Groups" sub-tab
+  - Click the "Import Groups from directories" button
+  - Select the "TaskAuditors" and "TaskUsers" groups
+  - Click on the "Import groups and users" button
+
+  ![DC Import Groups and Users](/images/Keycloak/dc_import_groups_users.png)
+
+## Set the project security
+
+  - Select the "Project Security" sub-tab
+  - Click on the "Edit decision service security" of the "Loan Validation Service" project
+  - Below the Security section, select "Enforce Security"
+  - Below the Groups section, select the TaskAuditors group
+  - Click on the Done button
+
+  ![Set Loan Validation Service Security](/images/Keycloak/set_loan_validation_service_security.png)
+
+  - Click on the "Edit decision service security" of the "Miniloan Service" project
+  - Below the Security section, select "Enforce Security"
+  - Below the Groups section, select the TaskUsers group
+  - Click on the Done button
+
+  ![Security Results](/images/Keycloak/security_results.png)
+
+## Check the project security
+
+  - Click on top right "cp4admin" user
+  - Click the "Log out" link
+  - Click the Keycloak Logout button
+
+  - Login with user1 > the ADMINISTRATION tab is not available
+  - Click on LIBRARY tab > only the "Miniloan Service" project must be available
+  - Click on top-right user1 link
+  - Select "Profile" link
+  - The "user1" User Profile is showing the "TaskUsers" group
+
+  ![User1 Check](/images/Keycloak/user1_check.png)
+
+  - Login with user6 > the ADMINISTRATION tab is not available
+  - Click on LIBRARY tab > only the "Loan Validation Service" project must be available
+  - Click on top-right user6 link
+  - Select "Profile" link
+  - The "user6" User Profile is showing the "TaskAuditors" group 
+
+  ![User6 Check](/images/Keycloak/user6_check.png)
    
+
+  
