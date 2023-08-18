@@ -340,7 +340,7 @@ The first step is to declare groups of users that will be Decision Center Admini
   - Select the Role Mappins Tab
   - Select all rts*** and res*** roles in the "Available Roles" list and click on "Add selected" to move it to the "Assigned Roles" list 
 
-  ![Assign Admin Roles](/images/Keycloak/assign_rtsadminitrators_role.png)
+  ![Assign Admin Roles](/images/Keycloak/assign_rtsadministrators_role.png)
 
 We also need to declare TaskAuditors and TaskUsers groups having rtsUSers roles. If you dn't do this, users are not authorized to login into the Business Console. 
   
@@ -357,6 +357,8 @@ We also need to declare TaskAuditors and TaskUsers groups having rtsUSers roles.
   - Log into the ODM Decision Center Business Console using the cp4admin user
   - Select the LIBRARY tab
   - Import "Loan Validation Service" and "Miniloan Service" projects
+
+  ![Load Projects](/images/Keycloak/load_projects.png)
 
 ## Import Groups and Users
 
