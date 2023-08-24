@@ -2,7 +2,7 @@
 
 ## Table of Contents
 <!-- TOC depthfrom:1 depthto:6 withlinks:false updateonsave:false orderedlist:false -->
-- Introduction
+- [Introduction](#introduction)
 - Deploy on OpenShift a custom Keycloak service with a SCIM Server
     - Build the Keycloak docker image embbeding the open source SCIM plug-in
     - Push the image on the OpenShift Cluster
@@ -65,11 +65,9 @@ As the project [https://scim-for-keycloak.de/](https://scim-for-keycloak.de) wil
 Note: To avoid an error on the image push, perhaps you will have to add $REGISTRY_HOST to your Docker insecure-registries list configuration.
       With podman, you have to create a myregistry.conf file in the /etc/containers/registries.conf.d folder like:
 
-	```shell
-	   [[registry]]
-           location = "$REGISTRY_HOST"
-           insecure = true
-	```
+      [[registry]]
+      location = "$REGISTRY_HOST"
+      insecure = true
 
 ## Deploy Keycloak Service using the keycloak-scim image
 
@@ -130,9 +128,9 @@ oc apply -f ./openldap/ldap-service.yaml
 
 The following command should return the OpenLDAP Schema :
 
-    ```shell
-    oc exec -ti <OPENLDAP_POD> bash -- ldapsearch -x -Z -H ldap://ldap-service.<PROJECT>.svc:389  -D 'cn=admin,dc=example,dc=org' -b 'dc=example,dc=org' -w xNxICc74qG24x3GoW03n
-    ```
+```shell
+oc exec -ti <OPENLDAP_POD> bash -- ldapsearch -x -Z -H ldap://ldap-service.<PROJECT>.svc:389  -D 'cn=admin,dc=example,dc=org' -b 'dc=example,dc=org' -w xNxICc74qG24x3GoW03n
+```
 
     Where:
 
@@ -152,10 +150,7 @@ The following command should return the OpenLDAP Schema :
      * Vendor: "Red Hat Directory Server"
   
    * Connection and authentication settings
-     * Connection URL should be: 
-```shell
-ldap://ldap-service.<PROJECT>.svc:389
-```
+     * Connection URL should be: "ldap://ldap-service.<PROJECT>.svc:389"
 
   Click on the "Test connection" button => "Successfully connected to LDAP" message is displayed
 
