@@ -41,6 +41,7 @@ As the project [https://scim-for-keycloak.de/](https://scim-for-keycloak.de) wil
 
 ## Push the image on the OpenShift Cluster
 
+- Log on your OCP Cluster
 - Expose the Docker image registry:
 
 ```shell
@@ -61,12 +62,19 @@ As the project [https://scim-for-keycloak.de/](https://scim-for-keycloak.de) wil
    docker push $REGISTRY_HOST/<my-keycloak-project>/keycloak-scim:latest
 ```
 
-Note: To avoid an error on the image push, perhaps you will have to add $REGITRY_HOST to your Docker insecure-registries list configuration.
+Note: To avoid an error on the image push, perhaps you will have to add $REGISTRY_HOST to your Docker insecure-registries list configuration.
+      With podman, you have to create a myregistry.conf file in the /etc/containers/registries.conf.d folder like:
+
+	```shell
+	   [[registry]]
+           location = "$REGISTRY_HOST"
+           insecure = true
+	```
 
 ## Deploy Keycloak Service using the keycloak-scim image
 
-- Get the [keycloak.yaml](https://raw.githubusercontent.com/keycloak/keycloak-quickstarts/latest/openshift-examples/keycloak.yaml) file
-- Replace the provided image: input using default-route-openshift-image-registry.apps.mat-test-tuto.cp.fyre.ibm.com/keycloak2/keycloak-scim:latest
+- Get the [keycloak.yaml](https://raw.githubusercontent.com/keycloak/keycloak-quickstarts/latest/openshift/keycloak.yaml) file
+- Replace the provided image: input using image-registry.openshift-image-registry.svc:5000/keycloak2/keycloak-scim:latest
 
 ```shell
    ...
@@ -94,8 +102,7 @@ Note: To avoid an error on the image push, perhaps you will have to add $REGITRY
 ```
 # Configure an ODM Application with Keycloak dashboard
 
-Follow the Configure a [Keycloak instance for ODM (Part 1)](README.md#configure-a-keycloak-instance-for-odm-part-1).
-If it has already be managed following the entire [Configuration of ODM with Keycloak](README.md) tutorial, then you can go to the next step.
+You must start with the configuration of Keycloak with ODM roles as instructed in [Keycloak instance for ODM (Part 1)](README.md#configure-a-keycloak-instance-for-odm-part-1).
 
 
 # Deploy an Open LDAP Service
@@ -145,7 +152,10 @@ The following command should return the OpenLDAP Schema :
      * Vendor: "Red Hat Directory Server"
   
    * Connection and authentication settings
-     * Connection URL: ldap://ldap-service.<PROJECT>.svc:389
+     * Connection URL should be: 
+```shell
+ldap://ldap-service.<PROJECT>.svc:389
+```
 
   Click on the "Test connection" button => "Successfully connected to LDAP" message is displayed
 
@@ -202,7 +212,7 @@ The following command should return the OpenLDAP Schema :
      * Mapper type: group-ldap-mapper
      * LDAP Groups DN: dc=example,dc=org
      * Group Name LDAP Attribute: cn
-     * Grouyp Object Classes: groupOfNames
+     * Group Object Classes: groupOfNames
      * Preserve Group Inheritance: Off
      * Ignore Missing Groups: Off
      * Membership LDAP Attribute: member
@@ -226,10 +236,12 @@ The following command should return the OpenLDAP Schema :
 # SCIM Configuration
 
 
-## Enable the SCIM ConsoleTheme
+## Enable the SCIM Console Theme
 
   To access the SCIM Configuration User Interface, you have to change the Admin Console Theme.
-  - Select the "Realm settings" Tab
+  If you are in the "odm" realm, you need to go back to the "master" realm before to do:
+  - Select the "Realm settings" Menu
+  - Select the "Themes" Tab
   - Select "scim" for the "Admin console theme"
   - Click the "Save" button => the "Realm sucessfully updated" message is displayed
   - Refresh the browser page => a "Page not found..." message is displayed
@@ -337,8 +349,8 @@ The first step is to declare groups of users that will be Decision Center Admini
 
   - Select the Manage>Groups Tab
   - Double-Click on TaskAdmins
-  - Select the Role Mappins Tab
-  - Select all rts*** and res*** roles in the "Available Roles" list and click on "Add selected" to move it to the "Assigned Roles" list 
+  - Select the Role Mappings Tab
+  - Select all rts*** roles in the "Available Roles" list and click on "Add selected" to move it to the "Assigned Roles" list 
 
   ![Assign Admin Roles](/images/Keycloak/assign_rtsadministrators_role.png)
 
@@ -353,10 +365,12 @@ We also need to declare TaskAuditors and TaskUsers groups having rtsUSers roles.
   ![Assign User Roles](/images/Keycloak/assign_rtsusers_role.png)
 
 ## Load projects
+ 
+  For all the coming steps, the users password can be found in the ldap_user.ldif file of the openldap-customldif secret
 
   - Log into the ODM Decision Center Business Console using the cp4admin user
   - Select the LIBRARY tab
-  - Import "Loan Validation Service" and "Miniloan Service" projects
+  - Import the [Loan Validation Service](https://github.com/DecisionsDev/odm-for-container-getting-started/blob/master/Loan%20Validation%20Service.zip) and [Miniloan Service](https://github.com/DecisionsDev/odm-for-container-getting-started/blob/master/Miniloan%20Service.zip) projects
 
   ![Load Projects](/images/Keycloak/load_projects.png)
 
