@@ -37,6 +37,10 @@
 
 In the context of the Operational Decision Manager (ODM) on Certified Kubernetes offering, ODM for production can be configured with an external OpenID Connect server (OIDC provider), such as the Keycloak cloud service.
 
+This tutorial is showing how to realize an integration of ODM with Keycloak to manage classic authentication and authorization.
+An other tutorial explains how to manage [fine grain permission with Decision Center by using a Keycloak SCIM Server](README_FINE_GRAIN_PERMISSION.md).
+
+
 ## What is Keycloak?
 
 [Keycloak](https://www.keycloak.org/) is an open source enterprise identity service that provides single sign-on, user federation, identity brokering and social login. The Keycloak SSO [OpenID Connect](https://www.keycloak.org/docs/latest/server_admin/index.html#con-oidc_server_administration_guide) capability is the service that we use in this article.
