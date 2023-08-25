@@ -37,6 +37,10 @@
 
 In the context of the Operational Decision Manager (ODM) on Certified Kubernetes offering, ODM for production can be configured with an external OpenID Connect server (OIDC provider), such as the Keycloak cloud service.
 
+This tutorial is showing how to realize an integration of ODM with Keycloak to manage classic authentication and authorization.
+An other tutorial explains how to manage [fine grain permission with Decision Center by using a Keycloak SCIM Server](README_FINE_GRAIN_PERMISSION.md).
+
+
 ## What is Keycloak?
 
 [Keycloak](https://www.keycloak.org/) is an open source enterprise identity service that provides single sign-on, user federation, identity brokering and social login. The Keycloak SSO [OpenID Connect](https://www.keycloak.org/docs/latest/server_admin/index.html#con-oidc_server_administration_guide) capability is the service that we use in this article.
@@ -88,10 +92,12 @@ You need the following elements:
 
 ### Install a Keycloak instance
 
-For this tutorial, we followed the procedure explaining how to install [Keycloak on OpenShift](https://www.keycloak.org/getting-started/getting-started-openshift).
-We tested with the Keycloak version 21.1.1.
+We have tested with a Keycloak instance (version 21.1.1)  that is installed on Openshift.  The installation procedure can be found at [Get started with Keycloak on Openshift](https://www.keycloak.org/getting-started/getting-started-openshift).
+If you already have an Openshift cluster, you can skip the section [Before you start](https://www.keycloak.org/getting-started/getting-started-openshift#_before_you_start) and use the following steps:
 
-You can follow the [Get started with Keycloak on Openshift](https://www.keycloak.org/getting-started/getting-started-openshift) instructions.
+- oc login to your cluster
+- Create a namespace "keycloak":   oc new-project keycloak
+- Continue from the section [Start Keycloak](https://www.keycloak.org/getting-started/getting-started-openshift#_start_keycloak)  
 
 If you want to install on another Kubernetes platform, follow these instructions: [Get started with Keycloak on Kubernetes](https://www.keycloak.org/getting-started/getting-started-kube).
 
@@ -237,6 +243,10 @@ You can also create groups and do a mapping between groups and roles. This way, 
     
     ![Get Client Secret](/images/Keycloak/client_secret.png)
 
+    * Click **Service Account Roles** tab
+    *  Select all res* and rts* roles  in the "Available Roles" list and click on "Add selected" to move it to the "Assigned Roles" list
+
+    ![Set Service Account Roles](/images/Keycloak/service_account_roles.png)
   
 2. Add the GROUPS predefined mapper on the ROLES client scope
 
@@ -431,7 +441,7 @@ You can now install the product. We will use the PostgreSQL internal database an
   See the [Preparing to install](https://www.ibm.com/docs/en/odm/8.12.0?topic=production-preparing-install-operational-decision-manager) documentation for more information.
   
   ```shell
-  helm install my-odm-release ibmcharts/ibm-odm-prod \
+  helm install my-odm-release ibm-helm/ibm-odm-prod \
           --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
           --set oidc.enabled=true \
           --set license=true \

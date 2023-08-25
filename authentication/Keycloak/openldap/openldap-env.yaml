@@ -1,0 +1,17 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: openldap-env
+  labels:
+    app: openldap-deploy
+data:
+  LDAP_REMOVE_CONFIG_AFTER_SETUP: 'true'
+  LDAP_TLS: 'true'
+  LDAP_TLS_KEY_FILENAME: tls.key
+  LDAP_TLS_CA_CRT_FILENAME: ca.crt
+  LDAP_TLS_ENFORCE: 'false'
+  LDAP_ORGANISATION: Example Inc.
+  LDAP_TLS_VERIFY_CLIENT: never
+  LDAP_DOMAIN: example.org
+  LDAP_BACKEND: mdb
+  LDAP_TLS_CRT_FILENAME: tls.crt

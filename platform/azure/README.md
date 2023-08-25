@@ -402,6 +402,7 @@ helm install <release> ibmcharts/ibm-odm-prod --version 23.1.0 \
 
 > Note: By default, the NGINX Ingress controller does not enable sticky session. If you want to use sticky session to connect to DC, refer to [Using sticky session for Decision Center connection](../../contrib/sticky-session/README.md)
 
+
 ### Edit your /etc/hosts
 
 ```shell
