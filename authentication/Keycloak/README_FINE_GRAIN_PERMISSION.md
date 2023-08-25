@@ -3,18 +3,25 @@
 ## Table of Contents
 <!-- TOC depthfrom:1 depthto:6 withlinks:false updateonsave:false orderedlist:false -->
 - [Introduction](#introduction)
-- Deploy on OpenShift a custom Keycloak service with a SCIM Server
-    - Build the Keycloak docker image embbeding the open source SCIM plug-in
-    - Push the image on the OpenShift Cluster
-    - Deploy Keycloak Service using the keycloak-scim image
-- Configure an ODM Application with Keycloak dashboard
-- Deploy an Open LDAP Service
-- Add an LDAP User Federation to Keycloak
-- SCIM Configuration
-    - Enable the SCIM ConsoleTheme
-    - Configure the odm client application authorization
-    - Check the SCIM Group and User endpoints
-- Deploy ODM on a container configured with Keycloak
+- [Deploy on OpenShift a custom Keycloak service with a SCIM Server](#deploy-on-openShift-a-custom-keycloak-service-with-a-scim-server)
+  - [Build the Keycloak docker image embbeding the open source SCIM plug-in](#build-the-keycloak-docker-image-embbeding-the-open-source-scim-plug-in)
+  - [Push the image on the OpenShift Cluster](#push-the-image-on-the-openShift-cluster)
+  - [Deploy Keycloak Service using the keycloak-scim image](#deploy-keycloak-service-using-the-keycloak-scim-image)
+- [Configure an ODM Application with Keycloak dashboard](#configure-an-odm-application-with-keycloak-dashboard)
+- [Deploy an Open LDAP Service](#deploy-an-open-ldap-service)
+- [Add an LDAP User Federation to Keycloak](#add-an-ldap-user-federation-to-keycloak)
+- [SCIM Configuration](#scim-configuration)
+  - [Enable the SCIM Console Theme](#enable-the-scim-console-theme)
+  - [Configure the odm client application authorization](#configure-the-odm-client-application-authorization)
+  - [Check the SCIM Group and User endpoints](#check-the-scim-group-and-user-endpoints)
+- [Deploy ODM on a container configured with Keycloak](#deploy-odm-on-a-container-configured-with-keycloak)
+- [Manage Security on ODM Decision Service Project](#manage-security-on-odm-decision-service-project)
+  - [Provide the relevant roles on groups](#provide-the-relevant-roles-on-groups)
+  - [Load projects](#load-projects)
+  - [Import Groups and Users](#import-groups-and-users)
+  - [Set the project security](#set-the-project-security)
+  - [Check the project security](#check-the-project-security)
+- [Synchonize Decision Center when updating Keycloak](#synchonize-decision-center-when-updating-keycloak)
 
 <!-- /TOC -->
 
@@ -420,5 +427,16 @@ We also need to declare TaskAuditors and TaskUsers groups having rtsUSers roles.
 
   ![User6 Check](/images/Keycloak/user6_check.png)
    
+# Synchonize Decision Center when updating Keycloak
 
+  During the life of a project, common situation can happen like :
+  - a user is moving from a group to an other.
+  - a new user join a group
+  - a user left a group
+  - a user change of group
+  - ...
+
+  All these operation are done using the Keycloak dashboard and are reflected on Decision Center. It can be done manually using the Decision Center Synchronize button or using the automatic synchronization happening by default every 2 hours. You can change the frequency using the "-Dcom.ibm.rules.decisioncenter.ldap.sync.refresh.period=60000
+" Decision Center JVM options expressed in milliseconds. 
+    
   
