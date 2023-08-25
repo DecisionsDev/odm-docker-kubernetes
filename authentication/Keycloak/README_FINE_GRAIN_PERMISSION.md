@@ -157,15 +157,11 @@ oc exec -ti <OPENLDAP_POD> bash -- ldapsearch -x -Z -H ldap://ldap-service.<PROJ
      * Vendor: "Red Hat Directory Server"
   
    * Connection and authentication settings
-     * Connection URL should be: "ldap://ldap-service.<PROJECT>.svc:389"
-
-  Click on the "Test connection" button => "Successfully connected to LDAP" message is displayed
-
+     * Connection URL should be:  ldap://ldap-service.\<PROJECT>.svc:389 (PROJECT is the name of the current project)
      * Bind type: simple
      * Bind DN: cn=admin,dc=example,dc=org
      * Bind credentials: xNxICc74qG24x3GoW03n
-
-  Click on the "Test authentication" button => "Successfully connected to LDAP" message is displayed
+- Click on the "Test authentication" button => "Successfully connected to LDAP" message is displayed
 
    * LDAP searching and updating
      * Edit mode: READ_ONLY
