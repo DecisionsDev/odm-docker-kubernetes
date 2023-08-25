@@ -2,6 +2,34 @@ apiVersion: v1
 entries:
   ibm-odm-dev:
   - apiVersion: v2
+    appVersion: 8.12.0.0
+    created: "2023-06-27T13:55:07.357623+02:00"
+    description: 'IBM Operational Decision Manager for Developers    License   By
+      installing this product you accept the following license terms: https://www14.software.ibm.com/cgi-bin/weblap/lap.pl?li_formnum=L-AMWV-QRBWQJ'
+    digest: ffd4e4dd18e6bd8d4d70e6f06b2d9da0602011d96b5059c10a61bef16ac94e8f
+    home: https://developer.ibm.com/odm/
+    icon: https://raw.githubusercontent.com/ODMDev/ruledesigner/master/icons/automation-decision.png
+    keywords:
+    - OperationalDecisionManager
+    - businessrules
+    - Limited
+    - ICP
+    - amd64
+    - s390x
+    - ppc64le
+    - RHOCP
+    - ROKS
+    - Middleware
+    kubeVersion: '>=1.19.0-0'
+    maintainers:
+    - name: IBM
+    name: ibm-odm-dev
+    sources:
+    - https://github.com/IBM/charts/tree/master/stable
+    urls:
+    - https://raw.githubusercontent.com/DecisionsDev/odm-docker-kubernetes/master/repo/stable/ibm-odm-dev-23.1.0.tgz
+    version: 23.1.0
+  - apiVersion: v2
     appVersion: 8.11.1.0
     created: "2022-12-19T09:00:37.096570825Z"
     description: 'IBM Operational Decision Manager for Developers    License   By
@@ -57,4 +85,32 @@ entries:
     urls:
     - https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm/ibm-odm-prod-22.2.0.tgz
     version: 22.2.0
-generated: "2022-12-20T11:30:01.177199+01:00"
+  - apiVersion: v2
+    appVersion: 8.12.0.0
+    created: "2023-06-22T10:04:39.643441813Z"
+    description: 'IBM Operational Decision Manager  License By installing this product
+      you accept the following license terms: https://www14.software.ibm.com/cgi-bin/weblap/lap.pl?li_formnum=L-PGCG-X4ZD6R'
+    digest: 94b95f5aadedcf5c7e5bac86f7a384f28d6ffbf3e0793d9e3911c3b1e9c629f8
+    home: https://developer.ibm.com/odm/
+    icon: https://raw.githubusercontent.com/ODMDev/ruledesigner/master/icons/automation-decision.png
+    keywords:
+    - OperationalDecisionManager
+    - businessrules
+    - Commercial
+    - s390x
+    - ppc64le
+    - amd64
+    - ICP
+    - RHOCP
+    - Middleware
+    kubeVersion: '>=1.11.0-0'
+    maintainers:
+    - name: IBM
+    name: ibm-odm-prod
+    sources:
+    - https://github.com/IBM/charts/tree/master/stable
+    urls:
+    - https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm/ibm-odm-prod-23.1.0.tgz
+    version: 23.1.0
+
+generated: "2023-06-09T09:25:47.579117+02:00"
