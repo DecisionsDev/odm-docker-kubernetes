@@ -79,7 +79,7 @@ Note: To avoid an error on the image push, perhaps you will have to add $REGISTR
 ## Deploy Keycloak Service using the keycloak-scim image
 
 - Get the [keycloak.yaml](https://raw.githubusercontent.com/keycloak/keycloak-quickstarts/latest/openshift/keycloak.yaml) file
-- Replace the provided image: input using image-registry.openshift-image-registry.svc:5000/keycloak2/keycloak-scim:latest
+- Replace the provided image: input using image-registry.openshift-image-registry.svc:5000/\<my-keycloak-project>/keycloak-scim:latest
 
 ```shell
    ...
