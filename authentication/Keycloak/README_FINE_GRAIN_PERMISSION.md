@@ -261,7 +261,7 @@ oc exec -ti <OPENLDAP_POD> bash -- ldapsearch -x -Z -H ldap://ldap-service.<PROJ
    - Select"odm" (clientId of the application) in the "Available Clients" list and click on "Add selected" to move it to the "Assigned Clients" list
 
 
-  By default, the SCIM Groups and Users Endpoints recquires authentication. 
+  By default, the SCIM Groups and Users Endpoints require authentication. 
 
   ![SCIM Resources Tab](/images/Keycloak/scim_resources.png)
 
@@ -338,8 +338,8 @@ But replace the previous step "3. Create the Keycloak authentication secret" of 
 
 ODM Decision Center allows to [manage users and groups from the Business console](https://www.ibm.com/docs/en/odm/8.11.1?topic=center-managing-users-groups-from-business-console) in order to set access security on specific projects.
 Now, we will manage the following scenario. We will load the "Loan Validation Service" and "Miniloan Service" projects that are available at the getting started repository.
-We will only provide access to the "Loan Validation Service" project for users belonging at the "TaskAuditors" group
-We will only provide access to the "Miniloan Service" project for users belonging at the "TaskUsers" group
+We will only provide access to the "Loan Validation Service" project for users belonging at the "TaskAuditors" group.
+We will only provide access to the "Miniloan Service" project for users belonging at the "TaskUsers" group.
 
 ## Provide the relevant roles on groups
 
