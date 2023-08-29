@@ -201,14 +201,14 @@ After activating your account by email, you should have access to your Aure AD i
 
    To be able to use ODM rest-api using password flow using email as user identifier and the client-credentials flow using client_id as user identifier, we need to create a new claim named "identity" that will take the relevant value according to the flow:
 
-  In **Azure Active Directory** / **Enterprise applications**, select **ODM Application**, and in **Manage / Single sign-on**:
+   In **Azure Active Directory** / **Enterprise applications**, select **ODM Application**, and in **Manage / Single sign-on**:
 
   * Click on Edit of the "Attributes & Claims" section
     * Click + Add new claim
       * Name: identity
       * Fill 2 Claim conditions in the exact following order:
-        1 User Type: Any / Scope Groups: 0 / Source: Attribute / Value: <CLIENT_ID>
-        2 User Type: Members / Scope Groups: 0 / Source: Attribute / Value: user.mail
+        1. User Type: Any / Scope Groups: 0 / Source: Attribute / Value: <CLIENT_ID>
+        2. User Type: Members / Scope Groups: 0 / Source: Attribute / Value: user.mail
  
 5. API Permissions.
 
