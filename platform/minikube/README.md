@@ -52,7 +52,7 @@ This tutorial was tested on macOS and Linux.
   ```
 
   > **Note**  
-  > You can access the [Kubernetes Dashboard](http://kubernetes.io/docs/user-guide/ui/) by running the `minikube dashboard` command.
+  > You can access the [Kubernetes Dashboard](https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/) by running the `minikube dashboard` command.
 
 ### 2. Prepare your environment for the ODM installation
 
@@ -160,4 +160,4 @@ kubectl logs <your-pod-name>
 Get hands-on experience with IBM Operational Decision Manager in a container environment by following this [Getting started tutorial](https://github.com/DecisionsDev/odm-for-container-getting-started/blob/master/README.md).
 
 # License
-[Apache 2.0](LICENSE)
+[Apache 2.0](/LICENSE)

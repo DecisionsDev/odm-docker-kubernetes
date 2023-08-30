@@ -353,9 +353,9 @@ kubernetes                                  ClusterIP      10.0.0.1       <none>
 <release>-odm-decisionserverconsole-notif   ClusterIP      10.0.201.87    <none>            1883/TCP         22m
 <release>-odm-decisionserverruntime         LoadBalancer   10.0.177.153   xxx.xxx.xxx.xxx   9443:31921/TCP   22m
 ```
-
+<!-- markdown-link-check-disable -->
 You can then open a browser on https://xxx.xxx.xxx.xxx:9453 to access Decision Center, and on https://xxx.xxx.xxx.xxx:9443 to access Decision Server console, Decision Server Runtime, and Decision Runner.
-
+<!-- markdown-link-check-enable -->
 ## Create an NGINX Ingress controller
 
 Installing an NGINX Ingress controller allows you to access ODM components through a single external IP address instead of the different IP addresses as seen above.  It is also mandatory to retrieve license usage through the IBM License Service.
@@ -363,12 +363,12 @@ Installing an NGINX Ingress controller allows you to access ODM components throu
 1. Use the official YAML manifest:
 
     ```shell
-    kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.7.1/deploy/static/provider/cloud/deploy.yaml
+    kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.0/deploy/static/provider/cloud/deploy.yaml
     ```
 
     > Note: The version will probably change after the publication of our documentation so please refer to the actual [documentation](https://kubernetes.github.io/ingress-nginx/deploy/#azure)!
 
-2. Get the Ingress controller external IP address:
+2. Get the Ingress controller external IP address (it will appear 80 seconds or so after the resource application above):
 
     ```shell
     kubectl get service -l app.kubernetes.io/name=ingress-nginx -n ingress-nginx
@@ -376,6 +376,16 @@ Installing an NGINX Ingress controller allows you to access ODM components throu
     ingress-nginx-controller             LoadBalancer   10.0.78.246    20.19.105.130   80:32208/TCP,443:30249/TCP   2m12s
     ingress-nginx-controller-admission   ClusterIP      10.0.229.164   <none>          443/TCP                      2m12s
     ```
+
+3. Verify the name of the new IngressClass:
+
+    ```shell
+    kubectl get ingressclass
+    NAME    CONTROLLER             PARAMETERS   AGE
+    nginx   k8s.io/ingress-nginx   <none>       5h38m
+    ```
+
+    It should be "nginx" but if different please update the next command accordingly.
 
 ## (Optional) Install an ODM Helm release and expose it with the NGINX Ingress controller (10 min)
 
@@ -396,7 +406,8 @@ helm install <release> ibmcharts/ibm-odm-prod --version 23.1.0 \
         --set externalDatabase.secretCredentials=<odmdbsecret> \
         --set service.ingress.enabled=true --set service.ingress.tlsSecretRef=<myodmcompanytlssecret> \
         --set service.ingress.tlsHosts={myodmcompany.com} --set service.ingress.host=myodmcompany.com \
-        --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"\,"nginx.ingress.kubernetes.io/backend-protocol: HTTPS"} \
+        --set service.ingress.annotations={"nginx.ingress.kubernetes.io/backend-protocol: HTTPS"} \
+        --set service.ingress.class=nginx \
         --set license=true --set usersPassword=<password>
 ```
 
@@ -426,6 +437,7 @@ release-odm-decisionserverruntime                NodePort       10.0.232.212   <
 
 ODM services are available through the following URLs:
 
+<!-- markdown-link-check-disable -->
 | SERVICE NAME | URL | USERNAME/PASSWORD
 | --- | --- | ---
 | Decision Server Console | https://myodmcompany.com/res | odmAdmin/\<password\>
@@ -433,6 +445,7 @@ ODM services are available through the following URLs:
 | Decision Server Runtime | https://myodmcompany.com/DecisionService | odmAdmin/\<password\>
 | Decision Runner | https://myodmcompany.com/DecisionRunner | odmAdmin/\<password\>
 
+<!-- markdown-link-check-enable -->
 Where:
 
 * \<password\> is the password provided to the **usersPassword** helm chart parameter
