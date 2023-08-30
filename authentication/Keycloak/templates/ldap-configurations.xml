@@ -1,0 +1,26 @@
+    <dc-usermanagement>
+      <connections>
+        <connection name="KEYCLOAK_SCIM">
+          <url>KEYCLOAK_SERVER_URL/scim/v2</url>
+          <groupSearchFilter>displayName%20co%20%22Task%22</groupSearchFilter>
+          <groupNameAttribute>displayName</groupNameAttribute>
+          <userIdAttribute>userName</userIdAttribute>
+          <userNameAttribute>userName</userNameAttribute>
+          <userMailAttribute>emails.value</userMailAttribute>
+          <properties>
+            <property>
+              <propertyName>ScimAuthenticationKind</propertyName>
+              <propertyValue>OAUTH</propertyValue>
+            </property>
+            <property>
+              <propertyName>ScimAuthenticationProvider</propertyName>
+              <propertyValue>keycloak</propertyValue>
+            </property>
+            <property>
+              <propertyName>IsScim</propertyName>
+              <propertyValue>true</propertyValue>
+            </property>
+          </properties>
+        </connection>
+      </connections>
+    </dc-usermanagement>

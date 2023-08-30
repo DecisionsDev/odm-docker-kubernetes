@@ -1,0 +1,19 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: ldap-service
+  labels:
+    app: openldap-deploy
+    servicename: ldap-service
+spec:
+  ports:
+    - name: ldap-port
+      protocol: TCP
+      port: 389
+      targetPort: ldap-port
+    - name: ssl-ldap-port
+      protocol: TCP
+      port: 636
+      targetPort: ssl-ldap-port
+  selector:
+    app: openldap-deploy

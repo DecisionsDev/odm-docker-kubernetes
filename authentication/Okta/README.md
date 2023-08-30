@@ -41,7 +41,7 @@ In the context of the ODM on Certified Kubernetes offering, Operational Decision
 
 You need to create a number of secrets before you can install an ODM instance with an external OIDC provider such as the Okta service and use web application single sign-on (SSO). The following diagram shows the ODM services with an external OIDC provider after a successful installation.
 
-![ODM web application SSO](/images/Okta/diag_okta_interaction.jpg)
+![ODM web application SSO](images/diag_okta_interaction.jpg)
 
 The following procedure describes how to manually configure ODM with an Okta service.
 
@@ -59,13 +59,13 @@ Terminology:
 
 The Client Credentials flow is intended for server-side (AKA "confidential") client applications with no end user, which normally describes machine-to-machine communication. The application must be server-side because it must be trusted with the client secret, and since the credentials are hard coded, it cannot be used by an actual end user. It involves a single, authenticated request to the token endpoint, which returns an access token.
 
-![Okta Client Credential Flow](/images/Okta/oauth_client_creds_flow.png) (© Okta)
+![Okta Client Credential Flow](images/oauth_client_creds_flow.png) (© Okta)
 
 The Authorization Code flow is best used by server-side apps where the source code is not publicly exposed. The apps must be server-side because the request that exchanges the authorization code for a token requires a client secret, which has to be stored in your client. However, the server-side app requires an end user because it relies on interactions with the end user's web browser, which redirects the user and then receives the authorization code.
 
 Auth Code flow width:
 
-![Authentication flow](/images/Okta/Authentication_flow.png) (© Okta)
+![Authentication flow](images/Authentication_flow.png) (© Okta)
 
 ## Prerequisites
 
@@ -101,7 +101,7 @@ After activating your account by email, you should have access to your Okta inst
         * Name: *odm-admin*
         * Group Description: *ODM Admin group*
 
-    ![Add Group](/images/Okta/AddGroup.png)
+    ![Add Group](images/AddGroup.png)
 
 2. Create at least one user that belongs to this new group.
 
@@ -115,7 +115,7 @@ After activating your account by email, you should have access to your Okta inst
         * Groups (optional): ***odm-admin***
         * Click **Save**
 
-    ![Add Person](/images/Okta/add_person.png)
+    ![Add Person](images/add_person.png)
 
     Repeat this step for each user you want to add.
 
@@ -128,7 +128,7 @@ After activating your account by email, you should have access to your Okta inst
       * Select **Web Application**
       * Click **Next**
 
-    ![Add Application](/images/Okta/AddApplication.png)
+    ![Add Application](images/AddApplication.png)
 
 2. Configure the new web app integration.
 
@@ -142,9 +142,9 @@ After activating your account by email, you should have access to your Okta inst
       * Under **Controlled access**:
         * Check **Limit access to selected groups**
       * Fill the **Selected group(s)** : ***odm-admin***
-    * Click **Save** 
+    * Click **Save**
 
-    ![New Web Application](/images/Okta/NewWebAppIntegration.png)
+    ![New Web Application](images/NewWebAppIntegration.png)
 
 ## Configure the *default* Authorization Server
 
@@ -156,9 +156,9 @@ In this step, we augment the token with meta-information that is required by the
 
     To be more secure, we will use the client credentials flow for the ODM REST API call. This requires to create a specific restricted scope (named *OKTA_API_SCOPE* later in this article).
 
-    In the **Scopes** tab, click **Add Scope** 
+    In the **Scopes** tab, click **Add Scope**
       - Name : *odmapiusers*
-      - Click **Create** 
+      - Click **Create**
 
 3. Add the identifier and group claims.
 
@@ -166,7 +166,7 @@ In this step, we augment the token with meta-information that is required by the
 
     In **Claims** tab, create the following claims:
 
-    * Click **Add claim** 
+    * Click **Add claim**
     * *groups - Access Token* claim:
       * Name: *groups*
       * Include in token type: *Access Token*
@@ -178,7 +178,7 @@ In this step, we augment the token with meta-information that is required by the
       * Value type: *Groups*
       * Filter: **Equals**: odm-admin
 
-    ![Add Claim Result](/images/Okta/ResultAddClaims.png)
+    ![Add Claim Result](images/ResultAddClaims.png)
 
 4. Verify the content of the token.
 
@@ -190,7 +190,7 @@ In this step, we augment the token with meta-information that is required by the
       * User: ``<YourEmailAddress>``
       * Scopes: *openid* *email*
       * Click **Preview Token**
-      * Select the *Token* tab 
+      * Select the *Token* tab
 
     As a result, the payload should contain:
 
@@ -202,7 +202,7 @@ In this step, we augment the token with meta-information that is required by the
     ]
     ```
 
-    ![Token Preview](/images/Okta/TokenPreview.png)
+    ![Token Preview](images/TokenPreview.png)
 
 >Note:  The discovery endpoint can be found in **Security** / **API** / **default** / **Settings** in **Metadata URI**.
 
@@ -293,7 +293,7 @@ In this step, we augment the token with meta-information that is required by the
 
     ```
     helm search repo ibm-odm-prod
-    NAME                  	CHART VERSION	APP VERSION	DESCRIPTION                     
+    NAME                  	CHART VERSION	APP VERSION	DESCRIPTION
     ibmcharts/ibm-odm-prod	23.1.0       	8.12.0.0   	IBM Operational Decision Manager
     ```
 
@@ -354,7 +354,7 @@ In this step, we augment the token with meta-information that is required by the
       - Repeat the previous step for all other redirect URIs.
       - Click **Save** at the bottom of the LOGIN section.
 
-    ![Sign-in redirect URIs](/images/Okta/Sign-in_redirect_URIs.png)
+    ![Sign-in redirect URIs](images/Sign-in_redirect_URIs.png)
 
 ### Access the ODM services
 
@@ -398,36 +398,36 @@ To manage ODM runtime call on the next steps, we used the [Loan Validation Decis
 
 Import the **Loan Validation Service** in Decision Center connected as John Doe
 
-![Import project](/images/Keycloak/import_project.png)
+![Import project](../Keycloak/images/import_project.png)
 
 Deploy the **Loan Validation Service** production_deployment ruleapps using the **production deployment** deployment configuration in the Deployments>Configurations tab.
 
-![Deploy project](/images/Keycloak/deploy_project.png)
+![Deploy project](../Keycloak/images/deploy_project.png)
 
 You can retrieve the payload.json from the ODM Decision Server Console or use [the provided payload](payload.json)
-  
+
 As explained in the ODM on Certified Kubernetes documentation [Configuring user access with OpenID](https://www.ibm.com/docs/en/odm/8.12.0?topic=access-configuring-user-openid), we advise to use basic authentication for the ODM runtime call for performance reasons and to avoid the issue of token expiration and revocation.
 
 You can realize a basic authentication ODM runtime call in the following way:
-  
+
    ```
   $ curl -H "Content-Type: application/json" -k --data @payload.json \
          -H "Authorization: Basic b2RtQWRtaW46b2RtQWRtaW4=" \
         https://<DS_RUNTIME_HOST>/DecisionService/rest/production_deployment/1.0/loan_validation_production/1.0
   ```
-  
+
   Where b2RtQWRtaW46b2RtQWRtaW4= is the base64 encoding of the current username:password odmAdmin:odmAdmin
 
 But if you want to execute a bearer authentication ODM runtime call using the Client Credentials flow, you have to get a bearer access token:
-  
+
   ```
   $ curl -k -X POST -H "Content-Type: application/x-www-form-urlencoded" \
       -d 'client_id=<CLIENT_ID>&scope=<OKTA_API_SCOPE>&client_secret=<CLIENT_SECRET>&grant_type=client_credentials' \
       ' https://<OKTA_SERVER_NAME>/default/v1/token'
   ```
-  
+
  And use the retrieved access token in the following way:
-  
+
    ```
   $ curl -H "Content-Type: application/json" -k --data @payload.json \
          -H "Authorization: Bearer <ACCESS_TOKEN>" \

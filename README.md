@@ -1,10 +1,9 @@
 # IBM-ODM-Kubernetes
 IBM Operational Decision Manager on Certified Kubernetes
 
-
 [![GitHub release](https://img.shields.io/github/release/ODMDev/odm-docker-kubernetes.svg)](https://github.com/ODMDev/odm-docker-kubernetes/releases)
 ![GitHub last commit](https://img.shields.io/github/last-commit/ODMDev/odm-docker-kubernetes)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 [![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/ibm-odm-charts)](https://artifacthub.io/packages/search?repo=ibm-odm-charts)
 
 
@@ -34,7 +33,7 @@ The ODM Docker material is used here, which is available in the [odm-ondocker](h
 
 ## Issues and contributions
 
-For issues relating specifically to the Dockerfiles and scripts, please use the [GitHub issue tracker](https://github.com/ODMDev/odm-docker-kubernetes/issues). For more general issue relating to IBM Operational Decision Manager you can [get help](https://developer.ibm.com/odm/home/connect/) through the ODMDev community or, if you have production licenses for Operational Decision Manager, via the usual support channels. We welcome contributions following [our guidelines](https://github.com/ODMDev/odm-docker-kubernetes/blob/master/CONTRIBUTING.md).
+For issues relating specifically to the Dockerfiles and scripts, please use the [GitHub issue tracker](https://github.com/ODMDev/odm-docker-kubernetes/issues). For more general issue relating to IBM Operational Decision Manager you can [get help](https://community.ibm.com/community/user/automation/communities/community-home?communitykey=c0005a22-520b-4181-bfad-feffd8bdc022) through the ODMDev community or, if you have production licenses for Operational Decision Manager, via the usual support channels. We welcome contributions following [our guidelines](https://github.com/ODMDev/odm-docker-kubernetes/blob/master/CONTRIBUTING.md).
 
 # Notice
 © Copyright IBM Corporation 2023.
@@ -45,7 +44,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+    https://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
