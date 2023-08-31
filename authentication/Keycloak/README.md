@@ -3,7 +3,6 @@
 <!-- TOC depthfrom:1 depthto:6 withlinks:false updateonsave:false orderedlist:false -->
 
 - Configuration of ODM with Keycloak
-    - Table of Contents
 - Introduction
     - What is Keycloak?
     - About this task
@@ -98,8 +97,11 @@ We have tested with a Keycloak instance (version 21.1.1)  that is installed on O
 If you already have an Openshift cluster, you can skip the section [Before you start](https://www.keycloak.org/getting-started/getting-started-openshift#_before_you_start) and use the following steps:
 
 - oc login to your cluster
-- Create a namespace "keycloak":   oc new-project keycloak
-- Continue from the section [Start Keycloak](https://www.keycloak.org/getting-started/getting-started-openshift#_start_keycloak)  
+- Create a namespace "keycloak":
+  ```shell
+  oc new-project keycloak
+  ```
+- Continue from the section [Start Keycloak](https://www.keycloak.org/getting-started/getting-started-openshift#_start_keycloak)
 
 If you want to install on another Kubernetes platform, follow these instructions: [Get started with Keycloak on Kubernetes](https://www.keycloak.org/getting-started/getting-started-kube).
 
@@ -248,8 +250,8 @@ You can also create groups and do a mapping between groups and roles. This way, 
     * Click **Service Account Roles** tab
     *  Select all res* and rts* roles  in the "Available Roles" list and click on "Add selected" to move it to the "Assigned Roles" list
 
-    ![Set Service Account Roles](/images/Keycloak/service_account_roles.png)
-  
+    ![Set Service Account Roles](images/service_account_roles.png)
+
 
 2. Add the GROUPS predefined mapper on the ROLES client scope
 
