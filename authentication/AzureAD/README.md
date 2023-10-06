@@ -159,7 +159,16 @@ After activating your account by email, you should have access to your Aure AD i
 
     ![New Web Application](/images/AzureAD/RegisterApp.png)
 
-2. Generate an OpenID client secret.
+2. Retrieve Tenant and Client information.
+
+    In **Azure Active Directory** / **App Registration**, select **ODM Application** and click **Overview**:
+
+    * Application (client) ID: **Client ID**. It will be referenced as `CLIENT_ID` in the next steps.
+    * Directory (tenant) ID: **Your Tenant ID**. It will be referenced as `TENANT_ID` in the next steps.
+
+    ![Tenant ID](/images/AzureAD/GetTenantID.png)
+
+3. Generate an OpenID client secret.
 
     In **Azure Active Directory** / **App registrations**, select **ODM Application**:
 
@@ -172,7 +181,7 @@ After activating your account by email, you should have access to your Aure AD i
 
    >Important: This client secret can not be revealed later. If you forgot to take note of it, you'll have to create another one.
 
-3. Add Claims.
+4. Add Claims.
 
     In **Azure Active Directory** / **App registrations**, select **ODM Application**, and in **Manage / Token Configuration**:
 
@@ -197,7 +206,7 @@ After activating your account by email, you should have access to your Aure AD i
     * Check Security Groups
     * Click Add
 
-4. Create a custom claim named "identity"
+5. Create a custom claim named "identity"
 
    To allow ODM rest-api to use the password flow with email as user identifier and the client-credentials flow with client_id as user identifier, we need to create a new claim named "identity" that will take the relevant value according to the flow:
 
@@ -210,32 +219,25 @@ After activating your account by email, you should have access to your Aure AD i
         1. User Type: Any / Scope Groups: 0 / Source: Attribute / Value: <CLIENT_ID>
         2. User Type: Members / Scope Groups: 0 / Source: Attribute / Value: user.mail
  
-5. API Permissions.
+6. API Permissions.
 
     In **Azure Active Directory** / **App Registration**, select **ODM Application**, and then click **API Permissions**.
 
     * Click Grant Admin Consent for Default Directory
 
-6. Manifest change.
+7. Manifest change.
 
     In **Azure Active Directory** / **App Registration**, select **ODM Application**, and then click **Manifest**.
 
-    As explained in [accessTokenAcceptedVersion attribute explanation](https://docs.microsoft.com/en-us/azure/active-directory/develop/reference-app-manifest#accesstokenacceptedversion-attribute), change the value to 2 and then click Save.
+    As explained in [accessTokenAcceptedVersion attribute explanation](https://docs.microsoft.com/en-us/azure/active-directory/develop/reference-app-manifest#accesstokenacceptedversion-attribute), change the value to 2.
 
     ODM OpenID Liberty configuration needs version 2.0 for the issuerIdentifier. See the [openIdWebSecurity.xml](templates/openIdWebSecurity.xml) file.
 
     It is also necessary to set **acceptMappedClaims** to true to manage claims. Without this setting, you get the exception **AADSTS50146: This application is required to be configured with an application-specific signing key. It is either not configured with one, or the key has expired or is not yet valid.** when requesting a token.
 
-8. Retrieve Tenant and Client information.
-
-    In **Azure Active Directory** / **App Registration**, select **ODM Application** and click **Overview**:
-
-    * Application (client) ID: **Client ID**. It will be referenced as `CLIENT_ID` in the next steps.
-    * Directory (tenant) ID: **Your Tenant ID**. It will be referenced as `TENANT_ID` in the next steps.
-
-    ![Tenant ID](/images/AzureAD/GetTenantID.png)
-
-9. Check the configuration.
+   Then, click Save.
+   
+8. Check the configuration.
 
     Download the [azuread-odm-script.zip](azuread-odm-script.zip) file to your machine and unzip it in your working directory. This .zip file contains scripts and templates to verify and set up ODM.
 
