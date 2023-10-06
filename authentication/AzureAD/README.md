@@ -224,7 +224,9 @@ After activating your account by email, you should have access to your Aure AD i
 
     ODM OpenID Liberty configuration needs version 2.0 for the issuerIdentifier. See the [openIdWebSecurity.xml](templates/openIdWebSecurity.xml) file.
 
-7. Retrieve Tenant and Client information.
+    It is also necessary to set **acceptMappedClaims** to true to manage claims. Without this setting, you get the exception **AADSTS50146: This application is required to be configured with an application-specific signing key. It is either not configured with one, or the key has expired or is not yet valid.** when requesting a token.
+
+8. Retrieve Tenant and Client information.
 
     In **Azure Active Directory** / **App Registration**, select **ODM Application** and click **Overview**:
 
@@ -233,7 +235,7 @@ After activating your account by email, you should have access to your Aure AD i
 
     ![Tenant ID](/images/AzureAD/GetTenantID.png)
 
-8. Check the configuration.
+9. Check the configuration.
 
     Download the [azuread-odm-script.zip](azuread-odm-script.zip) file to your machine and unzip it in your working directory. This .zip file contains scripts and templates to verify and set up ODM.
 
