@@ -199,7 +199,7 @@ After activating your account by email, you should have access to your Aure AD i
 
 4. Create a custom claim named "identity"
 
-   To be able to use ODM rest-api using password flow using email as user identifier and the client-credentials flow using client_id as user identifier, we need to create a new claim named "identity" that will take the relevant value according to the flow:
+   To allow ODM rest-api to use the password flow with email as user identifier and the client-credentials flow with client_id as user identifier, we need to create a new claim named "identity" that will take the relevant value according to the flow:
 
    In **Azure Active Directory** / **Enterprise applications**, select **ODM Application**, and in **Manage / Single sign-on**:
 
@@ -240,7 +240,7 @@ After activating your account by email, you should have access to your Aure AD i
     8.1 Verify the Client Credential Token
 
     You can request an access token using the Client-Credentials flow to verify the token format.
-    This token is used for the deployment between Decision Cennter and the Decision Server console:
+    This token is used for the deployment between Decision Center and the Decision Server console:
 
     ```shell
     $ ./get-client-credential-token.sh -i <CLIENT_ID> -x <CLIENT_SECRET> -n <TENANT_ID>
@@ -580,7 +580,7 @@ Get hands-on experience with IBM Operational Decision Manager in a container env
 
 To manage ODM runtime call on the next steps, we used the [Loan Validation Decision Service project](https://github.com/DecisionsDev/odm-for-container-getting-started/blob/master/Loan%20Validation%20Service.zip)
 
-Import the **Loan Validation Service** in Decision Center connected as John Doe
+Import the **Loan Validation Service** in Decision Center connected using *myodmuser*@YOURDOMAIN created at step 2
 
 ![Import project](/images/Keycloak/import_project.png)
 
