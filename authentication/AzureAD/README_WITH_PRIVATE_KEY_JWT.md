@@ -43,18 +43,26 @@
 
     ![Tenant ID](/images/AzureAD/GetTenantID.png)
 
-3. Generate an OpenID client secret.
+3. Register a public certificate.
 
+    To manage a private key jwt authentication, you must have a private certificate (.key file) and a public certificate (.crt file) that will be registered on the ODM client side (RP) application. On the Azure AD (OP) side, you have to registered the public certificate.
+
+    If you do not have a trusted certificate, you can use OpenSSL and other cryptography and certificate management libraries to generate a certificate file and a private key, to define the domain name, and to set the expiration date. The following command creates a self-signed certificate (.crt file) and a private key (.key file) that accept the domain name *myodmcompany.com*. The expiration is set to 1000 days:
+           
+    ```shell
+openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout myodmcompany.key \
+        -out myodmcompany.crt -subj "/CN=myodmcompany.com/OU=it/O=myodmcompany/L=Paris/C=FR" \
+        -addext "subjectAltName = DNS:myodmcompany.com"
+    ```
+ 
     In **Azure Active Directory** / **App registrations**, select **ODM Application**:
 
     * From the Overview page, click on the link Client credentials: **Add a certificate or secret** or on the **Manage / Certificates & secrets** tab
-    * Click + New Client Secret
+    * Select the **Certificates** tab
+    * Click on **Upload certificate**
+      * Select the myodmcompany.crt or your own public file
       * Description: `For ODM integration`
       * Click Add
-
-   * Take note of the **Value**. It will be referenced as `CLIENT_SECRET` in the next steps.
-
-   >Important: This client secret can not be revealed later. If you forgot to take note of it, you'll have to create another one.
 
 4. Add Claims.
 
@@ -112,94 +120,6 @@
 
    Then, click Save.
    
-8. Check the configuration.
-
-    Download the [azuread-odm-script.zip](azuread-odm-script.zip) file to your machine and unzip it in your working directory. This .zip file contains scripts and templates to verify and set up ODM.
-
-    8.1 Verify the Client Credential Token
-
-    You can request an access token using the Client-Credentials flow to verify the token format.
-    This token is used for the deployment between Decision Center and the Decision Server console:
-
-    ```shell
-    $ ./get-client-credential-token.sh -i <CLIENT_ID> -x <CLIENT_SECRET> -n <TENANT_ID>
-    ```
-
-    Where:
-
-    - *TENANT_ID* and *CLIENT_ID* have been obtained from 'Retrieve Tenant and Client information' section.
-    - *CLIENT_SECRET* is listed in your ODM Application, section **General** / **Client Credentials**
-
-    You should get a token and by introspecting its value with [this online tool](https://jwt.ms) or with some [JWT cli](https://github.com/mike-engel/jwt-cli) you should get:
-
-    **Token header**
-    ```json
-    {
-      "typ": "JWT",
-      "alg": "RS256",
-      "kid": "-KI3Q9nNR7bRofxmeZoXqbHZGew"
-    }
-    ```
-
-    **Token claims**
-    ```json
-    {
-      "aud": "<CLIENT_ID>",
-      "identity": "<CLIENT_ID>",
-      ...
-      "iss": "https://login.microsoftonline.com/<TENANT_ID>/v2.0",
-      ...
-      "ver": "2.0"
-    }
-    ```
-
-    - *ver*: should be 2.0. otherwise you should verify the previous step **Manifest change**
-    - *aud*: should be your CLIENT_ID
-    - *iss*: should end with 2.0. otherwise you should verify the previous step **Manifest change**
-
-    8.2 Verify the Client Password Token.
-
-   To check that it has been correctly taken into account, you can request an ID token using the Client password flow.
-
-   This token is used for the invocation of the ODM components like Decision Center, Decision Servcer console, and the invocation of the Decision Server Runtime REST API.
-
-    ```shell
-    $ ./get-user-password-token.sh -i <CLIENT_ID> -x <CLIENT_SECRET> -n <TENANT_ID> -u <USERNAME> -p <PASSWORD>
-    ```
-
-   Where:
-
-    - *TENANT_ID* and *CLIENT_ID* have been obtained from 'Retrieve Tenant and Client information' section.
-    - *CLIENT_SECRET* is listed in your ODM Application, section **General** / **Client Credentials**
-    - *USERNAME* and *PASSWORD* have been created from 'Create at least one user that belongs to this new group.' section.
-
-     By introspecting the token value with this online tool [https://jwt.ms](https://jwt.ms), you should get:
-
-    ```json
-    {
-      "aud": "<CLIENT_ID>",
-      ...
-      "iss": "https://login.microsoftonline.com/<TENANT_ID>/v2.0",
-      ...
-      "email": "<USERNAME>",
-      "identity": "<USERNAME>",
-      "groups": [
-        "<GROUP>"
-      ],
-      ...
-      "ver": "2.0"
-    }
-    ```
-
-    Verify:
-    - *aud*: should be your CLIENT_ID
-    - *email*: should be present. Otherwise you should verify the creation of your user and fill the Email field.
-    - *groups*: should contain your GROUP_ID
-    - *iss*: should end with 2.0. Otherwise you should verify the previous step **Manifest change**
-    - *ver*: should be 2.0. Otherwise you should verify the previous step **Manifest change**
-
-  > If this command failed, try to log in to the [Azure portal](https://portal.azure.com/). You may have to enable 2FA and/or change the password for the first time.
-
 # Deploy ODM on a container configured with Azure AD (Part 2)
 
 ## Prepare your environment for the ODM installation
@@ -250,20 +170,27 @@
     kubectl create secret generic digicert-secret --from-file=tls.crt=DigiCertGlobalRootCA.crt.pem
     ```
 
-2. Generate the ODM configuration file for Azure AD.
+2. Create a secret to provide the private and public certificate to manage the private_key_jwt authentication
 
-    If you have not yet done so, download the [azuread-odm-script.zip](azuread-odm-script.zip) file to your machine. This archive contains the [script](generateTemplate.sh) and the content of the [templates](templates) directory.
+   To allow ODM containers to generate a client_assertion, you have to provide them the private and public certificates with the following **myodmcompany** secret. Don't change this name with this tutorial as this name is linked to the openidConnectClient **keyAliasName="myodmcompany"**  parameter of the private_key_jwt liberty configuration.
 
-    The [script](generateTemplate.sh) allows you to generate the necessary configuration files.
+    ```shell
+    kubectl create secret generic myodmcompany from-file=tls.key=myodmcompany.key --from-file=tls.crt=myodmcompany.crt
+    ``` 
+
+3. Generate the ODM configuration file for Azure AD.
+
+    If you have not yet done so, download the [azuread-odm-script.zip](azuread-odm-script.zip) file to your machine. This archive contains the [script](generateTemplateForPrivateKeyJWT.sh) and the content of the [templates_for_privatekeyjwt](templates_for_privatekeyjwt) directory.
+
+    The [script](generateTemplateForPrivateKeyJWT.sh) allows you to generate the necessary configuration files.
     Generate the files with the following command:
 
     ```shell
-    ./generateTemplate.sh -i <CLIENT_ID> -x <CLIENT_SECRET> -n <TENANT_ID> -g <GROUP_ID> [-a <SSO_DOMAIN>]
+    ./generateTemplateForPrivateKeyJWT -i <CLIENT_ID> -n <TENANT_ID> -g <GROUP_ID> [-a <SSO_DOMAIN>]
     ```
 
     Where:
     - *TENANT_ID* and *CLIENT_ID* have been obtained from [previous step](#retrieve-tenant-and-client-information)
-    - *CLIENT_SECRET* is listed in your ODM Application, section **General** / **Client Credentials**
     - *GROUP_ID* is the ODM Admin group created in a [previous step](#manage-group-and-user) (*odm-admin*)
     - *SSO_DOMAIN* is the domain name of your SSO. If your AzureAD is connected to another SSO, you should add the SSO domain name in this parameter. If your user has been declared as explained in step **Create at least one user that belongs to this new group**, you can omit this parameter.
 
@@ -278,14 +205,14 @@
     - openIdParameters.properties configures several features like allowed domains, logout, and some internal ODM OpenId features
     - OdmOidcProviders.json configures the client-credentials OpenId provider used by the Decision Center server configuration to connect Decision Center to the Decision Server console and Decision Center to the Decision Runner
 
-3. Create the Azure AD authentication secret.
+4. Create the Azure AD authentication secret.
 
     ```shell
     kubectl create secret generic azuread-auth-secret \
-        --from-file=OdmOidcProviders.json=./output/OdmOidcProviders.json \
-        --from-file=openIdParameters.properties=./output/openIdParameters.properties \
-        --from-file=openIdWebSecurity.xml=./output/openIdWebSecurity.xml \
-        --from-file=webSecurity.xml=./output/webSecurity.xml
+        --from-file=OdmOidcProviders.json=./outputPKeyJWT/OdmOidcProviders.json \
+        --from-file=openIdParameters.properties=./outputPKeyJWT/openIdParameters.properties \
+        --from-file=openIdWebSecurity.xml=./outputPKeyJWT/openIdWebSecurity.xml \
+        --from-file=webSecurity.xml=./outputPKeyJWT/webSecurity.xml
     ```
 
 ## Install your ODM Helm release
@@ -320,6 +247,7 @@ You can now install the product. We will use the PostgreSQL internal database an
           --set license=true \
           --set internalDatabase.persistence.enabled=false \
           --set customization.trustedCertificateList='{ms-secret,digicert-secret}' \
+          --set customization.privateCertificateList='{myodmcompany}' \
           --set customization.authSecretRef=azuread-auth-secret \
           --set internalDatabase.runAsUser='' --set customization.runAsUser='' --set service.enableRoute=true
   ```
@@ -340,6 +268,7 @@ You can now install the product. We will use the PostgreSQL internal database an
           --set license=true \
           --set internalDatabase.persistence.enabled=false \
           --set customization.trustedCertificateList='{ms-secret,digicert-secret}' \
+          --set customization.privateCertificateList='{myodmcompany}' \
           --set customization.authSecretRef=azuread-auth-secret \
           --set service.ingress.enabled=true \
           --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"\,"nginx.ingress.kubernetes.io/backend-protocol: HTTPS"}
@@ -481,11 +410,13 @@ $ curl -H "Content-Type: application/json" -k --data @payload.json \
 
 Where b2RtQWRtaW46b2RtQWRtaW4= is the base64 encoding of the current username:password odmAdmin:odmAdmin
 
-But if you want to execute a bearer authentication ODM runtime call using the Client Credentials flow, you have to get a bearer access token:
+But if you want to execute a bearer authentication ODM runtime call using the Client Credentials flow, you have to get a bearer access token.
+And, to get a bearer access token, you first have to generate a client_assertion parameter.
+ODM documentation is explaining how to get the material allowing to [generate a client_assertion](https://ibmdocs-test.dcs.ibm.com/docs/en/odm/8.12.0?topic=8120-generating-json-web-token-client-assertion).
 
 ```shell
 $ curl -k -X POST -H "Content-Type: application/x-www-form-urlencoded" \
-    -d 'client_id=<CLIENT_ID>&scope=<CLIENT_ID>%2F.default&client_secret=<CLIENT_SECRET>&grant_type=client_credentials' \
+    -d 'client_id=<CLIENT_ID>&scope=<CLIENT_ID>%2F.default&client_assertion_type=urn%3Aietf%3Aparams%3Aoauth%3Aclient-assertion-type%3Ajwt-bearer&client_assertion=<CLIENT_ASSERTION>&grant_type=client_credentials' \
     'https://login.microsoftonline.com/<TENANT_ID>/oauth2/v2.0/token'
 ```
 
