@@ -133,9 +133,9 @@ After activating your account by email, you should have access to your Aure AD i
 
 With Azure AD, there is several way to set up an openId application : 
     
-- the classic way is using a (client secret)[README_WITH_CLIENT_SECRET.md]
-- a new and more secure way since (liberty 23.0.0.9)[https://openliberty.io/blog/2023/09/19/23.0.0.9.html#jwt] is using (private key JWT)[README_WITH_PRIVATE_KEY_JWT.md]
+- the classic way is using a [client secret](README_WITH_CLIENT_SECRET.md)
+- a new and more secure way since [liberty 23.0.0.9](https://openliberty.io/blog/2023/09/19/23.0.0.9.html#jwt) is using [private key JWT](README_WITH_PRIVATE_KEY_JWT.md)
 
-If you don't know why to choose one way or the other, take the time to read (this article explaining the comparison)[https://www.ubisecure.com/access-management/private_key_jwt-or-client_secret] 
+If you don't know why to choose one way or the other, take the time to read [this article explaining the comparison](https://www.ubisecure.com/access-management/private_key_jwt-or-client_secret) 
 Anyway the conclusion is if you have the choice, private_key_jwt is the way to go !
   
