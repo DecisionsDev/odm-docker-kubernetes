@@ -70,7 +70,7 @@ You need the following elements:
 - Access to a CNCF Kubernetes cluster
 - An admin Azure AD account
 
-### Create an Microsoft Entra ID account
+### Create a Microsoft Entra ID account
 
 If you do not own an Microsoft Entra ID account, you can sign up for a [free Microsoft Entra ID developer account](https://www.microsoft.com/en-us/security/business/identity-access/microsoft-entra-id)
 
