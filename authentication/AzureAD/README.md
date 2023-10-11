@@ -23,7 +23,8 @@ In the context of the Operational Decision Manager (ODM) on Certified Kubernetes
 
 ## What is Microsoft Entra ID?
 
-Microsoft Entra ID is the [new name for Azure AD](https://learn.microsoft.com/en-us/azure/active-directory/fundamentals/new-name)
+Microsoft Entra ID is the [new name for Azure AD](https://learn.microsoft.com/en-us/azure/active-directory/fundamentals/new-name).
+
 [Microsoft Entra ID](https://www.microsoft.com/en-us/security/business/identity-access/microsoft-entra-id#overview),  is an enterprise identity service that provides single sign-on, multifactor authentication, and conditional access. This is the service that we use in this article.
 
 
@@ -71,7 +72,7 @@ You need the following elements:
 
 ### Create an Microsoft Entra ID account
 
-If you do not own an Azure AD account, you can sign up for a [free Azure AD developer account](https://azure.microsoft.com/en-us/services/active-directory/)
+If you do not own an Microsoft Entra ID account, you can sign up for a [free Microsoft Entra ID developer account](https://www.microsoft.com/en-us/security/business/identity-access/microsoft-entra-id)
 
 # Configure a Microsoft Entra ID instance for ODM (Part 1)
 
