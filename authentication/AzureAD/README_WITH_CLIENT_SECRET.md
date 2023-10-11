@@ -1,8 +1,8 @@
-# Set up an Microsoft Entra ID application using a client secret
+# Set up a Microsoft Entra ID application using a client secret
 
 <!-- TOC -->
 
-- [Set up an Microsoft Entra ID application using a client secret](#set-up-an-microsoft-entra-id-application-using-a-client-secret)
+- [Set up a Microsoft Entra ID application using a client secret](#set-up-an-microsoft-entra-id-application-using-a-client-secret)
 - [Deploy ODM on a container configured with Microsoft Entra ID Part 2](#deploy-odm-on-a-container-configured-with-microsoft-entra-id-part-2)
     - [Prepare your environment for the ODM installation](#prepare-your-environment-for-the-odm-installation)
         - [Create a secret to use the Entitled Registry](#create-a-secret-to-use-the-entitled-registry)
