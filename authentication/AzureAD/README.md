@@ -1,4 +1,4 @@
-# Configuration of ODM with Azure AD
+# Configuration of ODM with Microsoft Entra ID
 
 <!-- TOC -->
 
@@ -133,7 +133,7 @@ After activating your account by email, you should have access to your Microsoft
 
 ## Choose the way to set up your application
 
-With Azure AD, there is several way to set up an openId application : 
+With Microsoft Entra ID, there is several way to set up an openId application : 
     
 - the classic way is using a [client secret](README_WITH_CLIENT_SECRET.md)
 - a new and more secure way since [liberty 23.0.0.9](https://openliberty.io/blog/2023/09/19/23.0.0.9.html#jwt) is using [private key JWT](README_WITH_PRIVATE_KEY_JWT.md)
