@@ -1,4 +1,4 @@
-# Set up an Microsoft Entra ID application using a private key JWT
+# Set up a Microsoft Entra ID application using a private key JWT
 
 <!-- TOC -->
 
