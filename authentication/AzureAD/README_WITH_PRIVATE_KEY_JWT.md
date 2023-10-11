@@ -321,14 +321,12 @@ You can now install the product. We will use the PostgreSQL internal database an
       - Decision Runner redirect URI:  `https://<DR_HOST>/DecisionRunner/openid/redirect/odm`
       - Decision Server Console redirect URI:  `https://<DS_CONSOLE_HOST>/res/openid/redirect/odm`
       - Decision Server Runtime redirect URI:  `https://<DS_RUNTIME_HOST>/DecisionService/openid/redirect/odm`
-      - Rule Designer redirect URI: `https://127.0.0.1:9081/oidcCallback`
 
       Using Ingress:
       - Decision Center redirect URI:  `https://<INGRESS_ADDRESS>/decisioncenter/openid/redirect/odm`
       - Decision Runner redirect URI:  `https://<INGRESS_ADDRESS>/DecisionRunner/openid/redirect/odm`
       - Decision Server Console redirect URI:  `https://<INGRESS_ADDRESS>/res/openid/redirect/odm`
       - Decision Server Runtime redirect URI:  `https://<INGRESS_ADDRESS>/DecisionService/openid/redirect/odm`
-      - Rule Designer redirect URI: `https://127.0.0.1:9081/oidcCallback`
 
    From the Azure console, in **Azure Active Directory** / **App Registrations** / **ODM Application**:
 
@@ -344,6 +342,20 @@ You can now install the product. We will use the PostgreSQL internal database an
     - Click **Save** at the bottom of the page.
     ![Add URI](/images/AzureAD/AddURI.png)
 
+4. Register the Rule Designer callback into your Azure AD application.
+
+   The ODM Rule Designer will use the [PKCE authorization code flow](https://oauth.net/2/pkce/) to connect to Decision Center and Decision Server Console. 
+
+   From the Azure console, in **Azure Active Directory** / **App Registrations** / **ODM Application**:
+
+    - Click`Add Redirect URIs link`
+    - Click `Add Platform`
+    - Select `Mobile and desktop applications`
+    - `Custom redirect URIs` Add the Rule Designer callback `https://127.0.0.1:9081/oidcCallback`
+
+    - Click **Configure** at the bottom of the page.
+    ![Add URI](/images/AzureAD/AddRDCallback.png)
+   
 ### Access the ODM services
 
 Well done!  You can now connect to ODM using the endpoints you got [earlier](#register-the-odm-redirect-url) and log in as an ODM admin with the account you created in [the first step](#manage-group-and-user).
@@ -411,7 +423,7 @@ $ curl -H "Content-Type: application/json" -k --data @payload.json \
 Where b2RtQWRtaW46b2RtQWRtaW4= is the base64 encoding of the current username:password odmAdmin:odmAdmin
 
 But if you want to execute a bearer authentication ODM runtime call using the Client Credentials flow, you have to get a bearer access token.
-And, to get a bearer access token, you first have to generate a client_assertion parameter.
+And, to get a bearer access token, you first have to generate a client_assertion.
 ODM documentation is explaining how to get the material allowing to [generate a client_assertion](https://ibmdocs-test.dcs.ibm.com/docs/en/odm/8.12.0?topic=8120-generating-json-web-token-client-assertion).
 
 ```shell
