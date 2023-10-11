@@ -1,12 +1,12 @@
-# Set up an Azure AD application using a private key JWT
+# Set up an Microsoft Entra ID application using a private key JWT
 
 <!-- TOC -->
 
-- [Set up an Azure AD application using a private key JWT](#set-up-an-azure-ad-application-using-a-private-key-jwt)
-- [Deploy ODM on a container configured with Azure AD Part 2](#deploy-odm-on-a-container-configured-with-azure-ad-part-2)
+- [Set up a Microsoft Entra ID application using a private key JWT](#set-up-a-microsoft-entra-id-application-using-a-private-key-jwt)
+- [Deploy ODM on a container configured with Microsoft Entra ID Part 2](#deploy-odm-on-a-container-configured-with-microsoft-entra-id-part-2)
     - [Prepare your environment for the ODM installation](#prepare-your-environment-for-the-odm-installation)
         - [Create a secret to use the Entitled Registry](#create-a-secret-to-use-the-entitled-registry)
-        - [Create secrets to configure ODM with Azure AD](#create-secrets-to-configure-odm-with-azure-ad)
+        - [Create secrets to configure ODM with Microsoft Entra ID](#create-secrets-to-configure-odm-with-microsoft-entra-id)
     - [Install your ODM Helm release](#install-your-odm-helm-release)
         - [Add the public IBM Helm charts repository](#add-the-public-ibm-helm-charts-repository)
         - [Check that you can access the ODM chart](#check-that-you-can-access-the-odm-chart)
@@ -45,7 +45,7 @@
 
 3. Register a public certificate.
 
-    To manage a private key jwt authentication, you must have a private certificate (.key file) and a public certificate (.crt file) that will be registered on the ODM client side (RP) application. On the Azure AD (OP) side, you have to registered the public certificate.
+    To manage a private key jwt authentication, you must have a private certificate (.key file) and a public certificate (.crt file) that will be registered on the ODM client side (RP) application. On the Microsoft Entra ID (OP) side, you have to registered the public certificate.
 
     If you do not have a trusted certificate, you can use OpenSSL and other cryptography and certificate management libraries to generate a certificate file and a private key, to define the domain name, and to set the expiration date. The following command creates a self-signed certificate (.crt file) and a private key (.key file) that accept the domain name *myodmcompany.com*. The expiration is set to 1000 days:
            
@@ -120,7 +120,7 @@
 
    Then, click Save.
    
-# Deploy ODM on a container configured with Azure AD (Part 2)
+# Deploy ODM on a container configured with Microsoft Entra ID (Part 2)
 
 ## Prepare your environment for the ODM installation
 
@@ -149,11 +149,11 @@
 
 3. Make a note of the secret name so that you can set it for the **image.pullSecrets** parameter when you run a helm install of your containers. The **image.repository** parameter is later set to *cp.icr.io/cp/cp4a/odm*.
 
-### Create secrets to configure ODM with Azure AD
+### Create secrets to configure ODM with Microsoft Entra ID
 
-1. Create a secret with the Azure AD Server certificate.
+1. Create a secret with the Microsoft Entra ID Server certificate.
 
-    To allow ODM services to access the Azure AD Server, it is mandatory to provide the Azure AD Server certificate.
+    To allow ODM services to access the Microsoft Entra ID Server, it is mandatory to provide the Microsoft Entra ID Server certificate.
     You can create the secret as follows:
 
     ```shell
@@ -161,7 +161,7 @@
     kubectl create secret generic ms-secret --from-file=tls.crt=microsoft.crt
     ```
 
-    Introspecting the Azure AD login.microsoftonline.com certificate, you can see it has been signed by the Digicert Root CA authorithy.
+    Introspecting the Microsoft Entra ID login.microsoftonline.com certificate, you can see it has been signed by the Digicert Root CA authorithy.
 
     So we will also add the DigiCert Global Root CA from [this page](https://www.digicert.com/kb/digicert-root-certificates.htm):
 
@@ -178,7 +178,7 @@
     kubectl create secret generic myodmcompany from-file=tls.key=myodmcompany.key --from-file=tls.crt=myodmcompany.crt
     ``` 
 
-3. Generate the ODM configuration file for Azure AD.
+3. Generate the ODM configuration file for Microsoft Entra ID.
 
     If you have not yet done so, download the [azuread-odm-script.zip](azuread-odm-script.zip) file to your machine. This archive contains the [script](generateTemplateForPrivateKeyJWT.sh) and the content of the [templates_for_privatekeyjwt](templates_for_privatekeyjwt) directory.
 
@@ -196,7 +196,7 @@
 
     The following four files are generated into the `output` directory:
 
-    - webSecurity.xml contains the mapping between Liberty J2EE ODM roles and Azure AD groups and users:
+    - webSecurity.xml contains the mapping between Liberty J2EE ODM roles and Microsoft Entra ID groups and users:
       * All ODM roles are given to the GROUP_ID group
       * rtsAdministrators/resAdministrators/resExecutors ODM roles are given to the CLIENT_ID (which is seen as a user) to manage the client-credentials flow
     - openIdWebSecurity.xml contains two openIdConnectClient Liberty configurations:
@@ -205,7 +205,7 @@
     - openIdParameters.properties configures several features like allowed domains, logout, and some internal ODM OpenId features
     - OdmOidcProviders.json configures the client-credentials OpenId provider used by the Decision Center server configuration to connect Decision Center to the Decision Server console and Decision Center to the Decision Runner
 
-4. Create the Azure AD authentication secret.
+4. Create the Microsoft Entra ID authentication secret.
 
     ```shell
     kubectl create secret generic azuread-auth-secret \
@@ -312,7 +312,7 @@ You can now install the product. We will use the PostgreSQL internal database an
     my-odm-release-odm-ingress <none>   *       <INGRESS_ADDRESS>   80      14d
     ```
 
-3. Register the redirect URIs into your Azure AD application.
+3. Register the redirect URIs into your Microsoft Entra ID application.
 
     The redirect URIs are built the following way:
 
@@ -342,7 +342,7 @@ You can now install the product. We will use the PostgreSQL internal database an
     - Click **Save** at the bottom of the page.
     ![Add URI](/images/AzureAD/AddURI.png)
 
-4. Register the Rule Designer callback into your Azure AD application.
+4. Register the Rule Designer callback into your Microsoft Entra ID application.
 
    The ODM Rule Designer will use the [PKCE authorization code flow](https://oauth.net/2/pkce/) to connect to Decision Center and Decision Server Console. 
 
@@ -360,7 +360,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 
 Well done!  You can now connect to ODM using the endpoints you got [earlier](#register-the-odm-redirect-url) and log in as an ODM admin with the account you created in [the first step](#manage-group-and-user).
 
->Note:  Logout in ODM components using Azure AD authentication raises an error for the time being.  This is a known issue.  We recommend to use a private window in your browser to log in, so that logout is done just by closing this window.
+>Note:  Logout in ODM components using Microsoft Entra ID authentication raises an error for the time being.  This is a known issue.  We recommend to use a private window in your browser to log in, so that logout is done just by closing this window.
 
 ### Set up Rule Designer
 
