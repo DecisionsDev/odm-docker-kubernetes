@@ -353,7 +353,7 @@ NAME                                        TYPE           CLUSTER-IP     EXTERN
 ```
 
 <!-- markdown-link-check-disable -->
-You can then open a browser on https://xxx.xxx.xxx.xxx:9453 to access Decision Center, and on https://xxx.xxx.xxx.xxx:9443 to access Decision Server console, Decision Server Runtime, and Decision Runner.
+You can then open a browser on `https://xxx.xxx.xxx.xxx:9453` to access Decision Center, and on `https://xxx.xxx.xxx.xxx:9443` to access Decision Server console, Decision Server Runtime, and Decision Runner.
 <!-- markdown-link-check-enable -->
 
 ## Create an NGINX Ingress controller
