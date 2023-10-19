@@ -118,7 +118,7 @@ After activating your account by email, you should have access to your Microsoft
       * In Assignments fill in:
         * Click on Add group and select odm-admin
 
-      * Click **Review + create** and then **Create**.
+      * Click **Review + create ** and then **Create or Invite**.
 
       ![New User Basics](/images/AzureAD/NewUserBasics.png)
       ![New User Assignments](/images/AzureAD/NewUserAssignments.png)
@@ -134,13 +134,29 @@ After activating your account by email, you should have access to your Microsoft
 
 ## Choose the way to set up your application
 
-With Microsoft Entra ID, there is several way to set up an openId application : 
-    
-- the classic way is using a [client secret](README_WITH_CLIENT_SECRET.md)
-- a new and more secure way since [liberty 23.0.0.9](https://openliberty.io/blog/2023/09/19/23.0.0.9.html#jwt) is using [private key JWT](README_WITH_PRIVATE_KEY_JWT.md)
+Client credentials are used in the context of authentication in systems that utilize OAuth 2.0, a common protocol for secure authorization. These credentials are typically used by a client application (like a web or mobile app) to prove its identity to an authorization server in order to obtain access tokens for making API requests. There are two ways to use client credentials in Microfoft Entra ID: with a private key (often referred to as client certificates) and with a secret (usually referred to as a client secret).
 
-If you don't know why to choose one way or the other, take the time to read [this article explaining the comparison](https://www.ubisecure.com/access-management/private_key_jwt-or-client_secret) 
-Anyway the conclusion is if you have the choice, private_key_jwt is the way to go !
+[Client Credentials with a Secret](README_WITH_CLIENT_SECRET.md) (Client Secret):
+
+  * In this method, the client application is issued a client ID and a client secret during the registration process with the authorization server.
+  * The client includes its client ID and client secret in its requests to the authorization server to authenticate itself.
+  * The authorization server verifies the client's identity by checking if the provided client ID and client secret match the values it has on record for that client.
+  * This method is less secure compared to client certificates because the secret can potentially be intercepted if not properly protected, although it's still widely used and can be secure when managed correctly.
+  * It's often used in simpler or less security-sensitive applications.
+
+[Client Credentials with a Private Key](README_WITH_PRIVATE_KEY_JWT.md) (Client Certificates):
+
+  * In this method, the client application is issued a public-private key pair, similar to how SSL/TLS certificates work.
+  * The client application signs its requests to the authorization server with its private key and provides the public key as part of the client registration process.
+  * The public key is used by the authorization server to verify the signature of the client's request.
+  * This method is considered highly secure because it relies on strong cryptography and doesn't involve sharing a shared secret.
+  It's often used in more security-critical scenarios.
+
+
+In summary, the main difference between client credentials with a private key and a client secret is the method of authentication and the level of security. Client certificates use a public-private key pair for authentication and are generally considered more secure, while client secrets use a shared secret and are less secure but simpler to configure. The choice between them depends on the security requirements and the specific use case of the client application.
+
+If you are unsure about which option to choose, take the time to read [this article explaining the comparison](https://www.ubisecure.com/access-management/private_key_jwt-or-client_secret) .
+
 
 # License
 
