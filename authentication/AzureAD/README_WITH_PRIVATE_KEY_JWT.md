@@ -273,8 +273,8 @@ You can now install the product. We will use the PostgreSQL internal database an
           --set oidc.enabled=true \
           --set license=true \
           --set internalDatabase.persistence.enabled=false \
-          --set "customization.trustedCertificateList='{ms-secret,digicert-secret}" \
-          --set "customization.privateCertificateList='{myodmcompany}' \
+          --set customization.trustedCertificateList='{ms-secret,digicert-secret}' \
+          --set customization.privateCertificateList='{myodmcompany}' \
           --set customization.authSecretRef=azuread-auth-secret \
           --set service.ingress.enabled=true \
           --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"\,"nginx.ingress.kubernetes.io/backend-protocol: HTTPS"}
