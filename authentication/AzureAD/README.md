@@ -144,7 +144,7 @@ Client credentials are used in the context of authentication in systems that uti
   * This method is less secure compared to client certificates because the secret can potentially be intercepted if not properly protected, although it's still widely used and can be secure when managed correctly.
   * It's often used in simpler or less security-sensitive applications.
 
-[Client Credentials with a Private Key]((README_WITH_PRIVATE_KEY_JWT.md)) (Client Certificates):
+[Client Credentials with a Private Key](README_WITH_PRIVATE_KEY_JWT.md) (Client Certificates):
 
   * In this method, the client application is issued a public-private key pair, similar to how SSL/TLS certificates work.
   * The client application signs its requests to the authorization server with its private key and provides the public key as part of the client registration process.
