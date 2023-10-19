@@ -428,9 +428,22 @@ $ curl -H "Content-Type: application/json" -k --data @payload.json \
 
 Where b2RtQWRtaW46b2RtQWRtaW4= is the base64 encoding of the current username:password odmAdmin:odmAdmin
 
-But if you want to execute a bearer authentication ODM runtime call using the Client Credentials flow, you have to get a bearer access token.
-And, to get a bearer access token, you first have to generate a client_assertion.
-ODM documentation is explaining how to get the material allowing to [generate a client_assertion](https://ibmdocs-test.dcs.ibm.com/docs/en/odm/8.12.0?topic=8120-generating-json-web-token-client-assertion).
+But if you want to execute a bearer authentication ODM runtime call using the Client Credentials flow, you have to get a bearer access token using a client_assertion.
+
+Before to generate the client_assertion, you need a keystore.jks that will be build using the previously generated myodmcompany.key private key and myodmcompany.crt public key PEM files with the commands:
+
+```shell
+$ openssl pkcs12 -export -out myodmcompany.p12 -inkey myodmcompany.key -in myodmcompany.crt -passout pass:changeme
+keytool -importkeystore -srckeystore myodmcompany.p12 -srcstoretype pkcs12 -srcalias 1 -srcstorepass changeme -destkeystore myodmcompany.jks -deststoretype jks -deststorepass changeme -destalias myalias
+```
+
+Now you can generate the client_assertion following the [ODM documentation](https://www.ibm.com/docs/en/odm/8.12.0?topic=8120-generating-json-web-token-client-assertion).
+
+```shell
+java -cp $DCLIB/jrules-teamserver.jar:$DCLIB/jose4j-0.9.3.jar:$DCLIB/slf4j-api-1.7.25.jar com.ibm.rules.oauth.ClientAssertionHelper -clientId <CLIENT_ID> -tokenEndpoint https://login.microsoftonline.com/<TENANT_ID>/oauth2/v2.0/token -keyAliasName myalias -keyStorePwd changeme -keyStoreLocation ./myodmcompany.jks
+```
+
+Now, generate the access token using the client_assertion:
 
 ```shell
 $ curl -k -X POST -H "Content-Type: application/x-www-form-urlencoded" \
