@@ -73,7 +73,7 @@ For additional information regarding the implement in Liberty, please refer to t
 
 4. Add Claims.
 
-    In **Azure Active Directory** / **App registrations**, select **ODM Application**, and in **Manage / Token Configuration**:
+    In **Azure Active Directory** / **Applications** / **App registrations**, select **ODM Application**, and in **Manage / Token Configuration**:
 
   * Add Optional Email ID Claim
     * Click +Add optional claim
@@ -99,7 +99,7 @@ For additional information regarding the implement in Liberty, please refer to t
 5. Create a custom claim named "identity"
 
    To enable the ODM REST API to utilize both the password flow with email as the user identifier and the client-credentials flow with client_id as the user identifier, we must establish a new claim named "identity" that will dynamically capture the appropriate value based on the chosen flow:
-   In **Azure Active Directory** / **Enterprise applications**, select **ODM Application**, and in **Manage / Single sign-on**:
+   In **Azure Active Directory** / **Applications** / **Enterprise applications**, select **ODM Application**, and in **Manage / Single sign-on**:
 
   * Click on Edit of the "Attributes & Claims" section
     * Click + Add new claim
@@ -110,13 +110,13 @@ For additional information regarding the implement in Liberty, please refer to t
  
 6. API Permissions.
 
-    In **Azure Active Directory** / **App Registration**, select **ODM Application**, and then click **API Permissions**.
+    In **Azure Active Directory** / **Applications** / **App Registration**, select **ODM Application**, and then click **API Permissions**.
 
     * Click Grant Admin Consent for Default Directory
 
 7. Manifest change.
 
-    In **Azure Active Directory** / **App Registration**, select **ODM Application**, and then click **Manifest**.
+    In **Azure Active Directory** / **Applications** / **App Registration**, select **ODM Application**, and then click **Manifest**.
 
     As explained in [accessTokenAcceptedVersion attribute explanation](https://docs.microsoft.com/en-us/azure/active-directory/develop/reference-app-manifest#accesstokenacceptedversion-attribute), change the value to 2.
 
@@ -334,7 +334,7 @@ You can now install the product. We will use the PostgreSQL internal database an
       - Decision Server Console redirect URI:  `https://<INGRESS_ADDRESS>/res/openid/redirect/odm`
       - Decision Server Runtime redirect URI:  `https://<INGRESS_ADDRESS>/DecisionService/openid/redirect/odm`
 
-   From the Azure console, in **Azure Active Directory** / **App Registrations** / **ODM Application**:
+   From the Azure console, in **Azure Active Directory** / **Applications** / **App Registrations** / **ODM Application**:
 
     - Click`Add Redirect URIs link`
     - Click `Add Platform`
@@ -352,7 +352,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 
    The ODM Rule Designer will use the [PKCE authorization code flow](https://oauth.net/2/pkce/) to connect to Decision Center and Decision Server Console. 
 
-   From the Azure console, in **Azure Active Directory** / **App Registrations** / **ODM Application**:
+   From the Azure console, in **Azure Active Directory** / **Applications** / **App Registrations** / **ODM Application**:
 
     - Click`Add Redirect URIs link`
     - Click `Add Platform`
