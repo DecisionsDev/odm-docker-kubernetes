@@ -2,7 +2,7 @@
 # Introduction
 OpenID Client Credentials with a private key is a robust and secure way for client applications to authenticate themselves when interacting with OpenID Connect providers. This method involves the use of a public-private key pair, similar to SSL/TLS certificates, to verify the client's identity. The private key is securely held by the client, while the public key is registered with the authorization server.
 
-For additional information regarding the implement in Liberty, please refer to this [link]((https://openliberty.io/blog/2023/09/19/23.0.0.9.html#jwt).
+For additional information regarding the implement in Liberty, please refer to this [link](https://openliberty.io/blog/2023/09/19/23.0.0.9.html#jwt).
 
 # Set up a Microsoft Entra ID application using a private key JWT
 
