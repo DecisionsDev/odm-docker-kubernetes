@@ -1,3 +1,9 @@
+
+# Introduction
+OpenID Client Credentials with a private key is a robust and secure way for client applications to authenticate themselves when interacting with OpenID Connect providers. This method involves the use of a public-private key pair, similar to SSL/TLS certificates, to verify the client's identity. The private key is securely held by the client, while the public key is registered with the authorization server.
+
+For additional information regarding the implement in Liberty, please refer to this [link]((https://openliberty.io/blog/2023/09/19/23.0.0.9.html#jwt).
+
 # Set up a Microsoft Entra ID application using a private key JWT
 
 <!-- TOC -->
@@ -26,7 +32,7 @@
 
 1. Create the *ODM application*.
 
-    In **Azure Active Directory** / **App registration**, click **New Registration**:
+    In **Azure Active Directory** / **Applications** / **App registration**, click **New Registration**:
 
     * Name: **ODM Application**
     * Supported account types / Who can use this application or access this API?: select `Accounts in this organizational directory only (Default Directory only - Single tenant)`
@@ -36,7 +42,7 @@
 
 2. Retrieve Tenant and Client information.
 
-    In **Azure Active Directory** / **App Registration**, select **ODM Application** and click **Overview**:
+    In **Azure Active Directory** / **Applications** / **App Registration**, select **ODM Application** and click **Overview**:
 
     * Application (client) ID: **Client ID**. It will be referenced as `CLIENT_ID` in the next steps.
     * Directory (tenant) ID: **Your Tenant ID**. It will be referenced as `TENANT_ID` in the next steps.
@@ -45,24 +51,25 @@
 
 3. Register a public certificate.
 
-    To manage a private key jwt authentication, you must have a private certificate (.key file) and a public certificate (.crt file) that will be registered on the ODM client side (RP) application. On the Microsoft Entra ID (OP) side, you have to registered the public certificate.
+  To manage private key JWT authentication, you need a private certificate (.key file) and a public certificate (.crt file), which should be registered on the ODM client side (RP) application. On the Microsoft Entra ID (OP) side, you are required to register the public certificate.
 
-    If you do not have a trusted certificate, you can use OpenSSL and other cryptography and certificate management libraries to generate a certificate file and a private key, to define the domain name, and to set the expiration date. The following command creates a self-signed certificate (.crt file) and a private key (.key file) that accept the domain name *myodmcompany.com*. The expiration is set to 1000 days:
+  If you don't have a trusted certificate, you can utilize OpenSSL and other cryptography and certificate management libraries to generate a certificate file and a private key, define the domain name, and set the expiration date. The following command will create a self-signed certificate (.crt file) and a private key (.key file) that will accept the domain name myodmcompany.com. 
+  The expiration is set to 1000 days:
            
-    ```shell
+  ```shell
     $ openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout myodmcompany.key \
         -out myodmcompany.crt -subj "/CN=myodmcompany.com/OU=it/O=myodmcompany/L=Paris/C=FR" \
         -addext "subjectAltName = DNS:myodmcompany.com"
-    ```
+  ```
  
-    In **Azure Active Directory** / **App registrations**, select **ODM Application**:
+  In **Azure Active Directory** / **Applications** / **App registrations**, select **ODM Application**:
 
-    * From the Overview page, click on the link Client credentials: **Add a certificate or secret** or on the **Manage / Certificates & secrets** tab
-    * Select the **Certificates** tab
-    * Click on **Upload certificate**
-      * Select the myodmcompany.crt or your own public file
-      * Description: `For ODM integration`
-      * Click Add
+  * From the Overview page, click on the link Client credentials: **Add a certificate or secret** or on the **Manage / Certificates & secrets** tab
+  * Select the **Certificates** tab
+  * Click on **Upload certificate**
+    * Select the myodmcompany.crt or your own public file
+    * Description: `For ODM integration`
+    * Click Add
 
 4. Add Claims.
 
@@ -91,8 +98,7 @@
 
 5. Create a custom claim named "identity"
 
-   To allow ODM rest-api to use the password flow with email as user identifier and the client-credentials flow with client_id as user identifier, we need to create a new claim named "identity" that will take the relevant value according to the flow:
-
+   To enable the ODM REST API to utilize both the password flow with email as the user identifier and the client-credentials flow with client_id as the user identifier, we must establish a new claim named "identity" that will dynamically capture the appropriate value based on the chosen flow:
    In **Azure Active Directory** / **Enterprise applications**, select **ODM Application**, and in **Manage / Single sign-on**:
 
   * Click on Edit of the "Attributes & Claims" section
@@ -175,7 +181,7 @@
    To allow ODM containers to generate a client_assertion, you have to provide them the private and public certificates with the following **myodmcompany** secret. Don't change this name with this tutorial as this name is linked to the openidConnectClient **keyAliasName="myodmcompany"**  parameter of the private_key_jwt liberty configuration.
 
     ```shell
-    kubectl create secret generic myodmcompany from-file=tls.key=myodmcompany.key --from-file=tls.crt=myodmcompany.crt
+    kubectl create secret generic myodmcompany --from-file=tls.key=myodmcompany.key --from-file=tls.crt=myodmcompany.crt
     ``` 
 
 3. Generate the ODM configuration file for Microsoft Entra ID.
@@ -186,7 +192,7 @@
     Generate the files with the following command:
 
     ```shell
-    ./generateTemplateForPrivateKeyJWT -i <CLIENT_ID> -n <TENANT_ID> -g <GROUP_ID> [-a <SSO_DOMAIN>]
+    ./generateTemplateForPrivateKeyJWT.sh -i <CLIENT_ID> -n <TENANT_ID> -g <GROUP_ID> [-a <SSO_DOMAIN>]
     ```
 
     Where:
@@ -229,7 +235,7 @@
   ```shell
   helm search repo ibm-odm-prod
   NAME                  	CHART VERSION	APP VERSION	DESCRIPTION                     
-  ibm-helm/ibm-odm-prod	        23.1.0       	8.12.0.0   	IBM Operational Decision Manager
+  ibm-helm/ibm-odm-prod	        23.2.0       	8.12.0.1   	IBM Operational Decision Manager
   ```
 
 ### Run the `helm install` command
@@ -267,8 +273,8 @@ You can now install the product. We will use the PostgreSQL internal database an
           --set oidc.enabled=true \
           --set license=true \
           --set internalDatabase.persistence.enabled=false \
-          --set customization.trustedCertificateList='{ms-secret,digicert-secret}' \
-          --set customization.privateCertificateList='{myodmcompany}' \
+          --set "customization.trustedCertificateList='{ms-secret,digicert-secret}" \
+          --set "customization.privateCertificateList='{myodmcompany}' \
           --set customization.authSecretRef=azuread-auth-secret \
           --set service.ingress.enabled=true \
           --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"\,"nginx.ingress.kubernetes.io/backend-protocol: HTTPS"}
