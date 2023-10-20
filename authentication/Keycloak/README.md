@@ -1,36 +1,38 @@
 # Configuration of ODM with Keycloak
 
-<!-- TOC titleSize:2 tabSpaces:2 depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 skip:0 title:1 charForUnorderedList:- -->
-## Table of Contents
-- [Introduction](#introduction)
-  - [What is Keycloak?](#what-is-keycloak)
-  - [About this task](#about-this-task)
-  - [ODM OpenID flows](#odm-openid-flows)
-  - [Prerequisites](#prerequisites)
-    - [Install a Keycloak instance](#install-a-keycloak-instance)
-- [Configure a Keycloak instance for ODM (Part 1)](#configure-a-keycloak-instance-for-odm-part-1)
-  - [Log into the Keycloak Admin Console](#log-into-the-keycloak-admin-console)
-  - [Create a dedicated odm realm](#create-a-dedicated-odm-realm)
-  - [Manage roles, groups, and users](#manage-roles-groups-and-users)
-  - [Set up the client](#set-up-the-client)
-- [Deploy ODM on a container configured with Keycloak (Part 2)](#deploy-odm-on-a-container-configured-with-keycloak-part-2)
-  - [Prepare your environment for the ODM installation](#prepare-your-environment-for-the-odm-installation)
-    - [Create a secret to use the Entitled Registry](#create-a-secret-to-use-the-entitled-registry)
-    - [Create secrets to configure ODM with Keycloak](#create-secrets-to-configure-odm-with-keycloak)
-  - [Install your ODM Helm release](#install-your-odm-helm-release)
-    - [1. Add the public IBM Helm charts repository](#1-add-the-public-ibm-helm-charts-repository)
-    - [2. Check that you can access the ODM chart](#2-check-that-you-can-access-the-odm-chart)
-    - [3. Run the `helm install` command](#3-run-the-helm-install-command)
-      - [a. Installation on OpenShift using Routes](#a-installation-on-openshift-using-routes)
-      - [b. Installation using Ingress](#b-installation-using-ingress)
-  - [Complete post-deployment tasks](#complete-post-deployment-tasks)
-    - [Register the ODM redirect URL](#register-the-odm-redirect-url)
-    - [Access the ODM services](#access-the-odm-services)
-    - [Set up Rule Designer](#set-up-rule-designer)
-    - [Getting Started with IBM Operational Decision Manager for Containers](#getting-started-with-ibm-operational-decision-manager-for-containers)
-    - [Calling the ODM Runtime Service](#calling-the-odm-runtime-service)
-- [Troubleshooting](#troubleshooting)
-- [License](#license)
+<!-- TOC depthfrom:1 depthto:6 withlinks:false updateonsave:false orderedlist:false -->
+
+- Configuration of ODM with Keycloak
+- Introduction
+    - What is Keycloak?
+    - About this task
+    - ODM OpenID flows
+    - Prerequisites
+        - Install a Keycloak instance
+- Configure a Keycloak instance for ODM (Part 1)
+    - Log into the Keycloak Admin Console
+    - Create a dedicated odm realm
+    - Manage roles, groups, and users
+    - Set up the client
+- Deploy ODM on a container configured with Keycloak (Part 2)
+    - Prepare your environment for the ODM installation
+        - Create a secret to use the Entitled Registry
+        - Create secrets to configure ODM with Keycloak
+    - Install your ODM Helm release
+        - Add the public IBM Helm charts repository
+        - Check that you can access the ODM chart
+        - Run the `helm install` command
+            - a. Installation on OpenShift using Routes
+            - b. Installation using Ingress
+    - Complete post-deployment tasks
+        - Register the ODM redirect URL
+        - Access the ODM services
+        - Set up Rule Designer
+        - Getting Started with IBM Operational Decision Manager for Containers
+        - Calling the ODM Runtime Service
+- Troubleshooting
+- License
+
 <!-- /TOC -->
 
 # Introduction
@@ -50,7 +52,7 @@ An other tutorial explains how to manage [fine grain permission with Decision Ce
 
 You need to create a number of secrets before you can install an ODM instance with an external OIDC provider such as the Keycloak service, and use web application single sign-on (SSO). The following diagram shows the ODM services with an external OIDC provider after a successful installation.
 
-![ODM web application SSO](/images/Keycloak/diag_keycloak_interaction.jpg)
+![ODM web application SSO](images/diag_keycloak_interaction.jpg)
 
 
 The following procedure describes how to manually configure ODM with a Keycloak service.
@@ -69,16 +71,15 @@ Terminology:
 
 The [Authorization Code flow](https://www.keycloak.org/docs/latest/server_admin/index.html#_oidc-auth-flows-authorization) is best used by server-side apps where the source code is not publicly exposed. The apps must be server-side because the request that exchanges the authorization code for a token requires a client secret, which has to be stored in your client. However, the server-side app requires an end user because it relies on interactions with the end user's web browser, which redirects the user and then receives the authorization code.
 
-
-![Authentication flow](/images/Okta/Authentication_flow.png) (© Okta)
+![Authentication flow](../Okta/images/Authentication_flow.png) (© Okta)
 
 The [Client Credentials flow](https://www.keycloak.org/docs/latest/server_admin/index.html#_client_credentials_grant) is intended for server-side (AKA "confidential") client applications with no end user, which normally describes machine-to-machine communication. The application must be server-side because it must be trusted with the client secret, and since the credentials are hard-coded, it cannot be used by an actual end user. It involves a single, authenticated request to the token endpoint, which returns an access token.
 
-![Client Credential Flow](/images/Okta/oauth_client_creds_flow.png) (© Okta)
+![Client Credential Flow](../Okta/images/oauth_client_creds_flow.png) (© Okta)
 
 The resource owner password flow allows an application to sign in a user by directly handling their password. It is not recommended to use this flow. In most scenarios, more secure alternatives are available and recommended. This flow requires a very high degree of trust in the application, and carries risks which are not present in other flows. You should only use this flow when other more secure flows cannot be used.
 
-![Password Flow](/images/Okta/password_flow.png) (© Okta)
+![Password Flow](../Okta/images/password_flow.png) (© Okta)
 
 ## Prerequisites
 
@@ -86,8 +87,8 @@ You need the following elements:
 
 - [Helm v3](https://helm.sh/docs/intro/install/)
 - [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl)
-- Access to an Operational Decision Manager product 
-- Access to a CNCF Kubernetes cluster 
+- Access to an Operational Decision Manager product
+- Access to a CNCF Kubernetes cluster
 - A Keycloak Instance
 
 ### Install a Keycloak instance
@@ -96,8 +97,11 @@ We have tested with a Keycloak instance (version 21.1.1)  that is installed on O
 If you already have an Openshift cluster, you can skip the section [Before you start](https://www.keycloak.org/getting-started/getting-started-openshift#_before_you_start) and use the following steps:
 
 - oc login to your cluster
-- Create a namespace "keycloak":   oc new-project keycloak
-- Continue from the section [Start Keycloak](https://www.keycloak.org/getting-started/getting-started-openshift#_start_keycloak)  
+- Create a namespace "keycloak":
+  ```shell
+  oc new-project keycloak
+  ```
+- Continue from the section [Start Keycloak](https://www.keycloak.org/getting-started/getting-started-openshift#_start_keycloak)
 
 If you want to install on another Kubernetes platform, follow these instructions: [Get started with Keycloak on Kubernetes](https://www.keycloak.org/getting-started/getting-started-kube).
 
@@ -131,12 +135,12 @@ But to avoid getting mixing up with existing configurations, it is preferable to
 1. Create an odm realm
 
    On the Main page, click **Master**:
-     * Click **Create Realm** 
+     * Click **Create Realm**
        * Realm Name: *odm*
        * Enabled: On
        * Click **Create**
-       
-    ![Create Realm](/images/Keycloak/create_realm.png)
+
+    ![Create Realm](images/create_realm.png)
 
 ## Manage roles, groups, and users
 
@@ -152,7 +156,7 @@ You can also create groups and do a mapping between groups and roles. This way, 
         * Role name: *rtsAdministrators*
         * Click **Save**
 
-    ![Create Roles](/images/Keycloak/create_roles.png)
+    ![Create Roles](images/create_roles.png)
 
     Do the same for the other ODM J2EE roles:
       * rtsConfigManagers
@@ -169,10 +173,10 @@ You can also create groups and do a mapping between groups and roles. This way, 
 2. Create a group for ODM administrators.
 
     In Menu **Manage** / **Groups**:
-      * Click **Create group** 
+      * Click **Create group**
         * Name: *odm-admin*
 
-    ![Create Group](/images/Keycloak/create_group.png)
+    ![Create Group](images/create_group.png)
 
     In Menu **Manage** / **Groups**:
       * Click **Create odm-admin**
@@ -181,12 +185,12 @@ You can also create groups and do a mapping between groups and roles. This way, 
           * Select all previously created ODM roles
           * Click **Assign**
 
-    ![Assign Roles](/images/Keycloak/assign_roles.png)
+    ![Assign Roles](images/assign_roles.png)
 
 3. Create at least one user that belongs to this new group.
 
     In Menu **Manage** / **Users**:
-      * Click **Create new user** 
+      * Click **Create new user**
         * Username: ``johndoe@mycompany.com``
         * Email: ``johndoe@mycompany.com``
         * Email Verified: On
@@ -197,26 +201,26 @@ You can also create groups and do a mapping between groups and roles. This way, 
         * Groups : Click **Join Groups** , select ***odm-admin***, and click **Join**
         * Click **Create**
 
-      ![Create User](/images/Keycloak/create_user.png)
-      
-      * In User Details, select the **Credentials** tab 
+      ![Create User](images/create_user.png)
+
+      * In User Details, select the **Credentials** tab
         * Click **Set password**
         * Fill the Password and Password confirmation  fields with **johndoe**
-	* Temporary: Off      
+	* Temporary: Off
 	* Click *Save Password*
 	* Click Details tab
 	* Click **Save**
-    
+
     (Optional) Every user is created with a predefined role named **default-roles-<CLIENT_ID>**.
     This role has no interest. So, here is the way to unassign this role.
-    
-      * In User Details, select the **Role mapping** tab 
+
+      * In User Details, select the **Role mapping** tab
         * Select **default-roles-<CLIENT_ID>**
         * Click **Unassign**
         * Click **Remove**
-    
-      ![Unassign default role](/images/Keycloak/unassign_default_role.png)
-    
+
+      ![Unassign default role](images/unassign_default_role.png)
+
     Repeat this step for each user you want to add.
 
 ## Set up the client
@@ -229,66 +233,67 @@ You can also create groups and do a mapping between groups and roles. This way, 
     * Name: **ODM Application**
     * Always display in UI: On
 
-    ![Create Client 1](/images/Keycloak/create_client_1.png)
-    
+    ![Create Client 1](images/create_client_1.png)
+
     * Click **Next**
-    * Client Authentication: On 
+    * Client Authentication: On
     * Authorization: On
     * Click *Save*
 
-    ![Create Client 2](/images/Keycloak/create_client_2.png)
+    ![Create Client 2](images/create_client_2.png)
 
     * Click **Credentials** tab
     * Take a note of the **Client secret** value. It will be referenced as ``CLIENT_SECRET`` in the next steps.
-    
-    ![Get Client Secret](/images/Keycloak/client_secret.png)
+
+    ![Get Client Secret](images/client_secret.png)
 
     * Click **Service Account Roles** tab
     *  Select all res* and rts* roles  in the "Available Roles" list and click on "Add selected" to move it to the "Assigned Roles" list
 
-    ![Set Service Account Roles](/images/Keycloak/service_account_roles.png)
-  
+    ![Set Service Account Roles](images/service_account_roles.png)
+
+
 2. Add the GROUPS predefined mapper on the ROLES client scope
 
     In Menu **Manage** / **Client scopes**, click the existing **roles** scope:
     * Select the **Mappers** tab
     * Click **Add mapper>From predefined mappers**
-      * Search for mapper : **groups** 	
+      * Search for mapper : **groups**
       * Select **groups**
       * Click *Add*
     * Click *Settings tab*
-    * Click *Save*	
+    * Click *Save*
 
-    ![Add group mapper](/images/Keycloak/add_group_mapper_to_role_scope.png)
+    ![Add group mapper](images/add_group_mapper_to_role_scope.png)
 
 3. Retrieve the Keycloak Server URL
 
     In Menu **Configure**/**Realm settings**, in the **General** tab, click the **OpenID Endpoint Configuration** link.
-    Take note of the issuer URL. 
+    Take note of the issuer URL.
     It will be referenced as ``KEYCLOAK_SERVER_URL`` in the next steps.
-    
+
 4. Check the configuration
-  
+
      Download the [keycloak-odm-script.zip](keycloak-odm-script.zip) file to your machine and unzip it in your working directory.
      This .zip file contains scripts and templates to verify and set up ODM.
-     
-    7.1 Verify the Client Credentials Token 
-   
+
+    7.1 Verify the Client Credentials Token
+
      You can request an access token using the Client-Credentials flow to verify the format of the token.
-     This token is used for the deployment between Decision Cennter and the Decision Server Console: 
-     
+     This token is used for the deployment between Decision Cennter and the Decision Server Console:
+
     ```shell
     $ ./get-client-credential-token.sh -i <CLIENT_ID> -x <CLIENT_SECRET> -n <KEYCLOAK_SERVER_URL>
     ```
-  
+
     Where:
-  
+
     - *CLIENT_ID* is your ODM Application, default is **odm**, can be retrieve in the **Manage** / **Clients** menu
     - *CLIENT_SECRET* is listed in your ODM Application, in the **Credentials** tab
     - *KEYCLOAK_SERVER_URL* is the issuer that can be retrieved using the **OpenID Endpoint Configuration** link of the **General** tab in the **Configure**/**Realm settings** menu
-    
+
      By introspecting the access_token value with the online tool [https://jwt.io](https://jwt.io), you should get:
-     
+
     ```
     {
       ..
@@ -297,27 +302,27 @@ You can also create groups and do a mapping between groups and roles. This way, 
       "preferred_username": "service-account-<CLIENT_ID>",
       ...
    }
-    ```    
-    
-    7.2 Verify the Client Password Token 
+    ```
+
+    7.2 Verify the Client Password Token
 
 
    To check that it has been correctly taken into account, you can request an access token using the Client password flow.
    This token is used for the invocation of the ODM components like the Decision Center, Decision Server console, and the invocation of the Decision Server Runtime REST API.
-   
+
     ```shell
-    $ ./get-user-password-token.sh -i <CLIENT_ID> -x <CLIENT_SECRET> -n <KEYCLOAK_SERVER_URL> -u <USERNAME> -p <PASSWORD> 
+    $ ./get-user-password-token.sh -i <CLIENT_ID> -x <CLIENT_SECRET> -n <KEYCLOAK_SERVER_URL> -u <USERNAME> -p <PASSWORD>
     ```
-   
+
    Where:
-  
+
     - *CLIENT_ID* is your ODM Application, default is odm, can be retrieved in the **Manage** / **Clients** menu
     - *CLIENT_SECRET* is listed in your ODM Application, in the **Credentials** tab
     - *KEYCLOAK_SERVER_URL* is the issuer that can be retrieved using the **OpenID Endpoint Configuration** link of the **General** tab in the **Configure**/**Realm settings** menu
     - *USERNAME* *PASSWORD* have been created from 'Create at least one user that belongs to this new group.' section.
-    
+
      By introspecting the id_token value with the online tool [https://jwt.io](https://jwt.io), you should get:
-     
+
     ```
     {
       ..
@@ -382,11 +387,11 @@ You can also create groups and do a mapping between groups and roles. This way, 
     ```
     Where:
     - KEYCLOAK_SERVER_URL_WITHOUT_HTTPS is KEYCLOAK_SERVER_URL by removing https:// prefix
-     
+
 2. Generate the ODM configuration file for Keycloak
 
-   
-    If you have not yet done so, download the [keycloak-odm-script.zip](keycloak-odm-script.zip) file to your machine. This .zip file contains the [script](generateTemplate.sh) and the content of the [templates](templates) directory. 
+
+    If you have not yet done so, download the [keycloak-odm-script.zip](keycloak-odm-script.zip) file to your machine. This .zip file contains the [script](generateTemplate.sh) and the content of the [templates](templates) directory.
     The [script](generateTemplate.sh) allows you to generate the necessary configuration files.
     Generate the files with the following command:
     ```
@@ -397,9 +402,9 @@ You can also create groups and do a mapping between groups and roles. This way, 
     - *CLIENT_SECRET* is listed in your ODM Application, section **General** / **Client Credentials**
 
     The following four files are generated into the `output` directory:
-    
+
     - webSecurity.xml contains the mapping between Liberty J2EE ODM roles and Keycloak groups and users:
-      * rtsAdministrators/resAdministrators/resExecutors ODM roles are given to the CLIENT_ID (which is seen as a user) to manage the client-credentials flow  
+      * rtsAdministrators/resAdministrators/resExecutors ODM roles are given to the CLIENT_ID (which is seen as a user) to manage the client-credentials flow
     - openIdWebSecurity.xml contains two openIdConnectClient Liberty configurations:
       * for web access to Decision Center an Decision Server consoles using userIdentifier="preferred_username" with the Authorization Code flow
       * for the rest-api call using userIdentifier="preferred_username" with the client-credentials flow
@@ -428,7 +433,7 @@ You can also create groups and do a mapping between groups and roles. This way, 
 
   ```shell
   helm search repo ibm-odm-prod
-  NAME                  	CHART VERSION	APP VERSION	DESCRIPTION                     
+  NAME                  	CHART VERSION	APP VERSION	DESCRIPTION
   ibm-helm/ibm-odm-prod	        23.1.0       	8.12.0.0   	IBM Operational Decision Manager
   ```
 
@@ -437,9 +442,9 @@ You can also create groups and do a mapping between groups and roles. This way, 
 You can now install the product. We will use the PostgreSQL internal database and disable data persistence (`internalDatabase.persistence.enabled=false`) to avoid any platform complexity with persistent volume allocation.
 
 #### a. Installation on OpenShift using Routes
-  
+
   See the [Preparing to install](https://www.ibm.com/docs/en/odm/8.12.0?topic=production-preparing-install-operational-decision-manager) documentation for more information.
-  
+
   ```shell
   helm install my-odm-release ibm-helm/ibm-odm-prod \
           --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
@@ -451,16 +456,16 @@ You can now install the product. We will use the PostgreSQL internal database an
           --set customization.authSecretRef=keycloak-auth-secret \
           --set internalDatabase.runAsUser='' --set customization.runAsUser='' --set service.enableRoute=true
   ```
- 
+
 #### b. Installation using Ingress
-  
+
   Refer to the following documentation to install an NGINX Ingress Controller on:
   - [Microsoft Azure Kubernetes Service](../../platform/azure/README.md#create-a-nginx-ingress-controller)
   - [Amazon Elastic Kubernetes Service](../../platform/eks/README-NGINX.md)
   - [Google Kubernetes Engine](../../platform/gcloud/README_NGINX.md)
-  
+
   When the NGINX Ingress Controller is ready, you can install the ODM release with:
-  
+
   ```
   helm install my-odm-release ibm-helm/ibm-odm-prod \
           --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
@@ -478,7 +483,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 
 ### Register the ODM redirect URL
 
-    
+
 1. Get the ODM endpoints.
     Refer to [this documentation](https://www.ibm.com/docs/en/odm/8.12.0?topic=tasks-configuring-external-access) to retrieve the endpoints.
     For example, on OpenShift you can get the route names and hosts with:
@@ -494,13 +499,13 @@ You can now install the product. We will use the PostgreSQL internal database an
     my-odm-release-odm-ds-console-route   <DS_CONSOLE_HOST>
     my-odm-release-odm-ds-runtime-route   <DS_RUNTIME_HOST>
     ```
-   
+
     Using an Ingress, the endpoint is the address of the ODM ingress and is the same for all components. You can get it with:
-  
+
     ```
     kubectl get ingress my-odm-release-odm-ingress
     ```
-  
+
    You get the following ingress address:
     ```
     NAME                       CLASS    HOSTS   ADDRESS          PORTS   AGE
@@ -517,7 +522,7 @@ You can now install the product. We will use the PostgreSQL internal database an
       - Decision Server Console redirect URI:  `https://<DS_CONSOLE_HOST>/res/openid/redirect/odm`
       - Decision Server Runtime redirect URI:  `https://<DS_RUNTIME_HOST>/DecisionService/openid/redirect/odm`
       - Rule Designer redirect URI: `https://127.0.0.1:9081/oidcCallback`
-  
+
       Using Ingress:
       - Decision Center redirect URI:  `https://<INGRESS_ADDRESS>/decisioncenter/openid/redirect/odm`
       - Decision Runner redirect URI:  `https://<INGRESS_ADDRESS>/DecisionRunner/openid/redirect/odm`
@@ -525,15 +530,15 @@ You can now install the product. We will use the PostgreSQL internal database an
       - Decision Server Runtime redirect URI:  `https://<INGRESS_ADDRESS>/DecisionService/openid/redirect/odm`
       - Rule Designer redirect URI: `https://127.0.0.1:9081/oidcCallback`
 
-   From the Keycloak admin console, in **Manage** / **Clients** / **odm** 
+   From the Keycloak admin console, in **Manage** / **Clients** / **odm**
     - In the tab **Settings**
     	* Add the redirect URIs in the **Valid redirect URIs** field for each components.
-    	
+
       For example, add the Decision Center redirect URI that you got earlier (`https://<DC_HOST>/decisioncenter/openid/redirect/odm` -- do not forget to replace <DC_HOST> with your actual host name!)
     - Click **Save** at the bottom of the page.
 
-    ![Add URI](/images/Keycloak/redirect_uris.png)
-    
+    ![Add URI](images/redirect_uris.png)
+
 
 ### Access the ODM services
 
@@ -563,7 +568,7 @@ To be able to securely connect your Rule Designer to the Decision Server and Dec
 4. Restart Rule Designer.
 
 For more information, refer to [this documentation](https://www.ibm.com/docs/en/odm/8.12.0?topic=designer-importing-security-certificate-in-rule).
-  
+
 ### Getting Started with IBM Operational Decision Manager for Containers
 
 Get hands-on experience with IBM Operational Decision Manager in a container environment by following this [Getting started tutorial](https://github.com/DecisionsDev/odm-for-container-getting-started/blob/master/README.md).
@@ -574,41 +579,41 @@ To manage ODM runtime calls, we use the [Loan Validation Decision Service projec
 
 Import the **Loan Validation Service** in Decision Center connected as John Doe.
 
-![Import project](/images/Keycloak/import_project.png)
+![Import project](images/import_project.png)
 
 Deploy the **Loan Validation Service** production_deployment ruleapps using the **production deployment** deployment configuration in the Deployments>Configurations tab.
 
-![Deploy project](/images/Keycloak/deploy_project.png)
+![Deploy project](images/deploy_project.png)
 
 You can retrieve the payload.json from the ODM Decision Server Console or use [the provided payload](payload.json).
-  
+
 As explained in the ODM on Certified Kubernetes documentation [Configuring user access with OpenID](https://www.ibm.com/docs/en/odm/8.12.0?topic=access-configuring-user-openid), we advise you to use basic authentication for the ODM runtime call for better performance and to avoid token expiration and revocation.
 
 You perform a basic authentication ODM runtime call in the following way:
-  
+
    ```
   $ curl -H "Content-Type: application/json" -k --data @payload.json \
          -H "Authorization: Basic b2RtQWRtaW46b2RtQWRtaW4=" \
         https://<DS_RUNTIME_HOST>/DecisionService/rest/production_deployment/1.0/loan_validation_production/1.0
   ```
-  
+
   Where `b2RtQWRtaW46b2RtQWRtaW4=` is the base64 encoding of the current username:password odmAdmin:odmAdmin
 
 If you want to perform a bearer authentication ODM runtime call using the Client Credentials flow, you must get a bearer access token:
-  
+
   ```
   $ curl -k -X POST -H "Content-Type: application/x-www-form-urlencoded" \
       -d 'client_id=<CLIENT_ID>&scope=openid&client_secret=<CLIENT_SECRET>&grant_type=client_credentials' \
       '<KEYCLOAK_SERVER_URL>/protocol/openid-connect/token'
   ```
-  
+
  And use the retrieved access token in the following way:
-  
+
    ```
   $ curl -H "Content-Type: application/json" -k --data @payload.json \
          -H "Authorization: Bearer <ACCESS_TOKEN>" \
          https://<DS_RUNTIME_HOST>/DecisionService/rest/production_deployment/1.0/loan_validation_production/1.0
-  ```  
+  ```
 
 # Troubleshooting
 

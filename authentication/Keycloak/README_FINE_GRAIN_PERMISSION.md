@@ -27,14 +27,14 @@
 
 # Introduction
 
-ODM Decision Center allows to [manage users and groups from the Business console](https://www.ibm.com/docs/en/odm/8.11.1?topic=center-managing-users-groups-from-business-console) in order to set access security on specific projects. 
+ODM Decision Center allows to [manage users and groups from the Business console](https://www.ibm.com/docs/en/odm/8.11.1?topic=center-managing-users-groups-from-business-console) in order to set access security on specific projects.
 The Groups and Users import can be done using an LDAP connection.
 But, if the openId server also provides a SCIM server, then it can also be managed using a SCIM connection.
 
 Keycloak server doesn't provide a SCIM server by default. But, it's possible to manage it using the following opensource contribution [https://github.com/Captain-P-Goldfish/scim-for-keycloak](https://github.com/Captain-P-Goldfish/scim-for-keycloak).
 As the project [https://scim-for-keycloak.de/](https://scim-for-keycloak.de) will become Enterprise ready soon, we realized this tutorial using the last available open source version : kc-20-b1 for Keycloak 20.0.5.
 
-# Deploy on OpenShift a custom Keycloak service with a SCIM Server 
+# Deploy on OpenShift a custom Keycloak service with a SCIM Server
 
 ## Build the Keycloak docker image embbeding the open source SCIM plug-in
 
@@ -155,7 +155,7 @@ oc exec -ti <OPENLDAP_POD> bash -- ldapsearch -x -Z -H ldap://ldap-service.<PROJ
    * General options
      * Console display name: openldap
      * Vendor: "Red Hat Directory Server"
-  
+
    * Connection and authentication settings
      * Connection URL should be:  ldap://ldap-service.\<PROJECT>.svc:389 (PROJECT is the name of the current project)
      * Bind type: simple
@@ -199,7 +199,7 @@ oc exec -ti <OPENLDAP_POD> bash -- ldapsearch -x -Z -H ldap://ldap-service.<PROJ
   At this step, all openldap users have been imported. You can check it by clicking on the "Users" tab, put "*" in the Search user box and click on the search button.
   You should see:
 
-  ![OpenLdap Users Import](/images/Keycloak/import_openldap_users.png)
+  ![OpenLdap Users Import](images/import_openldap_users.png)
 
   Now, we will import groups.
 
@@ -229,7 +229,7 @@ oc exec -ti <OPENLDAP_POD> bash -- ldapsearch -x -Z -H ldap://ldap-service.<PROJ
 
   Now you can check the openldap groups have been imported using the Groups tab. You shoud see :
 
-  ![OpenLdap Groups Import](/images/Keycloak/import_openldap_groups.png)
+  ![OpenLdap Groups Import](images/import_openldap_groups.png)
 
 # SCIM Configuration
 
@@ -247,7 +247,7 @@ oc exec -ti <OPENLDAP_POD> bash -- ldapsearch -x -Z -H ldap://ldap-service.<PROJ
 
   Now, the Admin console theme has changed and you should be able to access the SCIM Configuration tab :
 
-  ![SCIM Configuration Tab](/images/Keycloak/scim_configuration.png)
+  ![SCIM Configuration Tab](images/scim_configuration.png)
 
 ## Configure the odm client application authorization
 
@@ -261,27 +261,28 @@ oc exec -ti <OPENLDAP_POD> bash -- ldapsearch -x -Z -H ldap://ldap-service.<PROJ
    - Select"odm" (clientId of the application) in the "Available Clients" list and click on "Add selected" to move it to the "Assigned Clients" list
 
 
-  By default, the SCIM Groups and Users Endpoints require authentication. 
+  By default, the SCIM Groups and Users Endpoints require authentication.
 
-  ![SCIM Resources Tab](/images/Keycloak/scim_resources.png)
 
-  Now, we will configure these endpoints to authorize authenticated users that have the rtsAdministrators role. In the ODM client application, we will use the client_credentials flow using the "service-account-odm" service account having assigned the rtsAdministrators role. We just have to configure authorization for the "Get" endpoint as the ODM SCIM Import is a read only mode and doesn't need the other endpoints (Create, Update, Delete) 
+  ![SCIM Resources Tab](images/scim_resources.png)
+
+  Now, we will configure these endpoints to authorize authenticated users that have the rtsAdministrators role. In the ODM client application, we will use the client_credentials flow using the "service-account-odm" service account having assigned the rtsAdministrators role. We just have to configure authorization for the "Get" endpoint as the ODM SCIM Import is a read only mode and doesn't need the other endpoints (Create, Update, Delete)
 
   - Select the "Resource Type" tab
-   
+
    - Click on "Group" inside the table
    - Click on the "Authorization" tab
    - Expand "Common Roles", select "rtsAdministrators" in the "Available Roles" and click on "Add selected" to move it to the "Assigned Roles" list
    - Expand "Roles for Get", select "rtsAdministrators" in the "Available Roles" and click on "Add selected" to move it to the "Assigned Roles" list
 
-  ![SCIM Group Authorization Tab](/images/Keycloak/scim_groups_authorization.png)
+  ![SCIM Group Authorization Tab](images/scim_groups_authorization.png)
 
    - Click on "User" inside the table
    - Click on the "Authorization" tab
    - Expand "Common Roles", select "rtsAdministrators" in the "Available Roles" and click on "Add selected" to move it to the "Assigned Roles" list
    - Expand "Roles for Get", select "rtsAdministrators" in the "Available Roles" and click on "Add selected" to move it to the "Assigned Roles" list
 
-  ![SCIM User Authorization Tab](/images/Keycloak/scim_user_authorization.png)
+  ![SCIM User Authorization Tab](images/scim_user_authorization.png)
 
 ## Check the SCIM Group and User endpoints
 
@@ -297,10 +298,10 @@ oc exec -ti <OPENLDAP_POD> bash -- ldapsearch -x -Z -H ldap://ldap-service.<PROJ
   Call the SCIM Group endpoint using this <ACCESS_TOKEN>
 
   ```shell
-  $ curl -k -H "Authorization: Bearer <ACCESS_TOKEN>" <KEYCLOAK_SERVER_URL>/scim/v2/Groups 
+  $ curl -k -H "Authorization: Bearer <ACCESS_TOKEN>" <KEYCLOAK_SERVER_URL>/scim/v2/Groups
   ```
- 
-  Result should looks like : 
+
+  Result should looks like :
 
   ```shell
 {"schemas":["urn:ietf:params:scim:api:messages:2.0:ListResponse"],"totalResults":10,"itemsPerPage":10,"startIndex":1,"Resources":[{"schemas":["urn:ietf:params:scim:schemas:core:2.0:Group"],"id":"ef20202e-20e3-44f3-8d70-b1cf2d2c2d7d","displayName":"ADPEnvironmentOwners","members":[{"value":"35560439-88a3-4a56-bb67-384f024bfd7a","$ref":"https://9.46.78.129:8443/realms/odm/scim/v2/Users/35560439-88a3-4a56-bb67-384f024bfd7a","type":"User"},{"value":"7d995178-294a-4175-91f4-43cd9f5906aa","$ref":"https://9.46.78.129:8443/realms/odm/scim/v2/Users/7d995178-294a-4175-91f4-43cd9f5906aa","type":"User"},{"value":"6c74e271-ae1c-4849-aa67-8351f1c816c5","$ref":"https://9.46.78.129:8443/realms/odm/scim/v2/Users/6c74e271-ae1c-4849-aa67-8351f1c816c5","type":"User"}],"meta":{"resourceType":"Group","created":"2023-08-09T13:09:44.164Z","lastModified":"2023-08-09T13:09:44.164Z","location":"https://9.46.78.129:8443/realms/odm/scim/v2/Groups/ef20202e-20e3-44f3-8d70-b1cf2d2c2d7d"}},{"schemas":["urn:ietf:params:scim:schemas:core:2.0:Group"],"id":"f671e618-ef45-41d4-bd0b-c134536edf45","displayName":"CE_EnvironmentOwners","members":[{"value":"35560439-88a3-4a56-bb67-384f024bfd7a","$ref":"https://9.46.78.129:8443/realms/odm/scim/v2/Users/35560439-88a3-4a56-bb67-384f024bfd7a","type":"User"}],"meta":{"resourceType":"Group","created":"2023-08-09T13:09:44.207Z","lastModified":"2023-08-09T13:09:44.207Z","location":"https://9.46.78.129:8443/realms/odm/scim/v2/Groups/f671e618-ef45-41d4-bd0b-c134536edf45"}},{"schemas":["urn:ietf:params:scim:schemas:core:2.0:Group"],"id":"7f767eac-0950-4e71-b2ec-b9e04a10be04","displayName":"GeneralUsers","members":[{"value":"88094536-a059-4383-8bf4-1dcb65457bb9","$ref":"https://9.46.78.129:8443/realms/odm/scim/v2/Users/88094536-a059-4383-8bf4-1dcb65457bb9","type":"User"},{"value":"94a6b972-04aa-4394-89b8-f16a875fe54d","$ref":"https://9.46.78.129:8443/realms/odm/scim/v2/Users/94a6b972-04aa-4394-89b8-f16a875fe54d","type":"User"},{"value":"9a37726a-2a69-4f97-a892-ef38d566c94f","$ref":"https://9.46.78.129:8443/realms/odm/scim/v2/Users/9a37726a-2a69-4f97-a892-ef38d566c94f","type":"User"},{"value":"35774b15-42bc-4c05-bcc9-145fbf075ace","$ref":"https://9.46.78.129:8443/realms/odm/scim/v2/Users/35774b15-42bc-4c05-bcc9-145fbf075ace","type":"User"},
@@ -321,10 +322,10 @@ oc exec -ti <OPENLDAP_POD> bash -- ldapsearch -x -Z -H ldap://ldap-service.<PROJ
   ```
 
 # Deploy ODM on a container configured with Keycloak
-  
+
 Follow - [Deploy ODM on a container configured with Keycloak (Part 2)](README.md#deploy-odm-on-a-container-configured-with-keycloak-part-2).
 
-But replace the previous step "3. Create the Keycloak authentication secret" of the section [Create secrets to configure ODM with Keycloak](REDAME.md#create-secrets-to-configure-odm-with-keycloak) by :
+But replace the previous step "3. Create the Keycloak authentication secret" of the section [Create secrets to configure ODM with Keycloak](README.md#create-secrets-to-configure-odm-with-keycloak) by:
 
     ```
     kubectl create secret generic keycloak-auth-secret \
@@ -348,29 +349,29 @@ The first step is to declare groups of users that will be Decision Center Admini
   - Select the Manage>Groups Tab
   - Double-Click on TaskAdmins
   - Select the Role Mappings Tab
-  - Select all rts*** roles in the "Available Roles" list and click on "Add selected" to move it to the "Assigned Roles" list 
+  - Select all rts*** roles in the "Available Roles" list and click on "Add selected" to move it to the "Assigned Roles" list
 
-  ![Assign Admin Roles](/images/Keycloak/assign_rtsadministrators_role.png)
+  ![Assign Admin Roles](images/assign_rtsadministrators_role.png)
 
-We also need to declare TaskAuditors and TaskUsers groups having rtsUSers roles. If you dn't do this, users are not authorized to login into the Business Console. 
-  
+We also need to declare TaskAuditors and TaskUsers groups having rtsUSers roles. If you dn't do this, users are not authorized to login into the Business Console.
+
   - Select the Manage>Groups Tab
   - Double-Click on TaskAuditors
   - Select the Role Mappins Tab
   - Select the "rtsUsers" role in the "Available Roles" list and click on "Add selected" to move it to the "Assigned Roles" list
   - Repeat the same for the TaskUsers group
 
-  ![Assign User Roles](/images/Keycloak/assign_rtsusers_role.png)
+  ![Assign User Roles](images/assign_rtsusers_role.png)
 
 ## Load projects
- 
+
   For all the coming steps, the users password can be found in the ldap_user.ldif file of the openldap-customldif secret
 
   - Log into the ODM Decision Center Business Console using the cp4admin user
   - Select the LIBRARY tab
   - Import the [Loan Validation Service](https://github.com/DecisionsDev/odm-for-container-getting-started/blob/master/Loan%20Validation%20Service.zip) and [Miniloan Service](https://github.com/DecisionsDev/odm-for-container-getting-started/blob/master/Miniloan%20Service.zip) projects
 
-  ![Load Projects](/images/Keycloak/load_projects.png)
+  ![Load Projects](images/load_projects.png)
 
 ## Import Groups and Users
 
@@ -382,7 +383,7 @@ We also need to declare TaskAuditors and TaskUsers groups having rtsUSers roles.
   - Select the "TaskAuditors" and "TaskUsers" groups
   - Click on the "Import groups and users" button
 
-  ![DC Import Groups and Users](/images/Keycloak/dc_import_groups_users.png)
+  ![DC Import Groups and Users](images/dc_import_groups_users.png)
 
 ## Set the project security
 
@@ -392,14 +393,14 @@ We also need to declare TaskAuditors and TaskUsers groups having rtsUSers roles.
   - Below the Groups section, select the TaskAuditors group
   - Click on the Done button
 
-  ![Set Loan Validation Service Security](/images/Keycloak/set_loan_validation_service_security.png)
+  ![Set Loan Validation Service Security](images/set_loan_validation_service_security.png)
 
   - Click on the "Edit decision service security" of the "Miniloan Service" project
   - Below the Security section, select "Enforce Security"
   - Below the Groups section, select the TaskUsers group
   - Click on the Done button
 
-  ![Security Results](/images/Keycloak/security_results.png)
+  ![Security Results](images/security_results.png)
 
 ## Check the project security
 
@@ -413,16 +414,16 @@ We also need to declare TaskAuditors and TaskUsers groups having rtsUSers roles.
   - Select "Profile" link
   - The "user1" User Profile is showing the "TaskUsers" group
 
-  ![User1 Check](/images/Keycloak/user1_check.png)
+  ![User1 Check](images/user1_check.png)
 
   - Login with user6 > the ADMINISTRATION tab is not available
   - Click on LIBRARY tab > only the "Loan Validation Service" project must be available
   - Click on top-right user6 link
   - Select "Profile" link
-  - The "user6" User Profile is showing the "TaskAuditors" group 
+  - The "user6" User Profile is showing the "TaskAuditors" group
 
-  ![User6 Check](/images/Keycloak/user6_check.png)
-   
+  ![User6 Check](images/user6_check.png)
+
 # Synchonize Decision Center when updating Keycloak
 
   During the life of a project, common situation can happen like :
@@ -432,7 +433,4 @@ We also need to declare TaskAuditors and TaskUsers groups having rtsUSers roles.
   - a user change of group
   - ...
 
-  All these operation are done using the Keycloak dashboard and are reflected on Decision Center. It can be done manually using the Decision Center Synchronize button or using the automatic synchronization happening by default every 2 hours. You can change the frequency using the "-Dcom.ibm.rules.decisioncenter.ldap.sync.refresh.period=60000
-" Decision Center JVM options expressed in milliseconds. 
-    
-  
+  All these operation are done using the Keycloak dashboard and are reflected on Decision Center. It can be done manually using the Decision Center Synchronize button or using the automatic synchronization happening by default every 2 hours. You can change the frequency using the "-Dcom.ibm.rules.decisioncenter.ldap.sync.refresh.period=60000" Decision Center JVM options expressed in milliseconds.

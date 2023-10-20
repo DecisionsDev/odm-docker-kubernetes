@@ -33,13 +33,13 @@ This tutorial was tested on macOS and Linux.
 #### a. Start Minikube with sufficient resources
 
   ```
-  minikube start --cpus 6 --memory 8GB --kubernetes-version=v1.23.0
+  minikube start --cpus 6 --memory 8GB --kubernetes-version=v1.25.0
   ```
 
   The kubectl context is automatically set to point to the created Minikube cluster.
 
     > **Note** 
-    > This installation guide has been tested with the Kubernetes version v1.23.0 to v1.25.0 
+    > This installation guide has been tested with the Kubernetes version v1.25.0 onwards 
 
 #### b. Check your environment
 
@@ -52,7 +52,7 @@ This tutorial was tested on macOS and Linux.
   ```
 
   > **Note**  
-  > You can access the [Kubernetes Dashboard](http://kubernetes.io/docs/user-guide/ui/) by running the `minikube dashboard` command.
+  > You can access the [Kubernetes Dashboard](https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/) by running the `minikube dashboard` command.
 
 ### 2. Prepare your environment for the ODM installation
 
@@ -92,7 +92,7 @@ helm repo update
 ```
 $ helm search repo ibm-odm-prod
 NAME                             	CHART VERSION	APP VERSION	DESCRIPTION
-ibmcharts/ibm-odm-prod           	23.1.0       	8.12.0.0   	IBM Operational Decision Manager
+ibmcharts/ibm-odm-prod           	23.2.0       	8.12.0.1   	IBM Operational Decision Manager
 ```
 
 ### 3. Install an IBM Operational Decision Manager release
@@ -102,7 +102,7 @@ ibmcharts/ibm-odm-prod           	23.1.0       	8.12.0.0   	IBM Operational Deci
 Get the [minikube-values.yaml](./minikube-values.yaml) file and run the following command:
 
 ```
-helm install my-odm-release ibmcharts/ibm-odm-prod --version 23.1.0 -f minikube-values.yaml
+helm install my-odm-release ibmcharts/ibm-odm-prod --version 23.2.0 -f minikube-values.yaml
 ```
 
 #### b. Check the topology
@@ -160,4 +160,4 @@ kubectl logs <your-pod-name>
 Get hands-on experience with IBM Operational Decision Manager in a container environment by following this [Getting started tutorial](https://github.com/DecisionsDev/odm-for-container-getting-started/blob/master/README.md).
 
 # License
-[Apache 2.0](LICENSE)
+[Apache 2.0](/LICENSE)

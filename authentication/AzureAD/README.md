@@ -2,35 +2,16 @@
 
 <!-- TOC -->
 
-- [Configuration of ODM with Azure AD](#configuration-of-odm-with-azure-ad)
-- [Introduction](#introduction)
-    - [What is Azure AD?](#what-is-azure-ad)
-    - [About this task](#about-this-task)
-    - [ODM OpenID flows](#odm-openid-flows)
-    - [Prerequisites](#prerequisites)
-        - [Create an Azure AD account](#create-an-azure-ad-account)
-- [Configure an Azure AD instance for ODM Part 1](#configure-an-azure-ad-instance-for-odm-part-1)
-    - [Log into the Azure AD instance](#log-into-the-azure-ad-instance)
-    - [Manage groups and users](#manage-groups-and-users)
-    - [Set up an application](#set-up-an-application)
-- [Deploy ODM on a container configured with Azure AD Part 2](#deploy-odm-on-a-container-configured-with-azure-ad-part-2)
-    - [Prepare your environment for the ODM installation](#prepare-your-environment-for-the-odm-installation)
-        - [Create a secret to use the Entitled Registry](#create-a-secret-to-use-the-entitled-registry)
-        - [Create secrets to configure ODM with Azure AD](#create-secrets-to-configure-odm-with-azure-ad)
-    - [Install your ODM Helm release](#install-your-odm-helm-release)
-        - [Add the public IBM Helm charts repository](#add-the-public-ibm-helm-charts-repository)
-        - [Check that you can access the ODM chart](#check-that-you-can-access-the-odm-chart)
-        - [Run the helm install command](#run-the-helm-install-command)
-            - [a. Installation on OpenShift using Routes](#a-installation-on-openshift-using-routes)
-            - [b. Installation using Ingress](#b-installation-using-ingress)
-    - [Complete post-deployment tasks](#complete-post-deployment-tasks)
-        - [Register the ODM redirect URLs](#register-the-odm-redirect-urls)
-        - [Access the ODM services](#access-the-odm-services)
-        - [Set up Rule Designer](#set-up-rule-designer)
-        - [Getting Started with IBM Operational Decision Manager for Containers](#getting-started-with-ibm-operational-decision-manager-for-containers)
-        - [Calling the ODM Runtime Service](#calling-the-odm-runtime-service)
-- [Troubleshooting](#troubleshooting)
-- [License](#license)
+- [What is Azure AD?](#what-is-azure-ad)
+- [About this task](#about-this-task)
+- [ODM OpenID flows](#odm-openid-flows)
+- [Prerequisites](#prerequisites)
+- [Log into the Azure AD instance](#log-into-the-azure-ad-instance)
+- [Manage groups and users](#manage-groups-and-users)
+- [Set up an application](#set-up-an-application)
+- [Prepare your environment for the ODM installation](#prepare-your-environment-for-the-odm-installation)
+- [Install your ODM Helm release](#install-your-odm-helm-release)
+- [Complete post-deployment tasks](#complete-post-deployment-tasks)
 
 <!-- /TOC -->
 
@@ -47,7 +28,7 @@ Azure Active Directory ([Azure AD](https://azure.microsoft.com/en-us/services/ac
 
 You need to create a number of secrets before you can install an ODM instance with an external OIDC provider such as the Azure AD service, and use web application single sign-on (SSO). The following diagram shows the ODM services with an external OIDC provider after a successful installation.
 
-![ODM web application SSO](/images/AzureAD/diag_azuread_interaction.jpg)
+![ODM web application SSO](images/diag_azuread_interaction.jpg)
 
 The following procedure describes how to manually configure ODM with an Azure AD service.
 
@@ -65,15 +46,15 @@ Terminology:
 
 The Authorization Code flow is best used by server-side apps in which the source code is not publicly exposed. The apps must be server-side because the request that exchanges the authorization code for a token requires a client secret, which has to be stored in your client. However, the server-side app requires an end user because it relies on interactions with the end user's web browser which redirects the user and then receives the authorization code.
 
-![Authentication flow](/images/AzureAD/AuthenticationFlow.png) (© Microsoft)
+![Authentication flow](images/AuthenticationFlow.png) (© Microsoft)
 
 The Client Credentials flow is intended for server-side (AKA "confidential") client applications with no end user, which normally describes machine-to-machine communication. The application must be server-side because it must be trusted with the client secret, and since the credentials are hard-coded, it cannot be used by an actual end user. It involves a single, authenticated request to the token endpoint which returns an access token.
 
-![Azure AD Client Credential Flow](/images/AzureAD/ClientCredential.png) (© Microsoft)
+![Azure AD Client Credential Flow](images/ClientCredential.png) (© Microsoft)
 
 The Microsoft identity platform supports the OAuth 2.0 Resource Owner Password Credentials (ROPC) grant, which allows an application to sign in the user by directly handling their password. Microsoft recommends you do not use the ROPC flow. In most scenarios, more secure alternatives are available and recommended. This flow requires a very high degree of trust in the application, and carries risks which are not present in other flows. You should only use this flow when other more secure flows cannot be used.
 
-![Azure AD Password Flow](/images/AzureAD/PasswordFlow.png) (© Microsoft)
+![Azure AD Password Flow](images/PasswordFlow.png) (© Microsoft)
 
 ## Prerequisites
 
@@ -113,11 +94,11 @@ After activating your account by email, you should have access to your Aure AD i
         * Membership type: Assigned
         * Click **Create**
 
-    ![Add Group](/images/AzureAD/NewGroup.png)
+    ![Add Group](images/NewGroup.png)
 
     In **Azure Active Directory** / **Groups** take note of the Object ID. It will be referenced as ``GROUP_ID`` later in this tutorial.
 
-    ![GroupID](/images/AzureAD/GroupID.png)
+    ![GroupID](images/GroupID.png)
 
 2. Create at least one user that belongs to this new group.
 
@@ -135,8 +116,8 @@ After activating your account by email, you should have access to your Aure AD i
 
       * Click **Review + create** and then **Create**.
 
-      ![New User Basics](/images/AzureAD/NewUserBasics.png)
-      ![New User Assignments](/images/AzureAD/NewUserAssignments.png)
+      ![New User Basics](images/NewUserBasics.png)
+      ![New User Assignments](images/NewUserAssignments.png)
 
       * Click the **myodmuser** user previously created
         * Edit properties
@@ -157,7 +138,7 @@ After activating your account by email, you should have access to your Aure AD i
     * Supported account types / Who can use this application or access this API?: select `Accounts in this organizational directory only (Default Directory only - Single tenant)`
     * Click **Register**
 
-    ![New Web Application](/images/AzureAD/RegisterApp.png)
+    ![New Web Application](images/RegisterApp.png)
 
 2. Retrieve Tenant and Client information.
 
@@ -233,7 +214,9 @@ After activating your account by email, you should have access to your Aure AD i
 
     ODM OpenID Liberty configuration needs version 2.0 for the issuerIdentifier. See the [openIdWebSecurity.xml](templates/openIdWebSecurity.xml) file.
 
+
     It is also necessary to set **acceptMappedClaims** to true to manage claims. Without this setting, you get the exception **AADSTS50146: This application is required to be configured with an application-specific signing key. It is either not configured with one, or the key has expired or is not yet valid.** when requesting a token.
+
 
    Then, click Save.
    
@@ -426,7 +409,7 @@ After activating your account by email, you should have access to your Aure AD i
 
   ```shell
   helm search repo ibm-odm-prod
-  NAME                  	CHART VERSION	APP VERSION	DESCRIPTION                     
+  NAME                  	CHART VERSION	APP VERSION	DESCRIPTION
   ibm-helm/ibm-odm-prod	        23.1.0       	8.12.0.0   	IBM Operational Decision Manager
   ```
 
@@ -435,9 +418,9 @@ After activating your account by email, you should have access to your Aure AD i
 You can now install the product. We will use the PostgreSQL internal database and disable the data persistence (`internalDatabase.persistence.enabled=false`) to avoid any platform complexity concerning persistent volume allocation.
 
 #### a. Installation on OpenShift using Routes
-  
+
   See the [Preparing to install](https://www.ibm.com/docs/en/odm/8.12.0?topic=production-preparing-install-operational-decision-manager) documentation for additional information.
-  
+
   ```shell
   helm install my-odm-release ibm-helm/ibm-odm-prod \
           --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
@@ -450,14 +433,14 @@ You can now install the product. We will use the PostgreSQL internal database an
   ```
 
 #### b. Installation using Ingress
-  
+
   Refer to the following documentation to install an NGINX Ingress Controller on:
   - [Microsoft Azure Kubernetes Service](../../platform/azure/README.md#create-a-nginx-ingress-controller)
   - [Amazon Elastic Kubernetes Service](../../platform/eks/README-NGINX.md)
   - [Google Kubernetes Engine](../../platform/gcloud/README_NGINX.md)
-  
+
   When the NGINX Ingress Controller is ready, you can install the ODM release with:
-  
+
   ```
   helm install my-odm-release ibm-helm/ibm-odm-prod \
           --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
@@ -538,7 +521,7 @@ You can now install the product. We will use the PostgreSQL internal database an
       - Repeat the previous steps for all other redirect URIs.
 
     - Click **Save** at the bottom of the page.
-    ![Add URI](/images/AzureAD/AddURI.png)
+    ![Add URI](images/AddURI.png)
 
 ### Access the ODM services
 
@@ -586,11 +569,11 @@ To manage ODM runtime call on the next steps, we used the [Loan Validation Decis
 
 Import the **Loan Validation Service** in Decision Center connected using *myodmuser*@YOURDOMAIN created at step 2
 
-![Import project](/images/Keycloak/import_project.png)
+![Import project](../Keycloak/images/import_project.png)
 
 Deploy the **Loan Validation Service** production_deployment ruleapps using the **production deployment** deployment configuration in the Deployments>Configurations tab.
 
-![Deploy project](/images/Keycloak/deploy_project.png)
+![Deploy project](../Keycloak/images/deploy_project.png)
 
 You can retrieve the payload.json from the ODM Decision Server Console or use [the provided payload](payload.json).
 

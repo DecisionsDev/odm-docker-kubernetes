@@ -46,4 +46,4 @@ If your ODM instances are not running properly, please refer to [our dedicated t
 
 # License
 
-[Apache 2.0](../LICENSE)
+[Apache 2.0](/LICENSE)
