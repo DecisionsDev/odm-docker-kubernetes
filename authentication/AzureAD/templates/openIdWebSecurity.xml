@@ -22,5 +22,5 @@
                        issuerIdentifier="${ServerHost}/v2.0"
                        authorizationEndpointUrl="${ServerHost}/oauth2/v2.0/authorize"
                        tokenEndpointUrl="${ServerHost}/oauth2/v2.0/token"
-                       userIdentifier="aud" groupIdentifier="groups" audiences="ALL_AUDIENCES"/>
+                       userIdentifier="identity" groupIdentifier="groups" audiences="ALL_AUDIENCES"/>
 </server>

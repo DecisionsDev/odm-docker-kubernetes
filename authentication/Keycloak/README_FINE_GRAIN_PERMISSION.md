@@ -263,6 +263,7 @@ oc exec -ti <OPENLDAP_POD> bash -- ldapsearch -x -Z -H ldap://ldap-service.<PROJ
 
   By default, the SCIM Groups and Users Endpoints require authentication.
 
+
   ![SCIM Resources Tab](images/scim_resources.png)
 
   Now, we will configure these endpoints to authorize authenticated users that have the rtsAdministrators role. In the ODM client application, we will use the client_credentials flow using the "service-account-odm" service account having assigned the rtsAdministrators role. We just have to configure authorization for the "Get" endpoint as the ODM SCIM Import is a read only mode and doesn't need the other endpoints (Create, Update, Delete)
