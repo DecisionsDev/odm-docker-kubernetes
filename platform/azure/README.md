@@ -103,8 +103,7 @@ Use the `az aks create` command to create an AKS cluster. The following example 
 
 ```shell
 az aks create --name <cluster> --resource-group <resourcegroup> --node-count 2 \
-          --enable-cluster-autoscaler --min-count 2 --max-count 4 \
-          --enable-addons monitoring --generate-ssh-keys [--location <azurelocation>]
+          --enable-cluster-autoscaler --min-count 2 --max-count 4
 ```
 
 After a few minutes, the command completes and returns JSON-formatted information about the cluster.  Make a note of the newly-created Resource Group that is displayed in the JSON output (e.g. "nodeResourceGroup": "<noderesourcegroup>") if you have to tag it, for example:
@@ -158,7 +157,7 @@ To get a good bandwidth between ODM containers and the database, choose the same
 ```shell
 az postgres server create --name <postgresqlserver> --resource-group <resourcegroup> \
                           --admin-user myadmin --admin-password 'passw0rd!' \
-                          --sku-name GP_Gen5_2 --version 11 [--location <azurelocation>]
+                          --sku-name GP_Gen5_2 --version 11
 ```
 
 > Note:  The PostgreSQL server name must be unique within Azure.
@@ -219,7 +218,7 @@ To make sure your database and your AKS cluster can communicate, put in place fi
 
 ```shell
 az postgres server firewall-rule create --resource-group <resourcegroup> --server-name <postgresqlserver> \
-            --name <rulename> --start-ip-address 0.0.0.0 --end-ip-address 255.255.255.255
+            --name <rule> --start-ip-address 0.0.0.0 --end-ip-address 255.255.255.255
 ```
 
 ## Prepare your environment for the ODM installation
@@ -263,7 +262,7 @@ Check that you can access the ODM charts:
 ```shell
 helm search repo ibm-odm-prod
 NAME                        	CHART VERSION	APP VERSION	DESCRIPTION
-ibmcharts/ibm-odm-prod      	23.1.0       	8.12.0.0   	IBM Operational Decision Manager  License By in...
+ibmcharts/ibm-odm-prod      	23.2.0       	8.12.0.1   	IBM Operational Decision Manager  License By in...
 ```
 
 ### Create the database credentials secret for Azure PostgreSQL
@@ -312,7 +311,7 @@ You can now install the product:
 ```shell
 helm install <release> ibmcharts/ibm-odm-prod --version 23.1.0 \
         --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=<registrysecret> \
-        --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.12.0.0} --set service.type=LoadBalancer \
+        --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.12.0.1} --set service.type=LoadBalancer \
         --set externalDatabase.type=postgres \
         --set externalDatabase.serverName=<postgresqlserver>.postgres.database.azure.com \
         --set externalDatabase.databaseName=postgres \
@@ -344,9 +343,8 @@ NAME                                                   READY   STATUS    RESTART
 By setting `service.type=LoadBalancer`, the services are exposed with public IPs to be accessed with the following command:
 
 ```shell
-kubectl get services
+kubectl get services --selector release=<release>
 NAME                                        TYPE           CLUSTER-IP     EXTERNAL-IP       PORT(S)          AGE
-kubernetes                                  ClusterIP      10.0.0.1       <none>            443/TCP          26h
 <release>-odm-decisioncenter                LoadBalancer   10.0.141.125   xxx.xxx.xxx.xxx   9453:31130/TCP   22m
 <release>-odm-decisionrunner                LoadBalancer   10.0.157.225   xxx.xxx.xxx.xxx   9443:31325/TCP   22m
 <release>-odm-decisionserverconsole         LoadBalancer   10.0.215.192   xxx.xxx.xxx.xxx   9443:32448/TCP   22m
@@ -354,7 +352,9 @@ kubernetes                                  ClusterIP      10.0.0.1       <none>
 <release>-odm-decisionserverruntime         LoadBalancer   10.0.177.153   xxx.xxx.xxx.xxx   9443:31921/TCP   22m
 ```
 
-You can then open a browser on https://xxx.xxx.xxx.xxx:9453 to access Decision Center, and on https://xxx.xxx.xxx.xxx:9443 to access Decision Server console, Decision Server Runtime, and Decision Runner.
+<!-- markdown-link-check-disable -->
+You can then open a browser on `https://xxx.xxx.xxx.xxx:9453` to access Decision Center, and on `https://xxx.xxx.xxx.xxx:9443` to access Decision Server console, Decision Server Runtime, and Decision Runner.
+<!-- markdown-link-check-enable -->
 
 ## Create an NGINX Ingress controller
 
@@ -363,19 +363,29 @@ Installing an NGINX Ingress controller allows you to access ODM components throu
 1. Use the official YAML manifest:
 
     ```shell
-    kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.7.1/deploy/static/provider/cloud/deploy.yaml
+    kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.2/deploy/static/provider/cloud/deploy.yaml
     ```
 
     > Note: The version will probably change after the publication of our documentation so please refer to the actual [documentation](https://kubernetes.github.io/ingress-nginx/deploy/#azure)!
 
-2. Get the Ingress controller external IP address:
+2. Get the Ingress controller external IP address (it will appear 80 seconds or so after the resource application above):
 
     ```shell
-    kubectl get service -l app.kubernetes.io/name=ingress-nginx -n ingress-nginx
+    kubectl get service --selector app.kubernetes.io/name=ingress-nginx --namespace ingress-nginx
     NAME                                 TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)                      AGE
     ingress-nginx-controller             LoadBalancer   10.0.78.246    20.19.105.130   80:32208/TCP,443:30249/TCP   2m12s
     ingress-nginx-controller-admission   ClusterIP      10.0.229.164   <none>          443/TCP                      2m12s
     ```
+
+3. Verify the name of the new IngressClass:
+
+    ```shell
+    kubectl get ingressclass
+    NAME    CONTROLLER             PARAMETERS   AGE
+    nginx   k8s.io/ingress-nginx   <none>       5h38m
+    ```
+
+    It should be "nginx" but if different please update the next command accordingly.
 
 ## (Optional) Install an ODM Helm release and expose it with the NGINX Ingress controller (10 min)
 
@@ -386,9 +396,9 @@ You might want to access ODM components through a single external IP address.
 You can reuse the secret with TLS certificate created [above](#manage-adigital-certificate-10-min):
 
 ```shell
-helm install <release> ibmcharts/ibm-odm-prod --version 23.1.0 \
+helm install <release> ibmcharts/ibm-odm-prod --version 23.2.0 \
         --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=<registrysecret> \
-        --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.12.0.0} \
+        --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.12.0.1} \
         --set externalDatabase.type=postgres \
         --set externalDatabase.serverName=<postgresqlserver>.postgres.database.azure.com \
         --set externalDatabase.databaseName=postgres \
@@ -396,7 +406,8 @@ helm install <release> ibmcharts/ibm-odm-prod --version 23.1.0 \
         --set externalDatabase.secretCredentials=<odmdbsecret> \
         --set service.ingress.enabled=true --set service.ingress.tlsSecretRef=<myodmcompanytlssecret> \
         --set service.ingress.tlsHosts={myodmcompany.com} --set service.ingress.host=myodmcompany.com \
-        --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"\,"nginx.ingress.kubernetes.io/backend-protocol: HTTPS"} \
+        --set service.ingress.annotations={"nginx.ingress.kubernetes.io/backend-protocol: HTTPS"} \
+        --set service.ingress.class=nginx \
         --set license=true --set usersPassword=<password>
 ```
 
@@ -415,7 +426,7 @@ helm install <release> ibmcharts/ibm-odm-prod --version 23.1.0 \
 Check that ODM services are in NodePort type:
 
 ```shell
-kubectl get services -l app.kubernetes.io/name=ibm-odm-prod
+kubectl get services --selector release=<release>
 NAME                                             TYPE           CLUSTER-IP     EXTERNAL-IP    PORT(S)                      AGE
 release-odm-decisioncenter                       NodePort       10.0.178.43    <none>         9453:32720/TCP               16m
 release-odm-decisionrunner                       NodePort       10.0.171.46    <none>         9443:30223/TCP               16m
@@ -426,6 +437,7 @@ release-odm-decisionserverruntime                NodePort       10.0.232.212   <
 
 ODM services are available through the following URLs:
 
+<!-- markdown-link-check-disable -->
 | SERVICE NAME | URL | USERNAME/PASSWORD
 | --- | --- | ---
 | Decision Server Console | https://myodmcompany.com/res | odmAdmin/\<password\>
@@ -433,6 +445,7 @@ ODM services are available through the following URLs:
 | Decision Server Runtime | https://myodmcompany.com/DecisionService | odmAdmin/\<password\>
 | Decision Runner | https://myodmcompany.com/DecisionRunner | odmAdmin/\<password\>
 
+<!-- markdown-link-check-enable -->
 Where:
 
 * \<password\> is the password provided to the **usersPassword** helm chart parameter
@@ -458,14 +471,14 @@ kubectl create -f licensing-instance.yml
 After a couple of minutes, the NGINX load balancer reflects the Ingress configuration and you will be able to access the IBM License Service by retrieving the URL with this command:
 
 ```shell
-export LICENSING_URL=$(kubectl get ingress ibm-licensing-service-instance -n ibm-common-services |awk '{print $4}' |tail -1)/ibm-licensing-service-instance
-export TOKEN=$(oc get secret ibm-licensing-token -o jsonpath={.data.token} -n ibm-common-services |base64 -d)
+export LICENSING_URL=$(kubectl get ingress ibm-licensing-service-instance --namespace ibm-common-services --no-headers | awk '{print $4}')/ibm-licensing-service-instance
+export TOKEN=$(kubectl get secret ibm-licensing-token --output jsonpath={.data.token} --namespace ibm-common-services | base64 -d)
 ```
 
 You can access the `http://${LICENSING_URL}/status?token=${TOKEN}` URL to view the licensing usage, or retrieve the licensing report .zip file by running:
 
 ```shell
-curl -v "http://${LICENSING_URL}/snapshot?token=${TOKEN}" --output report.zip
+curl "http://${LICENSING_URL}/snapshot?token=${TOKEN}" --output report.zip
 ```
 
 If your IBM License Service instance is not running properly, refer to this [troubleshooting page](https://www.ibm.com/docs/en/cpfs?topic=software-troubleshooting).

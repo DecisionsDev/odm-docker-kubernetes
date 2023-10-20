@@ -32,7 +32,7 @@ Microsoft Entra ID is the [new name for Azure AD](https://learn.microsoft.com/en
 
 You need to create a number of secrets before you can install an ODM instance with an external OIDC provider such as the Microsoft Entra ID service, and use web application single sign-on (SSO). The following diagram shows the ODM services with an external OIDC provider after a successful installation.
 
-![ODM web application SSO](/images/AzureAD/diag_azuread_interaction.jpg)
+![ODM web application SSO](images/diag_azuread_interaction.jpg)
 
 The following procedure describes how to manually configure ODM with an Microsoft Entra ID service.
 
@@ -50,7 +50,7 @@ Terminology:
 
 The Authorization Code flow is best used by server-side apps in which the source code is not publicly exposed. The apps must be server-side because the request that exchanges the authorization code for a token requires a client secret, which has to be stored in your client. However, the server-side app requires an end user because it relies on interactions with the end user's web browser which redirects the user and then receives the authorization code.
 
-![Authentication flow](/images/AzureAD/AuthenticationFlow.png) (© Microsoft)
+![Authentication flow](images/AuthenticationFlow.png) (© Microsoft)
 
 The Client Credentials flow is intended for server-side (AKA "confidential") client applications with no end user, which normally describes machine-to-machine communication. The application must be server-side because it must be trusted with the client secret, and since the credentials are hard-coded, it cannot be used by an actual end user. It involves a single, authenticated request to the token endpoint which returns an access token.
 
@@ -98,11 +98,11 @@ After activating your account by email, you should have access to your Microsoft
         * Membership type: Assigned
         * Click **Create**
 
-    ![Add Group](/images/AzureAD/NewGroup.png)
+    ![Add Group](images/NewGroup.png)
 
     In **Azure Active Directory** / **Groups** take note of the Object ID. It will be referenced as ``GROUP_ID`` later in this tutorial.
 
-    ![GroupID](/images/AzureAD/GroupID.png)
+    ![GroupID](images/GroupID.png)
 
 2. Create at least one user that belongs to this new group.
 
@@ -120,8 +120,8 @@ After activating your account by email, you should have access to your Microsoft
 
       * Click **Review + create ** and then **Create or Invite**.
 
-      ![New User Basics](/images/AzureAD/NewUserBasics.png)
-      ![New User Assignments](/images/AzureAD/NewUserAssignments.png)
+      ![New User Basics](images/NewUserBasics.png)
+      ![New User Assignments](images/NewUserAssignments.png)
 
       * Click the **myodmuser** user previously created
         * Edit properties
