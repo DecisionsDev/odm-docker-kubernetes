@@ -25,3 +25,7 @@ In the Networking tab, enable `Public endpoint` and allow access from `Azure ser
 You can then review your configuration and create the Managed Instance. It can take up to six hours (but most of the time we manage to get it created in about one hour):
 
 ![Review](images/sqlmi-review.png)
+
+When the SQL MI is up, you can create a database in it:
+
+![New database](images/sqlmi-newdb.png)
