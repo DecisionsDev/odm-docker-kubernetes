@@ -54,11 +54,11 @@ The Authorization Code flow is best used by server-side apps in which the source
 
 The Client Credentials flow is intended for server-side (AKA "confidential") client applications with no end user, which normally describes machine-to-machine communication. The application must be server-side because it must be trusted with the client secret, and since the credentials are hard-coded, it cannot be used by an actual end user. It involves a single, authenticated request to the token endpoint which returns an access token.
 
-![Microsoft Entra ID Client Credential Flow](/images/AzureAD/ClientCredential.png) (© Microsoft)
+![Microsoft Entra ID Client Credential Flow](images/ClientCredential.png) (© Microsoft)
 
 The Microsoft identity platform supports the OAuth 2.0 Resource Owner Password Credentials (ROPC) grant, which allows an application to sign in the user by directly handling their password. Microsoft recommends you do not use the ROPC flow. In most scenarios, more secure alternatives are available and recommended. This flow requires a very high degree of trust in the application, and carries risks which are not present in other flows. You should only use this flow when other more secure flows cannot be used.
 
-![Microsoft Entra ID Password Flow](/images/AzureAD/PasswordFlow.png) (© Microsoft)
+![Microsoft Entra ID Password Flow](images/PasswordFlow.png) (© Microsoft)
 
 ## Prerequisites
 
@@ -161,4 +161,4 @@ If you are unsure about which option to choose, take the time to read [this arti
 # License
 
 [Apache 2.0](/LICENSE)
-  
+
