@@ -21,3 +21,7 @@ Back to basics, select `Use SQL authentication` as Authentication method and the
 In the Networking tab, enable `Public endpoint` and allow access from `Azure services`:
 
 ![Network access](images/sqlmi-network.png)
+
+You can then review your configuration and create the Managed Instance. It can take up to six hours (but most of the time we manage to get it created in about one hour):
+
+![Review](images/sqlmi-review.png)
