@@ -9,8 +9,8 @@ image:
 service:
   ingress:
     enabled: true
+    class: nginx
     annotations:
-      kubernetes.io/ingress.class: nginx
       nginx.ingress.kubernetes.io/backend-protocol: https
 
 internalDatabase:
