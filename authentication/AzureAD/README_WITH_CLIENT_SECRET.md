@@ -32,7 +32,7 @@
     * Supported account types / Who can use this application or access this API?: select `Accounts in this organizational directory only (Default Directory only - Single tenant)`
     * Click **Register**
 
-    ![New Web Application](/images/AzureAD/RegisterApp.png)
+    ![New Web Application](images/RegisterApp.png)
 
 2. Retrieve Tenant and Client information.
 
@@ -41,7 +41,7 @@
     * Application (client) ID: **Client ID**. It will be referenced as `CLIENT_ID` in the next steps.
     * Directory (tenant) ID: **Your Tenant ID**. It will be referenced as `TENANT_ID` in the next steps.
 
-    ![Tenant ID](/images/AzureAD/GetTenantID.png)
+    ![Tenant ID](images/GetTenantID.png)
 
 3. Generate an OpenID client secret.
 
@@ -93,7 +93,7 @@
       * Fill 2 Claim conditions in the exact following order:
         1. User Type: Any / Scope Groups: 0 / Source: Attribute / Value: <CLIENT_ID>
         2. User Type: Members / Scope Groups: 0 / Source: Attribute / Value: user.mail
- 
+
 6. API Permissions.
 
     In **Azure Active Directory** / **App Registration**, select **ODM Application**, and then click **API Permissions**.
@@ -111,7 +111,7 @@
     It is also necessary to set **acceptMappedClaims** to true to manage claims. Without this setting, you get the exception **AADSTS50146: This application is required to be configured with an application-specific signing key. It is either not configured with one, or the key has expired or is not yet valid.** when requesting a token.
 
    Then, click Save.
-   
+
 8. Check the configuration.
 
     Download the [azuread-odm-script.zip](azuread-odm-script.zip) file to your machine and unzip it in your working directory. This .zip file contains scripts and templates to verify and set up ODM.
@@ -301,7 +301,7 @@
 
   ```shell
   helm search repo ibm-odm-prod
-  NAME                  	CHART VERSION	APP VERSION	DESCRIPTION                     
+  NAME                  	CHART VERSION	APP VERSION	DESCRIPTION
   ibm-helm/ibm-odm-prod	        23.1.0       	8.12.0.0   	IBM Operational Decision Manager
   ```
 
@@ -310,9 +310,9 @@
 You can now install the product. We will use the PostgreSQL internal database and disable the data persistence (`internalDatabase.persistence.enabled=false`) to avoid any platform complexity concerning persistent volume allocation.
 
 #### a. Installation on OpenShift using Routes
-  
+
   See the [Preparing to install](https://www.ibm.com/docs/en/odm/8.12.0?topic=production-preparing-install-operational-decision-manager) documentation for additional information.
-  
+
   ```shell
   helm install my-odm-release ibm-helm/ibm-odm-prod \
           --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
@@ -325,14 +325,14 @@ You can now install the product. We will use the PostgreSQL internal database an
   ```
 
 #### b. Installation using Ingress
-  
+
   Refer to the following documentation to install an NGINX Ingress Controller on:
   - [Microsoft Azure Kubernetes Service](../../platform/azure/README.md#create-a-nginx-ingress-controller)
   - [Amazon Elastic Kubernetes Service](../../platform/eks/README-NGINX.md)
   - [Google Kubernetes Engine](../../platform/gcloud/README_NGINX.md)
-  
+
   When the NGINX Ingress Controller is ready, you can install the ODM release with:
-  
+
   ```
   helm install my-odm-release ibm-helm/ibm-odm-prod \
           --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
@@ -413,7 +413,7 @@ You can now install the product. We will use the PostgreSQL internal database an
       - Repeat the previous steps for all other redirect URIs.
 
     - Click **Save** at the bottom of the page.
-    ![Add URI](/images/AzureAD/AddURI.png)
+    ![Add URI](images/AddURI.png)
 
 ### Access the ODM services
 
