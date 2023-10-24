@@ -141,12 +141,6 @@ aks-nodepool1-26476812-vmss000000   Ready    agent   21m   v1.25.6
 aks-nodepool1-26476812-vmss000001   Ready    agent   21m   v1.25.6
 ```
 
-To further debug and diagnose cluster problems, run the following command:
-
-```shell
-kubectl cluster-info dump
-```
-
 ## Create the PostgreSQL Azure instance (10 min)
 
 ### Create an Azure Database for PostgreSQL
@@ -221,6 +215,15 @@ az postgres server firewall-rule create --resource-group <resourcegroup> --serve
             --name <rule> --start-ip-address 0.0.0.0 --end-ip-address 255.255.255.255
 ```
 
+### Create the database credentials secret for Azure PostgreSQL
+
+To secure the access to the database, create a secret that encrypts the database user and password before you install the Helm release.
+
+```shell
+kubectl create secret generic <odmdbsecret> --from-literal=db-user=myadmin@<postgresqlserver> \
+                                            --from-literal=db-password='passw0rd!'
+```
+
 ## Prepare your environment for the ODM installation
 
 To get access to the ODM material, you must have an IBM entitlement key to pull the images from the IBM Entitled Registry.
@@ -265,15 +268,6 @@ NAME                        	CHART VERSION	APP VERSION	DESCRIPTION
 ibmcharts/ibm-odm-prod      	23.2.0       	8.12.0.1   	IBM Operational Decision Manager  License By in...
 ```
 
-### Create the database credentials secret for Azure PostgreSQL
-
-To secure the access to the database, create a secret that encrypts the database user and password before you install the Helm release.
-
-```shell
-kubectl create secret generic <odmdbsecret> --from-literal=db-user=myadmin@<postgresqlserver> \
-                                            --from-literal=db-password='passw0rd!'
-```
-
 ### Manage a digital certificate (10 min)
 
 1. (Optional) Generate a self-signed certificate.
@@ -309,7 +303,7 @@ az aks update --name <cluster> --resource-group <resourcegroup> --load-balancer-
 You can now install the product:
 
 ```shell
-helm install <release> ibmcharts/ibm-odm-prod --version 23.1.0 \
+helm install <release> ibmcharts/ibm-odm-prod --version 23.2.0 \
         --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=<registrysecret> \
         --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.12.0.1} --set service.type=LoadBalancer \
         --set externalDatabase.type=postgres \
