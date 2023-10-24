@@ -13,3 +13,11 @@ Choose the Resource Group you want to deploy the SQL MI into, and also the Manag
 You should have a look at `Configure Managed Instance` and lower the number of CPUs used by the instance:
 
 ![Resources configuration](images/sqlmi-resources.png)
+
+Back to basics, select `Use SQL authentication` as Authentication method and then fill in admin login and password values:
+
+![Authentication](images/sqlmi-authentication.png)
+
+In the Networking tab, enable `Public endpoint` and allow access from `Azure services`:
+
+![Network access](images/sqlmi-network.png)
