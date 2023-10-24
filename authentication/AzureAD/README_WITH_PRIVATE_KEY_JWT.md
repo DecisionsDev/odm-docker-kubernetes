@@ -38,7 +38,7 @@ For additional information regarding the implement in Liberty, please refer to t
     * Supported account types / Who can use this application or access this API?: select `Accounts in this organizational directory only (Default Directory only - Single tenant)`
     * Click **Register**
 
-    ![New Web Application](/images/AzureAD/RegisterApp.png)
+    ![New Web Application](images/RegisterApp.png)
 
 2. Retrieve Tenant and Client information.
 
@@ -47,21 +47,21 @@ For additional information regarding the implement in Liberty, please refer to t
     * Application (client) ID: **Client ID**. It will be referenced as `CLIENT_ID` in the next steps.
     * Directory (tenant) ID: **Your Tenant ID**. It will be referenced as `TENANT_ID` in the next steps.
 
-    ![Tenant ID](/images/AzureAD/GetTenantID.png)
+    ![Tenant ID](images/GetTenantID.png)
 
 3. Register a public certificate.
 
   To manage private key JWT authentication, you need a private certificate (.key file) and a public certificate (.crt file), which should be registered on the ODM client side (RP) application. On the Microsoft Entra ID (OP) side, you are required to register the public certificate.
 
-  If you don't have a trusted certificate, you can utilize OpenSSL and other cryptography and certificate management libraries to generate a certificate file and a private key, define the domain name, and set the expiration date. The following command will create a self-signed certificate (.crt file) and a private key (.key file) that will accept the domain name myodmcompany.com. 
+  If you don't have a trusted certificate, you can utilize OpenSSL and other cryptography and certificate management libraries to generate a certificate file and a private key, define the domain name, and set the expiration date. The following command will create a self-signed certificate (.crt file) and a private key (.key file) that will accept the domain name myodmcompany.com.
   The expiration is set to 1000 days:
-           
+
   ```shell
     $ openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout myodmcompany.key \
         -out myodmcompany.crt -subj "/CN=myodmcompany.com/OU=it/O=myodmcompany/L=Paris/C=FR" \
         -addext "subjectAltName = DNS:myodmcompany.com"
   ```
- 
+
   In **Identity** / **Applications** / **App registrations**, select **ODM Application**:
 
   * From the Overview page, click on the link Client credentials: **Add a certificate or secret** or on the **Manage / Certificates & secrets** tab
@@ -107,7 +107,7 @@ For additional information regarding the implement in Liberty, please refer to t
       * Fill 2 Claim conditions in the exact following order:
         1. User Type: Any / Scope Groups: 0 / Source: Attribute / Value: <CLIENT_ID>
         2. User Type: Members / Scope Groups: 0 / Source: Attribute / Value: user.mail
- 
+
 6. API Permissions.
 
     In **Identity** / **Applications** / **App Registration**, select **ODM Application**, and then click **API Permissions**.
@@ -125,7 +125,7 @@ For additional information regarding the implement in Liberty, please refer to t
     It is also necessary to set **acceptMappedClaims** to true to manage claims. Without this setting, you get the exception **AADSTS50146: This application is required to be configured with an application-specific signing key. It is either not configured with one, or the key has expired or is not yet valid.** when requesting a token.
 
    Then, click Save.
-   
+
 # Deploy ODM on a container configured with Microsoft Entra ID (Part 2)
 
 ## Prepare your environment for the ODM installation
@@ -182,7 +182,7 @@ For additional information regarding the implement in Liberty, please refer to t
 
     ```shell
     kubectl create secret generic myodmcompany --from-file=tls.key=myodmcompany.key --from-file=tls.crt=myodmcompany.crt
-    ``` 
+    ```
 
 3. Generate the ODM configuration file for Microsoft Entra ID.
 
@@ -234,7 +234,7 @@ For additional information regarding the implement in Liberty, please refer to t
 
   ```shell
   helm search repo ibm-odm-prod
-  NAME                  	CHART VERSION	APP VERSION	DESCRIPTION                     
+  NAME                  	CHART VERSION	APP VERSION	DESCRIPTION
   ibm-helm/ibm-odm-prod	        23.2.0       	8.12.0.1   	IBM Operational Decision Manager
   ```
 
@@ -243,9 +243,9 @@ For additional information regarding the implement in Liberty, please refer to t
 You can now install the product. We will use the PostgreSQL internal database and disable the data persistence (`internalDatabase.persistence.enabled=false`) to avoid any platform complexity concerning persistent volume allocation.
 
 #### a. Installation on OpenShift using Routes
-  
+
   See the [Preparing to install](https://www.ibm.com/docs/en/odm/8.12.0?topic=production-preparing-install-operational-decision-manager) documentation for additional information.
-  
+
   ```shell
   helm install my-odm-release ibm-helm/ibm-odm-prod \
           --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
@@ -259,14 +259,14 @@ You can now install the product. We will use the PostgreSQL internal database an
   ```
 
 #### b. Installation using Ingress
-  
+
   Refer to the following documentation to install an NGINX Ingress Controller on:
   - [Microsoft Azure Kubernetes Service](../../platform/azure/README.md#create-a-nginx-ingress-controller)
   - [Amazon Elastic Kubernetes Service](../../platform/eks/README-NGINX.md)
   - [Google Kubernetes Engine](../../platform/gcloud/README_NGINX.md)
-  
+
   When the NGINX Ingress Controller is ready, you can install the ODM release with:
-  
+
   ```
   helm install my-odm-release ibm-helm/ibm-odm-prod \
           --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
@@ -346,11 +346,11 @@ You can now install the product. We will use the PostgreSQL internal database an
       - Repeat the previous steps for all other redirect URIs.
 
     - Click **Save** at the bottom of the page.
-    ![Add URI](/images/AzureAD/AddURI.png)
+    ![Add URI](images/AddURI.png)
 
 4. Register the Rule Designer callback into your Microsoft Entra ID application.
 
-   The ODM Rule Designer will use the [PKCE authorization code flow](https://oauth.net/2/pkce/) to connect to Decision Center and Decision Server Console. 
+   The ODM Rule Designer will use the [PKCE authorization code flow](https://oauth.net/2/pkce/) to connect to Decision Center and Decision Server Console.
 
    From the Azure console, in **Identity** / **Applications** / **App Registrations** / **ODM Application**:
 
@@ -360,8 +360,8 @@ You can now install the product. We will use the PostgreSQL internal database an
     - `Custom redirect URIs` Add the Rule Designer callback `https://127.0.0.1:9081/oidcCallback`
 
     - Click **Configure** at the bottom of the page.
-    ![Add URI](/images/AzureAD/AddRDCallback.png)
-   
+    ![Add URI](images/AddRDCallback.png)
+
 ### Access the ODM services
 
 Well done!  You can now connect to ODM using the endpoints you got [earlier](#register-the-odm-redirect-url) and log in as an ODM admin with the account you created in [the first step](#manage-group-and-user).
@@ -408,11 +408,11 @@ To manage ODM runtime call on the next steps, we used the [Loan Validation Decis
 
 Import the **Loan Validation Service** in Decision Center connected using *myodmuser*@YOURDOMAIN created at step 2
 
-![Import project](/images/Keycloak/import_project.png)
+![Import project](../Keycloak/images/import_project.png)
 
 Deploy the **Loan Validation Service** production_deployment ruleapps using the **production deployment** deployment configuration in the Deployments>Configurations tab.
 
-![Deploy project](/images/Keycloak/deploy_project.png)
+![Deploy project](../Keycloak/images/deploy_project.png)
 
 You can retrieve the payload.json from the ODM Decision Server Console or use [the provided payload](payload.json).
 
