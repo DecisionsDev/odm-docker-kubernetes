@@ -53,12 +53,12 @@ aws configure 
 #### b. Create an EKS cluster (20 min)
 
 ```bash
-eksctl create cluster <CLUSTER_NAME> --version 1.26 --alb-ingress-access
+eksctl create cluster <CLUSTER_NAME> --version 1.28 --alb-ingress-access
 
 ```
 
 > **Note**
-> The tutorial has been tested with the Kubernetes version 1.26. Check the supported kubernetes version in the [system requirement](https://www.ibm.com/support/pages/ibm-operational-decision-manager-detailed-system-requirements) page.
+> The tutorial has been tested with the Kubernetes version 1.28. Check the supported kubernetes version in the [system requirement](https://www.ibm.com/support/pages/ibm-operational-decision-manager-detailed-system-requirements) page.
 
 For more information, refer to [Creating an Amazon EKS cluster](https://docs.aws.amazon.com/eks/latest/userguide/create-cluster.html).
 
@@ -75,8 +75,6 @@ To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
 ```
 
 #### d. Provision an AWS Load Balancer Controller
-
-The AWS Load Balancer Controller creates Application Load Balancers (ALBs) and the necessary supporting AWS resources whenever a Kubernetes Ingress resource is created on the cluster with the `kubernetes.io/ingress.class: alb` annotation.
 
 Provision an AWS Load Balancer Controller to your EKS cluster:
 
@@ -176,7 +174,7 @@ helm repo update
 ```bash
 $ helm search repo ibm-odm-prod
 NAME                             	CHART VERSION	APP VERSION	DESCRIPTION
-ibm-helm/ibm-odm-prod           	23.1.0       	8.12.0.0   	IBM Operational Decision Manager
+ibm-helm/ibm-odm-prod           	23.2.0       	8.12.0.1   	IBM Operational Decision Manager
 ```
 
 ### 4. Manage a  digital certificate (10 min)
@@ -228,7 +226,7 @@ To install ODM with the AWS RDS PostgreSQL database created in [step 2](#2-creat
   - `<RDS_DATABASE_NAME>` is the initial database name defined when creating the RDS database
 
 ```bash
-helm install mycompany ibm-helm/ibm-odm-prod --version 23.1.0 -f eks-rds-values.yaml
+helm install mycompany ibm-helm/ibm-odm-prod --version 23.2.0 -f eks-rds-values.yaml
 ```
 
 > **Note**
@@ -238,7 +236,7 @@ helm install mycompany ibm-helm/ibm-odm-prod --version 23.1.0 -f eks-rds-values.
 >   - `<AWS-AccountId>` is your AWS Account Id
 >
 >```bash
->helm install mycompany ibm-helm/ibm-odm-prod --version 23.1.0 -f eks-values.yaml
+>helm install mycompany ibm-helm/ibm-odm-prod --version 23.2.0 -f eks-values.yaml
 >```
 
 > **Note**
