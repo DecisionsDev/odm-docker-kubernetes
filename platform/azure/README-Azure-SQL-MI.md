@@ -2,7 +2,7 @@
 
 We successfully deployed ODM with an external Azure SQL Managed Instance (SQL MI), following these instructions.
 
-Look for Azure SQL in all available services and create a SQL Managed Instances / Single instance:
+Look for `Azure SQL` in all available services and create a SQL Managed Instances / Single instance:
 
 ![Single instance](images/sqlmi-select_offer.png)
 
@@ -34,7 +34,7 @@ Later you'll need the FQDN for your SQL MI; it can be found as `Host` in the ins
 
 ![SQL MI Overview](images/sqlmi-overview.png)
 
-The port to use should always be 3342 but you can verify it in the JDBC connection string from your SQL Managed Instance:
+The port to use should always be 3342 but you can verify it in the public JDBC connection string from your SQL Managed Instance:
 
 ![JDBC string](images/sqlmi-jdbcstring.png)
 
