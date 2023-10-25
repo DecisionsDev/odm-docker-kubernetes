@@ -62,6 +62,8 @@ helm install <release> ibmcharts/ibm-odm-prod --version 23.2.0 \
         --set license=true --set usersPassword=<password>
 ```
 
+Other deployment options (especially using NGINX) and IBM License Service usage are explained in the main [README file](README.md).
+
 ## Troubleshooting
 
 If your ODM instances are not running properly, refer to [our dedicated troubleshooting page](https://www.ibm.com/docs/en/odm/8.12.0?topic=8120-troubleshooting-support).
