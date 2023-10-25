@@ -61,3 +61,15 @@ helm install <release> ibmcharts/ibm-odm-prod --version 23.2.0 \
         --set customization.securitySecretRef=<myodmcompanytlssecret> \
         --set license=true --set usersPassword=<password>
 ```
+
+## Troubleshooting
+
+If your ODM instances are not running properly, refer to [our dedicated troubleshooting page](https://www.ibm.com/docs/en/odm/8.12.0?topic=8120-troubleshooting-support).
+
+## Getting Started with IBM Operational Decision Manager for Containers
+
+Get hands-on experience with IBM Operational Decision Manager in a container environment by following this [Getting started tutorial](https://github.com/DecisionsDev/odm-for-container-getting-started/blob/master/README.md).
+
+# License
+
+[Apache 2.0](/LICENSE)
