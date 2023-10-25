@@ -41,11 +41,11 @@ The port to use should always be 3342 but you can verify it in the public JDBC c
 Proceed as standard installation and create a DB authentication secret:
 
 ```bash
-kubectl create secret generic odmdbsecret --from-literal=db-user=sqlmiadmin \
-                                          --from-literal=db-password='passw0rd!passw0rd!'
+kubectl create secret generic <odmdbsecret> --from-literal=db-user=<sqlmiadmin> \
+                                            --from-literal=db-password='<password>'
 ```
 
-> Beware! db-user must not contain the @sqlminame part!
+> Beware! db-user must not contain the `@<managedinstancename>` part!
 
 Then you can deploy ODM with:
 
