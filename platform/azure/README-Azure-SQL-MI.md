@@ -29,3 +29,35 @@ You can then review your configuration and create the Managed Instance. It can t
 When the SQL MI is up, you can create a database in it:
 
 ![New database](images/sqlmi-newdb.png)
+
+Later you'll need the FQDN for your SQL MI; it can be found as `Host` in the instance Overview:
+
+![SQL MI Overview](images/sqlmi-overview.png)
+
+The port to use should always be 3342 but you can verify it in the JDBC connection string from your SQL Managed Instance:
+
+![JDBC string](images/sqlmi-jdbcstring.png)
+
+Proceed as standard installation and create a DB authentication secret:
+
+```bash
+kubectl create secret generic odmdbsecret --from-literal=db-user=sqlmiadmin \
+                                          --from-literal=db-password='passw0rd!passw0rd!'
+```
+
+> Beware! db-user must not contain the @sqlminame part!
+
+Then you can deploy ODM with:
+
+```bash
+helm install <release> ibmcharts/ibm-odm-prod --version 23.2.0 \
+        --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=<registrysecret> \
+        --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.12.0.1} --set service.type=LoadBalancer \
+        --set externalDatabase.type=sqlserver \
+        --set externalDatabase.serverName=<sqlminame>.public.<identifier>.database.windows.net \
+        --set externalDatabase.databaseName=odmdb \
+        --set externalDatabase.port=3342 \
+        --set externalDatabase.secretCredentials=<odmdbsecret> \
+        --set customization.securitySecretRef=<myodmcompanytlssecret> \
+        --set license=true --set usersPassword=<password>
+```
