@@ -438,8 +438,8 @@ ODM services are available through the following URLs:
 | Decision Center | https://myodmcompany.com/decisioncenter | odmAdmin/\<password\>
 | Decision Server Runtime | https://myodmcompany.com/DecisionService | odmAdmin/\<password\>
 | Decision Runner | https://myodmcompany.com/DecisionRunner | odmAdmin/\<password\>
-
 <!-- markdown-link-check-enable -->
+
 Where:
 
 * \<password\> is the password provided to the **usersPassword** helm chart parameter
@@ -455,7 +455,7 @@ Follow the **Installation** section of the [Manual installation without the Oper
 Just run:
 
 ```shell
-kubectl create -f licensing-instance.yml
+kubectl create -f licensing-instance.yml -n ibm-common-services
 ```
 
 (More information and use cases on [this page](https://www.ibm.com/docs/en/cpfs?topic=software-configuration).)
