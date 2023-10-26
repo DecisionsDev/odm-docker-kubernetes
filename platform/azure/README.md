@@ -28,7 +28,8 @@ First, install the following software on your machine:
 
 Then, [create an Azure account and pay as you go](https://azure.microsoft.com/en-us/pricing/purchase-options/pay-as-you-go/).
 
-> Note:  Prerequisites and software supported by ODM 8.12.0 are listed in [the Detailed System Requirements page](https://www.ibm.com/support/pages/ibm-operational-decision-manager-detailed-system-requirements).
+> [!NOTE]
+> Prerequisites and software supported by ODM 8.12.0 are listed in [the Detailed System Requirements page](https://www.ibm.com/support/pages/ibm-operational-decision-manager-detailed-system-requirements).
 
 ## Steps to deploy ODM on Kubernetes to Azure AKS
 
@@ -99,7 +100,8 @@ The following example output shows that the resource group has been created succ
 
 Use the `az aks create` command to create an AKS cluster. The following example creates a cluster named <cluster> with two nodes. Azure Monitor for containers is also enabled using the `--enable-addons monitoring` parameter.  The operation takes several minutes to complete.
 
-> Note:  During the creation of the AKS cluster, a second resource group is automatically created to store the AKS resources. For more information, see [Why are two resource groups created with AKS](https://docs.microsoft.com/en-us/azure/aks/faq#why-are-two-resource-groups-created-with-aks).
+> [!NOTE]
+> During the creation of the AKS cluster, a second resource group is automatically created to store the AKS resources. For more information, see [Why are two resource groups created with AKS](https://docs.microsoft.com/en-us/azure/aks/faq#why-are-two-resource-groups-created-with-aks).
 
 ```shell
 az aks create --name <cluster> --resource-group <resourcegroup> --node-count 2 \
@@ -154,7 +156,8 @@ az postgres server create --name <postgresqlserver> --resource-group <resourcegr
                           --sku-name GP_Gen5_2 --version 11
 ```
 
-> Note:  The PostgreSQL server name must be unique within Azure.
+> [!NOTE]
+> The PostgreSQL server name must be unique within Azure.
 
 Verify the database.
 To connect to your server, you need to provide host information and access credentials.
@@ -249,7 +252,8 @@ Where:
 * \<entitlementkey\> is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
 * \<email\> is the email address associated with your IBMid.
 
-> Note:  The cp.icr.io value for the docker-server parameter is the only registry domain name that contains the images. You must set the docker-username to `cp` to use an entitlement key as docker-password.
+> [!NOTE]
+> The cp.icr.io value for the docker-server parameter is the only registry domain name that contains the images. You must set the docker-username to `cp` to use an entitlement key as docker-password.
 
 Make a note of the secret name so that you can set it for the image.pullSecrets parameter when you run a helm install of your containers.  The image.repository parameter will later be set to cp.icr.io/cp/cp4a/odm.
 
@@ -280,7 +284,8 @@ openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout myodmcompany.key \
         -addext "subjectAltName = DNS:myodmcompany.com"
 ```
 
-> Note: You can use -addext only with actual OpenSSL and from from LibreSSL 3.1.0.
+> [!NOTE]
+> You can use -addext only with actual OpenSSL and from from LibreSSL 3.1.0.
 
 2. Create a Kubernetes secret with the certificate.
 
@@ -360,7 +365,8 @@ Installing an NGINX Ingress controller allows you to access ODM components throu
     kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.2/deploy/static/provider/cloud/deploy.yaml
     ```
 
-    > Note: The version will probably change after the publication of our documentation so please refer to the actual [documentation](https://kubernetes.github.io/ingress-nginx/deploy/#azure)!
+    > [!NOTE]
+    > The version will probably change after the publication of our documentation so please refer to the actual [documentation](https://kubernetes.github.io/ingress-nginx/deploy/#azure)!
 
 2. Get the Ingress controller external IP address (it will appear 80 seconds or so after the resource application above):
 
@@ -405,7 +411,8 @@ helm install <release> ibmcharts/ibm-odm-prod --version 23.2.0 \
         --set license=true --set usersPassword=<password>
 ```
 
-> Note: By default, the NGINX Ingress controller does not enable sticky session. If you want to use sticky session to connect to DC, refer to [Using sticky session for Decision Center connection](../../contrib/sticky-session/README.md)
+> [!NOTE]
+> By default, the NGINX Ingress controller does not enable sticky session. If you want to use sticky session to connect to DC, refer to [Using sticky session for Decision Center connection](../../contrib/sticky-session/README.md)
 
 
 ### Edit your /etc/hosts
