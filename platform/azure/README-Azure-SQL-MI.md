@@ -1,16 +1,16 @@
 # Deploying IBM Operational Decision Manager with Azure SQL Managed Instance
 
-We successfully deployed ODM with an external Azure SQL Managed Instance (SQL MI), following these instructions.
+This page provides instructions on setting up IBM® Operational Decision Manager (ODM) with Azure SQL Managed Instance (MI).
 
-Look for `Azure SQL` in all available services and create a SQL Managed Instances / Single instance:
+Search for 'Azure SQL' among the available services and create a SQL Managed Instance or a Single instance:
 
 ![Single instance](images/sqlmi-select_offer.png)
 
-Choose the Resource Group you want to deploy the SQL MI into, and also the Managed Instance name:
+Choose the desired Resource Group for deploying the SQL Managed Instance and specify the Managed Instance name:
 
 ![Basics configuration](images/sqlmi-basics.png)
 
-You should have a look at `Configure Managed Instance` and lower the number of CPUs used by the instance:
+Please review 'Configure Managed Instance' and reduce the number of CPUs allocated to the instance:
 
 ![Resources configuration](images/sqlmi-resources.png)
 
@@ -19,14 +19,15 @@ Back to basics, select `Use SQL authentication` as Authentication method and the
 ![Authentication](images/sqlmi-authentication.png)
 
 In the Networking tab, enable `Public endpoint` and allow access from `Azure services`:
+> NOTE: It is not recommended to use a public IP. In a production environment, you should use a private IP.
 
 ![Network access](images/sqlmi-network.png)
 
-You can then review your configuration and create the Managed Instance. It can take up to six hours (but most of the time we manage to get it created in about one hour):
+You can now review your configuration and proceed to create the Managed Instance. While it can take up to six hours, in most cases, it is created in approximately one hour:
 
 ![Review](images/sqlmi-review.png)
 
-When the SQL MI is up, you can create a database in it:
+Once the SQL Managed Instance is operational, you have the ability to establish a database within it:
 
 ![New database](images/sqlmi-newdb.png)
 
