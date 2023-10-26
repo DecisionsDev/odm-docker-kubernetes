@@ -63,7 +63,7 @@ helm install <release> ibmcharts/ibm-odm-prod --version 23.2.0 \
         --set license=true --set usersPassword=<password>
 ```
 
-Other deployment options (especially using NGINX) and IBM License Service usage are explained in the main [README file](README.md).
+Other deployment options (especially using NGINX) and IBM License Service usage are explained in the main [README](README.md).
 
 ## Troubleshooting
 
