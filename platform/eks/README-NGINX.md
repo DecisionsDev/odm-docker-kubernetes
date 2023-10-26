@@ -28,7 +28,7 @@ You can then go back to the [main documentation](README.md#2-create-an-rds-datab
 
 ## Install an ODM release with NGINX Ingress Controller
 
-During the helm install, you just have to replace  [eks-values.yaml](./eks-values.yaml) with [eks-nginx-values.yaml](./eks-nginx-values.yaml) that contains the relevant Ingress class: `nginx` and annotations: `nginx.ingress.kubernetes.io/backend-protocol: https`
+During the helm install, you just have to replace  [eks-values.yaml](./eks-values.yaml) with [eks-nginx-values.yaml](./eks-nginx-values.yaml) that contains the relevant Ingress class: `nginx` and annotation: `nginx.ingress.kubernetes.io/backend-protocol: https`
 
 To install ODM with the AWS RDS PostgreSQL database created in [step 2](README.md#2-create-an-rds-database-10-min):
 
