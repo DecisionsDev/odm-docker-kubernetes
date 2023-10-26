@@ -4,7 +4,7 @@ This project demonstrates how to deploy an IBM® Operational Decision Manager (O
 
 <img src="./images/eks-schema.jpg" alt="Flow" width="2050" height="600" />
 
-The ODM on Kubernetes Docker images are available in the [IBM Entitled Registry](https://www.ibm.com/cloud/container-registry). The ODM Helm chart is available in the [IBM Helm charts repository](https://github.com/IBM/charts).
+The ODM on Kubernetes Docker images are available in the [IBM Cloud Container Registry](https://www.ibm.com/cloud/container-registry). The ODM Helm chart is available in the [IBM Helm charts repository](https://github.com/IBM/charts).
 
 ## Included components
 The project uses the following components:
@@ -53,12 +53,15 @@ aws configure 
 #### b. Create an EKS cluster (20 min)
 
 ```bash
-eksctl create cluster <CLUSTER_NAME> --version 1.26 --alb-ingress-access
+eksctl create cluster <CLUSTER_NAME> --version 1.28 --alb-ingress-access
 
 ```
 
 > **Note**
-> The tutorial has been tested with the Kubernetes version 1.26. Check the supported kubernetes version in the [system requirement](https://www.ibm.com/support/pages/ibm-operational-decision-manager-detailed-system-requirements) page.
+> The tutorial has been tested with the Kubernetes version 1.28. Check the supported kubernetes version in the [system requirement](https://www.ibm.com/support/pages/ibm-operational-decision-manager-detailed-system-requirements) page.
+
+> **Warning**
+> If you prefer to use the NGINX Ingress Controller instead of the ALB Load Balancer to expose ODM services, don't use the --alb-ingress-access option during the creation of the cluster !
 
 For more information, refer to [Creating an Amazon EKS cluster](https://docs.aws.amazon.com/eks/latest/userguide/create-cluster.html).
 
@@ -75,8 +78,6 @@ To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
 ```
 
 #### d. Provision an AWS Load Balancer Controller
-
-The AWS Load Balancer Controller creates Application Load Balancers (ALBs) and the necessary supporting AWS resources whenever a Kubernetes Ingress resource is created on the cluster with the `kubernetes.io/ingress.class: alb` annotation.
 
 Provision an AWS Load Balancer Controller to your EKS cluster:
 
@@ -137,7 +138,7 @@ kubectl create secret generic odm-db-secret \
 
 ### 3. Prepare your environment for the ODM installation (5 min)
 
-To get access to the ODM material, you must have an IBM entitlement key to pull the images from the IBM Entitled registry.
+To get access to the ODM material, you must have an IBM entitlement key to pull the images from the IBM Cloud Container registry.
 This is what will be used in the next step of this tutorial.
 
 You can also download the ODM on Kubernetes package (.tgz file) from Passport Advantage® (PPA), and then push the contained images to the EKS Container Registry (ECR). If you prefer to manage the ODM images this way, see the details [here](README-ECR.md)
@@ -176,7 +177,7 @@ helm repo update
 ```bash
 $ helm search repo ibm-odm-prod
 NAME                             	CHART VERSION	APP VERSION	DESCRIPTION
-ibm-helm/ibm-odm-prod           	23.1.0       	8.12.0.0   	IBM Operational Decision Manager
+ibm-helm/ibm-odm-prod           	23.2.0       	8.12.0.1   	IBM Operational Decision Manager
 ```
 
 ### 4. Manage a  digital certificate (10 min)
@@ -228,7 +229,7 @@ To install ODM with the AWS RDS PostgreSQL database created in [step 2](#2-creat
   - `<RDS_DATABASE_NAME>` is the initial database name defined when creating the RDS database
 
 ```bash
-helm install mycompany ibm-helm/ibm-odm-prod --version 23.1.0 -f eks-rds-values.yaml
+helm install mycompany ibm-helm/ibm-odm-prod --version 23.2.0 -f eks-rds-values.yaml
 ```
 
 > **Note**
@@ -238,7 +239,7 @@ helm install mycompany ibm-helm/ibm-odm-prod --version 23.1.0 -f eks-rds-values.
 >   - `<AWS-AccountId>` is your AWS Account Id
 >
 >```bash
->helm install mycompany ibm-helm/ibm-odm-prod --version 23.1.0 -f eks-values.yaml
+>helm install mycompany ibm-helm/ibm-odm-prod --version 23.2.0 -f eks-values.yaml
 >```
 
 > **Note**
@@ -310,7 +311,7 @@ You can find more information and use cases on [this page](https://www.ibm.com/d
 After a couple of minutes, the ALB reflects the Ingress configuration. You will be able to access the IBM License Service by retrieving the URL with this command:
 
 ```bash
-export LICENSING_URL=$(kubectl get ingress ibm-licensing-service-instance -n ibm-common-services -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')/ibm-licensing-service-instance
+export LICENSING_URL=$(kubectl get ingress ibm-licensing-service-instance -n ibm-common-services -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
 export TOKEN=$(kubectl get secret ibm-licensing-token -n ibm-common-services -o jsonpath='{.data.token}' |base64 -d)
 ```
 
