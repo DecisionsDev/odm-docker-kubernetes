@@ -45,7 +45,7 @@ kubectl create secret generic <odmdbsecret> --from-literal=db-user=<sqlmiadmin> 
                                             --from-literal=db-password='<password>'
 ```
 
-> **Warning** db-user must not contain the `@<managedinstancename>` part!
+> **warning** db-user must not contain the `@<managedinstancename>` part!
 
 Then you can deploy ODM with:
 
