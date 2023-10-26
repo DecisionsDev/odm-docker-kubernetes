@@ -4,7 +4,7 @@ This project demonstrates how to deploy an IBM® Operational Decision Manager (O
 
 <img src="./images/eks-schema.jpg" alt="Flow" width="2050" height="600" />
 
-The ODM on Kubernetes Docker images are available in the [IBM Entitled Registry](https://www.ibm.com/cloud/container-registry). The ODM Helm chart is available in the [IBM Helm charts repository](https://github.com/IBM/charts).
+The ODM on Kubernetes Docker images are available in the [IBM Cloud Container Registry](https://www.ibm.com/cloud/container-registry). The ODM Helm chart is available in the [IBM Helm charts repository](https://github.com/IBM/charts).
 
 ## Included components
 The project uses the following components:
@@ -138,7 +138,7 @@ kubectl create secret generic odm-db-secret \
 
 ### 3. Prepare your environment for the ODM installation (5 min)
 
-To get access to the ODM material, you must have an IBM entitlement key to pull the images from the IBM Entitled registry.
+To get access to the ODM material, you must have an IBM entitlement key to pull the images from the IBM Cloud Container registry.
 This is what will be used in the next step of this tutorial.
 
 You can also download the ODM on Kubernetes package (.tgz file) from Passport Advantage® (PPA), and then push the contained images to the EKS Container Registry (ECR). If you prefer to manage the ODM images this way, see the details [here](README-ECR.md)
