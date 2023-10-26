@@ -60,8 +60,8 @@ eksctl create cluster <CLUSTER_NAME> --version 1.28 --alb-ingress-access
 > **Note**
 > The tutorial has been tested with the Kubernetes version 1.28. Check the supported kubernetes version in the [system requirement](https://www.ibm.com/support/pages/ibm-operational-decision-manager-detailed-system-requirements) page.
 
-> **Note**
-> If you choose to use the NGINX Ingress Controller to expose ODM services, don't use the --alb-ingress-access option during the creation of the cluster !
+> **Warning**
+> If you prefer to use the NGINX Ingress Controller instead of the ALB Load Balancer to expose ODM services, don't use the --alb-ingress-access option during the creation of the cluster !
 
 For more information, refer to [Creating an Amazon EKS cluster](https://docs.aws.amazon.com/eks/latest/userguide/create-cluster.html).
 
