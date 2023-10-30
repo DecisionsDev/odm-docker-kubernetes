@@ -285,7 +285,7 @@ In this step, we augment the token with meta-information that is required by the
 1. Add the public IBM Helm charts repository.
 
     ```
-    helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm
+    helm repo add ibm-helm https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm
     helm repo update
     ```
 
@@ -294,7 +294,7 @@ In this step, we augment the token with meta-information that is required by the
     ```
     helm search repo ibm-odm-prod
     NAME                  	CHART VERSION	APP VERSION	DESCRIPTION
-    ibmcharts/ibm-odm-prod	23.1.0       	8.12.0.0   	IBM Operational Decision Manager
+    ibm-helm/ibm-odm-prod	23.2.0       	8.12.0.1   	IBM Operational Decision Manager
     ```
 
 3. Run the `helm install` command.
@@ -302,7 +302,7 @@ In this step, we augment the token with meta-information that is required by the
     You can now install the product. We will use the PostgreSQL internal database and disable the data persistence (`internalDatabase.persistence.enabled=false`) to avoid any platform complexity concerning persistent volume allocation.
 
     ```
-    helm install my-odm-release ibmcharts/ibm-odm-prod \
+    helm install my-odm-release ibm-helm/ibm-odm-prod \
           --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
           --set oidc.enabled=true \
           --set internalDatabase.persistence.enabled=false \
@@ -368,7 +368,7 @@ To be able to securely connect your Rule Designer to the Decision Server and Dec
 
 1. Get the following configuration files.
     * `https://<DC_HOST>/decisioncenter/assets/truststore.jks`
-    * `https://<DC_HOST>/odm/decisioncenter/assets/OdmOidcProvidersRD.json`
+    * `https://<DC_HOST>/decisioncenter/assets/OdmOidcProvidersRD.json`
       Where *DC_HOST* is the Decision Center endpoint.
 
 2. Copy the `truststore.jks` and `OdmOidcProvidersRD.json` files to your Rule Designer installation directory next to the `eclipse.ini` file.
@@ -380,7 +380,7 @@ To be able to securely connect your Rule Designer to the Decision Server and Dec
     -Dcom.ibm.rules.authentication.oidcconfig=<ECLIPSEINITDIR>/OdmOidcProvidersRD.json
     ```
     Where:
-    - *changeit* is the fixed password to be used for the default truststore.jks file.
+    - *changeme* is the fixed password to be used for the default truststore.jks file.
     - *ECLIPSEINITDIR* is the Rule Designer installation directory next to the eclipse.ini file.
 
 4. Restart Rule Designer.
@@ -423,7 +423,7 @@ But if you want to execute a bearer authentication ODM runtime call using the Cl
   ```
   $ curl -k -X POST -H "Content-Type: application/x-www-form-urlencoded" \
       -d 'client_id=<CLIENT_ID>&scope=<OKTA_API_SCOPE>&client_secret=<CLIENT_SECRET>&grant_type=client_credentials' \
-      ' https://<OKTA_SERVER_NAME>/default/v1/token'
+      'https://<OKTA_SERVER_NAME>/oauth2/default/v1/token'
   ```
 
  And use the retrieved access token in the following way:
