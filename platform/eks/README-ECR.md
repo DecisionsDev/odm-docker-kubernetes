@@ -54,8 +54,10 @@ oc ibm-pak generate mirror-manifests $CASE_NAME $TARGET_REGISTRY --version $CASE
 
 This command generates the files `images-mapping.txt` and `image-content-source-policy.yaml` at `~/.ibm-pak/data/mirror/$CASE_NAME/$CASE_VERSION`. The `~/.ibm-pak/mirror` directory is also created.
 
-- Edit `~/.ibm-pak/data/mirror/$CASE_NAME/$CASE_VERSION/images-mapping.txt` and append `-<architecture>` at the end of each destination record. For example:
+- Edit `~/.ibm-pak/data/mirror/$CASE_NAME/$CASE_VERSION/images-mapping.txt` and append `-<architecture>` at the end of each destination record. 
+> NOTE: `<architecture>` can be `amd64`, `ppc64le`, or `s390x` depending on your architecture.
 
+For example:
 ```
 cp.icr.io/cp/cp4a/odm/dbserver@sha256:xxx=<aws-id>.dkr.ecr.<aws-region>.amazonaws.com/cp/cp4a/odm/dbserver:8.12.0.0-<architecture>
 cp.icr.io/cp/cp4a/odm/odm-decisioncenter@sha256:xxx=<aws-id>.dkr.ecr.<aws-region>.amazonaws.com/cp/cp4a/odm/odm-decisioncenter:8.12.0.0-<architecture>
@@ -63,7 +65,6 @@ cp.icr.io/cp/cp4a/odm/odm-decisionrunner@sha256:xxx=<aws-id>.dkr.ecr.<aws-region
 cp.icr.io/cp/cp4a/odm/odm-decisionserverconsole@sha256:xxx=<aws-id>.dkr.ecr.<aws-region>.amazonaws.com/cp/cp4a/odm/odm-decisionserverconsole:8.12.0.0-<architecture>
 cp.icr.io/cp/cp4a/odm/odm-decisionserverruntime@sha256:xxx=<aws-id>.dkr.ecr.<aws-region>.amazonaws.com/cp/cp4a/odm/odm-decisionserverruntime:8.12.0.0-<architecture>
 ```
-> NOTE: <architecture> can be amd64, ppc64le, or s390x depending on your architecture.
 
  - Store authentication credentials of the source Docker registry `cp.icr.io` and the target Amazon ECR.
 > NOTE: You must specify the user as `cp` to log in to `cp.icr.io`. The password is your Entitlement key from the [IBM Cloud Container Registry](https://myibm.ibm.com/products-services/containerlibrary).
