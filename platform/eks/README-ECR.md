@@ -13,7 +13,7 @@ Prerequisites:
   - github.com for CASE files and tools
   - Amazon ECR
     
-For more information, see [Setting up a host to mirror images to a private registry](https://www.ibm.com/docs/en/odm/8.12.0?topic=installation-setting-up-host-mirror-images-private-registry)
+For more information about installing these tools, see [Setting up a host to mirror images to a private registry](https://www.ibm.com/docs/en/odm/8.12.0?topic=installation-setting-up-host-mirror-images-private-registry).
 
 - Export the following environment variables as they are used all along this procedure:
 
