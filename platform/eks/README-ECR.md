@@ -1,94 +1,116 @@
-The following steps explain how to download the ODM on Kubernetes images (.tgz file) from Passport Advantage® (PPA), and then push them to the [Amazon Elastic Container Registry (Amazon ECR)](https://aws.amazon.com/ecr/).
+The following steps explain how to use a Bastion host to mirror the ODM on Kubernetes images to the [Amazon Elastic Container Registry (Amazon ECR)](https://aws.amazon.com/ecr/).
 
 Prerequisites:
 
-- Install Docker
+- Install the following tools on your Bastion host:
+  - Docker or Podman
+  - OCP CLI (oc)
+  - [IBM ibm-pak plugin](https://github.com/IBM/ibm-pak)
+  - Helm
+    
+- The host needs access to the following sites and ports:
+  - icr.io:443 for IBM Cloud Container Registry 
+  - github.com for CASE files and tools
+  - Amazon ECR
+    
+For more information about installing these tools, see [Setting up a host to mirror images to a private registry](https://www.ibm.com/docs/en/odm/8.12.0?topic=installation-setting-up-host-mirror-images-private-registry).
 
-- Export the following environment variables as they will be used all along this procedure:
+- Export the following environment variables as they are used all along this procedure:
 
-    ```bash
-    export REGION=<REGION>
-    export AWSACCOUNTID=<AWS-AccountId>
-    ```
+  ```bash
+  export REGION=<AWS-Region>
+  export AWSACCOUNTID=<AWS-AccountId>
+  export CASE_NAME=ibm-odm-prod
+  export CASE_VERSION=<ODM-CaseVersion>
+  export TARGET_REGISTRY=${AWSACCOUNTID}.dkr.ecr.${REGION}.amazonaws.com
+  ```
 
-#### a. Log in to the [ECR registry](https://docs.aws.amazon.com/AmazonECR/latest/userguide/Registries.html)
+For more information about CASE version for ODM, see [IBM: CASE to Application Version](https://ibm.github.io/cloud-pak/assets/html/ibm-odm-prod-table.html).
+
+#### a. Setting environment variables and downloading CASE files
+
+ - Run the following commands to download the image inventory for Operational Decision Manager to your host:
 
 ```bash
-aws ecr get-login-password --region ${REGION} | docker login --username AWS --password-stdin ${AWSACCOUNTID}.dkr.ecr.${REGION}.amazonaws.com
+oc ibm-pak config locale -l <LOCALE>
+oc ibm-pak get $CASE_NAME --version $CASE_VERSION
+```
+  - The ibm-pak plug-in can detect the locale of your environment and provide textual help and messages accordingly. Where `<LOCALE>` can be one of de_DE, en_US, es_ES, fr_FR, it_IT, ja_JP, ko_KR, pt_BR, zh_Hans, zh_Hant.
+  - If you do not specify the CASE version, it downloads the latest CASE.
+
+The command creates a flat directory structure under `~/.ibm-pak/data/cases/$CASE_NAME/$CASE_VERSION` that contains the ibm-odm-prod.tgz CASE files, a folder that contains the ibm-odm-prod Helm charts, and two CSV files that contain the list of images and the list of charts associated with the CASE.
+
+For more information about this step, refer to [Setting environment variables and downloading CASE files](https://www.ibm.com/docs/en/odm/8.12.0?topic=installation-setting-environment-variables-downloading-case-files).
+
+#### b. Mirroring the ODM images to the ECR registry
+
+- Run the following command to generate mirror manifests to be used when mirroring the ODM images to the target registry.
+
+```bash
+oc ibm-pak generate mirror-manifests $CASE_NAME $TARGET_REGISTRY --version $CASE_VERSION
+````
+
+`TARGET_REGISTRY` refers to the registry where your images are mirrored to and accessed by your cluster.
+
+This command generates the files `images-mapping.txt` and `image-content-source-policy.yaml` at `~/.ibm-pak/data/mirror/$CASE_NAME/$CASE_VERSION`. The `~/.ibm-pak/mirror` directory is also created.
+
+- Edit `~/.ibm-pak/data/mirror/$CASE_NAME/$CASE_VERSION/images-mapping.txt` and append `-<architecture>` at the end of each destination record. 
+> NOTE: `<architecture>` can be `amd64`, `ppc64le`, or `s390x` depending on your architecture.
+
+For example:
+```
+cp.icr.io/cp/cp4a/odm/dbserver@sha256:xxx=<aws-id>.dkr.ecr.<aws-region>.amazonaws.com/cp/cp4a/odm/dbserver:8.12.0.0-<architecture>
+cp.icr.io/cp/cp4a/odm/odm-decisioncenter@sha256:xxx=<aws-id>.dkr.ecr.<aws-region>.amazonaws.com/cp/cp4a/odm/odm-decisioncenter:8.12.0.0-<architecture>
+cp.icr.io/cp/cp4a/odm/odm-decisionrunner@sha256:xxx=<aws-id>.dkr.ecr.<aws-region>.amazonaws.com/cp/cp4a/odm/odm-decisionrunner:8.12.0.0-<architecture>
+cp.icr.io/cp/cp4a/odm/odm-decisionserverconsole@sha256:xxx=<aws-id>.dkr.ecr.<aws-region>.amazonaws.com/cp/cp4a/odm/odm-decisionserverconsole:8.12.0.0-<architecture>
+cp.icr.io/cp/cp4a/odm/odm-decisionserverruntime@sha256:xxx=<aws-id>.dkr.ecr.<aws-region>.amazonaws.com/cp/cp4a/odm/odm-decisionserverruntime:8.12.0.0-<architecture>
 ```
 
-#### b. Create the [ECR repository instances](https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-create.html)
+ - Store authentication credentials of the source Docker registry `cp.icr.io` and the target Amazon ECR.
+> NOTE: You must specify the user as `cp` to log in to `cp.icr.io`. The password is your Entitlement key from the [IBM Cloud Container Registry](https://myibm.ibm.com/products-services/containerlibrary).
+
+  ##### If you use Podman:
+  ```bash
+  export REGISTRY_AUTH_FILE=<your_path/auth.json>
+  podman login cp.icr.io -u cp
+  aws ecr get-login-password --region ${REGION} | podman login --username AWS --password-stdin ${AWSACCOUNTID}.dkr.ecr.${REGION}.amazonaws.com
+  ```
+  - the `auth.json` file stores the auth credentials generated by podman login. For example, if you export `REGISTRY_AUTH_FILE=~/.ibm-pak/auth.json`, then after performing podman login, you can see that the file is populated with registry credentials.
+  
+  #### If you use Docker:
+  ```bash
+  export REGISTRY_AUTH_FILE=$HOME/.docker/config.json
+  docker login cp.icr.io -u cp
+  aws ecr get-login-password --region ${REGION} | docker login --username AWS --password-stdin ${AWSACCOUNTID}.dkr.ecr.${REGION}.amazonaws.com
+  ```
+
+- Create the [Amazon ECR repository instances](https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-create.html)
 
 > NOTE: You must create one repository per image.
 
 ```bash
-aws ecr create-repository --repository-name dbserver --image-scanning-configuration scanOnPush=true --region ${REGION}
-aws ecr create-repository --repository-name odm-decisioncenter --image-scanning-configuration scanOnPush=true --region ${REGION}
-aws ecr create-repository --repository-name odm-decisionrunner --image-scanning-configuration scanOnPush=true --region ${REGION}
-aws ecr create-repository --repository-name odm-decisionserverruntime --image-scanning-configuration scanOnPush=true --region ${REGION}
-aws ecr create-repository --repository-name odm-decisionserverconsole --image-scanning-configuration scanOnPush=true --region ${REGION}
+aws ecr create-repository --repository-name cp/cp4a/odm/dbserver --image-scanning-configuration scanOnPush=true --region ${REGION}
+aws ecr create-repository --repository-name cp/cp4a/odm/odm-decisioncenter --image-scanning-configuration scanOnPush=true --region ${REGION}
+aws ecr create-repository --repository-name cp/cp4a/odm/odm-decisionrunner --image-scanning-configuration scanOnPush=true --region ${REGION}
+aws ecr create-repository --repository-name cp/cp4a/odm/odm-decisionserverruntime --image-scanning-configuration scanOnPush=true --region ${REGION}
+aws ecr create-repository --repository-name cp/cp4a/odm/odm-decisionserverconsole --image-scanning-configuration scanOnPush=true --region ${REGION}
 ```
 
-#### c. Load the ODM images locally
+- Mirror images to Amazon ECR.
 
- - Download the latest IBM Operational Decision Manager chart and images from [IBM Passport Advantage (PPA)](https://www-01.ibm.com/software/passportadvantage/pao_customer.html).
+  ```bash
+  oc image mirror \
+    -f ~/.ibm-pak/data/mirror/$CASE_NAME/$CASE_VERSION/images-mapping.txt \
+    --filter-by-os '.*'  \
+    -a $REGISTRY_AUTH_FILE \
+    --insecure  \
+    --skip-multiple-scopes \
+    --max-per-registry=1
+  ```
+  
+For more information about these commands, see [Mirroring images to a private container registry](https://www.ibm.com/docs/en/odm/8.12.0?topic=installation-mirroring-images-private-container-registry).
 
-   Refer to the [ODM download document](https://www.ibm.com/support/pages/node/310661) to view the list of Passport Advantage eAssembly installation images.
-
- - Extract the .tgz archives to your local file system.
-
-    Extract the file that contains both the Helm chart and the images. The name of the file includes the chart version number:
-
-    ```
-    $ mkdir ODM-PPA
-    $ cd ODM-PPA
-    $ tar zxvf PPA_NAME.tar.gz
-    charts/ibm-odm-prod-23.1.0.tgz
-    images/odm-decisionserverconsole_8.12.0.0-amd64.tar.gz
-    images/odm-decisionserverruntime_8.12.0.0-amd64.tar.gz
-    images/odm-decisionrunner_8.12.0.0-amd64.tar.gz
-    images/odm-decisioncenter_8.12.0.0-amd64.tar.gz
-    images/dbserver_8.12.0.0-amd64.tar.gz
-    manifest.json
-    manifest.yaml
-    ```
-
-- Check that you can run a docker command.
-    ```bash
-    docker ps
-    ```
-
-- Load the images to your local registry.
-
-    ```bash
-    for name in images/*.tar.gz; do docker image load --input ${name}; done
-    ```
-
-   For more information, refer to the [ODM knowledge center](hhttps://www.ibm.com/docs/en/odm/8.12.0?topic=production-installing-helm-release-odm).
-
-#### d. Tag and push the images to the ECR registry
-
-- Tag the images to the ECR registry previously created
-
-    ```bash
-    docker tag dbserver:8.12.0.0-amd64 ${AWSACCOUNTID}.dkr.ecr.${REGION}.amazonaws.com/dbserver:8.12.0.0-amd64
-    docker tag odm-decisioncenter:8.12.0.0-amd64 ${AWSACCOUNTID}.dkr.ecr.${REGION}.amazonaws.com/odm-decisioncenter:8.12.0.0-amd64
-    docker tag odm-decisionserverruntime:8.12.0.0-amd64 ${AWSACCOUNTID}.dkr.ecr.${REGION}.amazonaws.com/odm-decisionserverruntime:8.12.0.0-amd64
-    docker tag odm-decisionserverconsole:8.12.0.0-amd64 ${AWSACCOUNTID}.dkr.ecr.${REGION}.amazonaws.com/odm-decisionserverconsole:8.12.0.0-amd64
-    docker tag odm-decisionrunner:8.12.0.0-amd64 ${AWSACCOUNTID}.dkr.ecr.${REGION}.amazonaws.com/odm-decisionrunner:8.12.0.0-amd64
-    ```
-
-- Push the images to the ECR registry
-
-    ```bash
-    docker push ${AWSACCOUNTID}.dkr.ecr.${REGION}.amazonaws.com/dbserver:8.12.0.0-amd64
-    docker push ${AWSACCOUNTID}.dkr.ecr.${REGION}.amazonaws.com/odm-decisioncenter:8.12.0.0-amd64
-    docker push ${AWSACCOUNTID}.dkr.ecr.${REGION}.amazonaws.com/odm-decisionserverconsole:8.12.0.0-amd64
-    docker push ${AWSACCOUNTID}.dkr.ecr.${REGION}.amazonaws.com/odm-decisionserverruntime:8.12.0.0-amd64
-    docker push ${AWSACCOUNTID}.dkr.ecr.${REGION}.amazonaws.com/odm-decisionrunner:8.12.0.0-amd64
-    ```
-
-#### e. Create a pull secret for the ECR registry
+#### c. Create a pull secret for the ECR registry
 
 ```bash
 kubectl create secret docker-registry ecrodm \
@@ -98,13 +120,13 @@ kubectl create secret docker-registry ecrodm \
 
 > NOTE: `ecrodm` is the name of the secret that will be used to pull the images in EKS.
 
-#### f. Install ODM with the following parameters
+#### d. Install ODM with the following parameters
 
 When you reach the step [Install an IBM Operational Decision Manager release](README.md#5-install-an-ibm-operational-decision-manager-release-10-min), if you want to move the ODM pulled images from the IBM Entitled Registry to the ECR registry, choose the relevant .yaml file depending on whether you want to try the NGINX or the ALB Ingress controller, the internal database or the RDS PostgreSQL database. All you have to do is to override the `image.pullSecrets` and `image.repository` properties when you install the Helm chart:
 
 ```bash
-helm install mycompany ibm-helm/ibm-odm-prod --version 23.1.0 \
+helm install mycompany ibm-helm/ibm-odm-prod --version 23.2.0 \
              --set image.pullSecrets=ecrodm \
-             --set image.repository=${AWSACCOUNTID}.dkr.ecr.${REGION}.amazonaws.com \
+             --set image.repository=${AWSACCOUNTID}.dkr.ecr.${REGION}.amazonaws.com/cp/cp4a/odm \
              --values eks-values.yaml
 ```
