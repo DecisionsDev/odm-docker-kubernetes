@@ -285,7 +285,7 @@ openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout myodmcompany.key \
 ```
 
 > [!NOTE]
-> You can use -addext only with actual OpenSSL and from from LibreSSL 3.1.0.
+> You can use -addext only with actual OpenSSL and from LibreSSL 3.1.0.
 
 2. Create a Kubernetes secret with the certificate.
 
