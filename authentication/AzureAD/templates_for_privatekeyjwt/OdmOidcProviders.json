@@ -1,0 +1,14 @@
+{
+    "providers": [
+      {
+          "name": "azure_ad",
+          "grantType": "client_credentials",
+          "clientAssertionAliasName": "myodmcompany",
+          "authorizationURL": "AZUREAD_SERVER_URL/oauth2/v2.0/authorize",
+          "tokenURL": "AZUREAD_SERVER_URL/oauth2/v2.0/token",
+          "scope": "AZUREAD_CLIENT_ID/.default",
+          "clientId": "AZUREAD_CLIENT_ID",
+          "logoutURL": "AZUREAD_SERVER_URL/oauth2/v2.0/logout"
+      }
+    ]
+}

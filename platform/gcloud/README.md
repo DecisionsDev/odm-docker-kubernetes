@@ -96,7 +96,7 @@ Regions and zones (used below) can be listed respectively with `gcloud compute r
 
   ```
   gcloud container clusters create <CLUSTER_NAME> \
-    --release-channel=regular --cluster-version=1.24 \
+    --release-channel=regular --cluster-version=1.25 \
     --enable-autoscaling --num-nodes=6 --total-min-nodes=1 --total-max-nodes=16
   ```
 
@@ -132,7 +132,7 @@ We will use the Google Cloud Platform console to create the database instance.
 - Click **Choose PostgreSQL**
   - Instance ID: ``<YourInstanceName>``
   - Password: ``<PASSWORD>`` - Take note of this password.
-  - Database version: `PostgreSQL 13`
+  - Database version: `PostgreSQL 15`
   - Region: ``<REGION>`` (must be the same as the cluster for the communication to be optimal between the database and the ODM instance)
   - Keep **Multiple zones** for Zonal availability to the highest availability
   - Expand **Show customization option** and expand **Connections**
@@ -204,7 +204,7 @@ helm repo update
 ```
 helm search repo ibm-odm-prod
 NAME                  	CHART VERSION   APP VERSION     DESCRIPTION
-ibm-helm/ibm-odm-prod	23.1.0          8.12.0.0        IBM Operational Decision Manager
+ibm-helm/ibm-odm-prod	23.2.0          8.12.0.1        IBM Operational Decision Manager
 ```
 
 ### 4. Manage a digital certificate (2 min)
@@ -247,7 +247,7 @@ It automatically creates an HTTPS GKE load balancer. We will disable the ODM int
 - Install the chart from IBM's public Helm charts repository:
 
     ```
-    helm install <release> ibm-helm/ibm-odm-prod --version 23.1.0 -f gcp-values.yaml
+    helm install <release> ibm-helm/ibm-odm-prod --version 23.2.0 -f gcp-values.yaml
     ```
 
   > NOTE: You might prefer to access ODM components through the NGINX Ingress controller instead of using the IP addresses. If so, please follow [these instructions](README_NGINX.md).
@@ -346,7 +346,13 @@ We only have to manage a configuration to simulate the mycompany.com access.
 
 This section explains how to track ODM usage with the IBM License Service.
 
-#### a. Create an NGINX Ingress controller
+#### a. Install the IBM License Service
+
+Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cpfs?topic=software-manual-installation-without-operator-lifecycle-manager-olm)
+
+> NOTE: Make sure you do not follow the instantiation part!
+
+#### b. Create an NGINX Ingress controller
 
 - Add the official stable repository:
 
@@ -358,21 +364,15 @@ This section explains how to track ODM usage with the IBM License Service.
 - Use Helm to deploy the NGINX Ingress controller:
 
     ```
-    helm install nginx-ingress ingress-nginx/ingress-nginx
+    helm install nginx-ingress ingress-nginx/ingress-nginx -n ibm-common-services
     ```
-
-#### b. Install the IBM License Service
-
-Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cpfs?topic=software-manual-installation-without-operator-lifecycle-manager-olm)
-
-> NOTE: Make sure you do not follow the instantiation part!
 
 #### c. Create the IBM Licensing instance
 
 Get the [licensing-instance.yaml](./licensing-instance.yaml) file and run the following command:
 
 ```
-kubectl create -f licensing-instance.yaml
+kubectl create -f licensing-instance.yaml -n ibm-common-services
 ```
 
 > NOTE: You can find more information and use cases on [this page](https://www.ibm.com/docs/en/cpfs?topic=software-configuration).
