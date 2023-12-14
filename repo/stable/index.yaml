@@ -140,7 +140,7 @@ entries:
     urls:
     - https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm/ibm-odm-prod-23.1.0.tgz
     version: 23.1.0
- - apiVersion: v2
+  - apiVersion: v2
     appVersion: 8.12.0.1
     created: "2023-12-14T10:58:46.092737136Z"
     description: 'IBM Operational Decision Manager  License By installing this product
