@@ -98,7 +98,7 @@ oc exec -ti vault-0 --namespace vault -- sh
     kubernetes_host="https://$KUBERNETES_PORT_443_TCP_ADDR:443" \
 ```
 
-###### You can use `vault` command line for the next steps
+###### You can use `vault` command line for the next steps or use the vault pod as in the previous step.
 ```bash
 export VAULT_ADDR=http://$(oc get route vault -n vault -o jsonpath='{.spec.host}')
 vault login
