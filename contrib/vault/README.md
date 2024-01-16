@@ -3,10 +3,49 @@ This documentation explain how to use ODM with Harshicorp vault
 This implementation use the [CSIDriver feature](https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-secret-store-driver).
 Note that this documentation has been tested with a Harshicorp evaluation instance. We assume that for the commercial product the procedure will remains the same.
 
+## Architecture
+The Container Storage Interface (CSI) pattern is essentially a standardized approach for connecting block or file storage to containers. This standard is adopted by various storage providers.
+
+On Kubernetes, the Secrets Store CSI Driver operates as a DaemonSet. It interacts with each Kubelet instance on the Kubernetes nodes. When a pod initiates, this driver liaises with the external secrets provider to fetch secret data. The accompanying diagram demonstrates the functionality of the Secrets Store CSI Driver within Kubernetes.
+
+![Vault Overview schema](/images/Contrib/vault/Overview.png)
+
+To manage this process, the SecretProviderClass Custom Resource Definition (CRD) is utilized. Within this provider class, it's necessary to specify the address of the secure vault and the locations of the secret keys. The following is the SecretProviderClass for our specific case, which involves using HashiCorp Vault deployed on Kubernetes.
+```yaml
+apiVersion: secrets-store.csi.x-k8s.io/v1
+kind: SecretProviderClass
+metadata:
+  name: vault-database
+spec:
+  provider: vault
+  parameters:
+    vaultAddress: http://vault:8200
+    roleName: database
+    objects: |
+      - objectName: "db-password"
+        secretPath: "secret/data/db-pass"
+        secretKey: "db-password"
+      - objectName: "db-user"
+        secretPath: "secret/data/db-pass"
+        secretKey: "db-user"
+      - objectName: "automation.crt"
+        secretPath: "secret/data/trustedcertificates"
+        secretKey: "automationcloud.crt"
+      - objectName: "tls.crt"
+        secretPath: "secret/data/privatecertificates"
+        secretKey: "tls.crt"
+      - objectName: "tls.key"
+        secretPath: "secret/data/privatecertificates"
+        secretKey: "tls.key"
+```
+
+To be able to use 
+
 ## Pre-requisite 
    * Harshicorp Instance 
    * Helm V3
    * Kustomize
+   * ODM 
 
 ### Configure connection between the Vault server and the Kubernetes resources
 
