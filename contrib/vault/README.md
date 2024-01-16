@@ -10,7 +10,6 @@ The integration of ODM with HashiCorp Vault via the Secrets Store CSI Driver off
 
 On the ODM side, we introduce an init container - a specialized container that sets up the necessary environment before the main container runs. In this init container, we inject the Vault CSI volume. This approach allows us to craft a shell script, which is then executed within the init container, to seamlessly transfer the files into the ODM containers.
 
-> Note: This documentation has been tested with a HashiCorp evaluation instance. We assume that the procedure will remain the same for the commercial product.
 
 This article guides you through the setup and configuration process, ensuring a secure and streamlined integration of these powerful technologies.
 
@@ -78,11 +77,13 @@ The architecture diagram illustrates the integration process between the Secret 
 The diagram visually represents the secure flow of secrets data from the central manager to the ODM application in Kubernetes, facilitated by the Secret Store CSI Driver, ensuring best practices in secret management.
 
 ## Pre-requisite 
-   * Harshicorp Instance 
+   * Harshicorp Instance evaluation setup and running. Tutorial can found [here](https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-secret-store-driver).
    * Helm V3
    * Kustomize
    * Operational Decision Manager on Container 8.12.0.1
 
+> Note: This documentation has been tested with a HashiCorp evaluation instance. We assume that the procedure will remain the same for the commercial product.
+> 
 # Setup an Harshicorp vault with ODM on Kubernetes
 # Configure connection between the Vault server and the Kubernetes resources
 
