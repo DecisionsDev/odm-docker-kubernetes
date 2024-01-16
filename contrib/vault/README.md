@@ -39,7 +39,8 @@ spec:
         secretKey: "tls.key"
 ```
 
-To be able to use 
+
+![Vault Overview schema](/images/Contrib/vault/VaultInitContainer.jpg)
 
 ## Pre-requisite 
    * Harshicorp Instance 
