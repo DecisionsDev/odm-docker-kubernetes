@@ -81,9 +81,13 @@ The diagram visually represents the secure flow of secrets data from the central
    * [Vault client](https://developer.hashicorp.com/vault/install)
    * [Helm v3](https://helm.sh/docs/intro/install/)
    * [Kustomize](https://github.com/kubernetes-sigs/kustomize/releases)
-   * Operational Decision Manager on Container 8.12.0.1
+   * Operational Decision Manager on Container 8.12.0.1 
 
 > Note: This documentation has been tested with a HashiCorp evaluation instance. We assume that the procedure will remain the same for the commercial product.
+
+In this documentation will do the assumption that : 
+   * Vault Server is installed in the vault namespace.
+   * ODM will be installed in the odm namespace.
  
 # Setup an Harshicorp vault with ODM on Kubernetes
 # Configure connection between the Vault server and the Kubernetes resources
@@ -148,20 +152,26 @@ vault kv put secret/db-pass db-password="postgrespwd" db-user="postgresuser"
 
 To get access to the ODM material, you need an IBM entitlement key to pull the images from the IBM Entitled Registry.
 
-#### a. Retrieve your entitled registry key
+#### a. Create an ODM namespace
+
+```bash
+kubectl create ns odm
+```
+
+#### b. Retrieve your entitled registry key
 
 - Log in to [MyIBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary) with the IBMid and password that are associated with the entitled software.
 
 - In the Container software library tile, verify your entitlement on the **View library** page, and then go to **Get entitlement key** to retrieve the key.
 
-#### b. Create a pull secret by running a kubectl create secret command.
+#### c. Create a pull secret by running a kubectl create secret command.
 
-```
+```bash
 kubectl create secret docker-registry <REGISTRY_SECRET> \
         --docker-server=cp.icr.io \
         --docker-username=cp \
         --docker-password="<API_KEY_GENERATED>" \
-        --docker-email=<USER_EMAIL>
+        --docker-email=<USER_EMAIL> -n odm
 ```
 
 Where:
@@ -174,19 +184,30 @@ Where:
 
 Take note of the secret name so that you can set it for the *image.pullSecrets* parameter when you run a helm install command of your containers.  The *image.repository* parameter will later be set to `cp.icr.io/cp/cp4a/odm`.
 
-#### c. Add the public IBM Helm charts repository
+#### d. Add the public IBM Helm charts repository
 
 ```
 helm repo add ibm-helm https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm
 helm repo update
 ```
 
-#### d. Check you can access ODM charts
+#### e. Check you can access ODM charts
 
 ```
 helm search repo ibm-odm-prod
 NAME                  	CHART VERSION   APP VERSION     DESCRIPTION
 ibm-helm/ibm-odm-prod	23.2.0          8.12.0.1        IBM Operational Decision Manager
+```
+
+#### f. Create the service account and the config map that contain the vault.sh script
+
+```
+echo "Create the service account"
+kubectl apply -f service-account.yaml -n odm
+echo "Create the configmap that countains the vault.sh script"
+kubectl create cm vaultcm --from-file=./configmap -n odm
+echo "Create the SecretProviderClass" 
+oc apply -f serviceproviderclass.yaml -n odm
 ```
 
 #### Installation 
@@ -196,7 +217,7 @@ ibm-helm/ibm-odm-prod	23.2.0          8.12.0.1        IBM Operational Decision M
 2. Kustomize helm deployment with the csi driver
 
 ```bash
-helm template odm-vault-kust ../ibm-odm-prod -f values-default-vault.yaml > odm-template-nocsi.yaml && kustomize build -o odm-csi.yaml && oc apply -f odm-csi.yaml
+helm template odm-vault-kust -n odm ibm-helm/ibm-odm-prod -f values-default-vault.yaml > odm-template-nocsi.yaml && kustomize build -o odm-csi.yaml && oc apply -f odm-csi.yaml
 ```
 
 After some minutes ODM should be up and running
