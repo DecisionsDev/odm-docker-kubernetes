@@ -107,7 +107,7 @@ vault create token
 Note the token to login with vault command line.
 
 
-###### You can use `vault` command line for the next steps.
+###### Setup `vault` command line for the next steps.
 ```bash
 export VAULT_ADDR=http://$(oc get route vault -n vault -o jsonpath='{.spec.host}')
 vault login
