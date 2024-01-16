@@ -78,12 +78,13 @@ The diagram visually represents the secure flow of secrets data from the central
 
 ## Pre-requisite 
    * Harshicorp Instance evaluation setup and running. Tutorial can found [here](https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-secret-store-driver).
-   * Helm V3
-   * Kustomize
+   * [Vault client](https://developer.hashicorp.com/vault/install)
+   * [Helm v3](https://helm.sh/docs/intro/install/)
+   * [Kustomize](https://github.com/kubernetes-sigs/kustomize/releases)
    * Operational Decision Manager on Container 8.12.0.1
 
 > Note: This documentation has been tested with a HashiCorp evaluation instance. We assume that the procedure will remain the same for the commercial product.
-> 
+ 
 # Setup an Harshicorp vault with ODM on Kubernetes
 # Configure connection between the Vault server and the Kubernetes resources
 
@@ -92,13 +93,21 @@ Vault provides a Kubernetes authentication method that enables clients to authen
 
 ```bash
 oc exec -ti vault-0 --namespace vault -- sh
-/ $ vault auth enable kubernetes
-/ $ vault write auth/kubernetes/config \
-    token_reviewer_jwt="$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)" \
-    kubernetes_host="https://$KUBERNETES_PORT_443_TCP_ADDR:443" \
 ```
 
-###### You can use `vault` command line for the next steps or use the vault pod as in the previous step.
+Then, 
+```bash
+vault auth enable kubernetes
+vault write auth/kubernetes/config \
+    token_reviewer_jwt="$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)" \
+    kubernetes_host="https://$KUBERNETES_PORT_443_TCP_ADDR:443"
+vault create token
+```
+
+Note the token to login with vault command line.
+
+
+###### You can use `vault` command line for the next steps.
 ```bash
 export VAULT_ADDR=http://$(oc get route vault -n vault -o jsonpath='{.spec.host}')
 vault login
