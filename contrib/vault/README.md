@@ -1,9 +1,20 @@
 # Introduction
-This documentation explain how to use ODM with Harshicorp vault
-This implementation use the [CSIDriver feature](https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-secret-store-driver).
-Note that this documentation has been tested with a Harshicorp evaluation instance. We assume that for the commercial product the procedure will remains the same.
 
-## Architecture
+In the rapidly evolving world of Kubernetes (K8s), securing sensitive information remains a paramount concern. Traditional methods, like using K8s secrets, often fall short in providing the necessary security measures. 
+
+This article delves into a more robust solution: integrating IBM's Operation Decision Manager (ODM) with HashiCorp Vault utilizing the  [Secrets Store CSI Driver](https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-secret-store-driver).
+
+Why this integration? K8s secrets, while convenient, are sometimes deemed insufficient for high-security environments. 
+
+The integration of ODM with HashiCorp Vault via the Secrets Store CSI Driver offers a more secure and efficient way to handle sensitive data.
+
+On the ODM side, we introduce an init container - a specialized container that sets up the necessary environment before the main container runs. In this init container, we inject the Vault CSI volume. This approach allows us to craft a shell script, which is then executed within the init container, to seamlessly transfer the files into the ODM containers.
+
+> Note: This documentation has been tested with a HashiCorp evaluation instance. We assume that the procedure will remain the same for the commercial product.
+
+This article guides you through the setup and configuration process, ensuring a secure and streamlined integration of these powerful technologies.
+
+# Architecture
 The Container Storage Interface (CSI) pattern is essentially a standardized approach for connecting block or file storage to containers. This standard is adopted by various storage providers.
 
 On Kubernetes, the Secrets Store CSI Driver operates as a DaemonSet. It interacts with each Kubelet instance on the Kubernetes nodes. When a pod initiates, this driver liaises with the external secrets provider to fetch secret data. The accompanying diagram demonstrates the functionality of the Secrets Store CSI Driver within Kubernetes.
@@ -39,16 +50,41 @@ spec:
         secretKey: "tls.key"
 ```
 
-
+The architecture diagram illustrates the integration process between the Secret Manager Server and IBM Operation Decision Manager (ODM) pods within a Kubernetes environment using the Secrets Store CSI Driver. 
 ![Vault Overview schema](/images/Contrib/vault/VaultInitContainer.jpg)
+
+- **Secret Manager Server**: It functions as the central repository for all secrets data, securely managing sensitive information.
+
+- **Secrets Data**: Labeled clearly, this represents the actual sensitive information that needs to be securely managed and injected into the ODM Pods.
+
+- **Secret Store CSI Driver**: 
+  - It acts as a secure bridge between the Secret Manager Server and the Kubernetes cluster.
+  - It's in charge of safely transmitting the secrets data to the ODM Pods within Kubernetes.
+
+- **Kubernetes**:  It's the container orchestration system where the ODM application is deployed.
+
+- **ODM Pods**: 
+  - Detailed within the Kubernetes rectangle, showcasing the components that make up the ODM Pods:
+    - **Init Container**:
+      - A temporary container that runs a shell script ('Vault.sh') before the main ODM Containers start. See the sample [vault.sh](configmap/vault.sh) script for more details. 
+      - It's responsible for retrieving the secrets data from the Secret Store CSI Driver and placing it into a shared volume. 
+    - **Volume**:
+      - Represented by the two smaller rectangles within the ODM Pods.
+      - This is where the secrets data is stored after retrieval, accessible by both the init container and the ODM Containers.
+    - **ODM Containers**:
+      - The main containers running the ODM application.
+      - They utilize the secrets data stored in the volume for secure operations and configuration. An empty dire ephemeral storage is used to transmit the data between the containers.
+
+The diagram visually represents the secure flow of secrets data from the central manager to the ODM application in Kubernetes, facilitated by the Secret Store CSI Driver, ensuring best practices in secret management.
 
 ## Pre-requisite 
    * Harshicorp Instance 
    * Helm V3
    * Kustomize
-   * ODM 
+   * Operational Decision Manager on Container 8.12.0.1
 
-### Configure connection between the Vault server and the Kubernetes resources
+# Setup an Harshicorp vault with ODM on Kubernetes
+# Configure connection between the Vault server and the Kubernetes resources
 
 ##### Configure Kubernetes authentication in the Vault server
 Vault provides a Kubernetes authentication method that enables clients to authenticate with a Kubernetes Service Account Token. This token is provided to each pod when it is created.
