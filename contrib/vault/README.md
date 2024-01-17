@@ -139,10 +139,12 @@ vault write auth/kubernetes/role/database \
 
 ##### Populate the secrets in the vault
 
+As sample we populate some data. You need to adjust it to your needs.
+
 ```bash
 export VAULT_ADDR=http://$(oc get route vault --no-headers -o custom-columns=HOST:.spec.host)
 vault kv put secret/privatecertificates tls.crt=@vaultdata/mycompany.crt  tls.key=@vaultdata/mycompany.key
-vault kv put secret/trustedcertificates automationcloud.crt=@vaultdata/automationcloud.crt
+vault kv put secret/trustedcertificates digicert.crt=@vaultdata/digicert.crt microsoft.crt=@vaultdata/microsoft.crt
 vault kv put secret/db-pass db-password="postgrespwd" db-user="postgresuser"
 ```
 
@@ -221,8 +223,41 @@ oc apply -f serviceproviderclass.yaml -n odm
 2. Kustomize helm deployment with the csi driver
 
 ```bash
-helm template odm-vault-kust -n odm ibm-helm/ibm-odm-prod -f values-default-vault.yaml > odm-template-nocsi.yaml && kustomize build -o odm-csi.yaml && oc apply -f odm-csi.yaml
+helm template odm-vault-kust -n odm ibm-helm/ibm-odm-prod -f values-default-vault.yaml > odm-template-nocsi.yaml && kustomize build -o odm-csi.yaml && kubectl apply -f odm-csi.yaml
 ```
+The Kustomize script allows the injection of the CSIDriver volume into the custom-init-container. 
 
-After some minutes ODM should be up and running
+After a few minutes, ODM should be up and running without using any secrets for installation.
+
+#### OpenID Support
+
+If you wish to deploy ODM with an OpenID provider, you should follow this procedure:
+
+1. **Assumptions:** This guide assumes that you have successfully completed the previous steps and have the necessary OpenID files required for configuring ODM with an OpenID provider.
+2. **Navigate to the openid Directory:**  
+   Execute the following command to change to the OpenID directory:
+```bash
+cd openid
+```
+4. Place your ODM OpenID configuration files in the ***vaultdata*** directory. The following files should be included: `openIdParameters.properties`, `openIdWebSecurity.xml`, `webSecurity.xml`, `OdmOidcProvidersAzureAD.json`.
+5. Push these files into the vault:
+```bash
+echo "Push the OpenID files into the vault""
+vault kv put secret/oidc openIdParameters.properties=@vaultdata/openIdParameters.properties openIdWebSecurity.xml=@vaultdata/openIdWebSecurity.xml webSecurity.xml=@vaultdata/webSecurity.xml OdmOidcProvidersAzureAD.json=@vaultdata/OdmOidcProvidersAzureAD.json
+```
+5. Apply the new service provider class with these files:
+```bash
+echo "Apply the new 
+oc apply -f serviceproviderclass.yaml
+```
+7. Deploy ODM with OpenID
+If you have already deployed ODM, you may need to delete the previous deployment:
+```bash
+ kubectl delete -f ../odm-csi.yaml
+```
+Then you can generate the new template with OIDC enabled
+```bash
+echo "Generate the new ODM template with OIDC"
+helm template odm-vault-oidc -n odm ibm-helm/ibm-odm-prod -f values-default-vault.yaml > odm-template-nocsi.yaml && kustomize build -o odm-csi.yaml && kubectl apply -f odm-csi.yaml
+```
 
