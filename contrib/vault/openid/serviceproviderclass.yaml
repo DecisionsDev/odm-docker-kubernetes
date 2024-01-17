@@ -1,0 +1,41 @@
+apiVersion: secrets-store.csi.x-k8s.io/v1
+kind: SecretProviderClass
+metadata:
+  name: vault-database
+spec:
+  provider: vault
+  parameters:
+    vaultAddress: http://vault:8200
+    roleName: database
+    objects: |
+      - objectName: "db-password"
+        secretPath: "secret/data/db-pass"
+        secretKey: "db-password"
+      - objectName: "db-user"
+        secretPath: "secret/data/db-pass"
+        secretKey: "db-user"
+
+      - objectName: "tls.crt"
+        secretPath: "secret/data/privatecertificates"
+        secretKey: "tls.crt"
+      - objectName: "tls.key"
+        secretPath: "secret/data/privatecertificates"
+        secretKey: "tls.key"
+      - objectName: "OdmOidcProvidersAzureAD.json"
+        secretPath: "secret/data/oidc"
+        secretKey: "OdmOidcProvidersAzureAD.json"
+      - objectName: "openIdParameters.properties"
+        secretPath: "secret/data/oidc"
+        secretKey: "openIdParameters.properties"
+      - objectName: "openIdWebSecurity.xml"
+        secretPath: "secret/data/oidc"
+        secretKey: "openIdWebSecurity.xml"
+      - objectName: "webSecurity.xml"
+        secretPath: "secret/data/oidc"
+        secretKey: "webSecurity.xml"
+      - objectName: "digicert.crt"
+        secretPath: "secret/data/trustedcertificates"
+        secretKey: "digicert.crt"
+      - objectName: "microsoft.crt"
+        secretPath: "secret/data/trustedcertificates"
+        secretKey: "microsoft.crt"

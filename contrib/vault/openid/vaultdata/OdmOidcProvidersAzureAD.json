@@ -1,0 +1,21 @@
+{
+  "providers": [
+        {
+        "name": "azuread",
+        "grantType": "client_credentials",
+        "authorizationURL": "https://login.microsoftonline.com/***REMOVED***/oauth2/authorize",
+        "tokenURL": "https://login.microsoftonline.com/***REMOVED***/oauth2/token",
+        "clientId": "***REMOVED***",
+        "clientSecret": "***REMOVED***",
+        "resource": "https://graph.windows.net"
+    },{
+        "name": "azuread_pwd",
+        "grantType": "password",
+        "authorizationURL": "https://login.microsoftonline.com/***REMOVED***/oauth2/authorize",
+        "tokenURL": "https://login.microsoftonline.com/***REMOVED***/oauth2/token",
+        "clientId": "***REMOVED***",
+        "clientSecret": "***REMOVED***",
+        "resource": "https://graph.windows.net"
+    }
+  ]
+}
