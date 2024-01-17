@@ -2,16 +2,16 @@
 
 In the rapidly evolving world of Kubernetes (K8s), securing sensitive information remains a paramount concern. Traditional methods, like using K8s secrets, often fall short in providing the necessary security measures. 
 
-This article delves into a more robust solution: integrating IBM's Operation Decision Manager (ODM) with HashiCorp Vault utilizing the  [Secrets Store CSI Driver](https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-secret-store-driver).
+This article delves into a more robust solution: integrating IBM's Operation Decision Manager (ODM) with Vault utilizing the [Secrets Store CSI Driver](https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-secret-store-driver).
 
 Why this integration? K8s secrets, while convenient, are sometimes deemed insufficient for high-security environments. 
 
-The integration of ODM with HashiCorp Vault via the Secrets Store CSI Driver offers a more secure and efficient way to handle sensitive data.
+The integration of the ODM running on Kubernetes with Vault via the Secrets Store CSI Driver offers a more secure and efficient way to handle sensitive data.
 
-On the ODM side, we introduce an init container - a specialized container that sets up the necessary environment before the main container runs. In this init container, we inject the Vault CSI volume. This approach allows us to craft a shell script, which is then executed within the init container, to seamlessly transfer the files into the ODM containers.
-
+On the ODM on Kubernetes side, we introduce an init container - a specialized container that sets up the necessary environment before the main container runs. In this init container, we inject the Vault CSI volume. This approach allows us to craft a shell script, which is then executed within the init container, to seamlessly transfer the files into the ODM containers.
 
 This article guides you through the setup and configuration process, ensuring a secure and streamlined integration of these powerful technologies.
+We will used Harshicorp Vault as an implementation for this article.
 
 # Architecture
 The Container Storage Interface (CSI) pattern is essentially a standardized approach for connecting block or file storage to containers. This standard is adopted by various storage providers.
