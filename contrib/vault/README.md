@@ -18,7 +18,7 @@ The Container Storage Interface (CSI) pattern is essentially a standardized appr
 
 On Kubernetes, the Secrets Store CSI Driver operates as a DaemonSet. It interacts with each Kubelet instance on the Kubernetes nodes. When a pod initiates, this driver liaises with the external secrets provider to fetch secret data. The accompanying diagram demonstrates the functionality of the Secrets Store CSI Driver within Kubernetes.
 
-![Vault Overview schema](images/Contrib/vault/Overview.png)
+![Vault Overview schema](images/Overview.png)
 
 To manage this process, the SecretProviderClass Custom Resource Definition (CRD) is utilized. Within this provider class, it's necessary to specify the address of the secure vault and the locations of the secret keys. The following is the SecretProviderClass for our specific case, which involves using HashiCorp Vault deployed on Kubernetes.
 ```yaml
@@ -50,7 +50,7 @@ spec:
 ```
 
 The architecture diagram illustrates the integration process between the Secret Manager Server and IBM Operation Decision Manager (ODM) pods within a Kubernetes environment using the Secrets Store CSI Driver. 
-![Vault Overview schema](/images/Contrib/vault/VaultInitContainer.jpg)
+![Vault Overview schema](/images/VaultInitContainer.jpg)
 
 - **Secret Manager Server**: It functions as the central repository for all secrets data, securely managing sensitive information.
 
@@ -90,7 +90,8 @@ In this documentation will do the assumption that :
    * ODM will be installed in the odm namespace.
 
 # Setup
-## 1. Configure Kubernetes authentication in the Vault server (10 min)
+## 1. Initialize Vault server for ODM (10 min)
+### a. Configure Kubernetes authentication in the Vault server
 Vault provides a Kubernetes authentication method that enables clients to authenticate with a Kubernetes Service Account Token. This token is provided to each pod when it is created.
 
 ```bash
@@ -98,6 +99,7 @@ oc exec -ti vault-0 --namespace vault -- sh
 ```
 
 Then, 
+
 ```bash
 vault auth enable kubernetes
 vault write auth/kubernetes/config \
@@ -106,10 +108,8 @@ vault write auth/kubernetes/config \
 vault create token
 ```
 
-Note the token to login with vault command line.
 
-
-### Setup `vault` command line for the next steps.
+### b. Setup `vault` command line for the next steps.
 ```bash
 export VAULT_ADDR=http://$(oc get route vault -n vault -o jsonpath='{.spec.host}')
 vault login
@@ -135,7 +135,7 @@ vault write auth/kubernetes/role/database \
     ttl=24h
 ```
 
-### Populate the secrets in the vault
+### c. Populate the secrets in the vault
 
 As sample we populate some data. You need to adjust it to your needs.
 
@@ -188,14 +188,14 @@ Take note of the secret name so that you can set it for the *image.pullSecrets* 
 
 ***However, as the goal of this article is to eliminate the need for secrets, refer to the Kubernetes implementation to understand the alternative methods. For example, the OpenShift documentation on this topic can be found [here](https://docs.openshift.com/container-platform/4.14/openshift_images/managing_images/using-image-pull-secrets.html#images-update-global-pull-secret_using-image-pull-secrets)***
 
-#### d. Add the public IBM Helm charts repository
+### d. Add the public IBM Helm charts repository
 
 ```
 helm repo add ibm-helm https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm
 helm repo update
 ```
 
-#### e. Check you can access ODM charts
+### e. Check you can access ODM charts
 
 ```
 helm search repo ibm-odm-prod
@@ -203,7 +203,7 @@ NAME                  	CHART VERSION   APP VERSION     DESCRIPTION
 ibm-helm/ibm-odm-prod	23.2.0          8.12.0.1        IBM Operational Decision Manager
 ```
 
-#### f. Create the service account and the config map that contain the vault.sh script
+### f. Create the service account and the config map that contain the vault.sh script
 
 ```
 echo "Create the service account"
@@ -214,7 +214,7 @@ echo "Create the SecretProviderClass"
 oc apply -f serviceproviderclass.yaml -n odm
 ```
 
-#### Installation 
+## ODM installation with Basic authentication (10 min)
 
 1. Edit the values-default-vault.yaml and abjust the values.
 
@@ -227,7 +227,7 @@ The Kustomize script allows the injection of the CSIDriver volume into the custo
 
 After a few minutes, ODM should be up and running without using any secrets for installation.
 
-#### OpenID Support
+## ODM installation with OpenID third party provider (10 min)
 
 If you wish to deploy ODM with an OpenID provider, you should follow this procedure:
 
