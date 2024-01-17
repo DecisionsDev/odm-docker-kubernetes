@@ -245,7 +245,7 @@ vault kv put secret/oidc openIdParameters.properties=@vaultdata/openIdParameters
 ```
 5. Apply the new service provider class with these files:
 ```bash
-echo "Apply the new 
+echo "Apply the new Provider with additional entries"
 oc apply -f serviceproviderclass.yaml
 ```
 7. Deploy ODM with OpenID
