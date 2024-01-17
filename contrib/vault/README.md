@@ -50,7 +50,7 @@ spec:
 ```
 
 The architecture diagram illustrates the integration process between the Secret Manager Server and IBM Operation Decision Manager (ODM) pods within a Kubernetes environment using the Secrets Store CSI Driver. 
-![Vault Overview schema](/images/VaultInitContainer.jpg)
+![Vault Overview schema](images/VaultInitContainer.jpg)
 
 - **Secret Manager Server**: It functions as the central repository for all secrets data, securely managing sensitive information.
 
