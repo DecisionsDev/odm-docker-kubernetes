@@ -166,6 +166,8 @@ kubectl create ns odm
 
 #### c. Create a pull secret by running a kubectl create secret command.
 
+In a standard ODM on Kubernetes installation, the procedure for creating a pull secret involves the following instructions
+
 ```bash
 kubectl create secret docker-registry <REGISTRY_SECRET> \
         --docker-server=cp.icr.io \
@@ -183,6 +185,8 @@ Where:
 > NOTE:  The `cp.icr.io` value for the docker-server parameter is the only registry domain name that contains the images. You must set the docker-username to `cp` to use an entitlement key as docker-password.
 
 Take note of the secret name so that you can set it for the *image.pullSecrets* parameter when you run a helm install command of your containers.  The *image.repository* parameter will later be set to `cp.icr.io/cp/cp4a/odm`.
+
+***However, as the goal of this article is to eliminate the need for secrets, refer to the Kubernetes implementation to understand the alternative methods. For example, the OpenShift documentation on this topic can be found [here](https://docs.openshift.com/container-platform/4.14/openshift_images/managing_images/using-image-pull-secrets.html#images-update-global-pull-secret_using-image-pull-secrets)***
 
 #### d. Add the public IBM Helm charts repository
 
