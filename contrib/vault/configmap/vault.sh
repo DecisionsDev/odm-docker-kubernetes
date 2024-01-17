@@ -52,7 +52,8 @@ configure_decisions_odm_pod() {
   echo "Inject trusted certificate list"
   # Get *.crt trusted certificates from Vault and copy it to the directory /ibm/icp4ba/trusted-cert-volume/
   # For ODM needs to create a sub directory that contains the crt file.
-  cp /mnt/secrets-store/automation.crt /ibm/icp4ba/shared/trustedcertificates/
+  cp /mnt/secrets-store/digicert.crt /ibm/icp4ba/shared/trustedcertificates/
+  cp /mnt/secrets-store/microsoft.crt /ibm/icp4ba/shared/trustedcertificates/
 #  cp /ibm/icp4ba/initconfig/automationcloud.crt /ibm/icp4ba/initconfig/blueworkscloud.crt /ibm/icp4ba/shared/trustedcertificates/
 
   echo "Inject Kafka/BAI configuration file"
@@ -62,8 +63,12 @@ configure_decisions_odm_pod() {
   #get_iaf_configuration 
 #  cp /ibm/icp4ba/initconfig/plugin-configuration.properties  /ibm/icp4ba/decisions/baiemitter/plugin-configuration.properties
 #  cat /ibm/icp4ba/initconfig/plugin-configuration.properties 
-  echo "Change auth"
+  echo "Change auth and copy files"
   # To test usecase user access without openid needs to put oidc.enabled -> false
+  if [ -f /mnt/secrets-store/OdmOidcProvidersAzureAD.json ]; then echo "Updating OdmOidcProvidersAzureAD.json" && cp /mnt/secrets-store/OdmOidcProvidersAzureAD.json /ibm/icp4ba/decisions/auth/; fi;
+  if [ -f /mnt/secrets-store/openIdParameters.properties ]; then echo "Updating openIdParameters.properties" && cp /mnt/secrets-store/openIdParameters.properties /ibm/icp4ba/decisions/auth/; fi;
+  if [ -f /mnt/secrets-store/openIdWebSecurity.xml ]; then echo "Updating openIdWebSecurity.xml" && cp /mnt/secrets-store/openIdWebSecurity.xml /ibm/icp4ba/decisions/auth/; fi;
+  if [ -f /mnt/secrets-store/webSecurity.xml ]; then echo "Updating owebSecurity.xml" && cp /mnt/secrets-store/webSecurity.xml /ibm/icp4ba/decisions/auth/; fi;
  # cp /ibm/icp4ba/initconfig/simpleWebSecurity.xml /ibm/icp4ba/decisions/auth/webSecurity.xml
 }
 

@@ -1,0 +1,32 @@
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- odm-template-nocsi.yaml
+
+patches:
+  - target:
+      labelSelector: "app.kubernetes.io/name=ibm-odm-prod"
+      kind: Deployment
+    patch: |-
+      apiVersion: v1
+      kind: Deployment
+      metadata:
+        name: not-used
+      spec:
+        template:
+          spec:
+            initContainers:
+            - name: custom-init-container
+              volumeMounts:
+              - mountPath: "/mnt/secrets-store"
+                name: secrets-store-inline
+                readOnly: true
+            volumes:
+              - name: secrets-store-inline
+                csi:
+                  driver: secrets-store.csi.k8s.io
+                  readOnly: true
+                  volumeAttributes:
+                    secretProviderClass: vault-database
+
