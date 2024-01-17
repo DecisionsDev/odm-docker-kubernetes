@@ -18,7 +18,7 @@ The Container Storage Interface (CSI) pattern is essentially a standardized appr
 
 On Kubernetes, the Secrets Store CSI Driver operates as a DaemonSet. It interacts with each Kubelet instance on the Kubernetes nodes. When a pod initiates, this driver liaises with the external secrets provider to fetch secret data. The accompanying diagram demonstrates the functionality of the Secrets Store CSI Driver within Kubernetes.
 
-![Vault Overview schema](/images/Contrib/vault/Overview.png)
+![Vault Overview schema](images/Contrib/vault/Overview.png)
 
 To manage this process, the SecretProviderClass Custom Resource Definition (CRD) is utilized. Within this provider class, it's necessary to specify the address of the secure vault and the locations of the secret keys. The following is the SecretProviderClass for our specific case, which involves using HashiCorp Vault deployed on Kubernetes.
 ```yaml
@@ -88,11 +88,9 @@ The diagram visually represents the secure flow of secrets data from the central
 In this documentation will do the assumption that : 
    * Vault Server is installed in the vault namespace.
    * ODM will be installed in the odm namespace.
- 
-# Setup an Harshicorp vault with ODM on Kubernetes
-# Configure connection between the Vault server and the Kubernetes resources
 
-##### Configure Kubernetes authentication in the Vault server
+# Setup
+## 1. Configure Kubernetes authentication in the Vault server (10 min)
 Vault provides a Kubernetes authentication method that enables clients to authenticate with a Kubernetes Service Account Token. This token is provided to each pod when it is created.
 
 ```bash
@@ -111,7 +109,7 @@ vault create token
 Note the token to login with vault command line.
 
 
-###### Setup `vault` command line for the next steps.
+### Setup `vault` command line for the next steps.
 ```bash
 export VAULT_ADDR=http://$(oc get route vault -n vault -o jsonpath='{.spec.host}')
 vault login
@@ -137,7 +135,7 @@ vault write auth/kubernetes/role/database \
     ttl=24h
 ```
 
-##### Populate the secrets in the vault
+### Populate the secrets in the vault
 
 As sample we populate some data. You need to adjust it to your needs.
 
@@ -150,23 +148,23 @@ vault kv put secret/db-pass db-password="postgrespwd" db-user="postgresuser"
 
 
 
-### 3. Prepare your environment for the ODM installation (10 min)
+## 3. Prepare your environment for the ODM installation (10 min)
 
 To get access to the ODM material, you need an IBM entitlement key to pull the images from the IBM Entitled Registry.
 
-#### a. Create an ODM namespace
+### a. Create an ODM namespace
 
 ```bash
 kubectl create ns odm
 ```
 
-#### b. Retrieve your entitled registry key
+### b. Retrieve your entitled registry key
 
 - Log in to [MyIBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary) with the IBMid and password that are associated with the entitled software.
 
 - In the Container software library tile, verify your entitlement on the **View library** page, and then go to **Get entitlement key** to retrieve the key.
 
-#### c. Create a pull secret by running a kubectl create secret command.
+### c. Create a pull secret by running a kubectl create secret command.
 
 In a standard ODM on Kubernetes installation, the procedure for creating a pull secret involves the following instructions
 
