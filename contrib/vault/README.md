@@ -240,7 +240,7 @@ cd openid
 4. Place your ODM OpenID configuration files in the ***vaultdata*** directory. The following files should be included: `openIdParameters.properties`, `openIdWebSecurity.xml`, `webSecurity.xml`, `OdmOidcProvidersAzureAD.json`.
 5. Push these files into the vault:
 ```bash
-echo "Push the OpenID files into the vault""
+echo "Push the OpenID files into the vault"
 vault kv put secret/oidc openIdParameters.properties=@vaultdata/openIdParameters.properties openIdWebSecurity.xml=@vaultdata/openIdWebSecurity.xml webSecurity.xml=@vaultdata/webSecurity.xml OdmOidcProvidersAzureAD.json=@vaultdata/OdmOidcProvidersAzureAD.json
 ```
 5. Apply the new service provider class with these files:
