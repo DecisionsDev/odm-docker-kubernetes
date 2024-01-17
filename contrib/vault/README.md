@@ -216,7 +216,7 @@ oc apply -f serviceproviderclass.yaml -n odm
 
 ## ODM installation with Basic authentication (10 min)
 
-1. Edit the values-default-vault.yaml and abjust the values.
+1. Edit the values-default-vault.yaml and adjust the values.
 
 2. Kustomize helm deployment with the csi driver
 
