@@ -1,15 +1,15 @@
 <server>
 
-  <variable name="ServerHost" value="https://login.microsoftonline.com/00df3463-7019-4488-aa48-b4ae46038334"/>
+  <variable name="ServerHost" value="https://login.microsoftonline.com/xxxxxxxxx"/>
 
   <!-- Open ID Connect -->
   <!-- Client with inbound propagation set to supported -->
   <openidConnectClient authFilterRef="browserAuthFilter" id="odm" scope="openid" accessTokenInLtpaCookie="true"
-                       clientId="f6606232-8e5b-4660-9a5a-799c4288dfef" clientSecret="aZ78Q~C~fkE4dgsHZklBWtAw0mdajUHAaXXG5cqW"
+                       clientId="xxxxxxx" clientSecret="xxxxxxx"
                        tokenOrderToFetchCallerClaims="AccessToken IDToken UserInfo"
                        signatureAlgorithm="RS256" inboundPropagation="supported"
                        jwkEndpointUrl="https://login.microsoftonline.com/common/discovery/keys"
-                       issuerIdentifier="https://sts.windows.net/00df3463-7019-4488-aa48-b4ae46038334/"
+                       issuerIdentifier="https://sts.windows.net/xxxxxxxxxxxxxx/"
                        authorizationEndpointUrl="${ServerHost}/oauth2/authorize"
                        tokenEndpointUrl="${ServerHost}/oauth2/token"
                        resource="https://graph.windows.net"
@@ -17,10 +17,10 @@
 
   <!-- Client with inbound propagation set to required -->
   <openidConnectClient authFilterRef="apiAuthFilter" id="odmapi" scope="openid"
-                       clientId="f6606232-8e5b-4660-9a5a-799c4288dfef" clientSecret="aZ78Q~C~fkE4dgsHZklBWtAw0mdajUHAaXXG5cqW"
+                       clientId="xxxxxxxx" clientSecret="xxxxxxxxxxx"
                        signatureAlgorithm="RS256" inboundPropagation="required"
                        jwkEndpointUrl="https://login.microsoftonline.com/common/discovery/keys"
-                       issuerIdentifier="https://sts.windows.net/00df3463-7019-4488-aa48-b4ae46038334/"
+                       issuerIdentifier="https://sts.windows.net/xxxxxx/"
                        authorizationEndpointUrl="${ServerHost}/oauth2/authorize"
                        tokenEndpointUrl="${ServerHost}/oauth2/token"
                        userIdentifier="aud" groupIdentifier="groups" audiences="ALL_AUDIENCES"/>
