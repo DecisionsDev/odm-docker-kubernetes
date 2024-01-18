@@ -3,18 +3,18 @@
         {
         "name": "azuread",
         "grantType": "client_credentials",
-        "authorizationURL": "https://login.microsoftonline.com/00df3463-7019-4488-aa48-b4ae46038334/oauth2/authorize",
-        "tokenURL": "https://login.microsoftonline.com/00df3463-7019-4488-aa48-b4ae46038334/oauth2/token",
-        "clientId": "f6606232-8e5b-4660-9a5a-799c4288dfef",
-        "clientSecret": "aZ78Q~C~fkE4dgsHZklBWtAw0mdajUHAaXXG5cqW",
+        "authorizationURL": "https://login.microsoftonline.com/xxxxxxxxxxx/oauth2/authorize",
+        "tokenURL": "https://login.microsoftonline.com/xxxxxxxxxxxxx/oauth2/token",
+        "clientId": "xxxxxxxxxxxxx",
+        "clientSecret": "xxxxxxx",
         "resource": "https://graph.windows.net"
     },{
         "name": "azuread_pwd",
         "grantType": "password",
-        "authorizationURL": "https://login.microsoftonline.com/00df3463-7019-4488-aa48-b4ae46038334/oauth2/authorize",
-        "tokenURL": "https://login.microsoftonline.com/00df3463-7019-4488-aa48-b4ae46038334/oauth2/token",
-        "clientId": "f6606232-8e5b-4660-9a5a-799c4288dfef",
-        "clientSecret": "aZ78Q~C~fkE4dgsHZklBWtAw0mdajUHAaXXG5cqW",
+        "authorizationURL": "https://login.microsoftonline.com/xxxxxxxxxxxxx/oauth2/authorize",
+        "tokenURL": "https://login.microsoftonline.com/xxxxxxxxxxxxx/oauth2/token",
+        "clientId": "xxxxxxxxxxxxx",
+        "clientSecret": "xxxxxxxxxxxxx",
         "resource": "https://graph.windows.net"
     }
   ]
