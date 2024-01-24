@@ -68,6 +68,101 @@ The first step to integrate ODM with Cognito is to create a [Cognito User Pool](
 
 ![The Cognito User Pool](images/CognitoUserPool.png) (© Amazon)
 
+To create the Cognito User Pool dedicated to ODM, we followed the [getting started](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-as-user-directory.html) by applying the following settings. It doesn't mean that with your production or demo application, you cannot apply different settings. When a setting is compulsory, we will emphasize it with the  
+
+1. Configure sign-in experience
+
+    In **Authentication providers**:
+      **Provider types**:
+        * Select **Cognito user pool**
+      **Cognito user pool sign-in options**: 
+        * Select **Email**
+
+2. Configure security requirements
+
+    In **Password policy**:
+      **Password policy mode**:
+        * Select **Cognito defaults**
+
+    In **Multi-factor authentication**:
+        **MFA enforcement**:
+          * Select **Require MFA-Recommended**
+        **MFA methods**:
+          * Select **Authenticator apps**
+
+    In **User account recovery**:
+        **Self-service account recovery**
+          * Select **Enable self-service account recovery - Recommended**
+
+3. Configure sign-up experience
+
+    In **Self-service sign-up**:
+      **Self-registration**:
+        * Select **Enable self-registration**
+        
+    In **Attribute verification and user account confirmation**:
+      **Cognito-assisted verification and confirmation**:
+        * Select *Allow cognito to automatically send messages to verify and confirm - Recommended*
+        **Attributes to verify**:
+          * Select *Send SMS message, verify phone number*
+      **Verifying attribute changes**:
+        * Select *Keep original attribute value active when an update is pending - Recommended*
+        **Active attribute values when an update is pending**:
+          * Select *Phone number*
+
+4. Configure message delivery
+
+    In **Email**:
+      **Email provider**:
+        * Select *Send email with Cognito*
+      **SES Region**:
+        * Select your region
+      **FROM email address**:
+        * Keep default **no-reply@verificationemail.com**
+
+    In **SMS**:
+      **IAM role**:
+        * Select *Create a new IAM role*
+      **IAM role name**:
+        * Enter **odmsmsrole**
+      **SNS Region**:
+        * Select your region
+
+    We are not using SMS in this tutorial. So, there is no need to  "Configure AWS service dependencies to complete your SMS message setup" section.
+
+5. Integrate your app
+
+    In **User pool name**:
+      **User pool name**:
+        * Enter **odmuserpool**
+
+    In **Hosted authentication pages**:
+      * Select **Use the Cognito Hosted UI**
+
+    In **Domain**:
+      **Domain type**:
+        * Select **Use a Cognito Domain**
+      **Cognito domain**:
+        * Enter your cognito domain name, for example **https://odm**
+
+    In **Initial app client**:
+      **App type**:
+        * Select **Confidential client**
+      **App client name**:
+        * Enter your application client name, for example **odm**
+      **Client secret**:
+        * Select **Generate a client secret**
+      **Allowed callbacks URLs**:
+        * We will fill this section later when the ODM on k8s helm application will be instanciated as currently we don't know these URLs. As at least one is requested, you can put **https://dummyUrl** for example
+
+    In **Advanced app client settings**, let all the default values as it is.
+
+    In **Attribute read and write permissions**, let all the default values as it is. 
+
+6. Review and create
+
+   If you are satisfied with all the values, then click on **Create user pool**
+
 # License
 
 [Apache 2.0](/LICENSE)
