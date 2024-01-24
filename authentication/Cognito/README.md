@@ -1,0 +1,74 @@
+# Configuration of ODM with Amazon Cognito
+
+<!-- TOC -->
+
+- [Configuration of ODM with Amazon Cognito](#configuration-of-odm-with-amazon-cognito)
+- [Introduction](#introduction)
+    - [What is Amazon Cognito?](#what-is-amazon-cognito)
+    - [About this task](#about-this-task)
+    - [ODM OpenID flows](#odm-openid-flows)
+    - [Prerequisites](#prerequisites)
+- [Create a Cognito User Pool](#create-a-cognito-user-pool)
+- [License](#license)
+
+<!-- /TOC -->
+
+# Introduction
+
+In the context of the Operational Decision Manager (ODM) on Certified Kubernetes offering, ODM for production can be configured with an external OpenID Connect server (OIDC provider), such as Amazon Cognito .
+
+## What is Amazon Cognito?
+
+[Amazon Cognito](https://docs.aws.amazon.com/cognito/latest/developerguide/what-is-amazon-cognito.html) is an identity platform for web and mobile apps. It’s a user directory, an authentication server, and an authorization service for OAuth 2.0 access tokens and AWS credentials. With Amazon Cognito, you can authenticate and authorize users from the built-in user directory, from your enterprise directory, and from consumer identity providers like Google and Facebook.
+
+## About this task
+
+You need to create a number of secrets before you can install an ODM instance with an external OIDC provider such as Amazon Cognito, and use web application single sign-on (SSO). The following diagram shows the ODM services with an external OIDC provider after a successful installation.
+
+![ODM web application SSO](images/diag_azuread_interaction.jpg)
+
+The following procedure describes how to manually configure ODM with an Amazon Cognito User Pool.
+
+## ODM OpenID flows
+
+OpenID Connect is an authentication standard built on top of OAuth 2.0. It adds a token called an ID token.
+
+Terminology:
+
+- **OpenID provider** — The authorization server that issues the ID token. In this case, Microsoft Entra ID is the OpenID provider.
+- **end user** — The end user whose details are contained in the ID token.
+- **relying party** — The client application that requests the ID token from Amazon Cognito.
+- **ID token** — The token that is issued by the OpenID provider and contains information about the end user in the form of claims.
+- **claim** — A piece of information about the end user.
+
+The Authorization Code flow is best used by server-side apps in which the source code is not publicly exposed. The apps must be server-side because the request that exchanges the authorization code for a token requires a client secret, which has to be stored in your client. However, the server-side app requires an end user because it relies on interactions with the end user's web browser which redirects the user and then receives the authorization code.
+
+![Authentication flow](images/AuthenticationFlow.png) (© Microsoft)
+
+The Client Credentials flow is intended for server-side (AKA "confidential") client applications with no end user, which normally describes machine-to-machine communication. The application must be server-side because it must be trusted with the client secret, and since the credentials are hard-coded, it cannot be used by an actual end user. It involves a single, authenticated request to the token endpoint which returns an access token.
+
+![Microsoft Entra ID Client Credential Flow](images/ClientCredential.png) (© Microsoft)
+
+The OAuth 2.0 Resource Owner Password Credentials (ROPC) grant flow, also named password flow is not supported by Amazon Cognito because not considered as enough secured.
+  
+
+## Prerequisites
+
+You need the following elements:
+
+- [Helm v3](https://helm.sh/docs/intro/install/)
+- [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl)
+- Access to an Operational Decision Manager product
+- Access to a CNCF Kubernetes cluster
+- An [AWS Account](https://aws.amazon.com/getting-started/)
+
+# Create a Cognito User Pool
+
+The first step to integrate ODM with Cognito is to create a [Cognito User Pool](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools.html) which will behaves as the OpenID Connect (OIDC) identity provider (IdP), also named OP for OpenId Provider.
+
+![The Cognito User Pool](images/CognitoUserPool.png) (© Amazon)
+
+# License
+
+[Apache 2.0](/LICENSE)
+
