@@ -68,6 +68,8 @@ The first step to integrate ODM with Cognito is to create a [Cognito User Pool](
 
 ![The Cognito User Pool](images/CognitoUserPool.png) (© Amazon)
 
+## Initiate the creation of the Cognito User Pool
+
 To create the Cognito User Pool dedicated to ODM, we followed the [getting started](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-as-user-directory.html) by applying the following settings. It doesn't mean that with your production or demo application, you cannot apply different settings. When a setting is compulsory, we will emphasize it with the  
 
 1. Configure sign-in experience
@@ -163,6 +165,46 @@ To create the Cognito User Pool dedicated to ODM, we followed the [getting start
 
    If you are satisfied with all the values, then click on **Create user pool**
 
+## Create A User
+
+   Select the **odmuserpool** User Pool:
+     * Select the **Users** tab:
+       * Click on **Create user**
+
+   In **User information**:
+     * **Invitation message**:
+       * Select **Send an email invitation**
+     * **Email address**:
+       * Enter the wanted email address
+     * **Temporary password**:
+       * Select **Generate a password**
+     * Click on **Create user**
+    
+## Create an ODM Admin Group
+
+   Select the **odmuserpool** User Pool:
+     * Select the **Groups** tab:
+       * Click on **Create group**      
+
+   In **Group information**:
+     * **Group name**:
+       * Enter the **odm-admin** name
+     * Click on **Create group**
+
+## Add the created user to the **odm-admin** group
+
+   Select the **odmuserpool** User Pool:
+     * Select the **Groups** tab:
+       * Click on the **odm-admin** group
+   
+   In the **Group members** part:
+     * Click on **Add user to group**
+
+   In the **User selection** part:
+     * Select the previously created user
+     * Click on **Add**
+
+    
 # License
 
 [Apache 2.0](/LICENSE)
