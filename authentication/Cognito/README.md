@@ -212,6 +212,10 @@ The client-credentials flow will be used for M2M (Machine to Machine) communicat
 It will enable communication between Decision Center and the Decision Server Console for ruleapp deployment. 
 It will also enable the communication between Decision Center and Decision Runner for tests and simulation.
 
+Usage of client-credentials flow needs custom scopes that will be hosted by a Resource Server. A scope is a level of access that an app can request to a resource.
+To get more details about scope and resource server, you can read [OAuth 2.0 scopes and API authorization with resource servers](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-define-resource-servers.html?icmpid=docs_cognito_console_help_panel)
+
+
 1. Create an **ODMClientCredentialsServer** Resource Server
 
 Select the **odmuserpool** User Pool:
@@ -263,6 +267,20 @@ Select the **odmuserpool** User Pool:
 
 ![Client-Credentials App](images/ClientCredentialsApp.png)
     
+## Create a custom claim
+
+To be able to correctly manage the authorization from the ODM client application hosted on liberty by using an id_token for using the authorization flow and with an access_token for the client-credentials flow, we need a common claim inside the id_token and the access_token. We could use the **sub** claim. But, if we use **sub**, it will display inside ODM UI a unique identifier as a UUID which is not convenient as we prefer a name or an email. We would like to manage it the same way we do it with Azure AD creating an [**identity** custom claim](https://github.com/DecisionsDev/odm-docker-kubernetes/blob/master/authentication/AzureAD/README_WITH_CLIENT_SECRET.md#set-up-an-microsoft-entra-id-application-using-a-client-secret). Unfortunately, even if Cognito recently added a support for [custom claim in access token](https://aws.amazon.com/about-aws/whats-new/2023/12/amazon-cognito-user-pools-customize-access-tokens/), it is still [not supported for access_token dealing with the client-credentials flow](https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-lambda-pre-token-generation.html).
+So, the following way to manage this is a workaround by waiting the availability of this feature.
+
+As we cannot add a custom claim inside the client-credentials access_token, we will add a claim inside the id_token that is already present inside the access_token.       
+There is a **client_id** claim inside the access_token, that is not present by default inside the id_token.
+We will use the [pre token generation lambda trigger](https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-lambda-pre-token-generation.html) to add the **client_id** claim inside the id_token that will take the **email** value.
+
+1. Add a Pre token generation Lambda trigger
+
+
+
+ 
 # License
 
 [Apache 2.0](/LICENSE)
