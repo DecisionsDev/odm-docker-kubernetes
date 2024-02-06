@@ -167,24 +167,24 @@ To create the Cognito User Pool dedicated to ODM, we followed the [getting start
 
 ## Create A User
 
-   Select the **odmuserpool** User Pool:
-     * Select the **Users** tab:
-       * Click on **Create user**
+* Select the **odmuserpool** User Pool:
+  * Select the **Users** tab:
+    * Click on **Create user**
 
-   In **User information**:
-     * **Invitation message**:
-       * Select **Send an email invitation**
-     * **Email address**:
-       * Enter the wanted email address
-     * **Temporary password**:
-       * Select **Generate a password**
-     * Click on **Create user**
+    In **User information**:
+       * **Invitation message**:
+         * Select **Send an email invitation**
+       * **Email address**:
+         * Enter the wanted email address
+       * **Temporary password**:
+         * Select **Generate a password**
+       * Click on **Create user**
     
 ## Create an ODM Admin Group
 
-   Select the **odmuserpool** User Pool:
-     * Select the **Groups** tab:
-       * Click on **Create group**      
+* Select the **odmuserpool** User Pool:
+  * Select the **Groups** tab:
+    * Click on **Create group**      
 
    In **Group information**:
      * **Group name**:
@@ -193,9 +193,9 @@ To create the Cognito User Pool dedicated to ODM, we followed the [getting start
 
 ## Add the created user to the **odm-admin** group
 
-   Select the **odmuserpool** User Pool:
-     * Select the **Groups** tab:
-       * Click on the **odm-admin** group
+* Select the **odmuserpool** User Pool:
+  * Select the **Groups** tab:
+    * Click on the **odm-admin** group
    
    In the **Group members** part:
      * Click on **Add user to group**
