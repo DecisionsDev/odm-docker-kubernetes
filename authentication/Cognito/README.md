@@ -204,6 +204,64 @@ To create the Cognito User Pool dedicated to ODM, we followed the [getting start
      * Select the previously created user
      * Click on **Add**
 
+## Create a dedicated App client for the client-credentials flow
+
+With Cognito, it's not possible to create an application client that is managing both the Authorization code grant flow and the Client-Credentials flow.
+So, we will create a dedicated client application for the client-credentials flow inside the same Cognito User Pool.
+The client-credentials flow will be used for M2M (Machine to Machine) communication. 
+It will enable communication between Decision Center and the Decision Server Console for ruleapp deployment. 
+It will also enable the communication between Decision Center and Decision Runner for tests and simulation.
+
+1. Create an **ODMClientCredentialsServer** Resource Server
+
+Select the **odmuserpool** User Pool:
+  * Select the **App Integration** tab:
+    * On **Resource servers** section:
+      * Click on **create resource server** button
+
+    In **Resource server**:
+      * **Resource server name**:
+        * Enter the **ODMClientCredentialsServer** name
+      * **Resource server identifier**:
+        * Enter **odmcc**
+
+    In **Custom scopes**:
+      * Click the **Add custom scopes** button
+
+    Create the 2 following scopes:
+      * Enter the **Scope name** : read
+        with **Description**: for GET requests
+        Click the **Add another** button
+      * Enter the **Scope name** : write
+        with **Description**: for POST requests
+
+    Click the **create resource server** button 
+
+![Create Resource Server](images/CreateResourceServer.png)
+
+2. Create an **odmclientcredentials** client application
+
+Select the **odmuserpool** User Pool:
+  * Select the **App Integration** tab:
+    * On **App clients and analytics**:
+      * Click on the **Create app client** button
+
+    In **App client**:
+      * App type:
+        * Select **Confidential client**
+      For **App client name**:
+        * Enter **odmclientcredentials**
+    In **Hosted UI settings**:
+      * For **URL**
+        * Enter a dummy URL: https://localhost
+      * For **OAuth 2.0 grant types**:
+        * Select **Client credentials**
+      * For **Custom scopes**:
+        * Select : odmcc/read and odmcc/write
+
+    Click on **Create app client** button 
+
+![Client-Credentials App](images/ClientCredentialsApp.png)
     
 # License
 
