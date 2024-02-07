@@ -278,9 +278,72 @@ We will use the [pre token generation lambda trigger](https://docs.aws.amazon.co
 
 1. Add a Pre token generation Lambda trigger
 
+We will use the pre token generation lambda trigger feature to the **client_id** claim in in id_token by pushing the user email value.
 
+Select the **odmuserpool** User Pool:
+  * Select the **User pool properties** tab:
+    * On the **Lambda triggers** section:
+      * Click the **Add Lambda trigger** button
 
- 
+  In **Lambda triggers**:
+    * Select **Authentication**
+    In **Authentication**:
+      * Select **Pre token generation trigger** (Modify claims in ID and access tokens.)
+    In **Trigger event version**
+      * Select **Basic features** (due to the previously explained Cognito limitation about client-credentials access-token customization)
+
+  In **Lambda function**:
+    * Click on the **Create Lambda function** button
+
+2. Create a Lambda Function
+
+Now, you are in the **AWS Lambda** service dashboard.
+
+Select **Functions** in the left menu:
+  * Click on the **Create function** button
+  
+  In the **Create function** section:
+    * choose **Author from scratch**
+    In **Basic information**:
+      * In **function name**
+        * Put **odmLambdaFunction**
+    Click on the **Create function** button
+
+  In the **Code>Code source** section:
+    * Replace the default index.jms code with the code below
+
+```
+const handler = async (event) => {
+  // Allow to get debug information in the Amazon CloudWatch Logs.
+  console.debug(event.request.userAttributes);
+  // Get User email value
+  var user_email = event.request.userAttributes.email;
+  console.debug(user_email);
+  event.response = {
+    claimsOverrideDetails: {
+      claimsToAddOrOverride: {
+        // Add a client_id claim with email value
+        client_id: user_email,
+      },
+    },
+  };
+
+  return event;
+};
+
+export { handler };
+```
+! Don't forget to click on the **Deploy** button
+
+3. Associate the Lamda function to the Pre token generation Lambda trigger
+
+Back to the **Pre token generation Lambda trigger** creation dashboard
+   * Click on the **Assign Lambda function** Refresh button
+   * Select **odmLambdaFunction**
+   * Click on the **Add Lambda trigger** button
+
+![Add Lambda Trigger](images/AddLambdaTrigger.png)
+
 # License
 
 [Apache 2.0](/LICENSE)
