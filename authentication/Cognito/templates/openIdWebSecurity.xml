@@ -1,0 +1,17 @@
+<server>
+
+  <!-- Open ID Connect -->
+  <!-- Client with inbound propagation set to supported -->
+  <openidConnectClient authFilterRef="browserAuthFilter" id="odm" scope="openid" accessTokenInLtpaCookie="true"
+                       clientId="2qfidegv168q5mmeprojbkefl4" clientSecret="1use8ka5j392fejt57me25df196qm7kdtc1ffghpi8f763q5irp0"
+                       signatureAlgorithm="RS256" inboundPropagation="supported" tokenReuse="true"
+                       discoveryEndpointUrl="https://cognito-idp.eu-west-3.amazonaws.com/eu-west-3_KbNBLJVPO/.well-known/openid-configuration"
+                       userIdentifier="client_id" groupIdentifier="cognito:groups" audiences="ALL_AUDIENCES"/>
+
+  <!-- Client with inbound propagation set to required -->
+  <openidConnectClient authFilterRef="apiAuthFilter" id="odmapi" scope="openid"
+                       clientId="b173bdb8-fd2c-4208-aef7-773df33456bb" clientSecret="1use8ka5j392fejt57me25df196qm7kdtc1ffghpi8f763q5irp0"
+                       signatureAlgorithm="RS256" inboundPropagation="required" tokenReuse="true"
+                       discoveryEndpointUrl="https://cognito-idp.eu-west-3.amazonaws.com/eu-west-3_KbNBLJVPO/.well-known/openid-configuration"
+                       userIdentifier="client_id" groupIdentifier="cognito:groups" audiences="ALL_AUDIENCES"/>
+</server>

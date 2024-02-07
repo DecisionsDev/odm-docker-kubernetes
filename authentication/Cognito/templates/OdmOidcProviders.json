@@ -1,0 +1,14 @@
+{
+  "providers": [
+    {
+        "name": "cognito-cc",
+        "grantType": "client_credentials",
+        "authorizationURL": "https://odm.auth.eu-west-3.amazoncognito.com/oauth2/authorize",
+        "tokenURL": "https://odm.auth.eu-west-3.amazoncognito.com/oauth2/token",
+        "logoutURL": "https://odm.auth.eu-west-3.amazoncognito.com/oauth2/logout",
+        "clientId": "6q2neh45fsjhb1q68aajhb0ig7",
+        "clientSecret": "1kd4mtvf7s4qt4c0fk326ecml34sa33ss88cgmi4vsf98c9s2q1j",
+        "scope": "odmcc/write"
+    }
+  ]
+}

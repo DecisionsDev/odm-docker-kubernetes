@@ -62,7 +62,7 @@ You need the following elements:
 - Access to a CNCF Kubernetes cluster
 - An [AWS Account](https://aws.amazon.com/getting-started/)
 
-# Create a Cognito User Pool
+# Create a Cognito User Pool (Part 1)
 
 The first step to integrate ODM with Cognito is to create a [Cognito User Pool](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools.html) which will behaves as the OpenID Connect (OIDC) identity provider (IdP), also named OP for OpenId Provider.
 
@@ -344,6 +344,270 @@ Back to the **Pre token generation Lambda trigger** creation dashboard
    * Click on the **Add Lambda trigger** button
 
 ![Add Lambda Trigger](images/AddLambdaTrigger.png)
+
+# Deploy ODM on a container configured with Cognito (Part 2)
+
+## Prepare your environment for the ODM installation
+
+### Create a secret to use the Entitled Registry
+
+
+    In the **Container software library** tile, verify your entitlement on the **View library** page, and then go to **Get entitlement key**  to retrieve the key.
+
+2. Create a pull secret by running a `kubectl create secret` command.
+
+    ```
+    $ kubectl create secret docker-registry icregistry-secret \
+        --docker-server=cp.icr.io \
+        --docker-username=cp \
+        --docker-password="<API_KEY_GENERATED>" \
+        --docker-email=<USER_EMAIL>
+    ```
+
+    Where:
+
+    - *API_KEY_GENERATED* is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
+    - *USER_EMAIL* is the email address associated with your IBMid.
+
+
+
+### Create secrets to configure ODM with Cognito
+
+
+
+1. Create a secret with the Cognito Server certificate
+
+    To allow ODM services to access the Cognito Server, it is mandatory to provide the Cognito Server certificates.
+    With Cognito, we need to access :
+    * cognito-idp.<REGION>.amazonaws.com
+    * odm.auth.<REGION>.amazoncognito.com
+    You can create the secret as follows:
+
+    ```
+    keytool -printcert -sslserver cognito-idp.<REGION>.amazonaws.com -rfc > cognito-idp.crt
+    kubectl create secret generic cognito-idp-cert-secret --from-file=tls.crt=cognito-idp.crt
+
+    keytool -printcert -sslserver odm.auth.<REGION>.amazoncognito.com -rfc > cognito-auth.crt
+    kubectl create secret generic cognito-domain-cert-secret --from-file=tls.crt=cognito-auth.crt
+    ```
+    Where:
+2. Generate the ODM configuration file for Cognito
+
+
+    The [script](generateTemplate.sh) allows you to generate the necessary configuration files.
+    Generate the files with the following command:
+    ```
+    ./generateTemplate.sh -i <ODM_CLIENT_ID> -x <ODM_CLIENT_SECRET> -n <KEYCLOAK_SERVER_URL> [-r <REALM_NAME> -u <USER_ID>]
+    ```
+
+    Where:
+    - *CLIENT_SECRET* is listed in your ODM Application, section **General** / **Client Credentials**
+
+    The following four files are generated into the `output` directory:
+
+    - webSecurity.xml contains the mapping between Liberty J2EE ODM roles and Keycloak groups and users:
+      * rtsAdministrators/resAdministrators/resExecutors ODM roles are given to the CLIENT_ID (which is seen as a user) to manage the client-credentials flow
+    - openIdWebSecurity.xml contains two openIdConnectClient Liberty configurations:
+      * for web access to Decision Center an Decision Server consoles using userIdentifier="client_id" with the Authorization Code flow
+      * for the rest-api call using userIdentifier="client_id" with the client-credentials flow
+    - openIdParameters.properties configures several features like allowed domains, logout, and some internal ODM openid features
+
+3. Create the Keycloak authentication secret
+
+    ```
+    kubectl create secret generic cognito-auth-secret \
+        --from-file=openIdParameters.properties=./output/openIdParameters.properties \
+        --from-file=openIdWebSecurity.xml=./output/openIdWebSecurity.xml \
+        --from-file=webSecurity.xml=./output/webSecurity.xml
+    ```
+
+
+## Install your ODM Helm release
+
+### 1. Add the public IBM Helm charts repository
+
+  ```shell
+  helm repo add ibm-helm https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm
+  helm repo update
+  ```
+
+### 2. Check that you can access the ODM chart
+
+  ```shell
+  helm search repo ibm-odm-prod
+  NAME                          CHART VERSION   APP VERSION     DESCRIPTION
+  ibm-helm/ibm-odm-prod         23.1.0          8.12.0.0        IBM Operational Decision Manager
+  ```
+
+### 3. Run the `helm install` command
+
+
+#### a. Installation on OpenShift using Routes
+
+  See the [Preparing to install](https://www.ibm.com/docs/en/odm/8.12.0?topic=production-preparing-install-operational-decision-manager) documentation for more information.
+
+  ```shell
+  helm install my-odm-release ibm-helm/ibm-odm-prod \
+          --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
+          --set oidc.enabled=true \
+          --set license=true \
+          --set internalDatabase.persistence.enabled=false \
+          --set customization.trustedCertificateList={"cognito-idp-cert-secret","cognito-domain-cert-secret"} \
+          --set customization.authSecretRef=cognito-auth-secret \
+          --set internalDatabase.runAsUser='' --set customization.runAsUser='' --set service.enableRoute=true
+  ```
+
+#### b. Installation using Ingress
+
+  Refer to the following documentation to install an NGINX Ingress Controller on:
+  - [Microsoft Azure Kubernetes Service](../../platform/azure/README.md#create-a-nginx-ingress-controller)
+  - [Amazon Elastic Kubernetes Service](../../platform/eks/README-NGINX.md)
+  - [Google Kubernetes Engine](../../platform/gcloud/README_NGINX.md)
+
+  When the NGINX Ingress Controller is ready, you can install the ODM release with:
+
+  ```
+  helm install my-odm-release ibm-helm/ibm-odm-prod \
+          --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
+          --set oidc.enabled=true \
+          --set license=true \
+          --set internalDatabase.persistence.enabled=false \
+          --set customization.trustedCertificateList={"cognito-idp-cert-secret","cognito-domain-cert-secret"} \
+          --set customization.authSecretRef=cognito-auth-secret \
+          --set service.ingress.enabled=true \
+          --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"\,"nginx.ingress.kubernetes.io/backend-protocol: HTTPS"\,"nginx.ingress.kubernetes.io/affinity: cookie"}
+  ```
+
+## Complete post-deployment tasks
+
+### Register the ODM redirect URL
+
+
+1. Get the ODM endpoints.
+    Refer to [this documentation](https://www.ibm.com/docs/en/odm/8.12.0?topic=tasks-configuring-external-access) to retrieve the endpoints.
+    For example, on OpenShift you can get the route names and hosts with:
+
+    ```
+
+    You get the following hosts:
+    my-odm-release-odm-dr-route           <DR_HOST>
+    my-odm-release-odm-ds-console-route   <DS_CONSOLE_HOST>
+    my-odm-release-odm-ds-runtime-route   <DS_RUNTIME_HOST>
+    ```
+
+    Using an Ingress, the endpoint is the address of the ODM ingress and is the same for all components. You can get it with:
+
+    ```
+    kubectl get ingress my-odm-release-odm-ingress
+    ```
+
+   You get the following ingress address:
+    ```
+    NAME                       CLASS    HOSTS   ADDRESS          PORTS   AGE
+    my-odm-release-odm-ingress <none>   *       <INGRESS_ADDRESS>   80      14d
+    ```
+
+2. Register the redirect URIs into your Keycloak application.
+
+    The redirect URIs are built in the following way:
+
+      Using Routes:
+      - Decision Center redirect URI:  `https://<DC_HOST>/decisioncenter/openid/redirect/odm`
+      - Decision Runner redirect URI:  `https://<DR_HOST>/DecisionRunner/openid/redirect/odm`
+      - Rule Designer redirect URI: `https://127.0.0.1:9081/oidcCallback`
+
+      Using Ingress:
+      - Decision Center redirect URI:  `https://<INGRESS_ADDRESS>/decisioncenter/openid/redirect/odm`
+      - Decision Runner redirect URI:  `https://<INGRESS_ADDRESS>/DecisionRunner/openid/redirect/odm`
+      - Decision Server Console redirect URI:  `https://<INGRESS_ADDRESS>/res/openid/redirect/odm`
+      - Decision Server Runtime redirect URI:  `https://<INGRESS_ADDRESS>/DecisionService/openid/redirect/odm`
+      - Rule Designer redirect URI: `https://127.0.0.1:9081/oidcCallback`
+
+   From the Keycloak admin console, in **Manage** / **Clients** / **odm**
+    - In the tab **Settings**
+        * Add the redirect URIs in the **Valid redirect URIs** field for each components.
+
+      For example, add the Decision Center redirect URI that you got earlier (`https://<DC_HOST>/decisioncenter/openid/redirect/odm` -- do not forget to replace <DC_HOST> with your actual host name!)
+    - Click **Save** at the bottom of the page.
+
+
+### Access the ODM services
+
+
+### Set up Rule Designer
+
+
+1. Get the following configuration files.
+    * `https://<DC_HOST>/decisioncenter/assets/truststore.jks`
+    * `https://<DC_HOST>/odm/decisioncenter/assets/OdmOidcProvidersRD.json`
+      where *DC_HOST* is the Decision Center endpoint.
+
+2. Copy the `truststore.jks` and `OdmOidcProvidersRD.json` files to your Rule Designer installation directory next to the `eclipse.ini` file.
+
+3. Edit your `eclipse.ini` file and add the following lines at the end.
+    ```
+    -Djavax.net.ssl.trustStore=<ECLIPSEINITDIR>/truststore.jks
+    -Djavax.net.ssl.trustStorePassword=changeme
+    -Dcom.ibm.rules.authentication.oidcconfig=<ECLIPSEINITDIR>/OdmOidcProvidersRD.json
+    ```
+    Where:
+    - *changeme* is the fixed password to be used for the default truststore.jks file.
+    - *ECLIPSEINITDIR* is the Rule Designer installation directory next to the eclipse.ini file.
+
+4. Restart Rule Designer.
+
+For more information, refer to [this documentation](https://www.ibm.com/docs/en/odm/8.12.0?topic=designer-importing-security-certificate-in-rule).
+
+### Getting Started with IBM Operational Decision Manager for Containers
+
+Get hands-on experience with IBM Operational Decision Manager in a container environment by following this [Getting started tutorial](https://github.com/DecisionsDev/odm-for-container-getting-started/blob/master/README.md).
+
+### Calling the ODM Runtime Service
+
+To manage ODM runtime calls, we use the [Loan Validation Decision Service project](https://github.com/DecisionsDev/odm-for-container-getting-started/blob/master/Loan%20Validation%20Service.zip)
+
+Import the **Loan Validation Service** in Decision Center connected as John Doe.
+
+![Import project](images/import_project.png)
+
+Deploy the **Loan Validation Service** production_deployment ruleapps using the **production deployment** deployment configuration in the Deployments>Configurations tab.
+
+![Deploy project](images/deploy_project.png)
+
+You can retrieve the payload.json from the ODM Decision Server Console or use [the provided payload](payload.json).
+
+As explained in the ODM on Certified Kubernetes documentation [Configuring user access with OpenID](https://www.ibm.com/docs/en/odm/8.12.0?topic=access-configuring-user-openid), we advise you to use basic authentication for the ODM runtime call for better performance and to avoid token expiration and revocation.
+
+You perform a basic authentication ODM runtime call in the following way:
+
+   ```
+  $ curl -H "Content-Type: application/json" -k --data @payload.json \
+         -H "Authorization: Basic b2RtQWRtaW46b2RtQWRtaW4=" \
+        https://<DS_RUNTIME_HOST>/DecisionService/rest/production_deployment/1.0/loan_validation_production/1.0
+  ```
+
+  Where `b2RtQWRtaW46b2RtQWRtaW4=` is the base64 encoding of the current username:password odmAdmin:odmAdmin
+
+If you want to perform a bearer authentication ODM runtime call using the Client Credentials flow, you must get a bearer access token:
+
+  ```
+  $ curl -k -X POST -H "Content-Type: application/x-www-form-urlencoded" \
+      -d 'client_id=<CLIENT_ID>&scope=openid&client_secret=<CLIENT_SECRET>&grant_type=client_credentials' \
+      '<KEYCLOAK_SERVER_URL>/protocol/openid-connect/token'
+  ```
+
+ And use the retrieved access token in the following way:
+
+   ```
+  $ curl -H "Content-Type: application/json" -k --data @payload.json \
+         -H "Authorization: Bearer <ACCESS_TOKEN>" \
+         https://<DS_RUNTIME_HOST>/DecisionService/rest/production_deployment/1.0/loan_validation_production/1.0
+  ```
+
+# Troubleshooting
+
+If you encounter any issue, have a look at the [common troubleshooting explanation](../README.md#Troubleshooting)
+
 
 # License
 
