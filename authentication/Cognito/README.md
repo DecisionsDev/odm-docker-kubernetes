@@ -92,7 +92,7 @@ The first step to integrate ODM with Cognito is to create a [Cognito User Pool](
 
 ## Initiate the creation of the Cognito User Pool
 
-To create the Cognito User Pool dedicated to ODM, we followed the [getting started](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-as-user-directory.html) by applying the following settings. It doesn't mean that with your production or demo application, you cannot apply different settings. When a setting is compulsory, we will emphasize it with the  
+To create the Cognito User Pool dedicated to ODM, we followed the [getting started](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-as-user-directory.html) by applying the following settings. It doesn't mean that with your production or demo application, you cannot apply different settings. But, for this tutorial, it's preferable to keep the name that we propose.
 
 1. Configure sign-in experience
 
@@ -173,7 +173,7 @@ To create the Cognito User Pool dedicated to ODM, we followed the [getting start
       * **App type**:
         * Select **Confidential client**
       * **App client name**:
-        * Enter your application client name, for example **odm**
+        * Enter **odm**
       * **Client secret**:
         * Select **Generate a client secret**
       * **Allowed callbacks URLs**:
