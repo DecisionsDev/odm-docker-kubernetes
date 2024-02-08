@@ -25,11 +25,11 @@ Usage: $(basename "$0") [-<option letter> <option value>] [-h]
 
 Options:
 
--i : Application Client ID
--s : Application Cient Secret
 -u : Cognito User Pool ID
 -a : Cognito Domain Name
 -r : Region
+-i : Application Client ID
+-s : Application Cient Secret
 -c : Client-Credentials Client ID
 -x : Client-Credentials Client Secret
 Usage example: $0 -i OdmClientId -s OdmClientSecret -r Region

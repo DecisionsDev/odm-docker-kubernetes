@@ -379,15 +379,15 @@ Back to the **Pre token generation Lambda trigger** creation dashboard
 
     To allow ODM services to access the Cognito Server, it is mandatory to provide the Cognito Server certificates.
     With Cognito, we need to access :
-    * cognito-idp.<REGION>.amazonaws.com
-    * odm.auth.<REGION>.amazoncognito.com
+    * cognito-idp.<COGNITO_REGION>.amazonaws.com
+    * <COGNITO_DOMAIN_NAME>.auth.<COGNITO_REGION>.amazoncognito.com
     You can create the secret as follows:
 
     ```
     keytool -printcert -sslserver cognito-idp.<REGION>.amazonaws.com -rfc > cognito-idp.crt
     kubectl create secret generic cognito-idp-cert-secret --from-file=tls.crt=cognito-idp.crt
 
-    keytool -printcert -sslserver odm.auth.<REGION>.amazoncognito.com -rfc > cognito-auth.crt
+    keytool -printcert -sslserver <COGNITO_DOMAIN_NAME>.auth.<REGION>.amazoncognito.com -rfc > cognito-auth.crt
     kubectl create secret generic cognito-domain-cert-secret --from-file=tls.crt=cognito-auth.crt
     ```
     Where:
@@ -397,7 +397,7 @@ Back to the **Pre token generation Lambda trigger** creation dashboard
     The [script](generateTemplate.sh) allows you to generate the necessary configuration files.
     Generate the files with the following command:
     ```
-    ./generateTemplate.sh -i <ODM_CLIENT_ID> -x <ODM_CLIENT_SECRET> -n <KEYCLOAK_SERVER_URL> [-r <REALM_NAME> -u <USER_ID>]
+    ./generateTemplate.sh -u COGNITO_USER_POOL_ID -d COGNITO_DOMAIN_NAME -r COGNITO_REGION -i COGNITO_APP_CLIENT_ID -s COGNITO_APP_CLIENT_SECRET -c COGNITO_CC_CLIENT_ID -x COGNITO_CC_CLIENT_SECRET
     ```
 
     Where:
@@ -405,20 +405,21 @@ Back to the **Pre token generation Lambda trigger** creation dashboard
 
     The following four files are generated into the `output` directory:
 
-    - webSecurity.xml contains the mapping between Liberty J2EE ODM roles and Keycloak groups and users:
+    - webSecurity.xml contains the mapping between Liberty J2EE ODM roles and Cognito User Pool groups and users:
       * rtsAdministrators/resAdministrators/resExecutors ODM roles are given to the CLIENT_ID (which is seen as a user) to manage the client-credentials flow
     - openIdWebSecurity.xml contains two openIdConnectClient Liberty configurations:
       * for web access to Decision Center an Decision Server consoles using userIdentifier="client_id" with the Authorization Code flow
       * for the rest-api call using userIdentifier="client_id" with the client-credentials flow
     - openIdParameters.properties configures several features like allowed domains, logout, and some internal ODM openid features
 
-3. Create the Keycloak authentication secret
+3. Create the Cognito authentication secret
 
     ```
     kubectl create secret generic cognito-auth-secret \
         --from-file=openIdParameters.properties=./output/openIdParameters.properties \
         --from-file=openIdWebSecurity.xml=./output/openIdWebSecurity.xml \
-        --from-file=webSecurity.xml=./output/webSecurity.xml
+        --from-file=webSecurity.xml=./output/webSecurity.xml \
+        --from-file=OdmOidcProviders.json=./output/OdmOidcProviders.json
     ```
 
 
@@ -436,7 +437,7 @@ Back to the **Pre token generation Lambda trigger** creation dashboard
   ```shell
   helm search repo ibm-odm-prod
   NAME                          CHART VERSION   APP VERSION     DESCRIPTION
-  ibm-helm/ibm-odm-prod         23.1.0          8.12.0.0        IBM Operational Decision Manager
+  ibm-helm/ibm-odm-prod         23.2.0          8.12.0.1        IBM Operational Decision Manager
   ```
 
 ### 3. Run the `helm install` command
@@ -507,7 +508,7 @@ Back to the **Pre token generation Lambda trigger** creation dashboard
     my-odm-release-odm-ingress <none>   *       <INGRESS_ADDRESS>   80      14d
     ```
 
-2. Register the redirect URIs into your Keycloak application.
+2. Register the redirect URIs into your Cognito App Client.
 
     The redirect URIs are built in the following way:
 
@@ -523,12 +524,12 @@ Back to the **Pre token generation Lambda trigger** creation dashboard
       - Decision Server Runtime redirect URI:  `https://<INGRESS_ADDRESS>/DecisionService/openid/redirect/odm`
       - Rule Designer redirect URI: `https://127.0.0.1:9081/oidcCallback`
 
-   From the Keycloak admin console, in **Manage** / **Clients** / **odm**
-    - In the tab **Settings**
-        * Add the redirect URIs in the **Valid redirect URIs** field for each components.
+   From the Cognito admin console, in **ODM User Pool** / **App integration** / **App clients and analytics** / **odm**
+    - In **Hosted UI**, click the **Edit** button
+        * Add the redirect URIs in the **Allowed callback URLs** field for each components.
 
       For example, add the Decision Center redirect URI that you got earlier (`https://<DC_HOST>/decisioncenter/openid/redirect/odm` -- do not forget to replace <DC_HOST> with your actual host name!)
-    - Click **Save** at the bottom of the page.
+    - Click **Save changes** at the bottom of the page.
 
 
 ### Access the ODM services
