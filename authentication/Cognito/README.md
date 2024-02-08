@@ -453,7 +453,7 @@ Back to the **Pre token generation Lambda trigger** creation dashboard
           --set oidc.enabled=true \
           --set license=true \
           --set internalDatabase.persistence.enabled=false \
-          --set customization.trustedCertificateList={"cognito-idp-cert-secret","cognito-domain-cert-secret"} \
+          --set customization.trustedCertificateList='{cognito-idp-cert-secret,cognito-domain-cert-secret}' \
           --set customization.authSecretRef=cognito-auth-secret \
           --set internalDatabase.runAsUser='' --set customization.runAsUser='' --set service.enableRoute=true
   ```
@@ -473,7 +473,7 @@ Back to the **Pre token generation Lambda trigger** creation dashboard
           --set oidc.enabled=true \
           --set license=true \
           --set internalDatabase.persistence.enabled=false \
-          --set customization.trustedCertificateList={"cognito-idp-cert-secret","cognito-domain-cert-secret"} \
+          --set customization.trustedCertificateList='{cognito-idp-cert-secret,cognito-domain-cert-secret}' \
           --set customization.authSecretRef=cognito-auth-secret \
           --set service.ingress.enabled=true \
           --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"\,"nginx.ingress.kubernetes.io/backend-protocol: HTTPS"\,"nginx.ingress.kubernetes.io/affinity: cookie"}
