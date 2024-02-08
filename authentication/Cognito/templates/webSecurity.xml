@@ -26,5 +26,6 @@
 
 <variable name="odm.resAdministrators.user1" value="${user1}"/>
 <variable name="odm.resDeployers.user1" value="${user1}"/>
+<variable name="odm.resExecutors.user1" value="${user1}"/>
 
 </server>
