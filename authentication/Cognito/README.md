@@ -345,6 +345,8 @@ Back to the **Pre token generation Lambda trigger** creation dashboard
 
 ![Add Lambda Trigger](images/AddLambdaTrigger.png)
 
+
+
 # Deploy ODM on a container configured with Cognito (Part 2)
 
 ## Prepare your environment for the ODM installation
@@ -352,7 +354,7 @@ Back to the **Pre token generation Lambda trigger** creation dashboard
 ### Create a secret to use the Entitled Registry
 
 
-    In the **Container software library** tile, verify your entitlement on the **View library** page, and then go to **Get entitlement key**  to retrieve the key.
+In the **Container software library** tile, verify your entitlement on the **View library** page, and then go to **Get entitlement key**  to retrieve the key.
 
 2. Create a pull secret by running a `kubectl create secret` command.
 
@@ -381,18 +383,29 @@ Back to the **Pre token generation Lambda trigger** creation dashboard
     With Cognito, we need to access :
     * cognito-idp.<COGNITO_REGION>.amazonaws.com
     * <COGNITO_DOMAIN_NAME>.auth.<COGNITO_REGION>.amazoncognito.com
+   
     You can create the secret as follows:
 
     ```
-    keytool -printcert -sslserver cognito-idp.<REGION>.amazonaws.com -rfc > cognito-idp.crt
+    keytool -printcert -sslserver cognito-idp.<COGNITO_REGION>.amazonaws.com -rfc > cognito-idp.crt
     kubectl create secret generic cognito-idp-cert-secret --from-file=tls.crt=cognito-idp.crt
 
-    keytool -printcert -sslserver <COGNITO_DOMAIN_NAME>.auth.<REGION>.amazoncognito.com -rfc > cognito-auth.crt
+    keytool -printcert -sslserver <COGNITO_DOMAIN_NAME>.auth.<COGNITO_REGION>.amazoncognito.com -rfc > cognito-auth.crt
     kubectl create secret generic cognito-domain-cert-secret --from-file=tls.crt=cognito-auth.crt
     ```
     Where:
-2. Generate the ODM configuration file for Cognito
+    - *COGNITO_REGION* is the region where the COGNITO User Pool is deployed
+    - *COGNITO_DOMAIN_NAME* is the prefix name of the COGNITO User Pool Domain that you can retrieve at Amazon Cognito > User pools > odmuserpool > App integration > Domain (odm in our tutorial)
+  
+3. Generate the ODM configuration file for Cognito
 
+    If everything is well configured, the Cognito End-Points must be accessible at :
+    https://cognito-idp.COGNITO_REGION.amazonaws.com/COGNITO_USER_POOL_ID/.well-known/openid-configuration  
+
+    Where:
+    - *COGNITO_REGION* is the region where the COGNITO User Pool is deployed
+    - *COGNITO_USER_POOL_ID* is the COGNITO User Pool ID retrieved at Amazon Cognito > User pools > odmuserpool > User pool overview > User pool ID
+    
 
     The [script](generateTemplate.sh) allows you to generate the necessary configuration files.
     Generate the files with the following command:
@@ -401,7 +414,13 @@ Back to the **Pre token generation Lambda trigger** creation dashboard
     ```
 
     Where:
-    - *CLIENT_SECRET* is listed in your ODM Application, section **General** / **Client Credentials**
+    - *COGNITO_USER_POOL_ID* is the COGNITO User Pool ID retrieved at Amazon Cognito > User pools > odmuserpool > User pool overview > User pool ID
+    - *COGNITO_DOMAIN_NAME* is the prefix name of the COGNITO User Pool Domain retrieved at Amazon Cognito > User pools > odmuserpool > App integration > Domain (odm in our tutorial)
+    - *COGNITO_REGION* is the region where the COGNITO User Pool is deployed
+    - *COGNITO_APP_CLIENT_ID* is the COGNITO ODM App Client ID retrieved at Amazon Cognito > User pools > odmuserpool > App integration > App clients and analytics > odm > Client ID
+    - *COGNITO_APP_CLIENT_SECRET* is the COGNITO ODM App Client Secret retrieved at Amazon Cognito > User pools > odmuserpool > App integration > App clients and analytics > odm > Client Secret
+    - *COGNITO_CC_CLIENT_ID* is the COGNITO ODM Client-Credentials App Client ID retrieved at Amazon Cognito > User pools > odmuserpool > App integration > App clients and analytics > odmclientcredentials > Client ID
+    - *COGNITO_CC_CLIENT_SECRET* is the COGNITO ODM Client-Credentials App Client Secret retrieved at Amazon Cognito > User pools > odmuserpool > App integration > App clients and analytics > odmclientcredentials > Client Secret
 
     The following four files are generated into the `output` directory:
 
@@ -412,7 +431,7 @@ Back to the **Pre token generation Lambda trigger** creation dashboard
       * for the rest-api call using userIdentifier="client_id" with the client-credentials flow
     - openIdParameters.properties configures several features like allowed domains, logout, and some internal ODM openid features
 
-3. Create the Cognito authentication secret
+4. Create the Cognito authentication secret
 
     ```
     kubectl create secret generic cognito-auth-secret \
