@@ -163,7 +163,9 @@ For example put **base_gc_total** in the **Expression** field and click on the *
 
 ![Queries](./images/queries.png)
 
+If you are interested by servlet requests managed by the runtime, you can use the query **vendor_servlet_request_total{servlet="DecisionService_RESTDecisionService"}**
 
+![Runtime Servlet Request](./images/RuntimeRequest.png)
 
 
 
