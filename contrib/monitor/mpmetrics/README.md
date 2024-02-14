@@ -78,51 +78,54 @@ You can now install the product. We will use the PostgreSQL internal database an
 
 See the [Preparing to install](https://www.ibm.com/docs/en/odm/8.12.0?topic=production-preparing-install-operational-decision-manager) documentation for more information.
 
-  ```shell
-  helm install my-odm-release ibm-helm/ibm-odm-prod \
-          --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
-          --set license=true --set usersPassword=odmAdmin \
-          --set internalDatabase.persistence.enabled=false \
-          --set customization.monitorRef=monitor-secret \
-          --set internalDatabase.runAsUser='' --set customization.runAsUser='' --set service.enableRoute=true
-  ```
+```shell
+helm install my-odm-release ibm-helm/ibm-odm-prod \
+        --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
+        --set license=true --set usersPassword=odmAdmin \
+        --set internalDatabase.persistence.enabled=false \
+        --set customization.monitorRef=monitor-secret \
+        --set internalDatabase.runAsUser='' --set customization.runAsUser='' --set service.enableRoute=true
+```
 
 ### 4. Check the /metrics endpoints
 
 As the installation has been done using **customization.monitorRef**, all ODM components are exposing metrics. So, you can check all /metrics endpoints exposed by the routes.
 On OpenShift you can get the route names and hosts with:
 
-    ```
-    kubectl get routes --no-headers --output custom-columns=":metadata.name,:spec.host"
-    ```
+```
+kubectl get routes --no-headers --output custom-columns=":metadata.name,:spec.host"
+```
 
-    You get the following hosts:
-    ```
-    my-odm-release-odm-dc-route           <DC_HOST>
-    my-odm-release-odm-dr-route           <DR_HOST>
-    my-odm-release-odm-ds-console-route   <DS_CONSOLE_HOST>
-    my-odm-release-odm-ds-runtime-route   <DS_RUNTIME_HOST>
-    ```
+You get the following hosts:
 
-    Check all metrics endpoints using the following URL in a browser or with command line:
-    ```
-    curl -k https://<DC_HOST>/metrcis
-    curl -k https://<DR_HOST>/metrics
-    curl -k https://<DS_CONSOLE_HOST>/metrics
-    curl -k https://<DS_RUNTIME_HOST>/metrics
-    ```
+```
+my-odm-release-odm-dc-route           <DC_HOST>
+my-odm-release-odm-dr-route           <DR_HOST>
+my-odm-release-odm-ds-console-route   <DS_CONSOLE_HOST>
+my-odm-release-odm-ds-runtime-route   <DS_RUNTIME_HOST>
+```
 
-    You should get a view of all Liberty metrics that will be accessible in Prometheus:
-    ```
-    # TYPE base_gc_total counter
-    # HELP base_gc_total Displays the total number of collections that have occurred. This attribute lists -1 if the collection count is undefined for this collector.
-    base_gc_total{name="global"} 30
-    base_gc_total{name="scavenge"} 157
-    ...
-    # TYPE vendor_connectionpool_waitTime_total_seconds gauge
-    # HELP vendor_connectionpool_waitTime_total_seconds The total wait time on all connection requests since the start of the server.
-    vendor_connectionpool_waitTime_total_seconds{datasource="jdbc_ilogDataSource"} 0.0
-    ```
+Check all metrics endpoints using the following URL in a browser or with command line:
+
+```
+curl -k https://<DC_HOST>/metrcis
+curl -k https://<DR_HOST>/metrics
+curl -k https://<DS_CONSOLE_HOST>/metrics
+curl -k https://<DS_RUNTIME_HOST>/metrics
+```
+
+You should get a view of all Liberty metrics that will be accessible in Prometheus:
+    
+```
+# TYPE base_gc_total counter
+# HELP base_gc_total Displays the total number of collections that have occurred. This attribute lists -1 if the collection count is undefined for this collector.
+base_gc_total{name="global"} 30
+base_gc_total{name="scavenge"} 157
+...
+# TYPE vendor_connectionpool_waitTime_total_seconds gauge
+# HELP vendor_connectionpool_waitTime_total_seconds The total wait time on all connection requests since the start of the server.
+vendor_connectionpool_waitTime_total_seconds{datasource="jdbc_ilogDataSource"} 0.0
+```
 
 ## Explose metrics in OCP
 
@@ -132,14 +135,15 @@ Follow the OCP documentation explaining how to [enable monitoring for user-defin
 
 If you are logged as the kubeadmin user, creating the [enableMetricsConfigMap.yaml](./enableMetricsConfigMap.yaml) configmap is enough:
 
-    ```
-    kubectl create -f enableMetricsConfigMap.yaml
-    ```
+```
+kubectl create -f enableMetricsConfigMap.yaml
+```
+
 ### Check that ODM targets are available
 
 The ODM Helm chart instance has created a PodMonitor k8s resource that you can retrieve now in the OCP dashboard.
- > Drill at Observe > Target
- > Click on Filter and check **User**
+* Drill at Observe > Target
+* Click on Filter and check **User**
  
 You should see the 4 ODM metrics endpoints
 
@@ -147,7 +151,8 @@ You should see the 4 ODM metrics endpoints
 
 ### Consume Metrics
 
-Drill at Observe > metrics
+Drill at Observe > metrics.
+
 You can now use any kind of available metrics using a query.
 For example put **base_gc_total** in the **Expression** field and click on the **Run queries** button.
 
