@@ -88,6 +88,10 @@ helm install my-odm-release ibm-helm/ibm-odm-prod \
         --set internalDatabase.runAsUser='' --set customization.runAsUser='' --set service.enableRoute=true
 ```
 
+> [!NOTE]
+> **customization.monitorRef** is installing /metrics endpoint on all components. 
+> If you would like to install /metrics on a specific component, you can replace usage of **customization.monitorRef** by **decisionCenter.monitorRef** , **decisionServerConsole.monitorRef** , **decisionRunner.monitorRef** or **decisionServerRuntime.monitorRef**
+
 ### 4. Check the /metrics endpoints
 
 As the installation has been done using **customization.monitorRef**, all ODM components are exposing metrics. So, you can check all /metrics endpoints exposed by the routes.
