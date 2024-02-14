@@ -15,6 +15,7 @@ The MicroProfile mpMetrics Liberty feature provides a /metrics endpoint from whi
 ## Prerequisites
 
 - [Helm 3.1](https://helm.sh/docs/intro/install/)
+- [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl)
 - Access to an Operational Decision Manager product
 - Access to an Openshift cluster
 
