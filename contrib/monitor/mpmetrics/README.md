@@ -1,6 +1,6 @@
 # Monitor ODM liberty metrics with mpMetrics and Prometheus
 
-The aim is to explain how to expose ODM liberty metrics provided by mpMetrics and how to expose them with Prometheus on an Openshift cluster. 
+The aim of this tutorial is to explain how to expose ODM Liberty metrics provided by mpMetrics using Prometheus on an Openshift cluster. 
 
 ## What is Prometheus ?
 
