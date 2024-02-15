@@ -171,4 +171,6 @@ If you are interested by servlet requests managed by the runtime, you can use th
 
 If you prefer to visualize the metrics using Grafana Dashboard, you can follow this [documentation](https://cloud.redhat.com/experts/o11y/ocp-grafana/) explaining how to install Grafana on OCP and connect it to Promotheus.
 
+You can use this dashboard to help spot performance issues. For instance, metrics such as servlet response times, CPU or heap usage when seen as a time-series on Grafana, could be indicative of an underlying performance issue or memory leak.
+
 ![Grafana Dashboard](./images/GrafanaDashboard.png)
