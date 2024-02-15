@@ -154,7 +154,7 @@ You should see the 4 ODM metrics endpoints
 
 ![Targets](./images/targets.png) 
 
-### Consume Metrics
+### Consume Metrics with Prometheus
 
 Drill at Observe > metrics.
 
@@ -167,5 +167,8 @@ If you are interested by servlet requests managed by the runtime, you can use th
 
 ![Runtime Servlet Request](./images/RuntimeRequest.png)
 
+### Consume Metrics with Grafana Dashboard
 
+If you prefer to visualize the metrics using Grafana Dashboard, you can follow this [documentation](https://cloud.redhat.com/experts/o11y/ocp-grafana/) explaining how to install Grafana on OCP and connect it to Promotheus.
 
+![Grafana Dashboard](./images/GrafanaDashboard.png)
