@@ -113,7 +113,7 @@ my-odm-release-odm-ds-runtime-route   <DS_RUNTIME_HOST>
 Check all metrics endpoints using the following URL in a browser or with command line:
 
 ```
-curl -k https://<DC_HOST>/metrcis
+curl -k https://<DC_HOST>/metrics
 curl -k https://<DR_HOST>/metrics
 curl -k https://<DS_CONSOLE_HOST>/metrics
 curl -k https://<DS_RUNTIME_HOST>/metrics
