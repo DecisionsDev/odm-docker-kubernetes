@@ -213,7 +213,7 @@ To create the Cognito User Pool dedicated to ODM, we followed the [getting start
 > [!WARNING]
 > Please do not use a different name than **odm-admin** 
 
-     * Click on **Create group**
+ * Click on **Create group**
 
 ## Add the created user to the **odm-admin** group
 
@@ -447,8 +447,11 @@ In the **Container software library** tile, verify your entitlement on the **Vie
     Where:
     - *COGNITO_USER_POOL_ID* is the COGNITO User Pool ID retrieved at Amazon Cognito > User pools > odmuserpool > User pool overview > User pool ID
     - *COGNITO_DOMAIN_NAME* is the prefix name of the COGNITO User Pool Domain retrieved at Amazon Cognito > User pools > odmuserpool > App integration > Domain
-    > [!WARNING]
-    > only copy the prefix (odm in our tutorial) and not the entire value
+
+> [!WARNING]
+> only copy the prefix (odm in our tutorial) and not the entire value.
+
+-
     - *COGNITO_REGION* is the region where the COGNITO User Pool is deployed
     - *COGNITO_APP_CLIENT_ID* is the COGNITO ODM App Client ID retrieved at Amazon Cognito > User pools > odmuserpool > App integration > App clients and analytics > odm > Client ID
     - *COGNITO_APP_CLIENT_SECRET* is the COGNITO ODM App Client Secret retrieved at Amazon Cognito > User pools > odmuserpool > App integration > App clients and analytics > odm > Client Secret
@@ -599,7 +602,7 @@ In the **Container software library** tile, verify your entitlement on the **Vie
 > [!WARNING]
 > Please replace <DC_HOST> with your actual host name!)
 
-    - Click **Save changes** at the bottom of the page.
+- Click **Save changes** at the bottom of the page.
 
 
 ### Access the ODM services
