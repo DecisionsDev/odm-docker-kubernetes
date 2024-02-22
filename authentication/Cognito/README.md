@@ -166,7 +166,7 @@ To create the Cognito User Pool dedicated to ODM, we followed the [getting start
       * **Domain type**:
         * Select **Use a Cognito Domain**
       * **Cognito domain**:
-        * Enter your cognito domain name, for example **https://odm**
+        * Enter your cognito domain name, for example **https://odm** <!-- markdown-link-check-disable-line -->
 
     In **Initial app client**:
       * **App type**:
@@ -176,7 +176,7 @@ To create the Cognito User Pool dedicated to ODM, we followed the [getting start
       * **Client secret**:
         * Select **Generate a client secret**
       * **Allowed callbacks URLs**:
-        * We will fill this section later when the ODM on k8s helm application will be instanciated as currently we don't know these URLs. As at least one is requested, you can put **https://dummyUrl** for example
+        * We will fill this section later when the ODM on k8s helm application will be instanciated as currently we don't know these URLs. As at least one is requested, you can put **https://dummyUrl** for example  <!-- markdown-link-check-disable-line -->
 
     In **Advanced app client settings**, let all the default values as it is.
 
@@ -283,7 +283,7 @@ Select the **odmuserpool** User Pool:
 
     In **Hosted UI settings**:
       * For **URL**
-        * Enter a dummy URL: https://localhost
+        * Enter a dummy URL: https://localhost  <!-- markdown-link-check-disable-line -->
       * For **OAuth 2.0 grant types**:
         * Select **Client credentials**
       * For **Custom scopes**:
@@ -428,7 +428,7 @@ In the **Container software library** tile, verify your entitlement on the **Vie
 3. Generate the ODM configuration file for Cognito
 
     If everything is well configured, the Cognito End-Points must be accessible at :
-    https://cognito-idp.COGNITO_REGION.amazonaws.com/COGNITO_USER_POOL_ID/.well-known/openid-configuration  
+    https://cognito-idp.COGNITO_REGION.amazonaws.com/COGNITO_USER_POOL_ID/.well-known/openid-configuration  <!-- markdown-link-check-disable-next-line -->
 
     Where:
     - *COGNITO_REGION* is the region where the COGNITO User Pool is deployed
