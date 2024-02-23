@@ -1,0 +1,31 @@
+<server>
+  <basicRegistry id="basic" realm="basic">
+    <user name="odmAdmin" password="odmAdmin"/>
+    <group name="basicAdministrators">
+      <member name="odmAdmin" />
+    </group>
+</basicRegistry>
+<variable name="odm.resAdministrators.group2" value="group:basic/basicAdministrators"/>
+<variable name="odm.resExecutors.group2" value="group:basic/basicAdministrators"/>
+<variable name="odm.rtsAdministrators.group2" value="group:basic/basicAdministrators"/>
+
+
+<!-- group mapping to authorize users of the Cognito odm-admin group -->
+<variable name="group1" value="group:https://cognito-idp.COGNITO_REGION.amazonaws.com/COGNITO_USER_POOL_ID/odm-admin"/>
+
+<variable name="odm.rtsAdministrators.group1" value="${group1}"/>
+<variable name="odm.rtsInstallers.group1" value="${group1}"/>
+<variable name="odm.rtsConfigManagers.group1" value="${group1}"/>
+<variable name="odm.resAdministrators.group1" value="${group1}"/>
+<variable name="odm.resDeployers.group1" value="${group1}"/>
+<variable name="odm.resMonitors.group1" value="${group1}"/>
+<variable name="odm.resExecutors.group1" value="${group1}"/>
+
+<!-- user mapping to client-credentials client-id -->
+<variable name="user1" value="user:https://cognito-idp.COGNITO_REGION.amazonaws.com/COGNITO_USER_POOL_ID/COGNITO_CC_CLIENT_ID"/>
+
+<variable name="odm.resAdministrators.user1" value="${user1}"/>
+<variable name="odm.resDeployers.user1" value="${user1}"/>
+<variable name="odm.resExecutors.user1" value="${user1}"/>
+
+</server>
