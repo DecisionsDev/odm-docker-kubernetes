@@ -46,12 +46,10 @@ In order for us to accept pull requests, you must declare that you wrote the cod
 1. Read this (from [developercertificate.org](http://developercertificate.org/)):
 
   ```
-  Developer Certificate of Origin
+Developer Certificate of Origin
 Version 1.1
 
-Copyright (C) 2004, 2023 The Linux Foundation and its contributors.
-660 York Street, Suite 102,
-San Francisco, CA 94110 USA
+Copyright (C) 2004, 2006 The Linux Foundation and its contributors.
 
 Everyone is permitted to copy and distribute verbatim copies of this
 license document, but changing it is not allowed.
