@@ -1,6 +1,31 @@
 apiVersion: v1
 entries:
   ibm-odm-dev:
+  - apiVersion: v1
+    appVersion: 8.10.5.2
+    created: "2024-03-13T09:56:33.384842+01:00"
+    description: IBM Operational Decision Manager for Developers
+    digest: 1300e1fa564371d1ef58f5d091901a797ed324e6920c6dc7d481aff62f4956a7
+    home: https://developer.ibm.com/odm/
+    icon: https://raw.githubusercontent.com/ODMDev/ruledesigner/master/icons/automation-decision.png
+    keywords:
+    - OperationalDecisionManager
+    - businessrules
+    - Limited
+    - ICP
+    - amd64
+    - s390x
+    - ppc64le
+    - ICPRHOCP
+    kubeVersion: '>=1.11.0-0'
+    maintainers:
+    - name: ODMDev
+    name: ibm-odm-dev
+    sources:
+    - https://github.com/IBM/charts/tree/master/stable
+    urls:
+    - https://raw.githubusercontent.com/DecisionsDev/odm-docker-kubernetes/master/repo/stable/ibm-odm-dev-21.2.1.tgz
+    version: 21.2.1
   - apiVersion: v2
     appVersion: 8.12.0.1
     created: "2023-12-01T10:56:56.332414+01:00"
@@ -167,4 +192,4 @@ entries:
     urls:
     - https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm/ibm-odm-prod-23.2.0.tgz
     version: 23.2.0
-generated: "2023-06-09T09:25:47.579117+02:00"
+generated: "2024-03-13T09:56:33.383756+01:00"
