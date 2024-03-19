@@ -112,7 +112,7 @@ vault write auth/kubernetes/role/database \
 
 ### c. Populate the secrets in the vault
 
-As sample we populate some data. You need to adjust it to your needs.
+As an example, we have populated some data. You will need to adjust it according to your needs.
 
 ```bash
 export VAULT_ADDR=http://$(oc get route vault --no-headers -o custom-columns=HOST:.spec.host)
