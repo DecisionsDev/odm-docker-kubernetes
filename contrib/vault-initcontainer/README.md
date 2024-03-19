@@ -2,7 +2,7 @@
 
 In the rapidly evolving world of Kubernetes (K8s), securing sensitive information remains a paramount concern. Traditional methods, like using K8s secrets, often fall short in providing the necessary security measures.
 
-This article delves into a more robust solution: integrating IBM's Operation Decision Manager (ODM) with external secret stores supported by the [Secrets Store CSI Driver](https://kubernetes-csi.github.io/docs/introduction.html).
+This article delves into a more robust solution: integrating IBM's Operation Decision Manager (ODM) with external secret stores supported by the [Secrets Store CSI Driver](https://secrets-store-csi-driver.sigs.k8s.io/).
 
 Why this integration? K8s secrets, while convenient, are sometimes deemed insufficient for high-security environments.
 
