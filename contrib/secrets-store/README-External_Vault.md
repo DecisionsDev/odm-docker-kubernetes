@@ -1,6 +1,27 @@
-# Créer un Vault externe
+# Install, configure and use HashiCorp Vault on Ubuntu
 
-Sur le cluster OpenShift, installer tout d'abord l'opérateur Secrets Store CSI Driver Operator via l'OperatorHub ou en ligne de commande ; ensuite, le driver CSI de HashiCorp Vault seul peut être installé :
+We provide here some installation hints about the installation and the configuration of a test instance for HashiCorp Vault so that it can be used as a secrets store on OpenShift Container Platform.
+
+## Secrets Store CSI driver and provider
+
+The installation of the Secrets Store CSI driver is straightforward on OpenShift: Go the OperatorHub, look for "Secrets Store CSI Driver Operator" and deploy the operator with its defaults.
+
+Then create the CSI Driver itself:
+
+```bash
+oc apply -f - <<EOF
+apiVersion: operator.openshift.io/v1
+kind: ClusterCSIDriver
+metadata:
+  name: secrets-store.csi.k8s.io
+spec:
+  logLevel: Normal
+  managementState: Managed
+  operatorLogLevel: Trace
+EOF
+```
+
+When done, install the HashiCorp Vault provider driver:
 
 ```bash
 oc adm policy add-scc-to-user privileged system:serviceaccount:vault:vault-csi-provider
@@ -14,17 +35,23 @@ helm install vault hashicorp/vault \
     --create-namespace
 ```
 
-Sur une Ubuntu Fyre :
+Verify that one pod for each worker node is created in the "vault" namespace before continuing:
 
-1. Installer Vault
+```bash
+oc get pods --namespace vault --output wide
+```
 
-D'après https://developer.hashicorp.com/vault/tutorials/getting-started/getting-started-install
+## Installation
+
+On Ubuntu 22.04, from https://developer.hashicorp.com/vault/tutorials/getting-started/getting-started-install:
 
 ```bash
 wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
 gpg --no-default-keyring --keyring /usr/share/keyrings/hashicorp-archive-keyring.gpg --fingerprint
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
 sudo apt update && sudo apt install vault
+sudo systemctl enable vault
+sudo systemctl start vault
 ```
 
 2. Créer un fichier de config
