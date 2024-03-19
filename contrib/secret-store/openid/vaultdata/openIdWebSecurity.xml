@@ -1,0 +1,27 @@
+<server>
+
+  <variable name="ServerHost" value="https://login.microsoftonline.com/xxxxxxxxx"/>
+
+  <!-- Open ID Connect -->
+  <!-- Client with inbound propagation set to supported -->
+  <openidConnectClient authFilterRef="browserAuthFilter" id="odm" scope="openid" accessTokenInLtpaCookie="true"
+                       clientId="xxxxxxx" clientSecret="xxxxxxx"
+                       tokenOrderToFetchCallerClaims="AccessToken IDToken UserInfo"
+                       signatureAlgorithm="RS256" inboundPropagation="supported"
+                       jwkEndpointUrl="https://login.microsoftonline.com/common/discovery/keys"
+                       issuerIdentifier="https://sts.windows.net/xxxxxxxxxxxxxx/"
+                       authorizationEndpointUrl="${ServerHost}/oauth2/authorize"
+                       tokenEndpointUrl="${ServerHost}/oauth2/token"
+                       resource="https://graph.windows.net"
+                       userIdentifier="upn" groupIdentifier="ageGroup" audiences="ALL_AUDIENCES"/>
+
+  <!-- Client with inbound propagation set to required -->
+  <openidConnectClient authFilterRef="apiAuthFilter" id="odmapi" scope="openid"
+                       clientId="xxxxxxxx" clientSecret="xxxxxxxxxxx"
+                       signatureAlgorithm="RS256" inboundPropagation="required"
+                       jwkEndpointUrl="https://login.microsoftonline.com/common/discovery/keys"
+                       issuerIdentifier="https://sts.windows.net/xxxxxx/"
+                       authorizationEndpointUrl="${ServerHost}/oauth2/authorize"
+                       tokenEndpointUrl="${ServerHost}/oauth2/token"
+                       userIdentifier="aud" groupIdentifier="groups" audiences="ALL_AUDIENCES"/>
+</server>
