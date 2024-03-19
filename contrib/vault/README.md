@@ -72,7 +72,7 @@ The architecture diagram illustrates the integration process between the Secret 
       - This is where the secrets data is stored after retrieval, accessible by both the init container and the ODM Containers.
     - **ODM Containers**:
       - The main containers running the ODM application.
-      - They utilize the secrets data stored in the volume for secure operations and configuration. An empty dire ephemeral storage is used to transmit the data between the containers.
+      - They utilize the secrets data stored in the volume for secure operations and configuration. An empty directory ephemeral storage is used to transmit the data between the containers.
 
 The diagram visually represents the secure flow of secrets data from the central manager to the ODM application in Kubernetes, facilitated by the Secret Store CSI Driver, ensuring best practices in secret management.
 
