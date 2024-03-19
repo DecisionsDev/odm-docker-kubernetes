@@ -2,7 +2,7 @@
 
 In the rapidly evolving world of Kubernetes (K8s), securing sensitive information remains a paramount concern. Traditional methods, like using K8s secrets, often fall short in providing the necessary security measures.
 
-This article delves into a more robust solution: integrating IBM's Operation Decision Manager (ODM) with external secret stores supported by the [Secrets Store CSI Driver](https://secrets-store-csi-driver.sigs.k8s.io/).
+This article delves into a more robust solution: integrating IBM's Operation Decision Manager (ODM) with external secrets stores supported by the [Secrets Store CSI Driver](https://secrets-store-csi-driver.sigs.k8s.io/).
 
 Why this integration? K8s secrets, while convenient, are sometimes deemed insufficient for high-security environments.
 
@@ -10,7 +10,7 @@ The integration of the ODM running on Kubernetes with an external secret store v
 
 This article guides you through the setup and configuration process, ensuring a secure and streamlined integration of these powerful technologies.
 
-We will use [Hashicorp Vault as secret store](https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-secret-store-driver) for this article.
+We will use [Hashicorp Vault as secrets store](https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-secret-store-driver) for this article.
 
 # Architecture
 
@@ -49,18 +49,19 @@ The diagram visually represents the secure flow of secrets data from the central
 
 ## Prerequisites
 
-   * HashiCorp Vault instance setup and running. Tutorial can found [here](https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-secret-store-driver).
-   * [HashiCorp Vault provider driver](https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-secret-store-driver)
-   * [Helm](https://helm.sh/docs/intro/install/)
-   * Operational Decision Manager on Container 9.0.0.0
+HashiCorp Vault must be up and running. An [on-prem installation description](README-Vault.md) is provided as well as another [K8s installation](../vault-initcontainer/README.md#pre-requisite), but of course you can use your own instance.
+
+* [Secrets Store CSI Driver](https://secrets-store-csi-driver.sigs.k8s.io/) already installed.
+* [HashiCorp Vault provider driver](https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-secret-store-driver) already installed
+* [Helm](https://helm.sh/docs/intro/install/)
+* Access to Operational Decision Manager on Container 9.0.0.0 images
 
 > Note: This documentation has been tested with a HashiCorp evaluation instance. We assume that the procedure will remain the same for the commercial product.
 
-In this documentation will do the assumption that :
-   * Vault Server is installed in the vault namespace.
-   * ODM will be installed in the odm namespace.
+In this documentation will do the assumption that ODM will be installed in the "odm" namespace.
 
 # Setup
+
 ## 1. Initialize Vault server for ODM (10 min)
 ### a. Configure Kubernetes authentication in the Vault server
 Vault provides a Kubernetes authentication method that enables clients to authenticate with a Kubernetes Service Account Token. This token is provided to each pod when it is created.
