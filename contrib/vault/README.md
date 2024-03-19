@@ -2,7 +2,7 @@
 
 In the rapidly evolving world of Kubernetes (K8s), securing sensitive information remains a paramount concern. Traditional methods, like using K8s secrets, often fall short in providing the necessary security measures. 
 
-This article delves into a more robust solution: integrating IBM's Operation Decision Manager (ODM) with Vault utilizing the [Secrets Store CSI Driver](https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-secret-store-driver).
+This article delves into a more robust solution: integrating IBM's Operation Decision Manager (ODM) with external secret stores supported by the [Secrets Store CSI Driver]([https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-secret-store-driver](https://kubernetes-csi.github.io/docs/introduction.html)).
 
 Why this integration? K8s secrets, while convenient, are sometimes deemed insufficient for high-security environments. 
 
@@ -11,7 +11,7 @@ The integration of the ODM running on Kubernetes with Vault via the Secrets Stor
 On the ODM on Kubernetes side, we introduce an init container - a specialized container that sets up the necessary environment before the main container runs. In this init container, we inject the Vault CSI volume. This approach allows us to craft a shell script, which is then executed within the init container, to seamlessly transfer the files into the ODM containers.
 
 This article guides you through the setup and configuration process, ensuring a secure and streamlined integration of these powerful technologies.
-We will used Harshicorp Vault as an implementation for this article.
+We will used [Hashicorp Vault as secret store](https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-secret-store-driver) for this article.
 
 # Architecture
 The Container Storage Interface (CSI) pattern is essentially a standardized approach for connecting block or file storage to containers. This standard is adopted by various storage providers.
@@ -20,7 +20,8 @@ On Kubernetes, the Secrets Store CSI Driver operates as a DaemonSet. It interact
 
 ![Vault Overview schema](images/Overview.png)
 
-To manage this process, the SecretProviderClass Custom Resource Definition (CRD) is utilized. Within this provider class, it's necessary to specify the address of the secure vault and the locations of the secret keys. The following is the SecretProviderClass for our specific case, which involves using HashiCorp Vault deployed on Kubernetes.
+To manage this process, the SecretProviderClass Custom Resource Definition (CRD) is utilized. Within this provider class, it's necessary to specify the address of the secure secret store and the locations of the secret keys. The following is the SecretProviderClass for our specific case, which involves using HashiCorp Vault deployed on Kubernetes.
+Please refer to the implement secret store provider for the syntax.
 ```yaml
 apiVersion: secrets-store.csi.x-k8s.io/v1
 kind: SecretProviderClass
