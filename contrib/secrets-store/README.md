@@ -10,7 +10,7 @@ The integration of the ODM running on Kubernetes with an external secret store v
 
 This article guides you through the setup and configuration process, ensuring a secure and streamlined integration of these powerful technologies.
 
-We will use [Hashicorp Vault as secrets store](https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-secret-store-driver) for this article.
+We will use [Hashicorp Vault as secrets store](https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-secret-store-driver) and OpenShift Container Platform (OCP) as a Kubernetes cluster for this article.
 
 # Architecture
 
@@ -49,7 +49,7 @@ The diagram visually represents the secure flow of secrets data from the central
 
 ## Prerequisites
 
-HashiCorp Vault must be up and running. An [on-prem installation description](README-External_Vault.md) is provided as well as another [K8s installation](../vault-initcontainer/README.md#pre-requisite), but of course you can use your own instance.
+HashiCorp Vault must be up and running. An [on-prem installation description](README-External_Vault.md) is provided (with hints about the Secrets Store CSI driver and the HashiCorp Vault provider installation) but of course you can use your own instance.
 
 * [Secrets Store CSI Driver](https://secrets-store-csi-driver.sigs.k8s.io/) already installed.
 * [HashiCorp Vault provider driver](https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-secret-store-driver) already installed
@@ -63,14 +63,12 @@ In this documentation will do the assumption that ODM will be installed in the "
 # Setup
 
 ## 1. Initialize Vault server for ODM (10 min)
+
 ### a. Configure Kubernetes authentication in the Vault server
-Vault provides a Kubernetes authentication method that enables clients to authenticate with a Kubernetes Service Account Token. This token is provided to each pod when it is created.
 
-```bash
-oc exec -ti vault-0 --namespace vault -- sh
-```
+Vault provides a Kubernetes authentication method that enables clients to authenticate with a Kubernetes Service Account token. This token is provided to each pod when it is created.
 
-Then,
+Enable Kubernetes authentication on your Vault instance and add your OCP address, certificate and credentials:
 
 ```bash
 vault auth enable kubernetes
