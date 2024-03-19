@@ -18,37 +18,7 @@ The Container Storage Interface (CSI) pattern is essentially a standardized appr
 
 On Kubernetes, the Secrets Store CSI Driver operates as a DaemonSet. It interacts with each Kubelet instance on the Kubernetes nodes. When a pod initiates, this driver liaises with the external secrets provider to fetch secret data. The accompanying diagram demonstrates the functionality of the Secrets Store CSI Driver within Kubernetes.
 
-![Vault Overview schema](images/Overview.png)
 
-To manage this process, the SecretProviderClass Custom Resource Definition (CRD) is utilized. Within this provider class, it's necessary to specify the address of the secure secret store and the locations of the secret keys. The following is the SecretProviderClass for our specific case, which involves using HashiCorp Vault deployed on Kubernetes.
-Please refer to the implement secret store provider for the syntax.
-```yaml
-apiVersion: secrets-store.csi.x-k8s.io/v1
-kind: SecretProviderClass
-metadata:
-  name: vault-database
-spec:
-  provider: vault
-  parameters:
-    vaultAddress: http://vault:8200
-    roleName: database
-    objects: |
-      - objectName: "db-password"
-        secretPath: "secret/data/db-pass"
-        secretKey: "db-password"
-      - objectName: "db-user"
-        secretPath: "secret/data/db-pass"
-        secretKey: "db-user"
-      - objectName: "automation.crt"
-        secretPath: "secret/data/trustedcertificates"
-        secretKey: "automationcloud.crt"
-      - objectName: "tls.crt"
-        secretPath: "secret/data/privatecertificates"
-        secretKey: "tls.crt"
-      - objectName: "tls.key"
-        secretPath: "secret/data/privatecertificates"
-        secretKey: "tls.key"
-```
 
 The architecture diagram illustrates the integration process between the Secret Manager Server and IBM Operation Decision Manager (ODM) pods within a Kubernetes environment using the Secrets Store CSI Driver. 
 ![Vault Overview schema](images/VaultInitContainer.jpg)
@@ -56,6 +26,8 @@ The architecture diagram illustrates the integration process between the Secret 
 - **Secret Manager Server**: It functions as the central repository for all secrets data, securely managing sensitive information.
 
 - **Secrets Data**: Labeled clearly, this represents the actual sensitive information that needs to be securely managed and injected into the ODM Pods.
+
+- **Secrets Provider Class**: Definition of the data that should be injected in the ODM Pods.
 
 - **Secret Store CSI Driver**: 
   - It acts as a secure bridge between the Secret Manager Server and the Kubernetes cluster.
@@ -76,6 +48,8 @@ The architecture diagram illustrates the integration process between the Secret 
       - They utilize the secrets data stored in the volume for secure operations and configuration. An empty directory ephemeral storage is used to transmit the data between the containers.
 
 The diagram visually represents the secure flow of secrets data from the central manager to the ODM application in Kubernetes, facilitated by the Secret Store CSI Driver, ensuring best practices in secret management.
+
+
 
 ## Pre-requisite 
    * Harshicorp Instance evaluation setup and running. Tutorial can found [here](https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-secret-store-driver).
@@ -204,7 +178,41 @@ NAME                  	CHART VERSION   APP VERSION     DESCRIPTION
 ibm-helm/ibm-odm-prod	23.2.0          8.12.0.1        IBM Operational Decision Manager
 ```
 
-### f. Create the service account and the config map that contain the vault.sh script
+
+### f. Define the data that will be injected in the pods.
+
+To manage this process, the SecretProviderClass Custom Resource Definition (CRD) is utilized. Within this provider class, it's necessary to specify the address of the secure secret store and the locations of the secret keys. The following is the SecretProviderClass for our specific case, which involves using HashiCorp Vault deployed on Kubernetes.
+Please refer to the implement secret store provider for the syntax.
+```yaml
+apiVersion: secrets-store.csi.x-k8s.io/v1
+kind: SecretProviderClass
+metadata:
+  name: vault-database
+spec:
+  provider: vault
+  parameters:
+    vaultAddress: http://vault:8200
+    roleName: database
+    objects: |
+      - objectName: "db-password"
+        secretPath: "secret/data/db-pass"
+        secretKey: "db-password"
+      - objectName: "db-user"
+        secretPath: "secret/data/db-pass"
+        secretKey: "db-user"
+      - objectName: "automation.crt"
+        secretPath: "secret/data/trustedcertificates"
+        secretKey: "automationcloud.crt"
+      - objectName: "tls.crt"
+        secretPath: "secret/data/privatecertificates"
+        secretKey: "tls.crt"
+      - objectName: "tls.key"
+        secretPath: "secret/data/privatecertificates"
+        secretKey: "tls.key"
+```
+Save the content in a serviceproviderclass.yaml file 
+
+### g. Create the service account and the config map that contain the vault.sh script
 
 ```
 echo "Create the service account"
