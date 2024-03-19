@@ -49,7 +49,7 @@ The diagram visually represents the secure flow of secrets data from the central
 
 ## Prerequisites
 
-HashiCorp Vault must be up and running. An [on-prem installation description](README-Vault.md) is provided as well as another [K8s installation](../vault-initcontainer/README.md#pre-requisite), but of course you can use your own instance.
+HashiCorp Vault must be up and running. An [on-prem installation description](README-External_Vault.md) is provided as well as another [K8s installation](../vault-initcontainer/README.md#pre-requisite), but of course you can use your own instance.
 
 * [Secrets Store CSI Driver](https://secrets-store-csi-driver.sigs.k8s.io/) already installed.
 * [HashiCorp Vault provider driver](https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-secret-store-driver) already installed
