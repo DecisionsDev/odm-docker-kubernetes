@@ -2,7 +2,7 @@
 
 In the rapidly evolving world of Kubernetes (K8s), securing sensitive information remains a paramount concern. Traditional methods, like using K8s secrets, often fall short in providing the necessary security measures.
 
-This article delves into a more robust solution: integrating IBM's Operation Decision Manager (ODM) with external secret stores supported by the [Secrets Store CSI Driver](https://kubernetes-csi.github.io/docs/introduction.html).
+This article delves into a more robust solution: integrating IBM's Operation Decision Manager (ODM) with external secret stores supported by the [Secrets Store CSI Driver](https://secrets-store-csi-driver.sigs.k8s.io/).
 
 Why this integration? K8s secrets, while convenient, are sometimes deemed insufficient for high-security environments.
 
@@ -47,12 +47,12 @@ The architecture diagram illustrates the integration process between the Secret 
 
 The diagram visually represents the secure flow of secrets data from the central manager to the ODM application in Kubernetes, facilitated by the Secret Store CSI Driver, ensuring best practices in secret management.
 
-## Pre-requisite
-   * Harshicorp Instance evaluation setup and running. Tutorial can found [here](https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-secret-store-driver).
-   * [Vault client](https://developer.hashicorp.com/vault/install)
-   * [Helm v3](https://helm.sh/docs/intro/install/)
-   * [Kustomize](https://github.com/kubernetes-sigs/kustomize/releases)
-   * Operational Decision Manager on Container 8.12.0.1
+## Prerequisites
+
+   * HashiCorp Vault instance setup and running. Tutorial can found [here](https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-secret-store-driver).
+   * [HashiCorp Vault provider driver](https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-secret-store-driver)
+   * [Helm](https://helm.sh/docs/intro/install/)
+   * Operational Decision Manager on Container 9.0.0.0
 
 > Note: This documentation has been tested with a HashiCorp evaluation instance. We assume that the procedure will remain the same for the commercial product.
 
