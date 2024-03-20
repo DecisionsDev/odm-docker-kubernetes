@@ -209,36 +209,3 @@ helm install odm-vault-kust ibm-helm/ibm-odm-prod -f values-default-vault.yaml
 ```
 
 After a few minutes, ODM should be up and running without using any secrets for installation.
-
-## ODM installation with OpenID third party provider (10 min)
-
-If you wish to deploy ODM with an OpenID provider, you should follow this procedure:
-
-1. **Assumptions:** This guide assumes that you have successfully completed the previous steps and have the necessary OpenID files required for configuring ODM with an OpenID provider.
-2. **Navigate to the openid Directory:**
-   Execute the following command to change to the OpenID directory:
-```bash
-cd openid
-```
-4. Place your ODM OpenID configuration files in the ***vaultdata*** directory. The following files should be included: `openIdParameters.properties`, `openIdWebSecurity.xml`, `webSecurity.xml`, `OdmOidcProvidersAzureAD.json`.
-5. Push these files into the vault:
-```bash
-echo "Push the OpenID files into the vault"
-vault kv put secret/oidc openIdParameters.properties=@vaultdata/openIdParameters.properties openIdWebSecurity.xml=@vaultdata/openIdWebSecurity.xml webSecurity.xml=@vaultdata/webSecurity.xml OdmOidcProvidersAzureAD.json=@vaultdata/OdmOidcProvidersAzureAD.json
-```
-5. Apply the new service provider class with these files:
-```bash
-echo "Apply the new Provider with additional entries"
-oc apply -f serviceproviderclass.yaml
-```
-7. Deploy ODM with OpenID
-If you have already deployed ODM, you may need to delete the previous deployment:
-```bash
- kubectl delete -f ../odm-csi.yaml
-```
-Then you can generate the new template with OIDC enabled
-```bash
-echo "Generate the new ODM template with OIDC"
-helm template odm-vault-oidc -n odm ibm-helm/ibm-odm-prod -f values-default-vault.yaml > odm-template-nocsi.yaml && kustomize build -o odm-csi.yaml && kubectl apply -f odm-csi.yaml
-```
-
