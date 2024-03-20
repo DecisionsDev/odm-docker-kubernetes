@@ -60,13 +60,13 @@ HashiCorp Vault must be up and running. An [on-prem installation description](RE
 
 In this documentation ODM will be installed in the "odm" namespace.
 
-# Setup
+# HashiCorp Vault setup
 
 ## Initialize HashiCorp Vault server
 
 Please refer to the [separate document](README-External_Vault.md) if you don't have such a secrets store already available.
 
-Most next commands require you already are connect to your secrets store:
+Most following commands require you are connected already to your secrets store:
 
 ```bash
 export VAULT_ADDR=http://<serverfqdn>:8200
@@ -104,6 +104,8 @@ vault kv put secret/privatecertificates tls.crt=@vaultdata/mycompany.crt  tls.ke
 vault kv put secret/trustedcertificates digicert.crt=@vaultdata/digicert.crt microsoft.crt=@vaultdata/microsoft.crt
 vault kv put secret/db-pass db-password="postgrespwd" db-user="postgresuser"
 ```
+
+# ODM setup
 
 ## 3. Prepare your environment for the ODM installation (10 min)
 
@@ -164,7 +166,9 @@ ibm-helm/ibm-odm-prod	23.2.0          8.12.0.1        IBM Operational Decision M
 ### f. Define the data that will be injected in the pods.
 
 To manage this process, the SecretProviderClass Custom Resource Definition (CRD) is utilized. Within this provider class, it's necessary to specify the address of the secure secret store and the locations of the secret keys. The following is the SecretProviderClass for our specific case, which involves using HashiCorp Vault deployed on Kubernetes.
+
 Please refer to the implement secret store provider for the syntax.
+
 ```yaml
 apiVersion: secrets-store.csi.x-k8s.io/v1
 kind: SecretProviderClass
@@ -192,13 +196,14 @@ spec:
         secretPath: "secret/data/privatecertificates"
         secretKey: "tls.key"
 ```
-Save the content in a serviceproviderclass.yaml file
+
+Save the content in a serviceproviderclass.yaml file.
 
 ### g. Create the service account and the config map that contain the vault.sh script
 
-```
+```bash
 echo "Create the service account"
-kubectl apply -f service-account.yaml -n odm
+kubectl create serviceaccount odm-sa --namespace odm
 echo "Create the configmap that countains the vault.sh script"
 kubectl create cm vaultcm --from-file=./configmap -n odm
 echo "Create the SecretProviderClass"
