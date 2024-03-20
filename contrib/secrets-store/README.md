@@ -114,7 +114,7 @@ To get access to the ODM material, you need an IBM entitlement key to pull the i
 ### a. Create an ODM namespace
 
 ```bash
-kubectl create ns odm
+oc new-project odm
 ```
 
 ### b. Retrieve your entitled registry key
@@ -128,11 +128,11 @@ kubectl create ns odm
 In a standard ODM on Kubernetes installation, the procedure for creating a pull secret involves the following instructions
 
 ```bash
-kubectl create secret docker-registry <REGISTRY_SECRET> \
-        --docker-server=cp.icr.io \
-        --docker-username=cp \
-        --docker-password="<API_KEY_GENERATED>" \
-        --docker-email=<USER_EMAIL> -n odm
+oc create secret docker-registry <REGISTRY_SECRET> \
+    --docker-server=cp.icr.io \
+    --docker-username=cp \
+    --docker-password="<API_KEY_GENERATED>" \
+    --docker-email=<USER_EMAIL>
 ```
 
 Where:
@@ -162,7 +162,6 @@ NAME                  	CHART VERSION   APP VERSION     DESCRIPTION
 ibm-helm/ibm-odm-prod	23.2.0          8.12.0.1        IBM Operational Decision Manager
 ```
 
-
 ### f. Define the data that will be injected in the pods.
 
 To manage this process, the SecretProviderClass Custom Resource Definition (CRD) is utilized. Within this provider class, it's necessary to specify the address of the secure secret store and the locations of the secret keys. The following is the SecretProviderClass for our specific case, which involves using HashiCorp Vault deployed on Kubernetes.
@@ -177,7 +176,7 @@ metadata:
 spec:
   provider: vault
   parameters:
-    vaultAddress: http://vault:8200
+    vaultAddress: http://<vaultfqdn>:8200
     roleName: database
     objects: |
       - objectName: "db-password"
@@ -199,27 +198,22 @@ spec:
 
 Save the content in a serviceproviderclass.yaml file.
 
-### g. Create the service account and the config map that contain the vault.sh script
+### g. Create the service account and the SecretProviderClass
 
 ```bash
-echo "Create the service account"
-kubectl create serviceaccount odm-sa --namespace odm
-echo "Create the configmap that countains the vault.sh script"
-kubectl create cm vaultcm --from-file=./configmap -n odm
-echo "Create the SecretProviderClass"
-oc apply -f serviceproviderclass.yaml -n odm
+kubectl create serviceaccount odm-sa
+oc apply -f serviceproviderclass.yaml
 ```
 
 ## ODM installation with Basic authentication (10 min)
 
 1. Edit the values-default-vault.yaml and adjust the values.
 
-2. Kustomize helm deployment with the csi driver
+2. Run helm deployment with the csi driver
 
 ```bash
-helm template odm-vault-kust -n odm ibm-helm/ibm-odm-prod -f values-default-vault.yaml > odm-template-nocsi.yaml && kustomize build -o odm-csi.yaml && kubectl apply -f odm-csi.yaml
+helm install odm-vault-kust ibm-helm/ibm-odm-prod -f values-default-vault.yaml
 ```
-The Kustomize script allows the injection of the CSIDriver volume into the custom-init-container.
 
 After a few minutes, ODM should be up and running without using any secrets for installation.
 
