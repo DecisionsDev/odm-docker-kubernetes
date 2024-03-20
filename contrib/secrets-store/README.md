@@ -56,9 +56,9 @@ HashiCorp Vault must be up and running. An [on-prem installation description](RE
 * [Helm](https://helm.sh/docs/intro/install/)
 * Access to Operational Decision Manager on Container 9.0.0.0 images
 
-> Note: This documentation has been tested with a HashiCorp evaluation instance. We assume that the procedure will remain the same for the commercial product.
+> Note: The first and second steps are described in the [companion document](README-External_Vault.md) when you use OCP.
 
-In this documentation will do the assumption that ODM will be installed in the "odm" namespace.
+In this documentation ODM will be installed in the "odm" namespace.
 
 # Setup
 
