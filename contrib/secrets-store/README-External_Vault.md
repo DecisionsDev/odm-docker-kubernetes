@@ -100,6 +100,12 @@ vault login
 
 Just enter the root token displayed at the end of the init step.
 
+Activate the kv-2 secrets engine which allows to keep simple secrets such as passwords and certificates along with their history:
+
+```bash
+vault secrets enable -version=2 -path secret kv
+```
+
 ## Configuration for OCP usage
 
 (With help from https://support.hashicorp.com/hc/en-us/articles/4404389946387-Kubernetes-auth-method-Permission-Denied-error.)
@@ -110,17 +116,17 @@ Get its API IP address:
 
     KUBE_HOST=$(kubectl config view --raw --minify --flatten --output='jsonpath={.clusters[].cluster.server}')
 
-Pour les deux éléments suivants, il faut récupérer le secret contenant le token pour le Service Account "vault" du namespace "vault". Sur OpenShift il a un nom sous la forme vault-token-XXXXXXXX.
+For the next two elements you have to find the secret containing the token for the Service Account "vault" in namespace "vault". Its name is like vault-token-XXXXX on OpenShift.
 
-Récupérer le token du Service Account qui autorisera la connexion à l'API K8s depuis Vault :
+Get the Service Account's token from it:
 
-    TOKEN_REVIEW_JWT=$(kubectl get secret vault-token-XXXXXXXX -n vault -o go-template='{{ .data.token }}' | base64 --decode)
+    TOKEN_REVIEW_JWT=$(kubectl get secret vault-token-XXXXX -n vault -o go-template='{{ .data.token }}' | base64 --decode)
 
-Récupérer enfin la chaîne de certificats du serveur (elle se trouve curieusement dans le même secret qu'au dessus):
+And get also the certificate chain of the server (yes it is in the same secret indeed):
 
-    kubectl get secret -n vault vault-token-qmfcv -o yaml -o jsonpath='{.data.ca\.crt}'|base64 -d > ca.crt
+    kubectl get secret vault-token-XXXXX -n vault -o jsonpath='{.data.ca\.crt}'|base64 -d > ca.crt
 
-Et configurer Vault enfin avec ces éléments :
+You can then configure the Vault with these elements:
 
 ```bash
 vault auth enable kubernetes
@@ -130,51 +136,3 @@ vault write auth/kubernetes/config \
     kubernetes_ca_cert=@ca.crt \
     disable_local_ca_jwt="true"
 ```
-
-6. Création d'un secret
-
-Création secrets (serveur Vault en mode dev): https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-secret-store-driver
-
-Sinon en mode prod, il faut d'abord activer l'engine kv :
-
-```bash
-vault secrets enable -version=2 -path secret kv
-```
-
-```bash
-vault kv put secret/db-pass db-password="myodmpwd" db-user="myodmusr"
-vault kv put secret/myodmcompany myodmcompany.key=@myodmcompany.key myodmcompany.crt=@myodmcompany.crt
-```
-
-7. Autorisation
-
-Créer une politique pour le déploiement d'ODM :
-
-```bash
-vault policy write odm-policy - <<EOF
-path "secret/data/*" {
-  capabilities = ["read"]
-}
-EOF
-```
-
-Attribuer la politique au ServiceAccount de la release :
-
-```bash
-vault write auth/kubernetes/role/database \
-    bound_service_account_names=toto-ibm-odm-prod-service-account \
-    bound_service_account_namespaces=odm01 \
-    policies=odm-policy \
-    ttl=20m
-```
-
-Il peut être intéressant de tester à ce moment-là que tout marche bien du côté Vault :
-
-```bash
-TOKEN_REVIEW_SJWT=$(oc get secret toto-ibm-odm-prod-service-account-token-XXXXXXXX -n odm01 -o jsonpath='{.data.token}'|base64 -d)
-curl -X POST --data "{\"jwt\": \"${TOKEN_REVIEW_SJWT}\", \"role\": \"database\"}" http://<publicIP>:8200/v1/auth/kubernetes/login
-```
-
-ce qui devrait renvoyer du JSON avec plein de données, commençant par une request_id. Si on obtient un "Permission denied"... ben on a dû se tromper quelque part (ou alors Red Hat a frappé et a modifié des trucs dans OpenShift).
-
-Ensuite seulement, quand le curl au-dessus fonctionne, on peut créer la SecretProviderClass et lancer le helm install.
