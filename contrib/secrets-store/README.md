@@ -62,30 +62,20 @@ In this documentation will do the assumption that ODM will be installed in the "
 
 # Setup
 
-## 1. Initialize Vault server for ODM (10 min)
+## Initialize HashiCorp Vault server
 
-### a. Configure Kubernetes authentication in the Vault server
+Please refer to the [separate document](README-External_Vault.md) if you don't have such a secrets store already available.
 
-Vault provides a Kubernetes authentication method that enables clients to authenticate with a Kubernetes Service Account token. This token is provided to each pod when it is created.
-
-Enable Kubernetes authentication on your Vault instance and add your OCP address, certificate and credentials:
+Most next commands require you already are connect to your secrets store:
 
 ```bash
-vault auth enable kubernetes
-vault write auth/kubernetes/config \
-    token_reviewer_jwt="$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)" \
-    kubernetes_host="https://$KUBERNETES_PORT_443_TCP_ADDR:443"
-vault create token
-```
-
-
-### b. Setup `vault` command line for the next steps.
-```bash
-export VAULT_ADDR=http://$(oc get route vault -n vault -o jsonpath='{.spec.host}')
+export VAULT_ADDR=http://<serverfqdn>:8200
 vault login
 ```
 
-- Define the `odm-policy` policy that enables the read capability for secrets at path `secret/data/`
+## Define RBAC on HashiCorp Vault
+
+Create the `odm-policy` policy that enables the read capability for secrets at path `secret/data/`:
 
 ```bash
 vault policy write odm-policy - <<EOF
@@ -95,7 +85,7 @@ path "secret/data/*" {
 EOF
 ```
 
-- Create a Kubernetes authentication role
+Create an authentication role which assigns the policy created to above to some `odm-sa` service account in the namespace `odm` on your OCP cluster:
 
 ```bash
 vault write auth/kubernetes/role/database \
@@ -105,18 +95,15 @@ vault write auth/kubernetes/role/database \
     ttl=24h
 ```
 
-### c. Populate the secrets in the vault
+## Populate the secrets in the vault
 
 As an example, we have populated some data. You will need to adjust it according to your needs.
 
 ```bash
-export VAULT_ADDR=http://$(oc get route vault --no-headers -o custom-columns=HOST:.spec.host)
 vault kv put secret/privatecertificates tls.crt=@vaultdata/mycompany.crt  tls.key=@vaultdata/mycompany.key
 vault kv put secret/trustedcertificates digicert.crt=@vaultdata/digicert.crt microsoft.crt=@vaultdata/microsoft.crt
 vault kv put secret/db-pass db-password="postgrespwd" db-user="postgresuser"
 ```
-
-
 
 ## 3. Prepare your environment for the ODM installation (10 min)
 
