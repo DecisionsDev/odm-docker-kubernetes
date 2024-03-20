@@ -167,11 +167,11 @@ NAME                  	CHART VERSION   APP VERSION     DESCRIPTION
 ibm-helm/ibm-odm-prod   24.0.0       	  9.0.0           IBM Operational Decision Manager
 ```
 
-### f. Define the data that will be injected in the pods.
+### Data to be injected in the pods
 
 To manage this process, the SecretProviderClass Custom Resource Definition (CRD) is utilized. Within this provider class, it's necessary to specify the address of the secure secret store and the locations of the secret keys. The following is the SecretProviderClass for our specific case, which involves using HashiCorp Vault deployed on Kubernetes.
 
-Please refer to the implement secret store provider for the syntax.
+Please refer to the secrets store provider for the syntax.
 
 ```yaml
 apiVersion: secrets-store.csi.x-k8s.io/v1
@@ -192,9 +192,7 @@ spec:
         secretKey: "db-user"
 ```
 
-Save the content in a serviceproviderclass.yaml file.
-
-### g. Create the service account and the SecretProviderClass
+Save the content in a serviceproviderclass.yaml file and create the SecretProviderClass:
 
 ```bash
 oc apply -f serviceproviderclass.yaml
