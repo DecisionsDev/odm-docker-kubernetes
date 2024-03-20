@@ -107,25 +107,28 @@ vault kv put secret/db-pass db-password="postgrespwd" db-user="postgresuser"
 
 # ODM setup
 
-## 3. Prepare your environment for the ODM installation (10 min)
+## Prepare your environment for the ODM installation
 
-To get access to the ODM material, you need an IBM entitlement key to pull the images from the IBM Entitled Registry.
+A few mandatory items have to be created so that ODM can be deployed.
 
-### a. Create an ODM namespace
+### Namespace
+
+Create an ODM project and the Service Account already described in the [companion document](README-External_Vault.md):
 
 ```bash
 oc new-project odm
+oc create serviceaccount odm-sa
 ```
 
-### b. Retrieve your entitled registry key
+### Image pull secret
+
+To get access to the ODM material, you need an IBM entitlement key to pull the images from the IBM Entitled Registry.
 
 - Log in to [MyIBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary) with the IBMid and password that are associated with the entitled software.
 
 - In the Container software library tile, verify your entitlement on the **View library** page, and then go to **Get entitlement key** to retrieve the key.
 
-### c. Create a pull secret by running a kubectl create secret command.
-
-In a standard ODM on Kubernetes installation, the procedure for creating a pull secret involves the following instructions
+Create a pull secret by running a kubectl create secret command:
 
 ```bash
 oc create secret docker-registry <REGISTRY_SECRET> \
@@ -147,19 +150,21 @@ Take note of the secret name so that you can set it for the *image.pullSecrets* 
 
 ***However, as the goal of this article is to eliminate the need for secrets, refer to the Kubernetes implementation to understand the alternative methods. For example, the OpenShift documentation on this topic can be found [here](https://docs.openshift.com/container-platform/4.14/openshift_images/managing_images/using-image-pull-secrets.html#images-update-global-pull-secret_using-image-pull-secrets)***
 
-### d. Add the public IBM Helm charts repository
+### IBM Helm charts repository
 
-```
+Add the public IBM Helm charts repository to your environment:
+
+```bash
 helm repo add ibm-helm https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm
 helm repo update
 ```
 
-### e. Check you can access ODM charts
+Check that you can access ODM charts:
 
-```
+```bash
 helm search repo ibm-odm-prod
 NAME                  	CHART VERSION   APP VERSION     DESCRIPTION
-ibm-helm/ibm-odm-prod	23.2.0          8.12.0.1        IBM Operational Decision Manager
+ibm-helm/ibm-odm-prod   24.0.0       	  9.0.0           IBM Operational Decision Manager
 ```
 
 ### f. Define the data that will be injected in the pods.
@@ -185,15 +190,6 @@ spec:
       - objectName: "db-user"
         secretPath: "secret/data/db-pass"
         secretKey: "db-user"
-      - objectName: "automation.crt"
-        secretPath: "secret/data/trustedcertificates"
-        secretKey: "automationcloud.crt"
-      - objectName: "tls.crt"
-        secretPath: "secret/data/privatecertificates"
-        secretKey: "tls.crt"
-      - objectName: "tls.key"
-        secretPath: "secret/data/privatecertificates"
-        secretKey: "tls.key"
 ```
 
 Save the content in a serviceproviderclass.yaml file.
@@ -201,7 +197,6 @@ Save the content in a serviceproviderclass.yaml file.
 ### g. Create the service account and the SecretProviderClass
 
 ```bash
-kubectl create serviceaccount odm-sa
 oc apply -f serviceproviderclass.yaml
 ```
 
