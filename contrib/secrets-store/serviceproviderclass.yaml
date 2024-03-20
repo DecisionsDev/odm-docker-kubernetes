@@ -5,7 +5,7 @@ metadata:
 spec:
   provider: vault
   parameters:
-    vaultAddress: http://vault:8200
+    vaultAddress: http://<vaultfqdn>:8200
     roleName: database
     objects: |
       - objectName: "db-password"
@@ -14,15 +14,3 @@ spec:
       - objectName: "db-user"
         secretPath: "secret/data/db-pass"
         secretKey: "db-user"
-      - objectName: "tls.crt"
-        secretPath: "secret/data/privatecertificates"
-        secretKey: "tls.crt"
-      - objectName: "tls.key"
-        secretPath: "secret/data/privatecertificates"
-        secretKey: "tls.key"
-      - objectName: "digicert.crt"
-        secretPath: "secret/data/trustedcertificates"
-        secretKey: "digicert.crt"
-      - objectName: "microsoft.crt"
-        secretPath: "secret/data/trustedcertificates"
-        secretKey: "microsoft.crt"
