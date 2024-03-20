@@ -43,56 +43,70 @@ oc get pods --namespace vault --output wide
 
 ## Installation
 
-On Ubuntu 22.04, from https://developer.hashicorp.com/vault/tutorials/getting-started/getting-started-install:
+On Ubuntu 22.04, from https://developer.hashicorp.com/vault/tutorials/getting-started/getting-started-install, add HashiCorp Vault's repository and download it:
 
 ```bash
 wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
 gpg --no-default-keyring --keyring /usr/share/keyrings/hashicorp-archive-keyring.gpg --fingerprint
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
 sudo apt update && sudo apt install vault
+```
+
+Edit its configuration file in order to enable HTTP connectivity instead of HTTPS (it will be enough for this demonstration). The configuration file should look like this:
+
+```
+ui = true
+
+storage "file" {
+  path = "/opt/vault/data"
+}
+
+# HTTP listener
+listener "tcp" {
+  address = "0.0.0.0:8200"
+  tls_disable = 1
+}
+```
+
+Enable and start the service:
+
+```bash
 sudo systemctl enable vault
 sudo systemctl start vault
 ```
 
-2. Créer un fichier de config
+Initialize the server:
 
 ```bash
-public_ip=$(dig a $(hostname -f) @9.0.0.1 +short)
-cat >vault.hcl <<EOF
-storage "file" {
- path = "/tmp/vault-data"
-}
-
-listener "tcp" {
- address = "http://${public_ip}:8200"
- tls_disable = 1
-}
-
-api_addr = "http://${public_ip}:8200"
-cluster_addr = "http://${public_ip}:8201"
-# log_level = "trace"
-# log_file = "/tmp/vault.log"
-EOF
+export VAULT_ADDR=http://<serverfqdn>:8200
+vault operator init
 ```
 
-3. Démarrer le serveur
+Make sure you keep the unseal keys and token that will be displayed in a safe place! They can't be retrieved afterwards.
+
+Unseal the vault:
 
 ```bash
-vault server -dev -dev-root-token-id="root" -config vault.hcl
+vault operator unseal
 ```
 
-4. Utilisation
+It will ask for any unseal key (displayed above). You have to run the same command three times (with different keys!) before the vault is actually unsealed.
+
+You can then log into the vault:
 
 ```bash
-export VAULT_ADDR=http://<publicIP>:8200
 vault login
 ```
 
-5. Authentification OpenShift
+Just enter the root token displayed at the end of the init step.
 
-D'après https://support.hashicorp.com/hc/en-us/articles/4404389946387-Kubernetes-auth-method-Permission-Denied-error
+## Configuration for OCP usage
 
-Récupérer l'adresse de l'API du serveur :
+(With help from https://support.hashicorp.com/hc/en-us/articles/4404389946387-Kubernetes-auth-method-Permission-Denied-error.)
+
+Log into your OCP cluster.
+
+Get its API IP address:
 
     KUBE_HOST=$(kubectl config view --raw --minify --flatten --output='jsonpath={.clusters[].cluster.server}')
 
