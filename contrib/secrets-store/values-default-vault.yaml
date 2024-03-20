@@ -17,13 +17,6 @@ image:
 service:
   enableRoute: true
 
-externalDatabase:
-  type: "postgresql"
-  serverName: "myexternalpostgres-ibm-postgres-dev.odm-privileged.svc.cluster.local"
-  databaseName: "postgresdb"
-  secretCredentials: "odm-prod-secret"
-  port: "5432"
-
 customization:
   runAsUser: ''
 
