@@ -202,10 +202,26 @@ oc apply -f serviceproviderclass.yaml
 
 1. Edit the values-default-vault.yaml and adjust the values.
 
-2. Run helm deployment with the csi driver
+2. Run Helm deployment with the CSI driver:
 
 ```bash
-helm install odm-vault-kust ibm-helm/ibm-odm-prod -f values-default-vault.yaml
+helm install odm-vault-spc ibm-helm/ibm-odm-prod -f values-default-vault.yaml
 ```
 
 After a few minutes, ODM should be up and running without using any secrets for installation.
+
+# Reference: List of secrets that you can get directly from your secrets store
+
+customization.authSecretRef
+customization.baiEmitterSecretRef
+customization.securitySecretRef
+customization.usageMeteringSecretRef ?
+externalCustomDatabase.datasourceRef
+externalDatabase.decisionCenter.sslSecretRef
+externalDatabase.decisionServer.secretCredentials
+externalDatabase.decisionServer.sslSecretRef
+externalDatabase.secretCredentials
+externalDatabase.sslSecretRef
+internalDatabase.secretCredentials
+oidc.clientRef
+service.ingress.tlsSecretRef
