@@ -214,16 +214,17 @@ After a few minutes, ODM should be up and running without using any secrets for 
 
 # Reference: List of secrets that you can get directly from your secrets store
 
-customization.authSecretRef
-customization.baiEmitterSecretRef
-customization.securitySecretRef
-customization.usageMeteringSecretRef ?
-externalCustomDatabase.datasourceRef
-externalDatabase.decisionCenter.sslSecretRef
-externalDatabase.decisionServer.secretCredentials
-externalDatabase.decisionServer.sslSecretRef
-externalDatabase.secretCredentials
-externalDatabase.sslSecretRef
-internalDatabase.secretCredentials
-oidc.clientRef
-service.ingress.tlsSecretRef
+| ----- |
+| customization.authSecretRef
+| customization.baiEmitterSecretRef
+| customization.securitySecretRef
+| customization.usageMeteringSecretRef
+| externalCustomDatabase.datasourceRef
+| externalDatabase.decisionCenter.sslSecretRef
+| externalDatabase.decisionServer.secretCredentials
+| externalDatabase.decisionServer.sslSecretRef
+| externalDatabase.secretCredentials
+| externalDatabase.sslSecretRef
+| internalDatabase.secretCredentials
+| oidc.clientRef
+| service.ingress.tlsSecretRef
