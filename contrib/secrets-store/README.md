@@ -210,6 +210,8 @@ helm install odm-vault-spc ibm-helm/ibm-odm-prod -f values-default-vault.yaml
 
 After a few minutes, ODM should be up and running without using any secrets for installation.
 
+> An example with more secrets hosted by an external Vault is described in our [Vault with initContainer contrib](../vault-initcontainer/README.md).
+
 # Reference: List of secrets that you can get directly from your secrets store
 
 customization.authSecretRef
