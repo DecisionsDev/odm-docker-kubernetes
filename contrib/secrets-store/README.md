@@ -169,7 +169,7 @@ ibm-helm/ibm-odm-prod   24.0.0       	  9.0.0           IBM Operational Decision
 
 ### Data to be injected in the pods
 
-To manage this process, the SecretProviderClass Custom Resource Definition (CRD) is utilized. Within this provider class, it's necessary to specify the address of the secure secret store and the locations of the secret keys. The following is the SecretProviderClass for our specific case, which involves using HashiCorp Vault deployed on Kubernetes.
+To manage this process, the SecretProviderClass Custom Resource Definition (CRD) is utilized. Within this provider class, it's necessary to specify the address of the secure secret store and the locations of the secret keys. The following is the SecretProviderClass (SPC) for our specific case, which involves using HashiCorp Vault deployed on Kubernetes.
 
 Please refer to the secrets store provider for the syntax.
 
@@ -212,7 +212,7 @@ After a few minutes, ODM should be up and running without using any secrets for 
 
 > An example with more secrets hosted by an external Vault is described in our [Vault with initContainer contrib](../vault-initcontainer/README.md).
 
-# Reference: List of secrets that you can get directly from your secrets store
+# Reference: Secrets that you can get from your secrets store with SPC
 
 | Secret name |
 | ----------- |
