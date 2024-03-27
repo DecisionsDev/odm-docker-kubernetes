@@ -214,7 +214,8 @@ After a few minutes, ODM should be up and running without using any secrets for 
 
 # Reference: List of secrets that you can get directly from your secrets store
 
-| ----- |
+| Secret name |
+| ----------- |
 | customization.authSecretRef
 | customization.baiEmitterSecretRef
 | customization.securitySecretRef
