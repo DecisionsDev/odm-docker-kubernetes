@@ -9,7 +9,7 @@ The aim of this tutorial is to explain how to configure ODM on k8s to make it co
 Jaeger will be used to display traces that will be emitted by the Open Telemetry java agent, collected by the OpenTelemetry (OTEL) collector.
 You can get [here](https://access.redhat.com/documentation/en-us/openshift_container_platform/4.5/html/jaeger/index) more details about Jaeger on OCP.
  
-![Architecture](images/architecture.jpg)
+![Architecture](./images/architecture.png)
 
 We will install Jaeger using the [OpenShift Jaeger Operator](https://access.redhat.com/documentation/en-us/openshift_container_platform/4.5/html/jaeger/jaeger-installation#jaeger-operator-install_jaeger-install).
 
@@ -84,6 +84,7 @@ helm repo update
 $ helm search repo ibm-odm-prod
 NAME                             	CHART VERSION	APP VERSION	DESCRIPTION
 ibm-helm/ibm-odm-prod           	23.2.0       	8.12.0.1   	IBM Operational Decision Manager
+```
 
 ### Install an IBM Operational Decision Manager release (10 min)
 
