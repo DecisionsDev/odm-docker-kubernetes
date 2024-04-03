@@ -14,6 +14,12 @@ image:
   pullSecrets:
   - ibm-registry
 
+internalDatabase:
+  persistence:
+    enabled: false
+  runAsUser: ""
+  secretCredentials: odmdbsecret
+
 service:
   enableRoute: true
 
