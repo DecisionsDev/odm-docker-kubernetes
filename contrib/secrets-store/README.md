@@ -47,6 +47,8 @@ The architecture diagram illustrates the integration process between the Secret 
 
 The diagram visually represents the secure flow of secrets data from the central manager to the ODM application in Kubernetes, facilitated by the Secret Store CSI Driver, ensuring best practices in secret management.
 
+This documentation is based on an external HashiCorp Vault instance which hosts a few secrets needed by ODM's deployment. The differences with other Secrets stores will be highlighted.
+
 ## Prerequisites
 
 HashiCorp Vault must be up and running. An [on-prem installation description](README-External_Vault.md) is provided (with hints about the Secrets Store CSI driver and the HashiCorp Vault provider installation) but of course you can use your own instance.
@@ -62,7 +64,7 @@ In this documentation ODM will be installed in the "odm" namespace.
 
 # HashiCorp Vault setup
 
-## Initialize HashiCorp Vault server
+## Log into HashiCorp Vault server
 
 Please refer to the [separate document](README-External_Vault.md) if you don't have such a secrets store already available.
 
@@ -197,6 +199,8 @@ Save the content in a serviceproviderclass.yaml file and create the SecretProvid
 ```bash
 oc apply -f serviceproviderclass.yaml
 ```
+
+> The exact syntax of the SPC depends on the Secrets store provider. The example given above corresponds to HashiCorp Vault, but the "parameters" syntax can differ greatly according to the provider. For instance Google Secret Manager relies on [other keys](https://github.com/GoogleCloudPlatform/secrets-store-csi-driver-provider-gcp/blob/main/examples/app-secrets.yaml.tmpl).
 
 It replaces the Kubernetes Secret that was created with:
 
