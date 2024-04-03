@@ -38,7 +38,7 @@ The architecture diagram illustrates the integration process between the Secret 
   - Detailed within the Kubernetes rectangle, showcasing the components that make up the ODM Pods:
 
     - **Volume**:
-      - Represented by the two smaller rectangles within the ODM Pods.
+      - Represented by the cylinder within the ODM Pods.
       - This is where the secrets data is stored after retrieval.
 
     - **ODM Containers**:
