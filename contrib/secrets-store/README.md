@@ -177,7 +177,7 @@ Please refer to the secrets store provider for the syntax.
 apiVersion: secrets-store.csi.x-k8s.io/v1
 kind: SecretProviderClass
 metadata:
-  name: vault-database
+  name: odmdbsecret
 spec:
   provider: vault
   parameters:
@@ -197,6 +197,27 @@ Save the content in a serviceproviderclass.yaml file and create the SecretProvid
 ```bash
 oc apply -f serviceproviderclass.yaml
 ```
+
+It replaces the Kubernetes Secret that was created with:
+
+```shell
+kubectl create secret generic odmdbsecret --from-literal=db-user=myadmin@mypostgresqlserver \
+                                          --from-literal=db-password='passw0rd!'
+```
+
+or:
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: odmdbsecret
+data:
+  db-password: cGFzc3cwcmQh
+  db-user: bXlhZG1pbkBteXBvc3RncmVzcWxzZXJ2ZXI=
+```
+
+Note the equivalence between the key data.db-user (for instance) in the Secret and the key spec.parameters.objects[].secretKey = "db-user" in the SecretProviderClass. It corresponds to the db-user key in the secret/db-pass you created previously with the `vault kv put` command.
 
 ## ODM installation with Basic authentication (10 min)
 
