@@ -9,7 +9,7 @@ The aim of this tutorial is to explain how to configure ODM on k8s to make it co
 Jaeger will be used to display traces that will be emitted by the Open Telemetry java agent, collected by the OpenTelemetry (OTEL) collector.
 You can get [here](https://access.redhat.com/documentation/en-us/openshift_container_platform/4.5/html/jaeger/index) more details about Jaeger on OCP.
  
-![Architecture](./images/architecture.png)
+![Architecture](./images/otel_architecture.png)
 
 We will install Jaeger using the [OpenShift Jaeger Operator](https://access.redhat.com/documentation/en-us/openshift_container_platform/4.5/html/jaeger/jaeger-installation#jaeger-operator-install_jaeger-install).
 
