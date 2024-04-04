@@ -24,6 +24,8 @@ EOF
 When done, install the HashiCorp Vault provider driver:
 
 ```bash
+helm repo add hashicorp https://helm.releases.hashicorp.com
+helm repo update
 oc adm policy add-scc-to-user privileged system:serviceaccount:vault:vault-csi-provider
 helm install vault hashicorp/vault \
     --set "global.openshift=true" \
@@ -108,7 +110,7 @@ vault secrets enable -version=2 -path secret kv
 
 ## Configuration for OCP usage
 
-(With help from https://support.hashicorp.com/hc/en-us/articles/4404389946387-Kubernetes-auth-method-Permission-Denied-error.)
+(With help from https://support.hashicorp.com/hc/en-us/articles/4404389946387-Kubernetes-auth-method-Permission-Denied-error and https://computingforgeeks.com/how-to-integrate-multiple-kubernetes-clusters-to-vault-server/)
 
 Log into your OCP cluster.
 
