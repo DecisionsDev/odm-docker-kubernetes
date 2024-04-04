@@ -2,7 +2,7 @@
 
 When applications are observable, operations teams can identify and understand the root causes of bugs, bottlenecks, and other inefficiencies. Liberty provides a robust framework for developing observable applications and integrates with numerous third-party monitoring tools. On the [Monitor ODM liberty metrics with mpMetrics and Prometheus](https://github.com/DecisionsDev/odm-docker-kubernetes/blob/opentelemetry/contrib/monitor/mpmetrics/README.md) tutorial, we explained how to activate liberty metrics that describe the internal state of many Liberty components. Here, we will describe how to use MicroProfile Telemetry that helps to collect data data on the paths that application requests take through services. You can get more details on liberty documentation about the [Microprofile Telemetry usage](https://openliberty.io/docs/latest/microprofile-telemetry.html)
 
-The aim of this tutorial is to explain how to configure ODM on k8s to make it communicate with an opentelemetry collector that can consume generated traces. It's not an in-deep opentelemetry tutorial. It's preferable to read the [Open Telemetry liberty configuration]((https://openliberty.io/docs/latest/microprofile-telemetry.html#ol-config) before to realize the tutorial.
+The aim of this tutorial is to explain how to configure ODM on k8s to make it communicate with an opentelemetry collector that can consume generated traces. It's not an in-deep opentelemetry tutorial. It's preferable to read the [Open Telemetry liberty configuration](https://openliberty.io/docs/latest/microprofile-telemetry.html#ol-config) before to realize the tutorial.
 
 ## Install Jaeger to display traces
 
