@@ -30,4 +30,4 @@ vault:
   enabled: true
   type: spc
 
-serviceAccountName: "odm-sa"
+serviceAccountName: odm-sa
