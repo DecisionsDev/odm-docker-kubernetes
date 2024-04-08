@@ -69,6 +69,7 @@ vault secrets enable -version=2 -path <secretspath> kv
 
 ## Configuration for OCP usage
 
+<!-- markdown-link-check-disable-next-line -->
 (With help from https://support.hashicorp.com/hc/en-us/articles/4404389946387-Kubernetes-auth-method-Permission-Denied-error and https://computingforgeeks.com/how-to-integrate-multiple-kubernetes-clusters-to-vault-server/)
 
 Log into your OCP cluster.
