@@ -90,7 +90,7 @@ EOF
 Create an authentication role which assigns the policy created to above to some `odm-sa` service account in the namespace `odm` on your OCP cluster:
 
 ```bash
-vault write auth/kubernetes/role/database \
+vault write auth/<clustername>/role/database \
     bound_service_account_names=odm-sa \
     bound_service_account_namespaces=odm \
     policies=odm-policy \
@@ -104,7 +104,7 @@ As an example, we have populated some data. You will need to adjust it according
 ```bash
 vault kv put secret/privatecertificates tls.crt=@vaultdata/mycompany.crt  tls.key=@vaultdata/mycompany.key
 vault kv put secret/trustedcertificates digicert.crt=@vaultdata/digicert.crt microsoft.crt=@vaultdata/microsoft.crt
-vault kv put secret/db-pass db-password="postgrespwd" db-user="postgresuser"
+vault kv put <secretspath>/db-pass db-password="postgrespwd" db-user="postgresuser"
 ```
 
 # ODM setup
@@ -187,10 +187,10 @@ spec:
     roleName: database
     objects: |
       - objectName: "db-password"
-        secretPath: "secret/data/db-pass"
+        secretPath: "<secretspath>/data/db-pass"
         secretKey: "db-password"
       - objectName: "db-user"
-        secretPath: "secret/data/db-pass"
+        secretPath: "<secretspath>/data/db-pass"
         secretKey: "db-user"
 ```
 

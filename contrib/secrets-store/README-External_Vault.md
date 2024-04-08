@@ -2,47 +2,6 @@
 
 We provide here some installation hints about the installation and the configuration of a test instance for HashiCorp Vault so that it can be used as a secrets store on OpenShift Container Platform.
 
-## Secrets Store CSI driver and provider
-
-The installation of the Secrets Store CSI driver is straightforward on OpenShift: Go the OperatorHub, look for "Secrets Store CSI Driver Operator" and deploy the operator with its defaults.
-
-Then create the CSI Driver itself:
-
-```bash
-oc apply -f - <<EOF
-apiVersion: operator.openshift.io/v1
-kind: ClusterCSIDriver
-metadata:
-  name: secrets-store.csi.k8s.io
-spec:
-  logLevel: Normal
-  managementState: Managed
-  operatorLogLevel: Trace
-EOF
-```
-
-When done, install the HashiCorp Vault provider driver:
-
-```bash
-helm repo add hashicorp https://helm.releases.hashicorp.com
-helm repo update
-oc adm policy add-scc-to-user privileged system:serviceaccount:vault:vault-csi-provider
-helm install vault hashicorp/vault \
-    --set "global.openshift=true" \
-    --set "server.enabled=false" \
-    --set "injector.enabled=false" \
-    --set "csi.enabled=true" \
-    --set "csi.daemonSet.securityContext.container.privileged=true" \
-    --namespace vault \
-    --create-namespace
-```
-
-Verify that one pod for each worker node is created in the "vault" namespace before continuing:
-
-```bash
-oc get pods --namespace vault --output wide
-```
-
 ## Installation
 
 On Ubuntu 22.04, from https://developer.hashicorp.com/vault/tutorials/getting-started/getting-started-install, add HashiCorp Vault's repository and download it:
@@ -105,7 +64,7 @@ Just enter the root token displayed at the end of the init step.
 Activate the kv-2 secrets engine which allows to keep simple secrets such as passwords and certificates along with their history:
 
 ```bash
-vault secrets enable -version=2 -path secret kv
+vault secrets enable -version=2 -path <secretspath> kv
 ```
 
 ## Configuration for OCP usage
@@ -131,10 +90,51 @@ And get also the certificate chain of the server (yes it is in the same secret i
 You can then configure the Vault with these elements:
 
 ```bash
-vault auth enable kubernetes
-vault write auth/kubernetes/config \
+vault auth enable -path <clustername> kubernetes
+vault write auth/<clustername>/config \
     token_reviewer_jwt="${TOKEN_REVIEW_JWT}" \
     kubernetes_host="${KUBE_HOST}" \
     kubernetes_ca_cert=@ca.crt \
     disable_local_ca_jwt="true"
+```
+
+## Secrets Store CSI driver and provider
+
+The installation of the Secrets Store CSI driver is straightforward on OpenShift: Go the OperatorHub, look for "Secrets Store CSI Driver Operator" and deploy the operator with its defaults.
+
+Then create the CSI Driver itself:
+
+```bash
+oc apply -f - <<EOF
+apiVersion: operator.openshift.io/v1
+kind: ClusterCSIDriver
+metadata:
+  name: secrets-store.csi.k8s.io
+spec:
+  logLevel: Normal
+  managementState: Managed
+  operatorLogLevel: Trace
+EOF
+```
+
+When done, install the HashiCorp Vault provider driver:
+
+```bash
+helm repo add hashicorp https://helm.releases.hashicorp.com
+helm repo update
+oc adm policy add-scc-to-user privileged system:serviceaccount:vault:vault-csi-provider
+helm install vault hashicorp/vault \
+    --set "global.openshift=true" \
+    --set "server.enabled=false" \
+    --set "injector.enabled=false" \
+    --set "csi.enabled=true" \
+    --set "csi.daemonSet.securityContext.container.privileged=true" \
+    --namespace vault \
+    --create-namespace
+```
+
+Verify that one pod for each worker node is created in the "vault" namespace before continuing:
+
+```bash
+oc get pods --namespace vault --output wide
 ```
