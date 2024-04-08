@@ -289,8 +289,15 @@ After a few minutes, ODM should be up and running without using any secrets for 
 | ----------- |
 | customization.authSecretRef
 | customization.baiEmitterSecretRef
+| customization.monitorRef
+| customization.privateCertificateList
 | customization.securitySecretRef
+| customization.trustedCertificateList
 | customization.usageMeteringSecretRef
+| decisionCenter.monitorRef
+| decisionRunner.monitorRef
+| decisionServerConsole.monitorRef
+| decisionServerRuntime.monitorRef
 | externalCustomDatabase.datasourceRef
 | externalDatabase.decisionCenter.sslSecretRef
 | externalDatabase.decisionServer.secretCredentials
