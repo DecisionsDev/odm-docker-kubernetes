@@ -192,10 +192,10 @@ spec:
         secretKey: "db-user"
 ```
 
-Save the content in a serviceproviderclass.yaml file and create the SecretProviderClass:
+Save the content in a spc-odmdbsecret.yaml file and create the SecretProviderClass:
 
 ```bash
-oc apply -f serviceproviderclass.yaml
+oc apply -f spc-odmdbsecret.yaml
 ```
 
 > The exact syntax of the SPC depends on the Secrets store provider. The example given above corresponds to HashiCorp Vault, but the "parameters" syntax can differ greatly according to the provider. For instance Google Secret Manager relies on [other keys](https://github.com/GoogleCloudPlatform/secrets-store-csi-driver-provider-gcp/blob/main/examples/app-secrets.yaml.tmpl).
@@ -254,17 +254,17 @@ spec:
     roleName: database
     objects: |
       - objectName: "tls.crt"
-        secretPath: "<secretspath>/data/myodmcompany.com/tls.crt"
+        secretPath: "<secretspath>/data/myodmcompany.com"
         secretKey: "tls.crt"
       - objectName: "tls.key"
-        secretPath: "<secretspath>/data/myodmcompany.com/tls.key"
+        secretPath: "<secretspath>/data/myodmcompany.com"
         secretKey: "tls.key"
 ```
 
 It replaces the K8s secret that would have been created with (again, don't do that here!):
 
 ```shell
-kubectl create secret generic <myodmcompanytlssecret> --from-file=tls.crt=myodmcompany.crt --from-file=tls.key=myodmcompany.key
+kubectl create secret generic myodmcompanytlssecret --from-file=tls.crt=myodmcompany.crt --from-file=tls.key=myodmcompany.key
 ```
 
 The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://www.ibm.com/docs/en/odm/8.12.0?topic=servers-server-certificates).
