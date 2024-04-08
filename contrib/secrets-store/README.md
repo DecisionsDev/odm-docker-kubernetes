@@ -97,16 +97,6 @@ vault write auth/<clustername>/role/database \
     ttl=24h
 ```
 
-## Populate the secrets in the vault
-
-As an example, we have populated some data. You will need to adjust it according to your needs.
-
-```bash
-vault kv put secret/privatecertificates tls.crt=@vaultdata/mycompany.crt  tls.key=@vaultdata/mycompany.key
-vault kv put secret/trustedcertificates digicert.crt=@vaultdata/digicert.crt microsoft.crt=@vaultdata/microsoft.crt
-vault kv put <secretspath>/db-pass db-password="postgrespwd" db-user="postgresuser"
-```
-
 # ODM setup
 
 ## Prepare your environment for the ODM installation
@@ -173,6 +163,14 @@ ibm-helm/ibm-odm-prod   24.0.0       	  9.0.0           IBM Operational Decision
 
 To manage this process, the SecretProviderClass Custom Resource Definition (CRD) is utilized. Within this provider class, it's necessary to specify the address of the secure secret store and the locations of the secret keys. The following is the SecretProviderClass (SPC) for our specific case, which involves using HashiCorp Vault deployed on Kubernetes.
 
+As an example, we have populated some data. You will need to adjust it according to your needs.
+
+First create the username and associated password used to connect to the internal database:
+
+```bash
+vault kv put <secretspath>/db-pass db-password="postgrespwd" db-user="postgresuser"
+```
+
 Please refer to the secrets store provider for the syntax.
 
 ```yaml
@@ -202,7 +200,7 @@ oc apply -f serviceproviderclass.yaml
 
 > The exact syntax of the SPC depends on the Secrets store provider. The example given above corresponds to HashiCorp Vault, but the "parameters" syntax can differ greatly according to the provider. For instance Google Secret Manager relies on [other keys](https://github.com/GoogleCloudPlatform/secrets-store-csi-driver-provider-gcp/blob/main/examples/app-secrets.yaml.tmpl).
 
-It replaces the Kubernetes Secret that was created with:
+It replaces the Kubernetes Secret that would have been created with (don't do that here!):
 
 ```shell
 kubectl create secret generic odmdbsecret --from-literal=db-user=myadmin@mypostgresqlserver \
@@ -222,6 +220,54 @@ data:
 ```
 
 Note the equivalence between the key data.db-user (for instance) in the Secret and the key spec.parameters.objects[].secretKey = "db-user" in the SecretProviderClass. It corresponds to the db-user key in the secret/db-pass you created previously with the `vault kv put` command.
+
+(Optional) Generate a self-signed certificate.
+
+If you do not have a trusted certificate, you can use OpenSSL and other cryptography and certificate management libraries to generate a certificate file and a private key, to define the domain name, and to set the expiration date. The following command creates a self-signed certificate (.crt file) and a private key (.key file) that accept the domain name *myodmcompany.com*. The expiration is set to 1000 days:
+
+```shell
+openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout myodmcompany.key \
+        -out myodmcompany.crt -subj "/CN=myodmcompany.com/OU=it/O=myodmcompany/L=Paris/C=FR" \
+        -addext "subjectAltName = DNS:myodmcompany.com"
+```
+
+> [!NOTE]
+> You can use -addext only with actual OpenSSL and from LibreSSL 3.1.0.
+
+Upload your self-signed certificate to your Vault:
+
+```shell
+vault kv put <secretspath>/myodmcompany.com tls.crt=@myodmcompany.crt  tls.key=@myodmcompany.key
+```
+
+and create the corresponding SPC:
+
+```yaml
+apiVersion: secrets-store.csi.x-k8s.io/v1
+kind: SecretProviderClass
+metadata:
+  name: myodmcompanytlssecret
+spec:
+  provider: vault
+  parameters:
+    vaultAddress: http://<vaultfqdn>:8200
+    roleName: database
+    objects: |
+      - objectName: "tls.crt"
+        secretPath: "<secretspath>/data/myodmcompany.com/tls.crt"
+        secretKey: "tls.crt"
+      - objectName: "tls.key"
+        secretPath: "<secretspath>/data/myodmcompany.com/tls.key"
+        secretKey: "tls.key"
+```
+
+It replaces the K8s secret that would have been created with (again, don't do that here!):
+
+```shell
+kubectl create secret generic <myodmcompanytlssecret> --from-file=tls.crt=myodmcompany.crt --from-file=tls.key=myodmcompany.key
+```
+
+The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://www.ibm.com/docs/en/odm/8.12.0?topic=servers-server-certificates).
 
 ## ODM installation with Basic authentication (10 min)
 
