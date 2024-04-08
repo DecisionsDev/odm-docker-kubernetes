@@ -77,11 +77,11 @@ vault login
 
 ## Define RBAC on HashiCorp Vault
 
-Create the `odm-policy` policy that enables the read capability for secrets at path `secret/data/`:
+Create the `odm-policy` policy that enables the read capability for secrets at path `<secretspath>/data/`:
 
 ```bash
 vault policy write odm-policy - <<EOF
-path "secret/data/*" {
+path "<secretspath>/data/*" {
   capabilities = ["read"]
 }
 EOF
