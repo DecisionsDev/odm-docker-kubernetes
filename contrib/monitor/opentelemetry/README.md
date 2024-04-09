@@ -6,11 +6,11 @@ In the [Monitor ODM liberty metrics with mpMetrics and Prometheus](https://githu
 
 The goal of this tutorial is to demonstrate how to configure ODM on Kubernetes to enable communication with an OpenTelemetry collector that can process generated traces. This is not an in-depth OpenTelemetry tutorial. Therefore, it is advisable to familiarize yourself with the [Open Telemetry liberty configuration](https://openliberty.io/docs/latest/microprofile-telemetry.html#ol-config) before proceeding with this tutorial.
 
+![Architecture](./images/otel_architecture.png) 
+
 ## Install Jaeger to display traces
 
-Jaeger will be used to display traces emitted by the Open Telemetry Java agent and collected by the OpenTelemetry (OTEL) collector. More details about Jaeger on OpenShift Platform can be found [here](https://access.redhat.com/documentation/en-us/openshift_container_platform/4.5/html/jaeger/index).
-
-![Architecture](./images/otel_architecture.png) 
+Jaeger will be used to display traces emitted by the Open Telemetry Java agent and collected by the OpenTelemetry (OTEL) collector.
 
 Jaeger will be installed using the [OpenShift Jaeger Operator](https://docs.openshift.com/container-platform/4.15/observability/distr_tracing/distr_tracing_jaeger/distr-tracing-jaeger-installing.html#distr-tracing-jaeger-operator-install_dist-tracing-jaeger-installing).
 
