@@ -14,7 +14,9 @@ Jaeger will be used to display traces emitted by the Open Telemetry Java agent a
 
 Jaeger will be installed using the [OpenShift Jaeger Operator](https://docs.openshift.com/container-platform/4.15/observability/distr_tracing/distr_tracing_jaeger/distr-tracing-jaeger-installing.html#distr-tracing-jaeger-operator-install_dist-tracing-jaeger-installing).
 
-LGR : Portable on others platform ?
+Jaeger can be installed on various platforms, including OpenShift through the use of the [OpenShift Jaeger Operator](https://docs.openshift.com/container-platform/4.15/observability/distr_tracing/distr_tracing_jaeger/distr-tracing-jaeger-installing.html#distr-tracing-jaeger-operator-install_dist-tracing-jaeger-installing). 
+
+For installations on other platforms, refer to the [Jaeger documentation](https://www.jaegertracing.io/docs/1.56/operator/) for comprehensive guidance on deploying Jaeger using its operator.
 
 ## Deploy the OpenTelemetry Collector
 
