@@ -8,11 +8,11 @@ The goal of this tutorial is to demonstrate how to configure ODM on Kubernetes t
 
 ## Install Jaeger to display traces
 
-Jaeger will be used to display traces emitted by the Open Telemetry Java agent and collected by the OpenTelemetry (OTEL) collector. More details about Jaeger on OCP can be found [here](https://access.redhat.com/documentation/en-us/openshift_container_platform/4.5/html/jaeger/index).
+Jaeger will be used to display traces emitted by the Open Telemetry Java agent and collected by the OpenTelemetry (OTEL) collector. More details about Jaeger on OpenShift Platform can be found [here](https://access.redhat.com/documentation/en-us/openshift_container_platform/4.5/html/jaeger/index).
 
-![Architecture](./images/otel_architecture.png)
+![Architecture](./images/otel_architecture.png) 
 
-Jaeger will be installed using the [OpenShift Jaeger Operator](https://access.redhat.com/documentation/en-us/openshift_container_platform/4.5/html/jaeger/jaeger-installation#jaeger-operator-install_jaeger-install).
+Jaeger will be installed using the [OpenShift Jaeger Operator](https://docs.openshift.com/container-platform/4.15/observability/distr_tracing/distr_tracing_jaeger/distr-tracing-jaeger-installing.html#distr-tracing-jaeger-operator-install_dist-tracing-jaeger-installing).
 
 LGR : Portable on others platform ?
 
