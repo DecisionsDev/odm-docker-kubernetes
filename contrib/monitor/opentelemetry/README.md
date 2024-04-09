@@ -1,6 +1,8 @@
 # Enable ODM distributed tracing with Microprofile telemetry
 
-When applications are made observable, operations teams can more easily identify and understand the root causes of bugs, bottlenecks, and other inefficiencies. Liberty offers a robust framework for developing such observable applications and integrates seamlessly with numerous third-party monitoring tools. In the [Monitor ODM liberty metrics with mpMetrics and Prometheus](https://github.com/DecisionsDev/odm-docker-kubernetes/blob/opentelemetry/contrib/monitor/mpmetrics/README.md) tutorial, we detailed how to enable Liberty metrics that depict the internal state of various Liberty components. In this document, we will discuss how to utilize MicroProfile Telemetry, which assists in collecting data on the paths that application requests take through services. More details on the usage of Microprofile Telemetry can be found in the [Liberty documentation](https://openliberty.io/docs/latest/microprofile-telemetry.html).
+When applications are made observable, operations teams can more easily identify and understand the root causes of bugs, bottlenecks, and other inefficiencies. Liberty offers a robust framework for developing such observable applications and integrates seamlessly with numerous third-party monitoring tools. 
+
+In the [Monitor ODM liberty metrics with mpMetrics and Prometheus](https://github.com/DecisionsDev/odm-docker-kubernetes/blob/opentelemetry/contrib/monitor/mpmetrics/README.md) tutorial, we detailed how to enable Liberty metrics that depict the internal state of various Liberty components. In this document, we will discuss how to utilize MicroProfile Telemetry, which assists in collecting data on the paths that application requests take through services. More details on the usage of Microprofile Telemetry can be found in the [Liberty documentation](https://openliberty.io/docs/latest/microprofile-telemetry.html).
 
 The goal of this tutorial is to demonstrate how to configure ODM on Kubernetes to enable communication with an OpenTelemetry collector that can process generated traces. This is not an in-depth OpenTelemetry tutorial. Therefore, it is advisable to familiarize yourself with the [Open Telemetry liberty configuration](https://openliberty.io/docs/latest/microprofile-telemetry.html#ol-config) before proceeding with this tutorial.
 
@@ -19,7 +21,7 @@ LGR : Portable on others platform ?
 We used the following [descriptor](https://github.com/open-telemetry/opentelemetry-go/blob/main/example/otel-collector/k8s/otel-collector.yaml) as the basis for the OTEL Collector deployment.
 However, it's likely that you will encounter an error similar to:
 
- ```
+ ```console
 2023-07-06T17:28:37.520Z        debug   jaegerexporter@v0.80.0/exporter.go:106  failed to push trace data to Jaeger     {"kind": "exporter", "data_type": "traces", "name": "jaeger", "error": "rpc error: code = Unimplemented desc = unknown service jaeger.api_v2.CollectorService"}
  ```
 
@@ -27,19 +29,21 @@ A solution is provided in the following [article](https://cloudbyt.es/blog/switc
 
 You can also utilize the [otel-collector.yaml](./otel-collector.yaml) file we used for this tutorial by applying it with:
 
- ```
+ ```bash
 kubectl apply -f otel-collector.yaml
  ```
 
 Verify that the OpenTelemetry Collector is up and running by executing:
 
- ```
+ ```bash
 kubectl logs deployment/otel-collector
  ```
 
 You should get the message :
 
+ ```console
 "Everything is ready. Begin running and processing data."
+ ```
 
 ## Install ODM with the Open Telemetry agent
 
@@ -95,7 +99,7 @@ We'll use the **decisionServerRuntime.downloadUrl** parameter to download the [O
 
 To configure the OTEL Java agent, we need to set up some JVM options, such as:
 
-```
+```bash
     -javaagent:/config/download/opentelemetry-javaagent.jar
     -Dotel.sdk.disabled=false
     -Dotel.exporter.otlp.endpoint=http://otel-collector.otel.svc.cluster.local:4317
@@ -107,21 +111,21 @@ To configure the OTEL Java agent, we need to set up some JVM options, such as:
 
 To do this, create the **otel-runtime-jvm-options-configmap** configmap that will be associated to the **decisionServerRuntime.jvmOptionsRef** parameter :
 
-```
+```bash
 kubectl create -f otel-runtime-jvm-options-configmap.yaml
 ```
 
 We will also add a parameter to add some liberty configurations that could be increase some traces using the **decisionServerRuntime.libertyHookRef** parameter. 
 Create the following secret using the libertyHookEnd.xml file :
 
-```
+```bash
 kubectl create secret generic runtime-liberty-configuration --from-file=libertyHookEnd.xml
 ```
 
 
 Then, install the ODM release :
 
-```
+```bash
 helm install otel-odm-release ibm-helm/ibm-odm-prod \
         --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
         --set license=true --set usersPassword=odmAdmin \
@@ -134,7 +138,7 @@ helm install otel-odm-release ibm-helm/ibm-odm-prod \
 
 Having a look at the Decision Server Runtime pod logs, you should see : 
 
-```
+```console
 [otel.javaagent 2024-04-03 18:03:27:166 +0200] [main] INFO io.opentelemetry.javaagent.tooling.VersionLogger - opentelemetry-javaagent - version: 1.32.1
 ```
 
@@ -150,12 +154,12 @@ Refer to [this documentation](https://www.ibm.com/docs/en/odm/8.12.0?topic=tasks
 
 For example, on OpenShift, you can obtain the route names and hosts with the following commands:
 
- ```
+ ```bash
  kubectl get routes --no-headers --output custom-columns=":metadata.name,:spec.host"
  ```
 
  You get the following hosts:
- ```
+ ```console
  my-odm-release-odm-dc-route           <DC_HOST>
  my-odm-release-odm-dr-route           <DR_HOST>
  my-odm-release-odm-ds-console-route   <DS_CONSOLE_HOST>
@@ -164,10 +168,10 @@ For example, on OpenShift, you can obtain the route names and hosts with the fol
 
 You perform a basic authentication ODM runtime call in the following way:
 
- ```
-  $ curl -H "Content-Type: application/json" -k --data @payload.json \
-         -H "Authorization: Basic b2RtQWRtaW46b2RtQWRtaW4=" \
-        https://<DS_RUNTIME_HOST>/DecisionService/rest/production_deployment/1.0/loan_validation_production/1.0
+ ```bash
+ curl -H "Content-Type: application/json" -k --data @payload.json \
+      -H "Authorization: Basic b2RtQWRtaW46b2RtQWRtaW4=" \
+      https://<DS_RUNTIME_HOST>/DecisionService/rest/production_deployment/1.0/loan_validation_production/1.0
   ```
 
   Where `b2RtQWRtaW46b2RtQWRtaW4=` is the base64 encoding of the current username:password odmAdmin:odmAdmin
@@ -189,7 +193,7 @@ To gain more insights into span details, you can add additional Liberty features
 Edit the `runtime-liberty-configuration` secret and uncomment the lines that incorporate Liberty OpenTelemetry features:
 
 
- ```
+ ```xml
 <server>
     <featureManager>
         <feature>servlet-4.0</feature>
@@ -209,7 +213,7 @@ Edit the `runtime-liberty-configuration` secret and uncomment the lines that inc
 
 The Decision Server Runtime logs must show :
 
- ```
+ ```console
 [4/3/24, 18:36:23:612 CEST] 0000003b FeatureManage A CWWKF1037I: The server added the [jaxrs-2.1, jaxrsClient-2.1, jsonb-1.0, jsonp-1.1, jwt-1.0, microProfile-4.0, mpConfig-2.0, mpFaultTolerance-3.0, mpHealth-3.0, mpJwt-1.2, mpMetrics-3.0, mpOpenAPI-2.0, mpOpenTracing-2.0, mpRestClient-2.0, opentracing-2.0] features to the existing feature set.
 [4/3/24, 18:36:23:613 CEST] 0000003b FeatureManage A CWWKF0012I: The server installed the following features: [appSecurity-2.0, appSecurity-3.0, cdi-2.0, distributedMap-1.0, el-3.0, federatedRegistry-1.0, jaxrs-2.1, jaxrsClient-2.1, jdbc-4.1, jndi-1.0, json-1.0, jsonb-1.0, jsonp-1.1, jsp-2.3, jwt-1.0, ldapRegistry-3.0, microProfile-4.0, monitor-1.0, mpConfig-2.0, mpFaultTolerance-3.0, mpHealth-3.0, mpJwt-1.2, mpMetrics-3.0, mpOpenAPI-2.0, mpOpenTracing-2.0, mpRestClient-2.0, oauth-2.0, openidConnectClient-1.0, opentracing-2.0, servlet-4.0, ssl-1.0, transportSecurity-1.0].
 [4/3/24, 18:36:23:614 CEST] 0000003b FeatureManage A CWWKF0008I: Feature update completed in 2.964 seconds.
