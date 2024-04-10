@@ -112,7 +112,7 @@ For more information about installing these tools, see [Setting up a host to mir
 
 - Create the [Amazon ECR repository instances](https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-create.html)
 
-  > NOTE: You must create one repository per image.
+  > NOTE: You must create one repository per image type.
 
   ```bash
   aws ecr create-repository --repository-name cp/cp4a/odm/dbserver --image-scanning-configuration scanOnPush=true --region ${REGION}
@@ -122,7 +122,7 @@ For more information about installing these tools, see [Setting up a host to mir
   aws ecr create-repository --repository-name cp/cp4a/odm/odm-decisionserverconsole --image-scanning-configuration scanOnPush=true --region ${REGION}
   ```
 
-- Mirror images to Amazon ECR.
+- Mirror the images to Amazon ECR.
 
   ```bash
   oc image mirror \
@@ -136,7 +136,7 @@ For more information about installing these tools, see [Setting up a host to mir
 
   For more information about these commands, see [Mirroring images to a private container registry](https://www.ibm.com/docs/en/odm/8.12.0?topic=installation-mirroring-images-private-container-registry).
 
-  You can check the repositories available and the images available in specific repositories using the commands below :
+  You can check the repositories and the images available using the commands below :
 
   ```bash
   # List the repositories
@@ -161,40 +161,46 @@ For more information about installing these tools, see [Setting up a host to mir
     --docker-username=AWS --docker-password=$(aws ecr get-login-password --region ${REGION})
   ```
 
-### d. Install ODM with the following parameters
+### d. Install ODM
 
-- When you reach the step [Install an IBM Operational Decision Manager release](README.md#5-install-an-ibm-operational-decision-manager-release-10-min), if you want to move the ODM pulled images from the IBM Entitled Registry to the ECR registry, choose the relevant .yaml file depending on whether you want to try the NGINX or the ALB Ingress controller, the internal database or the RDS PostgreSQL database. All you have to do is to override the `image.pullSecrets` and `image.repository` properties when you install the Helm chart:
+- Refer to [Install an IBM Operational Decision Manager release](README.md#5-install-an-ibm-operational-decision-manager-release-10-min) to choose the relevant `.yaml` file to use in the `helm install` command below depending on 
+  - the Ingress controller used (NGINX or ALB), 
+  - the database used (internal database or the RDS PostgreSQL database).
 
-  ```bash
-  helm install mycompany ibm-helm/ibm-odm-prod --version 24.0.0 \
-             --set image.pullSecrets=ecrodm \
-             --set image.repository=${TARGET_REGISTRY}/cp/cp4a/odm \
-             --values eks-values.yaml
-  ```
+- Find the Helm Chart version related to your CASE version:
 
--  How to find the value of the --version parameter
+    For instance, if you choose the CASE version `1.8.0`, then the Helm chart version should be `24.0.0` and you should set:
+    ```bash
+    export CHART_VERSION=24.0.0
+    ```
 
-    In the example above, the parameter `--version 24.0.0` specifies the Helm chart version related to the CASE version `1.8.0`.
-
-    You can find the Helm chart version relevant to a given CASE version:
+    You can find the Helm chart version related to a given CASE version:
 
     - For a release: in the page [Upgrading ODM releases on Certified Kubernetes](https://www.ibm.com/docs/en/odm/9.0.0?topic=8120-upgrading-odm-releases-certified-kubernetes).
 
     - For an interim fix: click the link for your version of ODM in the page [Operational Decision Manager Interim Fixes](https://www.ibm.com/support/pages/operational-decision-manager-interim-fixes) and then check the table "Interim fix for ODM on Certified Kubernetes".
 
-    Alternatively, you can also run the command `tree  ~/.ibm-pak/data/cases/ibm-odm-prod/` (on the bastion host). The chart version number shows up in the filename `<CASE_VERSION>/charts/ibm-odm-prod-<CHART_VERSION>.tgz` :
+    - Alternatively, you can also run the command `tree  ~/.ibm-pak/data/cases/ibm-odm-prod/` (on the bastion host), and you can find the chart version number in the name of the file `ibm-odm-prod-<CHART_VERSION>.tgz` located in `<CASE_VERSION>/charts/` :
 
-    ```bash
-    /home/user/.ibm-pak/data/cases/ibm-odm-prod/
-    └── 1.8.0
-        ├── caseDependencyMapping.csv
-        ├── charts
-        │   └── ibm-odm-prod-24.0.0.tgz
-        ├── component-set-config.yaml
-        ├── ibm-odm-prod-1.8.0-airgap-metadata.yaml
-        ├── ibm-odm-prod-1.8.0-charts.csv
-        ├── ibm-odm-prod-1.8.0-images.csv
-        ├── ibm-odm-prod-1.8.0.tgz
-        └── resourceIndexes
-            └── ibm-odm-prod-resourcesIndex.yaml
-    ```
+      ```bash
+      /home/user/.ibm-pak/data/cases/ibm-odm-prod/
+      └── 1.8.0
+          ├── caseDependencyMapping.csv
+          ├── charts
+          │   └── ibm-odm-prod-24.0.0.tgz
+          ├── component-set-config.yaml
+          ├── ibm-odm-prod-1.8.0-airgap-metadata.yaml
+          ├── ibm-odm-prod-1.8.0-charts.csv
+          ├── ibm-odm-prod-1.8.0-images.csv
+          ├── ibm-odm-prod-1.8.0.tgz
+          └── resourceIndexes
+              └── ibm-odm-prod-resourcesIndex.yaml
+      ```
+- Run the `helm install` command below:
+
+  ```bash
+  helm install mycompany ibm-helm/ibm-odm-prod --version ${CHART_VERSION} \
+      --set image.pullSecrets=ecrodm \
+      --set image.repository=${TARGET_REGISTRY}/cp/cp4a/odm \
+      --values eks-values.yaml
+  ```
