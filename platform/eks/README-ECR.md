@@ -3,24 +3,25 @@ The following steps explain how to use a bastion host to mirror the ODM on Kuber
 
 A bastion host is a host connected to both the private registry (Amazon ECR) and the public container registry.
 
-The related instructions in the online documentation are [Option 1: Mirroring images to a private container registry with a bastion server](https://www.ibm.com/docs/en/odm/8.12.0?topic=mipr-option-1-mirroring-images-private-container-registry-bastion-server)
+The related instructions in the online documentation are:
+- [Setting up a host to mirror images to a private registry](https://www.ibm.com/docs/en/odm/9.0.0?topic=installation-setting-up-host-mirror-images-private-registry)
+- [Setting environment variables and downloading CASE files](https://www.ibm.com/docs/en/odm/9.0.0?topic=installation-setting-environment-variables-downloading-case-files)
+- [Option 1: Mirroring images to a private container registry with a bastion server](https://www.ibm.com/docs/en/odm/9.0.0?topic=mipr-option-1-mirroring-images-private-container-registry-bastion-server)
 
 ## Prerequisites:
 
-- Install the following tools on your Bastion host:
+- Install the following tools on your bastion host (if needed, refer to [Setting up a host to mirror images to a private registry](https://www.ibm.com/docs/en/odm/9.0.0?topic=installation-setting-up-host-mirror-images-private-registry)):
   - Docker or Podman
   - OCP CLI (oc)
   - [IBM ibm-pak plugin](https://github.com/IBM/ibm-pak)
   - Helm
     
-- The host needs access to the following sites and ports:
+- The bastion host needs access to the following sites and ports:
   - icr.io:443 for IBM Cloud Container Registry 
   - github.com for CASE files and tools
   - Amazon ECR
-    
-For more information about installing these tools, see [Setting up a host to mirror images to a private registry](https://www.ibm.com/docs/en/odm/8.12.0?topic=installation-setting-up-host-mirror-images-private-registry).
 
-- Export the following environment variables as they are used all along this procedure (replace the placeholders `<AWS-Region>`, `<AWS-AccountId>`, `<ODM-CaseVersion>` and `<amd64|ppc64le|s390x>` with actual values):
+- Export the following environment variables (replace the placeholders `<AWS-Region>`, `<AWS-AccountId>`, `<ODM-CaseVersion>` and `<amd64|ppc64le|s390x>` with actual values):
 
   ```bash
   export REGION=<AWS-Region>
