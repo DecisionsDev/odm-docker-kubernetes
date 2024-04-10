@@ -36,7 +36,7 @@ The related instructions in the online documentation are:
 
 ## Procedure:
 
-### a. Setting environment variables and downloading CASE files
+### a. Downloading the CASE files
 
  - Run the following commands to download the image inventory for Operational Decision Manager to your host:
 
