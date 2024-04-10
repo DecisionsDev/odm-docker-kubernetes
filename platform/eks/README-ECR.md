@@ -36,7 +36,7 @@ The related instructions in the online documentation are:
 
 ## Procedure:
 
-### a. Downloading the CASE files
+### a. Download the CASE files
 
  - Run the following commands to download the image inventory for Operational Decision Manager to your host:
 
@@ -53,7 +53,7 @@ The related instructions in the online documentation are:
 
     For more information about this step, refer to [Setting environment variables and downloading CASE files](https://www.ibm.com/docs/en/odm/8.12.0?topic=installation-setting-environment-variables-downloading-case-files).
 
-### b. Mirroring the ODM images to the ECR registry
+### b. Mirror the ODM images to the ECR registry
 
 - Run the following command to generate mirror manifests to be used when mirroring the ODM images to the target registry.
 
