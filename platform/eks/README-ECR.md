@@ -68,7 +68,7 @@ The related instructions in the online documentation are:
 - For CASE versions up to 1.7.x (included), append `-<architecture>` at the end of each line in `~/.ibm-pak/data/mirror/${CASE_NAME}/${CASE_VERSION}/images-mapping.txt` (where `<architecture>` can be `amd64`, `ppc64le`, or `s390x`).
 
   - either manually,
-  - or by running the script below:
+  - or by running the command below (on Linux only, not for MacOS):
 
   ```bash
   sed -i "s/$/-${ARCHITECTURE}/" ~/.ibm-pak/data/mirror/${CASE_NAME}/${CASE_VERSION}/images-mapping.txt
