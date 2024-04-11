@@ -78,15 +78,17 @@ Get its API IP address:
 
     KUBE_HOST=$(kubectl config view --raw --minify --flatten --output='jsonpath={.clusters[].cluster.server}')
 
-For the next two elements you have to find the secret containing the token for the Service Account "vault" in namespace "vault". Its name is like vault-token-XXXXX on OpenShift.
+For the next two elements you have to find the secret containing the token for the Service Account "vault" in namespace "vault". Its name is like vault-token-XXXXX on OpenShift:
+
+    SA_TOKEN_SECRET=$(kubectl get secrets --namespace vault --output=jsonpath='{.items[?(@.metadata.annotations.kubernetes\.io/service-account\.name=="vault")].metadata.name}' --field-selector type=kubernetes.io/service-account-token)
 
 Get the Service Account's token from it:
 
-    TOKEN_REVIEW_JWT=$(kubectl get secret vault-token-XXXXX -n vault -o go-template='{{ .data.token }}' | base64 --decode)
+    TOKEN_REVIEW_JWT=$(kubectl get secret ${SA_TOKEN_SECRET} -n vault -o go-template='{{ .data.token }}' | base64 --decode)
 
 And get also the certificate chain of the server (yes it is in the same secret indeed):
 
-    kubectl get secret vault-token-XXXXX -n vault -o jsonpath='{.data.ca\.crt}'|base64 -d > ca.crt
+    kubectl get secret ${SA_TOKEN_SECRET} -n vault -o jsonpath='{.data.ca\.crt}'|base64 -d > ca.crt
 
 You can then configure the Vault with these elements:
 
