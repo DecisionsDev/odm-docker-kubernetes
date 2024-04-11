@@ -4,13 +4,13 @@ The following steps explain how to use a bastion host to mirror the ODM on Kuber
 A bastion host is a host connected to both the private registry (Amazon ECR) and the public container registry.
 
 The related instructions in the online documentation are:
-- [Setting up a host to mirror images to a private registry](https://www.ibm.com/docs/en/odm/9.0.0?topic=installation-setting-up-host-mirror-images-private-registry)
-- [Setting environment variables and downloading CASE files](https://www.ibm.com/docs/en/odm/9.0.0?topic=installation-setting-environment-variables-downloading-case-files)
-- [Option 1: Mirroring images to a private container registry with a bastion server](https://www.ibm.com/docs/en/odm/9.0.0?topic=mipr-option-1-mirroring-images-private-container-registry-bastion-server)
+- [Setting up a host to mirror images to a private registry](https://ibmdocs-test.dcs.ibm.com/docs/en/odm/9.0.0?topic=installation-setting-up-host-mirror-images-private-registry)
+- [Setting environment variables and downloading CASE files](https://ibmdocs-test.dcs.ibm.com/docs/en/odm/9.0.0?topic=installation-setting-environment-variables-downloading-case-files)
+- [Option 1: Mirroring images to a private container registry with a bastion server](https://ibmdocs-test.dcs.ibm.com/docs/en/odm/9.0.0?topic=mipr-option-1-mirroring-images-private-container-registry-bastion-server)
 
 ## Prerequisites:
 
-- Install the following tools on your bastion host (if needed, refer to [Setting up a host to mirror images to a private registry](https://www.ibm.com/docs/en/odm/9.0.0?topic=installation-setting-up-host-mirror-images-private-registry)):
+- Install the following tools on your bastion host (if needed, refer to [Setting up a host to mirror images to a private registry](https://ibmdocs-test.dcs.ibm.com/docs/en/odm/9.0.0?topic=installation-setting-up-host-mirror-images-private-registry)):
   - Docker or Podman
   - OCP CLI (oc)
   - [IBM ibm-pak plugin](https://github.com/IBM/ibm-pak)
@@ -51,7 +51,7 @@ The related instructions in the online documentation are:
 
     The command creates a flat directory structure under `~/.ibm-pak/data/cases/$CASE_NAME/$CASE_VERSION` that contains the ibm-odm-prod.tgz CASE files, a folder that contains the ibm-odm-prod Helm charts, and two CSV files that contain the list of images and the list of charts associated with the CASE.
 
-    For more information about this step, refer to [Setting environment variables and downloading CASE files](https://www.ibm.com/docs/en/odm/8.12.0?topic=installation-setting-environment-variables-downloading-case-files).
+    For more information about this step, refer to [Setting environment variables and downloading CASE files](https://ibmdocs-test.dcs.ibm.com/docs/en/odm/9.0.0?topic=installation-setting-environment-variables-downloading-case-files).
 
 ### b. Mirroring the ODM images to the ECR registry
 
@@ -135,7 +135,7 @@ The related instructions in the online documentation are:
   > Note: 
   Only the container images needed for your architecture are uploaded into the registry when specifying the option `--filter-by-os ".*/${ARCHITECTURE}"`
 
-  For more information about these commands, see [Mirroring images to a private container registry](https://www.ibm.com/docs/en/odm/8.12.0?topic=installation-mirroring-images-private-container-registry).
+  For more information about these commands, see [Mirroring images to a private container registry](https://ibmdocs-test.dcs.ibm.com/docs/en/odm/9.0.0?topic=installation-mirroring-images-private-container-registry).
 
   You can check the repositories and the images available using the commands below :
 
@@ -177,7 +177,7 @@ The related instructions in the online documentation are:
 
     You can find the Helm chart version related to a given CASE version:
 
-    - For a release: in the page [Upgrading ODM releases on Certified Kubernetes](https://www.ibm.com/docs/en/odm/9.0.0?topic=8120-upgrading-odm-releases-certified-kubernetes).
+    - For a release: in the page [Upgrading ODM releases on Certified Kubernetes](https://ibmdocs-test.dcs.ibm.com/docs/en/odm/9.0.0?topic=900-upgrading-odm-releases-certified-kubernetes).
 
     - For an interim fix: click the link for your version of ODM in the page [Operational Decision Manager Interim Fixes](https://www.ibm.com/support/pages/operational-decision-manager-interim-fixes) and then check the table "Interim fix for ODM on Certified Kubernetes".
 
