@@ -204,7 +204,7 @@ helm repo update
 ```
 helm search repo ibm-odm-prod
 NAME                  	CHART VERSION   APP VERSION     DESCRIPTION
-ibm-helm/ibm-odm-prod	23.2.0          8.12.0.1        IBM Operational Decision Manager
+ibm-helm/ibm-odm-prod	24.0.0          9.0.0.0        IBM Operational Decision Manager
 ```
 
 ### 4. Manage a digital certificate (2 min)
@@ -216,17 +216,17 @@ In this step, you will generate a certificate to be used by the GKE load balance
 If you do not have a trusted certificate, you can use OpenSSL and other cryptography and certificate management libraries to generate a certificate file and a private key to define the domain name and to set the expiration date. The following command creates a self-signed certificate (`.crt` file) and a private key (`.key` file) that accept the domain name *mycompany.com*. The expiration is set to 1000 days:
 
 ```
-openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mycompany.key \
-        -out mycompany.crt -subj "/CN=mycompany.com/OU=it/O=mycompany/L=Paris/C=FR"
+openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mynicecompany.key \
+        -out mynicecompany.crt -subj "/CN=mynicecompany.com/OU=it/O=mynicecompany/L=Paris/C=FR"
 ```
 
 #### b. Create a TLS secret with these keys
 
 ```
-kubectl create secret tls mycompany-crt-secret --key mycompany.key --cert mycompany.crt
+kubectl create secret tls mynicecompany-crt-secret --key mynicecompany.key --cert mynicecompany.crt
 ```
 
-The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://www.ibm.com/docs/en/odm/8.12.0?topic=servers-server-certificates) and [Working with certificates and SSL](https://docs.oracle.com/cd/E19830-01/819-4712/ablqw/index.html).
+The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://ibmdocs-test.dcs.ibm.com/docs/en/odm/9.0.0?topic=servers-server-certificates) and [Working with certificates and SSL](https://docs.oracle.com/cd/E19830-01/819-4712/ablqw/index.html).
 
 ### 5. Install the ODM release (10 min)
 
