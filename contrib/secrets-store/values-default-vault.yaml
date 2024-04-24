@@ -25,7 +25,7 @@ service:
 
 customization:
   runAsUser: ''
-  securitySecretRef: myodmcompanytlssecret
+  securitySecretRef: mynicecompanytlssecret
 
 vault:
   enabled: true

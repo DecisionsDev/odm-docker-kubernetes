@@ -223,12 +223,12 @@ Note the equivalence between the key data.db-user (for instance) in the Secret a
 
 (Optional) Generate a self-signed certificate.
 
-If you do not have a trusted certificate, you can use OpenSSL and other cryptography and certificate management libraries to generate a certificate file and a private key, to define the domain name, and to set the expiration date. The following command creates a self-signed certificate (.crt file) and a private key (.key file) that accept the domain name *myodmcompany.com*. The expiration is set to 1000 days:
+If you do not have a trusted certificate, you can use OpenSSL and other cryptography and certificate management libraries to generate a certificate file and a private key, to define the domain name, and to set the expiration date. The following command creates a self-signed certificate (.crt file) and a private key (.key file) that accept the domain name *mynicecompany.com*. The expiration is set to 1000 days:
 
 ```shell
-openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout myodmcompany.key \
-        -out myodmcompany.crt -subj "/CN=myodmcompany.com/OU=it/O=myodmcompany/L=Paris/C=FR" \
-        -addext "subjectAltName = DNS:myodmcompany.com"
+openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mynicecompany.key \
+        -out mynicecompany.crt -subj "/CN=mynicecompany.com/OU=it/O=mynicecompany/L=Paris/C=FR" \
+        -addext "subjectAltName = DNS:mynicecompany.com"
 ```
 
 > [!NOTE]
@@ -237,7 +237,7 @@ openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout myodmcompany.key \
 Upload your self-signed certificate to your Vault:
 
 ```shell
-vault kv put <secretspath>/myodmcompany.com tls.crt=@myodmcompany.crt  tls.key=@myodmcompany.key
+vault kv put <secretspath>/mynicecompany.com tls.crt=@mynicecompany.crt  tls.key=@mynicecompany.key
 ```
 
 and create the corresponding SPC:
@@ -246,7 +246,7 @@ and create the corresponding SPC:
 apiVersion: secrets-store.csi.x-k8s.io/v1
 kind: SecretProviderClass
 metadata:
-  name: myodmcompanytlssecret
+  name: mynicecompanytlssecret
 spec:
   provider: vault
   parameters:
@@ -254,17 +254,17 @@ spec:
     roleName: database
     objects: |
       - objectName: "tls.crt"
-        secretPath: "<secretspath>/data/myodmcompany.com"
+        secretPath: "<secretspath>/data/mynicecompany.com"
         secretKey: "tls.crt"
       - objectName: "tls.key"
-        secretPath: "<secretspath>/data/myodmcompany.com"
+        secretPath: "<secretspath>/data/mynicecompany.com"
         secretKey: "tls.key"
 ```
 
 It replaces the K8s secret that would have been created with (again, don't do that here!):
 
 ```shell
-kubectl create secret generic myodmcompanytlssecret --from-file=tls.crt=myodmcompany.crt --from-file=tls.key=myodmcompany.key
+kubectl create secret generic mynicecompanytlssecret --from-file=tls.crt=mynicecompany.crt --from-file=tls.key=mynicecompany.key
 ```
 
 The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://www.ibm.com/docs/en/odm/8.12.0?topic=servers-server-certificates).
