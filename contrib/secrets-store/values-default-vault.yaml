@@ -24,6 +24,7 @@ service:
   enableRoute: true
 
 customization:
+  authSecretRef: authsecret
   runAsUser: ''
   securitySecretRef: mynicecompanytlssecret
 
