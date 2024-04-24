@@ -93,7 +93,7 @@ You need the following elements:
 
 ### Install a Keycloak instance
 
-We have tested with a Keycloak instance (version 21.1.1)  that is installed on Openshift.  The installation procedure can be found at [Get started with Keycloak on Openshift](https://www.keycloak.org/getting-started/getting-started-openshift).
+We have tested with a Keycloak instance (version 24.0.3)  that is installed on Openshift.  The installation procedure can be found at [Get started with Keycloak on Openshift](https://www.keycloak.org/getting-started/getting-started-openshift).
 If you already have an Openshift cluster, you can skip the section [Before you start](https://www.keycloak.org/getting-started/getting-started-openshift#_before_you_start) and use the following steps:
 
 - oc login to your cluster
@@ -191,8 +191,8 @@ You can also create groups and do a mapping between groups and roles. This way, 
 
     In Menu **Manage** / **Users**:
       * Click **Create new user**
-        * Username: ``johndoe@mycompany.com``
-        * Email: ``johndoe@mycompany.com``
+        * Username: ``johndoe@mynicecompany.com``
+        * Email: ``johndoe@mynicecompany.com``
         * Email Verified: On
         * First name: ``John``
         * Last name: ``Doe``
@@ -238,9 +238,12 @@ You can also create groups and do a mapping between groups and roles. This way, 
     * Click **Next**
     * Client Authentication: On
     * Authorization: On
-    * Click *Save*
 
     ![Create Client 2](images/create_client_2.png)
+
+    * Click **Next** to go to the last page and then Click *Save*
+   
+    ![Create Client 3](images/create_client_3.png)
 
     * Click **Credentials** tab
     * Take a note of the **Client secret** value. It will be referenced as ``CLIENT_SECRET`` in the next steps.
@@ -248,9 +251,9 @@ You can also create groups and do a mapping between groups and roles. This way, 
     ![Get Client Secret](images/client_secret.png)
 
     * Click **Service Account Roles** tab
-    *  Select all res* and rts* roles  in the "Available Roles" list and click on "Add selected" to move it to the "Assigned Roles" list
+    * Click the **Assign role** button. Select all res* and rts* roles in the list and click on "Assign" button.
 
-    ![Set Service Account Roles](images/service_account_roles.png)
+    ![Set Service Account Roles](images/assign_service_account_roles.png)
 
 
 2. Add the GROUPS predefined mapper on the ROLES client scope
@@ -261,8 +264,6 @@ You can also create groups and do a mapping between groups and roles. This way, 
       * Search for mapper : **groups**
       * Select **groups**
       * Click *Add*
-    * Click *Settings tab*
-    * Click *Save*
 
     ![Add group mapper](images/add_group_mapper_to_role_scope.png)
 
@@ -280,7 +281,7 @@ You can also create groups and do a mapping between groups and roles. This way, 
     7.1 Verify the Client Credentials Token
 
      You can request an access token using the Client-Credentials flow to verify the format of the token.
-     This token is used for the deployment between Decision Cennter and the Decision Server Console:
+     This token is used for the deployment between Decision Center and the Decision Server Console:
 
     ```shell
     $ ./get-client-credential-token.sh -i <CLIENT_ID> -x <CLIENT_SECRET> -n <KEYCLOAK_SERVER_URL>
@@ -288,7 +289,7 @@ You can also create groups and do a mapping between groups and roles. This way, 
 
     Where:
 
-    - *CLIENT_ID* is your ODM Application, default is **odm**, can be retrieve in the **Manage** / **Clients** menu
+    - *CLIENT_ID* is your ODM Application, default is **odm**, can be retrieved in the **Manage** / **Clients** menu
     - *CLIENT_SECRET* is listed in your ODM Application, in the **Credentials** tab
     - *KEYCLOAK_SERVER_URL* is the issuer that can be retrieved using the **OpenID Endpoint Configuration** link of the **General** tab in the **Configure**/**Realm settings** menu
 
@@ -310,18 +311,17 @@ You can also create groups and do a mapping between groups and roles. This way, 
    To check that it has been correctly taken into account, you can request an access token using the Client password flow.
    This token is used for the invocation of the ODM components like the Decision Center, Decision Server console, and the invocation of the Decision Server Runtime REST API.
 
-    ```shell
-    $ ./get-user-password-token.sh -i <CLIENT_ID> -x <CLIENT_SECRET> -n <KEYCLOAK_SERVER_URL> -u <USERNAME> -p <PASSWORD>
-    ```
+   ```shell
+   $ ./get-user-password-token.sh -i <CLIENT_ID> -x <CLIENT_SECRET> -n <KEYCLOAK_SERVER_URL> -u <USERNAME> -p <PASSWORD>
+   ```
 
    Where:
-
     - *CLIENT_ID* is your ODM Application, default is odm, can be retrieved in the **Manage** / **Clients** menu
     - *CLIENT_SECRET* is listed in your ODM Application, in the **Credentials** tab
     - *KEYCLOAK_SERVER_URL* is the issuer that can be retrieved using the **OpenID Endpoint Configuration** link of the **General** tab in the **Configure**/**Realm settings** menu
     - *USERNAME* *PASSWORD* have been created from 'Create at least one user that belongs to this new group.' section.
 
-     By introspecting the id_token value with the online tool [https://jwt.io](https://jwt.io), you should get:
+   By introspecting the id_token value with the online tool [https://jwt.io](https://jwt.io), you should get:
 
     ```
     {
@@ -355,7 +355,7 @@ You can also create groups and do a mapping between groups and roles. This way, 
 
 2. Create a pull secret by running a `kubectl create secret` command.
 
-    ```
+    ```shell
     $ kubectl create secret docker-registry icregistry-secret \
         --docker-server=cp.icr.io \
         --docker-username=cp \
@@ -375,44 +375,44 @@ You can also create groups and do a mapping between groups and roles. This way, 
 ### Create secrets to configure ODM with Keycloak
 
 
-
-1. Create a secret with the Keycloak Server certificate
+1. Create a secret with the Keycloak Server certificate.
 
     To allow ODM services to access the Keycloak Server, it is mandatory to provide the Keycloak Server certificate.
     You can create the secret as follows:
 
-    ```
+    ```shell
     keytool -printcert -sslserver <KEYCLOAK_SERVER_URL_WITHOUT_HTTPS> -rfc > keycloak.crt
     kubectl create secret generic keycloak-secret --from-file=tls.crt=keycloak.crt
     ```
     Where:
     - KEYCLOAK_SERVER_URL_WITHOUT_HTTPS is KEYCLOAK_SERVER_URL by removing https:// prefix
 
-2. Generate the ODM configuration file for Keycloak
+2. Generate the ODM configuration file for Keycloak.
 
-
-    If you have not yet done so, download the [keycloak-odm-script.zip](keycloak-odm-script.zip) file to your machine. This .zip file contains the [script](generateTemplate.sh) and the content of the [templates](templates) directory.
-    The [script](generateTemplate.sh) allows you to generate the necessary configuration files.
-    Generate the files with the following command:
-    ```
+   If you have not yet done so, download the [keycloak-odm-script.zip](keycloak-odm-script.zip) file to your machine. This .zip file contains the [script](generateTemplate.sh) and the content of the [templates](templates) directory.
+   The [script](generateTemplate.sh) allows you to generate the necessary configuration files.
+   
+   Generate the files with the following command:
+    ```shell
     ./generateTemplate.sh -i <CLIENT_ID> -x <CLIENT_SECRET> -n <KEYCLOAK_SERVER_URL> [-r <REALM_NAME> -u <USER_ID>]
     ```
 
-    Where:
+   Where:
     - *CLIENT_SECRET* is listed in your ODM Application, section **General** / **Client Credentials**
 
-    The following four files are generated into the `output` directory:
+    The following files are generated into the `output` directory:
 
-    - webSecurity.xml contains the mapping between Liberty J2EE ODM roles and Keycloak groups and users:
+    - `webSecurity.xml` contains the mapping between Liberty J2EE ODM roles and Keycloak groups and users:
       * rtsAdministrators/resAdministrators/resExecutors ODM roles are given to the CLIENT_ID (which is seen as a user) to manage the client-credentials flow
-    - openIdWebSecurity.xml contains two openIdConnectClient Liberty configurations:
-      * for web access to Decision Center an Decision Server consoles using userIdentifier="preferred_username" with the Authorization Code flow
+    - `openIdWebSecurity.xml` contains two openIdConnectClient Liberty configurations:
+      * for web access to Decision Center and Decision Server consoles using userIdentifier="preferred_username" with the Authorization Code flow
       * for the rest-api call using userIdentifier="preferred_username" with the client-credentials flow
-    - openIdParameters.properties configures several features like allowed domains, logout, and some internal ODM openid features
+    - `openIdParameters.properties` configures several features like allowed domains, logout, and some internal ODM openid features
+    - `ldap-configurations.xml` contains LDAP configuration for [How to import Keycloak Groups and Users using SCIM](README_FINE_GRAIN_PERMISSION.md)
 
-3. Create the Keycloak authentication secret
+3. Create the Keycloak authentication secret using `webSecurity.xml`, `openIdWebSecurity.xml` and `openIdParameters.properties` files. 
 
-    ```
+    ```shell
     kubectl create secret generic keycloak-auth-secret \
         --from-file=openIdParameters.properties=./output/openIdParameters.properties \
         --from-file=openIdWebSecurity.xml=./output/openIdWebSecurity.xml \
@@ -434,7 +434,7 @@ You can also create groups and do a mapping between groups and roles. This way, 
   ```shell
   helm search repo ibm-odm-prod
   NAME                  	CHART VERSION	APP VERSION	DESCRIPTION
-  ibm-helm/ibm-odm-prod	        23.1.0       	8.12.0.0   	IBM Operational Decision Manager
+  ibm-helm/ibm-odm-prod	     24.0.0       	9.0.0.0   	IBM Operational Decision Manager
   ```
 
 ### 3. Run the `helm install` command
@@ -466,7 +466,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 
   When the NGINX Ingress Controller is ready, you can install the ODM release with:
 
-  ```
+  ```shell
   helm install my-odm-release ibm-helm/ibm-odm-prod \
           --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
           --set oidc.enabled=true \
@@ -488,7 +488,7 @@ You can now install the product. We will use the PostgreSQL internal database an
     Refer to [this documentation](https://www.ibm.com/docs/en/odm/8.12.0?topic=tasks-configuring-external-access) to retrieve the endpoints.
     For example, on OpenShift you can get the route names and hosts with:
 
-    ```
+    ```shell
     kubectl get routes --no-headers --output custom-columns=":metadata.name,:spec.host"
     ```
 
@@ -502,7 +502,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 
     Using an Ingress, the endpoint is the address of the ODM ingress and is the same for all components. You can get it with:
 
-    ```
+    ```shell
     kubectl get ingress my-odm-release-odm-ingress
     ```
 
@@ -550,7 +550,7 @@ To be able to securely connect your Rule Designer to the Decision Server and Dec
 
 1. Get the following configuration files.
     * `https://<DC_HOST>/decisioncenter/assets/truststore.jks`
-    * `https://<DC_HOST>/odm/decisioncenter/assets/OdmOidcProvidersRD.json`
+    * `https://<DC_HOST>/decisioncenter/assets/OdmOidcProvidersRD.json`
       where *DC_HOST* is the Decision Center endpoint.
 
 2. Copy the `truststore.jks` and `OdmOidcProvidersRD.json` files to your Rule Designer installation directory next to the `eclipse.ini` file.
