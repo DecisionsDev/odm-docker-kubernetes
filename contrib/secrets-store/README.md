@@ -161,7 +161,7 @@ ibm-helm/ibm-odm-prod   24.0.0       	  9.0.0           IBM Operational Decision
 
 ### Data to be injected in the pods
 
-To manage this process, the SecretProviderClass Custom Resource Definition (CRD) is utilized. Within this provider class, it's necessary to specify the address of the secure secret store and the locations of the secret keys. The following is the SecretProviderClass (SPC) for our specific case, which involves using HashiCorp Vault deployed on Kubernetes.
+To manage this process, the SecretProviderClass Custom Resource Definition (CRD) is utilized. Within this provider class, it's necessary to specify the address of the secure secret store and the locations of the secret keys.
 
 As an example, we have populated some data. You will need to adjust it according to your needs.
 
@@ -237,7 +237,7 @@ openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mynicecompany.key \
 Upload your self-signed certificate to your Vault:
 
 ```shell
-vault kv put <secretspath>/mynicecompany.com tls.crt=@mynicecompany.crt  tls.key=@mynicecompany.key
+vault kv put <secretspath>/mynicecompany.com tls.crt=@mynicecompany.crt tls.key=@mynicecompany.key
 ```
 
 and create the corresponding SPC:
@@ -268,6 +268,33 @@ kubectl create secret generic mynicecompanytlssecret --from-file=tls.crt=mynicec
 ```
 
 The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://www.ibm.com/docs/en/odm/8.12.0?topic=servers-server-certificates).
+
+We also would like to create a Basic Registry configuration to be used as authSecretRef (refer to both accompanying files group-security-configurations.xml and webSecurity.xml). It will allow some "mat" guy to connect to ODM components. First upload their contents to HashiCorp Vault:
+
+```shell
+vault kv put <secretspath>/authsecret group-security-configurations.xml=@group-security-configurations.xml webSecurity.xml=@webSecurity.xml
+```
+
+and then create and apply the corresponding SPC:
+
+```yaml
+apiVersion: secrets-store.csi.x-k8s.io/v1
+kind: SecretProviderClass
+metadata:
+  name: authsecret
+spec:
+  provider: vault
+  parameters:
+    vaultAddress: http://<vaultfqdn>:8200
+    roleName: database
+    objects: |
+      - objectName: "group-security-configurations.xml"
+        secretPath: "<secretspath>/data/authsecret"
+        secretKey: "group-security-configurations.xml"
+      - objectName: "webSecurity.xml"
+        secretPath: "<secretspath>/data/authsecret"
+        secretKey: "webSecurity.xml"
+```
 
 ## ODM installation with Basic authentication (10 min)
 
