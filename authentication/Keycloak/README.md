@@ -241,7 +241,7 @@ You can also create groups and do a mapping between groups and roles. This way, 
 
     ![Create Client 2](images/create_client_2.png)
 
-    * Click **Next** to go to the last page and then Click *Save*
+    * Click *Save*. For newer version of Keycloak with an addition *Login settings* page, click **Next** to go to this third page, and then click *Save*
    
     ![Create Client 3](images/create_client_3.png)
 
