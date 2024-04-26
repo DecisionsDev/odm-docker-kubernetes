@@ -10,7 +10,7 @@ Choose the desired Resource Group for deploying the SQL Managed Instance and spe
 
 ![Basics configuration](images/sqlmi-basics.png)
 
-Please review 'Configure Managed Instance' and reduce the number of CPUs allocated to the instance:
+Click the link 'Configure Managed Instance' and reduce the number of CPUs allocated to the instance:
 
 ![Resources configuration](images/sqlmi-resources.png)
 
@@ -52,15 +52,15 @@ kubectl create secret generic <odmdbsecret> --from-literal=db-user=<sqlmiadmin> 
 Then you can deploy ODM with:
 
 ```bash
-helm install <release> ibmcharts/ibm-odm-prod --version 23.2.0 \
+helm install <release> ibmcharts/ibm-odm-prod --version 24.0.0 \
         --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=<registrysecret> \
-        --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.12.0.1} --set service.type=LoadBalancer \
+        --set image.arch=amd64 --set image.tag=${ODM_VERSION:-9.0.0} --set service.type=LoadBalancer \
         --set externalDatabase.type=sqlserver \
         --set externalDatabase.serverName=<sqlminame>.public.<identifier>.database.windows.net \
         --set externalDatabase.databaseName=odmdb \
         --set externalDatabase.port=3342 \
         --set externalDatabase.secretCredentials=<odmdbsecret> \
-        --set customization.securitySecretRef=<myodmcompanytlssecret> \
+        --set customization.securitySecretRef=<mynicecompanytlssecret> \
         --set license=true --set usersPassword=<password>
 ```
 
@@ -68,7 +68,7 @@ Other deployment options (especially using NGINX) and IBM License Service usage 
 
 ## Troubleshooting
 
-If your ODM instances are not running properly, refer to [our dedicated troubleshooting page](https://www.ibm.com/docs/en/odm/8.12.0?topic=8120-troubleshooting-support).
+If your ODM instances are not running properly, refer to [our dedicated troubleshooting page](https://ibmdocs-test.dcs.ibm.com/docs/en/odm/9.0.0?topic=900-troubleshooting-support).
 
 ## Getting Started with IBM Operational Decision Manager for Containers
 
