@@ -56,13 +56,15 @@ helm install <release> ibmcharts/ibm-odm-prod --version 24.0.0 \
         --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=<registrysecret> \
         --set image.arch=amd64 --set image.tag=${ODM_VERSION:-9.0.0} --set service.type=LoadBalancer \
         --set externalDatabase.type=sqlserver \
-        --set externalDatabase.serverName=<sqlminame>.public.<identifier>.database.windows.net \
+        --set externalDatabase.serverName=<sqlminame>.public.<dns_zone_identifier>.database.windows.net \
         --set externalDatabase.databaseName=odmdb \
         --set externalDatabase.port=3342 \
         --set externalDatabase.secretCredentials=<odmdbsecret> \
         --set customization.securitySecretRef=<mynicecompanytlssecret> \
         --set license=true --set usersPassword=<password>
 ```
+
+You can find the fully qualified name of the Azure SQL managed instance in the Settings under 'Connection Strings' as explained in [Azure SQL documentation](https://learn.microsoft.com/en-us/azure/azure-sql/managed-instance/public-endpoint-configure?view=azuresql&tabs=azure-portal).
 
 Other deployment options (especially using NGINX) and IBM License Service usage are explained in the main [README](README.md).
 
