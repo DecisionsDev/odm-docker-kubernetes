@@ -28,7 +28,7 @@ The secured HTTPS communication is managed by the NGINX ingress controller. So, 
 Replace the placeholders in the [gcp-values.yaml](./gcp-values.yaml) file and install the chart:
 
 ```
-helm install mycompany ibm-helm/ibm-odm-prod --version 23.1.0 \
+helm install mycompany ibm-helm/ibm-odm-prod --version 24.0.0 \
     -f gcp-values.yaml \
     --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"}
 ```
@@ -42,7 +42,7 @@ Refer to the [the main README](README.md#b-check-the-topology) to check the depl
 
 ## Troubleshooting
 
-If your ODM instances are not running properly, please refer to [our dedicated troubleshooting page](https://www.ibm.com/docs/en/odm/8.12.0?topic=8120-troubleshooting-support).
+If your ODM instances are not running properly, please refer to [our dedicated troubleshooting page](https://ibmdocs-test.dcs.ibm.com/docs/en/odm/9.0.0?topic=900-troubleshooting-support).
 
 # License
 
