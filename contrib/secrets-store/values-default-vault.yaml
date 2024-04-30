@@ -1,10 +1,6 @@
 # Accept the terms of the IBM license by setting the license parameter to "true"
 license: true
 
-# Users password is required if authSecretRef is not set.
-# Set the password for odm default users.
-usersPassword: "odmAdmin"
-
 image:
   repository: cp.stg.icr.io/cp/cp4a/odm/
   tag: 9.0.0.0
