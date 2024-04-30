@@ -10,10 +10,10 @@ service:
   enableTLS: false
   ingress:
     enabled: true
-    tlsSecretRef: mycompany-crt-secret
-    host: mycompany.com
+    tlsSecretRef: mynicecompany-crt-secret
+    host: mynicecompany.com
     tlsHosts:
-    - mycompany.com
+    - mynicecompany.com
 
 externalDatabase:
   type: postgres
