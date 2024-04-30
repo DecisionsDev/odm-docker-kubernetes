@@ -1,10 +1,10 @@
 # Introduction
 
-In the rapidly evolving world of Kubernetes (K8s), securing sensitive information remains a paramount concern. Traditional methods, like using K8s secrets, often fall short in providing the necessary security measures. 
+In the rapidly evolving world of Kubernetes (K8s), securing sensitive information remains a paramount concern. Traditional methods, like using K8s secrets, often fall short in providing the necessary security measures.
 
-This article delves into a more robust solution: integrating IBM's Operation Decision Manager (ODM) with external secret stores supported by the [Secrets Store CSI Driver](https://kubernetes-csi.github.io/docs/introduction.html).
+This article delves into a more robust solution: integrating IBM's Operation Decision Manager (ODM) with external secret stores supported by the [Secrets Store CSI Driver](https://secrets-store-csi-driver.sigs.k8s.io/).
 
-Why this integration? K8s secrets, while convenient, are sometimes deemed insufficient for high-security environments. 
+Why this integration? K8s secrets, while convenient, are sometimes deemed insufficient for high-security environments.
 
 The integration of the ODM running on Kubernetes with Vault via the Secrets Store CSI Driver offers a more secure and efficient way to handle sensitive data.
 
@@ -20,7 +20,7 @@ On Kubernetes, the Secrets Store CSI Driver operates as a DaemonSet. It interact
 
 
 
-The architecture diagram illustrates the integration process between the Secret Manager Server and IBM Operation Decision Manager (ODM) pods within a Kubernetes environment using the Secrets Store CSI Driver. 
+The architecture diagram illustrates the integration process between the Secret Manager Server and IBM Operation Decision Manager (ODM) pods within a Kubernetes environment using the Secrets Store CSI Driver.
 ![Vault Overview schema](images/VaultInitContainer.jpg)
 
 - **Secret Manager Server**: It functions as the central repository for all secrets data, securely managing sensitive information.
@@ -29,17 +29,17 @@ The architecture diagram illustrates the integration process between the Secret 
 
 - **Secrets Provider Class**: Definition of the data that should be injected in the ODM Pods.
 
-- **Secret Store CSI Driver**: 
+- **Secret Store CSI Driver**:
   - It acts as a secure bridge between the Secret Manager Server and the Kubernetes cluster.
   - It's in charge of safely transmitting the secrets data to the ODM Pods within Kubernetes.
 
 - **Kubernetes**:  It's the container orchestration system where the ODM application is deployed.
 
-- **ODM Pods**: 
+- **ODM Pods**:
   - Detailed within the Kubernetes rectangle, showcasing the components that make up the ODM Pods:
     - **Init Container**:
-      - A temporary container that runs a shell script ('Vault.sh') before the main ODM Containers start. See the sample [vault.sh](configmap/vault.sh) script for more details. 
-      - It's responsible for retrieving the secrets data from the Secret Store CSI Driver and placing it into a shared volume. 
+      - A temporary container that runs a shell script ('Vault.sh') before the main ODM Containers start. See the sample [vault.sh](configmap/vault.sh) script for more details.
+      - It's responsible for retrieving the secrets data from the Secret Store CSI Driver and placing it into a shared volume.
     - **Volume**:
       - Represented by the two smaller rectangles within the ODM Pods.
       - This is where the secrets data is stored after retrieval, accessible by both the init container and the ODM Containers.
@@ -51,16 +51,16 @@ The diagram visually represents the secure flow of secrets data from the central
 
 
 
-## Pre-requisite 
+## Pre-requisite
    * Harshicorp Instance evaluation setup and running. Tutorial can found [here](https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-secret-store-driver).
    * [Vault client](https://developer.hashicorp.com/vault/install)
    * [Helm v3](https://helm.sh/docs/intro/install/)
    * [Kustomize](https://github.com/kubernetes-sigs/kustomize/releases)
-   * Operational Decision Manager on Container 8.12.0.1 
+   * Operational Decision Manager on Container 8.12.0.1
 
 > Note: This documentation has been tested with a HashiCorp evaluation instance. We assume that the procedure will remain the same for the commercial product.
 
-In this documentation will do the assumption that : 
+In this documentation will do the assumption that :
    * Vault Server is installed in the vault namespace.
    * ODM will be installed in the odm namespace.
 
@@ -73,7 +73,7 @@ Vault provides a Kubernetes authentication method that enables clients to authen
 oc exec -ti vault-0 --namespace vault -- sh
 ```
 
-Then, 
+Then,
 
 ```bash
 vault auth enable kubernetes
@@ -91,7 +91,7 @@ vault login
 ```
 
 - Define the `odm-policy` policy that enables the read capability for secrets at path `secret/data/`
-  
+
 ```bash
 vault policy write odm-policy - <<EOF
 path "secret/data/*" {
@@ -210,7 +210,7 @@ spec:
         secretPath: "secret/data/privatecertificates"
         secretKey: "tls.key"
 ```
-Save the content in a serviceproviderclass.yaml file 
+Save the content in a serviceproviderclass.yaml file
 
 ### g. Create the service account and the config map that contain the vault.sh script
 
@@ -219,7 +219,7 @@ echo "Create the service account"
 kubectl apply -f service-account.yaml -n odm
 echo "Create the configmap that countains the vault.sh script"
 kubectl create cm vaultcm --from-file=./configmap -n odm
-echo "Create the SecretProviderClass" 
+echo "Create the SecretProviderClass"
 oc apply -f serviceproviderclass.yaml -n odm
 ```
 
@@ -232,7 +232,7 @@ oc apply -f serviceproviderclass.yaml -n odm
 ```bash
 helm template odm-vault-kust -n odm ibm-helm/ibm-odm-prod -f values-default-vault.yaml > odm-template-nocsi.yaml && kustomize build -o odm-csi.yaml && kubectl apply -f odm-csi.yaml
 ```
-The Kustomize script allows the injection of the CSIDriver volume into the custom-init-container. 
+The Kustomize script allows the injection of the CSIDriver volume into the custom-init-container.
 
 After a few minutes, ODM should be up and running without using any secrets for installation.
 
@@ -241,7 +241,7 @@ After a few minutes, ODM should be up and running without using any secrets for 
 If you wish to deploy ODM with an OpenID provider, you should follow this procedure:
 
 1. **Assumptions:** This guide assumes that you have successfully completed the previous steps and have the necessary OpenID files required for configuring ODM with an OpenID provider.
-2. **Navigate to the openid Directory:**  
+2. **Navigate to the openid Directory:**
    Execute the following command to change to the OpenID directory:
 ```bash
 cd openid

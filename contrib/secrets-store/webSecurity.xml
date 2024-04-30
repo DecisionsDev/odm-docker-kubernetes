@@ -1,0 +1,64 @@
+<server>
+  <!-- Web application security -->
+    <basicRegistry id="basic" realm="customRealm">
+        <user name="odmAdmin" password="odmAdmin"/>
+        <user name="rtsAdmin" password="rtsAdmin"/>
+        <user name="rtsConfig" password="rtsConfig"/>
+        <user name="rtsUser1" password="rtsUser1"/>
+        <user name="rtsUser2" password="rtsUser2"/>
+        <user name="resAdmin" password="resAdmin" />
+        <user name="resDeployer" password="resDeployer" />
+        <user name="resMonitor" password="resMonitor" />
+        <user name="resExecutor" password="resExecutor" />
+        <user name="mat" password="mat" />
+        <group name="rtsAdministrators">
+            <member name="odmAdmin"/>
+            <member name="rtsAdmin"/>
+            <member name="mat"/>
+        </group>
+        <group name="rtsInstallers">
+            <member name="odmAdmin"/> 
+            <member name="rtsAdmin"/>
+            <member name="mat"/>
+        </group>
+        <group name="rtsConfigManagers">
+            <member name="odmAdmin"/>
+            <member name="rtsAdmin"/>
+            <member name="rtsConfig"/>
+            <member name="mat"/>
+        </group>
+        <group name="rtsUsers">
+            <member name="odmAdmin"/>
+            <member name="rtsAdmin"/>
+            <member name="rtsConfig"/>
+            <member name="rtsUser1"/>
+            <member name="rtsUser2"/>
+            <member name="mat"/>
+        </group>
+        <group name="resAdministrators">
+            <member name="odmAdmin"/>
+            <member name="resAdmin" />
+            <member name="mat"/>
+        </group>
+        <group name="resDeployers">
+            <member name="odmAdmin"/>
+            <member name="resAdmin" />
+            <member name="resDeployer" />
+            <member name="mat"/>
+        </group>
+        <group name="resMonitors">
+            <member name="odmAdmin"/>
+            <member name="resAdmin" />
+            <member name="resDeployer" />
+            <member name="resMonitor" />
+            <member name="mat"/>
+        </group>
+        <group name="resExecutors">
+            <member name="odmAdmin"/>
+            <member name="resAdmin" />
+            <member name="resDeployer" />
+            <member name="resExecutor" />
+            <member name="mat"/>
+        </group>
+    </basicRegistry>
+</server>
