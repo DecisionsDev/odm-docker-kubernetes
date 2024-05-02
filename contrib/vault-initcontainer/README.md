@@ -13,7 +13,7 @@ On the ODM on Kubernetes side, we introduce an init container - a specialized co
 This article guides you through the setup and configuration process, ensuring a secure and streamlined integration of these powerful technologies.
 We will used [Hashicorp Vault as secret store](https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-secret-store-driver) for this article.
 
-> Alternatively, you may consider our [Secrets Store setup](../secrets-store/README.md) as another secure method for managing secrets with a Vault Secret manager. This option requires more hands-on work but it offers greater flexibility to tailor the secret management to your specific requirements. If your project demands a more customizable approach, this could be the right choice. We recommend reviewing both configurations to determine which aligns best with your needs for control and customization.
+> Alternatively, you may consider our [Secrets Store setup](../secrets-store/README.md) as another secure method for managing secrets with a Vault Secret manager.  This option is designed to minimize configuration efforts and reduce the workload on your part. We encourage you to explore both configurations to identify which setup aligns better with your operational needs and simplicity preferences.
 
 # Architecture
 The Container Storage Interface (CSI) pattern is essentially a standardized approach for connecting block or file storage to containers. This standard is adopted by various storage providers.
