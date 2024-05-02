@@ -1,4 +1,6 @@
-# Introduction
+# Managing ODM secrets with Secret Store CSI Driver
+
+## Introduction
 
 In the rapidly evolving world of Kubernetes (K8s), securing sensitive information remains a paramount concern. Traditional methods, like using K8s secrets, often fall short in providing the necessary security measures.
 
@@ -12,7 +14,7 @@ This article guides you through the setup and configuration process, ensuring a 
 
 We will use [Hashicorp Vault as secrets store](https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-secret-store-driver) and OpenShift Container Platform (OCP) as a Kubernetes cluster for this article.
 
-# Architecture
+## Architecture
 
 The Container Storage Interface (CSI) pattern is essentially a standardized approach for connecting block or file storage to containers. This standard is adopted by various storage providers.
 
@@ -53,16 +55,16 @@ This documentation is based on an external HashiCorp Vault instance which hosts 
 
 HashiCorp Vault must be up and running. An [on-prem installation description](README-External_Vault.md) is provided (with hints about the Secrets Store CSI driver and the HashiCorp Vault provider installation) but of course you can use your own instance.
 
-* [Secrets Store CSI Driver](https://secrets-store-csi-driver.sigs.k8s.io/) already installed.
-* [HashiCorp Vault provider driver](https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-secret-store-driver) already installed
-* [Helm](https://helm.sh/docs/intro/install/)
-* Access to Operational Decision Manager on Container 9.0.0.0 images
+- [Secrets Store CSI Driver](https://secrets-store-csi-driver.sigs.k8s.io/) already installed.
+- [HashiCorp Vault provider driver](https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-secret-store-driver) already installed
+- [Helm](https://helm.sh/docs/intro/install/)
+- Access to Operational Decision Manager on Container 9.0.0.0 images
 
 > Note: The first and second steps are described in the [companion document](README-External_Vault.md) when you use OCP.
 
 In this documentation ODM will be installed in the "odm" namespace.
 
-# HashiCorp Vault setup
+## HashiCorp Vault setup
 
 ## Log into HashiCorp Vault server
 
@@ -97,13 +99,13 @@ vault write auth/<clustername>/role/database \
     ttl=24h
 ```
 
-# ODM setup
+## ODM setup
 
-## Prepare your environment for the ODM installation
+### Prepare your environment for the ODM installation
 
 A few mandatory items have to be created so that ODM can be deployed.
 
-### Namespace
+#### Namespace
 
 Create an ODM project and the Service Account already described in the [companion document](README-External_Vault.md):
 
@@ -112,7 +114,7 @@ oc new-project odm
 oc create serviceaccount odm-sa
 ```
 
-### Image pull secret
+#### Image pull secret
 
 To get access to the ODM material, you need an IBM entitlement key to pull the images from the IBM Entitled Registry.
 
@@ -132,9 +134,9 @@ oc create secret docker-registry <REGISTRY_SECRET> \
 
 Where:
 
-* `<REGISTRY_SECRET>` is the secret name.
-* `<API_KEY_GENERATED>` is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
-* `<USER_EMAIL>` is the email address associated with your IBMid.
+- `<REGISTRY_SECRET>` is the secret name.
+- `<API_KEY_GENERATED>` is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
+- `<USER_EMAIL>` is the email address associated with your IBMid.
 
 > NOTE:  The `cp.icr.io` value for the docker-server parameter is the only registry domain name that contains the images. You must set the docker-username to `cp` to use an entitlement key as docker-password.
 
@@ -142,7 +144,7 @@ Take note of the secret name so that you can set it for the *image.pullSecrets* 
 
 ***However, as the goal of this article is to eliminate the need for secrets, refer to the Kubernetes implementation to understand the alternative methods. For example, the OpenShift documentation on this topic can be found [here](https://docs.openshift.com/container-platform/4.14/openshift_images/managing_images/using-image-pull-secrets.html#images-update-global-pull-secret_using-image-pull-secrets)***
 
-### IBM Helm charts repository
+#### IBM Helm charts repository
 
 Add the public IBM Helm charts repository to your environment:
 
@@ -159,7 +161,7 @@ NAME                  	CHART VERSION   APP VERSION     DESCRIPTION
 ibm-helm/ibm-odm-prod   24.0.0       	  9.0.0           IBM Operational Decision Manager
 ```
 
-### Data to be injected in the pods
+#### Data to be injected in the pods
 
 To manage this process, the SecretProviderClass Custom Resource Definition (CRD) is utilized. Within this provider class, it's necessary to specify the address of the secure secret store and the locations of the secret keys.
 
@@ -296,7 +298,7 @@ spec:
         secretKey: "webSecurity.xml"
 ```
 
-## ODM installation with Basic authentication (10 min)
+### ODM installation with Basic authentication (10 min)
 
 1. Edit the values-default-vault.yaml and adjust the values.
 
@@ -310,27 +312,27 @@ After a few minutes, ODM should be up and running without using any secrets for 
 
 > An example with more secrets hosted by an external Vault is described in our [Vault with initContainer contrib](../vault-initcontainer/README.md).
 
-# Reference: Secrets that you can get from your secrets store with SPC
+## Reference: Secrets that you can get from your secrets store with SPC
 
 | Secret name |
 | ----------- |
-| customization.authSecretRef
-| customization.baiEmitterSecretRef
-| customization.monitorRef
-| customization.privateCertificateList
-| customization.securitySecretRef
-| customization.trustedCertificateList
-| customization.usageMeteringSecretRef
-| decisionCenter.monitorRef
-| decisionRunner.monitorRef
-| decisionServerConsole.monitorRef
-| decisionServerRuntime.monitorRef
-| externalCustomDatabase.datasourceRef
-| externalDatabase.decisionCenter.sslSecretRef
-| externalDatabase.decisionServer.secretCredentials
-| externalDatabase.decisionServer.sslSecretRef
-| externalDatabase.secretCredentials
-| externalDatabase.sslSecretRef
-| internalDatabase.secretCredentials
-| oidc.clientRef
-| service.ingress.tlsSecretRef
+| customization.authSecretRef |
+| customization.baiEmitterSecretRef |
+| customization.monitorRef |
+| customization.privateCertificateList |
+| customization.securitySecretRef |
+| customization.trustedCertificateList |
+| customization.usageMeteringSecretRef |
+| decisionCenter.monitorRef |
+| decisionRunner.monitorRef |
+| decisionServerConsole.monitorRef |
+| decisionServerRuntime.monitorRef |
+| externalCustomDatabase.datasourceRef |
+| externalDatabase.decisionCenter.sslSecretRef |
+| externalDatabase.decisionServer.secretCredentials |
+| externalDatabase.decisionServer.sslSecretRef |
+| externalDatabase.secretCredentials |
+| externalDatabase.sslSecretRef |
+| internalDatabase.secretCredentials |
+| oidc.clientRef |
+| service.ingress.tlsSecretRef |
