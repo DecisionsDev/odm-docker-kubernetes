@@ -14,6 +14,8 @@ This article guides you through the setup and configuration process, ensuring a 
 
 We will use [Hashicorp Vault as secrets store](https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-secret-store-driver) and OpenShift Container Platform (OCP) as a Kubernetes cluster for this article.
 
+> Alternatively, you may consider our [Vault initcontainer setup](../vault-initcontainer/README.md) as another secure method for managing secrets in the ODM on Kubernetes offering. This option requires more hands-on work but it offers greater flexibility to tailor the secret management to your specific requirements. If your project demands a more customizable approach, this could be the right choice. We recommend reviewing both configurations to determine which aligns best with your needs for control and customization.
+
 ## Architecture
 
 The Container Storage Interface (CSI) pattern is essentially a standardized approach for connecting block or file storage to containers. This standard is adopted by various storage providers.
