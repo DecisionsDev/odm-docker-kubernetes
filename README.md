@@ -35,7 +35,7 @@ To integrate with OpenID providers for authentication and authorization, follow 
 - [Configure ODM with a Keycloak service](authentication/Keycloak/README.md)
 - [Configure ODM with a Cognito User Pool](authentication/Cognito/README.md)
 
-#### Managing Secrets with a Vault
+#### Managing Secrets within a Vault
 
 Ensure secure management of secrets within your deployment using the following methods:
 
