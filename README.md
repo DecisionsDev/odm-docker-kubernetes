@@ -39,7 +39,7 @@ To integrate with OpenID providers for authentication and authorization, follow 
 
 Ensure secure management of secrets within your deployment using the following methods:
 
-- [Manage secrets with Secret Store CSI Driver](./contrib/secrets-store/README.md): Utilize the Secret Store CSI Driver (e.g., HashiCorp Vault) to securely manage sensitive information such as client secrets and keys.
+- [Manage secrets with Secrets Store CSI Driver](./contrib/secrets-store/README.md): Utilize the Secrets Store CSI Driver (e.g., HashiCorp Vault) to securely manage sensitive information such as client secrets and keys.
 - [Manage secrets with Vault via InitContainer](./contrib/vault-initcontainer/README.md): Utilize an InitContainer to securely retrieve secrets from a Vault (e.g., HashiCorp Vault) and inject them into your application containers.
 
 #### Integration with Analytics Tools
