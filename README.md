@@ -37,14 +37,14 @@ To integrate with OpenID providers for authentication and authorization, follow 
 
 #### Managing Secrets within a Vault
 
-Ensure secure management of secrets within your deployment using the following methods:
+Ensure secure management of secrets within your deployment using one of the following methods:
 
-- [Manage secrets with Secrets Store CSI Driver](./contrib/secrets-store/README.md): Utilize the Secrets Store CSI Driver (e.g., HashiCorp Vault) to securely manage sensitive information such as client secrets and keys.
-- [Manage secrets with Vault via InitContainer](./contrib/vault-initcontainer/README.md): Utilize an InitContainer to securely retrieve secrets from a Vault (e.g., HashiCorp Vault) and inject them into your application containers.
+- [Manage secrets with Secrets Store CSI Driver](./contrib/secrets-store/README.md): Use the Secrets Store CSI Driver (e.g., HashiCorp Vault) to securely manage sensitive information such as client secrets and keys.
+- [Manage secrets with Vault via InitContainer](./contrib/vault-initcontainer/README.md): Use an InitContainer to securely retrieve secrets from a Vault (e.g., HashiCorp Vault) and inject them into your application containers.
 
 #### Integration with Analytics Tools
 To enable analytics and monitoring capabilities within your deployment, consider integrating with analytics tools using Decisions' monitoring features:
-- [MPMetrics Integration](./contrib/monitor/mpmetrics/README.md) : Utilize MPMetrics for comprehensive monitoring and performance tracking. 
+- [MPMetrics Integration](./contrib/monitor/mpmetrics/README.md) : Use MPMetrics for comprehensive monitoring and performance tracking. 
 - [OpenTelemetry Integration](./contrib/monitor/opentelemetry/README.md) : Leverage OpenTelemetry for observability and tracing functionalities. This article with guide you to configure your deployment to work seamlessly with OpenTelemetry.
 
 
