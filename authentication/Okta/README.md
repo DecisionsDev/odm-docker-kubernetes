@@ -294,7 +294,7 @@ In this step, we augment the token with meta-information that is required by the
     ```
     helm search repo ibm-odm-prod
     NAME                  	CHART VERSION	APP VERSION	DESCRIPTION
-    ibm-helm/ibm-odm-prod	24.0.0       	9.0.0   	IBM Operational Decision Manager
+    ibm-helm/ibm-odm-prod	24.0.0       	9.0.0.0   	IBM Operational Decision Manager
     ```
 
 3. Run the `helm install` command.
@@ -315,14 +315,14 @@ In this step, we augment the token with meta-information that is required by the
     > ```
     > --set internalDatabase.runAsUser='' --set customization.runAsUser='' --set service.enableRoute=true
     > ```
-    > See [Preparing to install](https://www.ibm.com/docs/en/odm/8.12.0?topic=production-preparing-install-operational-decision-manager) documentation for additional information.
+    > See [Preparing to install](https://www.ibm.com/docs/en/odm/9.0.0?topic=production-preparing-install-operational-decision-manager) documentation for additional information.
 
 ## Complete post-deployment tasks
 
 ### Register the ODM redirect URLs
 
 1. Get the ODM endpoints.
-    You can refer to the [documentation](https://www.ibm.com/docs/en/odm/8.12.0?topic=tasks-configuring-external-access) to retrieve the ODM endpoints.
+    You can refer to the [documentation](https://www.ibm.com/docs/en/odm/9.0.0?topic=tasks-configuring-external-access) to retrieve the ODM endpoints.
     For example, on OpenShift you can get the route names and hosts with:
 
     ```
@@ -385,7 +385,7 @@ To be able to securely connect your Rule Designer to the Decision Server and Dec
 
 4. Restart Rule Designer.
 
-For more information, refer to the [documentation](https://www.ibm.com/docs/en/odm/8.12.0?topic=designer-importing-security-certificate-in-rule).
+For more information, refer to the [documentation](https://www.ibm.com/docs/en/odm/9.0.0?topic=designer-importing-security-certificate-in-rule).
 
 ### Getting Started with IBM Operational Decision Manager for Containers
 
@@ -406,12 +406,12 @@ Deploy the **Loan Validation Service** production_deployment ruleapps using the 
 
 You can retrieve the payload.json from the ODM Decision Server Console or use [the provided payload](payload.json)
 
-As explained in the ODM on Certified Kubernetes documentation [Configuring user access with OpenID](https://www.ibm.com/docs/en/odm/8.12.0?topic=access-configuring-user-openid), we advise to use basic authentication for the ODM runtime call for performance reasons and to avoid the issue of token expiration and revocation.
+As explained in the ODM on Certified Kubernetes documentation [Configuring user access with OpenID](https://www.ibm.com/docs/en/odm/9.0.0?topic=access-configuring-user-openid), we advise to use basic authentication for the ODM runtime call for performance reasons and to avoid the issue of token expiration and revocation.
 
 You can realize a basic authentication ODM runtime call in the following way:
 
    ```
-  $ curl -H "Content-Type: application/json" -k --data @payload.json \
+  curl -H "Content-Type: application/json" -k --data @payload.json \
          -H "Authorization: Basic b2RtQWRtaW46b2RtQWRtaW4=" \
         https://<DS_RUNTIME_HOST>/DecisionService/rest/production_deployment/1.0/loan_validation_production/1.0
   ```
@@ -421,7 +421,7 @@ You can realize a basic authentication ODM runtime call in the following way:
 But if you want to execute a bearer authentication ODM runtime call using the Client Credentials flow, you have to get a bearer access token:
 
   ```
-  $ curl -k -X POST -H "Content-Type: application/x-www-form-urlencoded" \
+  curl -k -X POST -H "Content-Type: application/x-www-form-urlencoded" \
       -d 'client_id=<CLIENT_ID>&scope=<OKTA_API_SCOPE>&client_secret=<CLIENT_SECRET>&grant_type=client_credentials' \
       'https://<OKTA_SERVER_NAME>/oauth2/default/v1/token'
   ```
@@ -429,7 +429,7 @@ But if you want to execute a bearer authentication ODM runtime call using the Cl
  And use the retrieved access token in the following way:
 
    ```
-  $ curl -H "Content-Type: application/json" -k --data @payload.json \
+  curl -H "Content-Type: application/json" -k --data @payload.json \
          -H "Authorization: Bearer <ACCESS_TOKEN>" \
          https://<DS_RUNTIME_HOST>/DecisionService/rest/production_deployment/1.0/loan_validation_production/1.0
   ```
