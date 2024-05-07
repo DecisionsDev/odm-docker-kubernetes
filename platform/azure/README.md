@@ -269,7 +269,7 @@ Check that you can access the ODM charts:
 ```shell
 helm search repo ibm-odm-prod
 NAME                        	CHART VERSION	APP VERSION	DESCRIPTION
-ibmcharts/ibm-odm-prod      	24.0.0       	9.0.0   	IBM Operational Decision Manager  License By in...
+ibmcharts/ibm-odm-prod      	24.0.0       	9.0.0.0  	IBM Operational Decision Manager  License By in...
 ```
 
 ### Manage a digital certificate (10 min)
@@ -310,7 +310,7 @@ You can now install the product:
 ```shell
 helm install <release> ibmcharts/ibm-odm-prod --version 24.0.0 \
         --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=<registrysecret> \
-        --set image.arch=amd64 --set image.tag=${ODM_VERSION:-9.0.0} --set service.type=LoadBalancer \
+        --set image.tag=${ODM_VERSION:-9.0.0.0} --set service.type=LoadBalancer \
         --set externalDatabase.type=postgres \
         --set externalDatabase.serverName=<postgresqlserver>.postgres.database.azure.com \
         --set externalDatabase.databaseName=postgres \
@@ -398,7 +398,7 @@ You can reuse the secret with TLS certificate created [above](#manage-adigital-c
 ```shell
 helm install <release> ibmcharts/ibm-odm-prod --version 24.0.0 \
         --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=<registrysecret> \
-        --set image.arch=amd64 --set image.tag=${ODM_VERSION:-9.0.0} \
+        --set image.tag=${ODM_VERSION:-9.0.0.0} \
         --set externalDatabase.type=postgres \
         --set externalDatabase.serverName=<postgresqlserver>.postgres.database.azure.com \
         --set externalDatabase.databaseName=postgres \

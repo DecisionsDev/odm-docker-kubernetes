@@ -87,12 +87,13 @@
 
    In **Azure Active Directory** / **Enterprise applications**, select **ODM Application**, and in **Manage / Single sign-on**:
 
-  * Click on Edit of the "Attributes & Claims" section
+  * Click Edit in the "Attributes & Claims" section
     * Click + Add new claim
       * Name: identity
       * Fill 2 Claim conditions in the exact following order:
-        1. User Type: Any / Scope Groups: 0 / Source: Attribute / Value: <CLIENT_ID>
-        2. User Type: Members / Scope Groups: 0 / Source: Attribute / Value: user.mail
+        1. User Type: Any / Scoped Groups: 0 / Source: Attribute / Value: <CLIENT_ID>
+        2. User Type: Members / Scoped Groups: 0 / Source: Attribute / Value: user.mail
+    * Click Save
 
 6. API Permissions.
 
@@ -116,7 +117,7 @@
 
     Download the [azuread-odm-script.zip](azuread-odm-script.zip) file to your machine and unzip it in your working directory. This .zip file contains scripts and templates to verify and set up ODM.
 
-    8.1 Verify the Client Credential Token
+    8.1 Verify the token issued using the 'Client Credentials' flow
 
     You can request an access token using the Client-Credentials flow to verify the token format.
     This token is used for the deployment between Decision Center and the Decision Server console:
@@ -153,13 +154,14 @@
     }
     ```
 
-    - *ver*: should be 2.0. otherwise you should verify the previous step **Manifest change**
     - *aud*: should be your CLIENT_ID
+    - *identity*: should be your CLIENT_ID
     - *iss*: should end with 2.0. otherwise you should verify the previous step **Manifest change**
+    - *ver*: should be 2.0. otherwise you should verify the previous step **Manifest change**
 
-    8.2 Verify the Client Password Token.
+    8.2 Verify the token issued using the 'Password Credentials' flow
 
-   To check that it has been correctly taken into account, you can request an ID token using the Client password flow.
+   To check that it has been correctly taken into account, you can request an ID token using the Password Credentials flow.
 
    This token is used for the invocation of the ODM components like Decision Center, Decision Servcer console, and the invocation of the Decision Server Runtime REST API.
 
@@ -178,25 +180,25 @@
     ```json
     {
       "aud": "<CLIENT_ID>",
-      ...
       "iss": "https://login.microsoftonline.com/<TENANT_ID>/v2.0",
       ...
       "email": "<USERNAME>",
-      "identity": "<USERNAME>",
       "groups": [
         "<GROUP>"
       ],
       ...
-      "ver": "2.0"
+      "ver": "2.0",
+      "identity": "<USERNAME>"
     }
     ```
 
     Verify:
     - *aud*: should be your CLIENT_ID
+    - *iss*: should end with 2.0. Otherwise you should verify the previous step **Manifest change**
     - *email*: should be present. Otherwise you should verify the creation of your user and fill the Email field.
     - *groups*: should contain your GROUP_ID
-    - *iss*: should end with 2.0. Otherwise you should verify the previous step **Manifest change**
     - *ver*: should be 2.0. Otherwise you should verify the previous step **Manifest change**
+    - *identity*: should be the user's email/username
 
   > If this command failed, try to log in to the [Azure portal](https://portal.azure.com/). You may have to enable 2FA and/or change the password for the first time.
 
@@ -264,7 +266,7 @@
     Where:
     - *TENANT_ID* and *CLIENT_ID* have been obtained from [previous step](#retrieve-tenant-and-client-information)
     - *CLIENT_SECRET* is listed in your ODM Application, section **General** / **Client Credentials**
-    - *GROUP_ID* is the ODM Admin group created in a [previous step](#manage-group-and-user) (*odm-admin*)
+    - *GROUP_ID* is the identifier of the ODM Admin group created in a [previous step](#manage-group-and-user) (ID of the group named *odm-admin*)
     - *SSO_DOMAIN* is the domain name of your SSO. If your AzureAD is connected to another SSO, you should add the SSO domain name in this parameter. If your user has been declared as explained in step **Create at least one user that belongs to this new group**, you can omit this parameter.
 
     The following four files are generated into the `output` directory:
@@ -273,10 +275,10 @@
       * All ODM roles are given to the GROUP_ID group
       * rtsAdministrators/resAdministrators/resExecutors ODM roles are given to the CLIENT_ID (which is seen as a user) to manage the client-credentials flow
     - openIdWebSecurity.xml contains two openIdConnectClient Liberty configurations:
-      * For web access to the Decision Center an Decision Server consoles using userIdentifier="email" with the Authorization Code flow
-      * For the rest-api call using userIdentifier="aud" with the client-credentials flow
+      * For web access to the Decision Center and Decision Server consoles using userIdentifier="email" with the Authorization Code flow
+      * For the rest-api calls using userIdentifier="aud" with the client-credentials flow
     - openIdParameters.properties configures several features like allowed domains, logout, and some internal ODM OpenId features
-    - OdmOidcProviders.json configures the client-credentials OpenId provider used by the Decision Center server configuration to connect Decision Center to the Decision Server console and Decision Center to the Decision Runner
+    - OdmOidcProviders.json configures the client-credentials OpenId provider used by the Decision Center server configuration to connect Decision Center to the Decision Server console and Decision Center to Decision Runner
 
 3. Create the Microsoft Entra ID authentication secret.
 
@@ -302,7 +304,7 @@
   ```shell
   helm search repo ibm-odm-prod
   NAME                  	CHART VERSION	APP VERSION	DESCRIPTION
-  ibm-helm/ibm-odm-prod	        23.1.0       	8.12.0.0   	IBM Operational Decision Manager
+  ibm-helm/ibm-odm-prod   24.0.0          9.0.0.0   	IBM Operational Decision Manager
   ```
 
 ### Run the `helm install` command
@@ -311,7 +313,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 
 #### a. Installation on OpenShift using Routes
 
-  See the [Preparing to install](https://www.ibm.com/docs/en/odm/8.12.0?topic=production-preparing-install-operational-decision-manager) documentation for additional information.
+  See the [Preparing to install](https://ibmdocs-test.dcs.ibm.com/docs/en/odm/9.0.0?topic=production-preparing-install-operational-decision-manager) documentation for additional information.
 
   ```shell
   helm install my-odm-release ibm-helm/ibm-odm-prod \
@@ -354,7 +356,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 
 1. Get the ODM endpoints.
 
-    Refer to the [documentation](https://www.ibm.com/docs/en/odm/8.12.0?topic=tasks-configuring-external-access) to retrieve the endpoints.
+    Refer to the [documentation](https://ibmdocs-test.dcs.ibm.com/docs/en/odm/9.0.0?topic=tasks-configuring-external-access) to retrieve the endpoints.
     For example, on OpenShift you can get the route names and hosts with:
 
     ```shell
@@ -403,14 +405,14 @@ You can now install the product. We will use the PostgreSQL internal database an
 
    From the Azure console, in **Azure Active Directory** / **App Registrations** / **ODM Application**:
 
-    - Click`Add Redirect URIs link`
+    - Click the `Add a Redirect URI` link
     - Click `Add Platform`
     - Select `Web`
     - `Redirect URIs` Add the Decision Center redirect URI that you got earlier (`https://<DC_HOST>/decisioncenter/openid/redirect/odm` -- don't forget to replace <DC_HOST> with your actual host name!)
-    - Check Access Token and ID Token
-    - Click Configure
-    - Click Add URI Link
-      - Repeat the previous steps for all other redirect URIs.
+    - Check the `Access Token` and `ID Token` check boxes
+    - Click `Configure`
+    - Click the `Add URI` Link and enter another redirect URI
+      - Repeat the previous step until all redirect URIs have been entered.
 
     - Click **Save** at the bottom of the page.
     ![Add URI](images/AddURI.png)
@@ -418,8 +420,6 @@ You can now install the product. We will use the PostgreSQL internal database an
 ### Access the ODM services
 
 Well done!  You can now connect to ODM using the endpoints you got [earlier](#register-the-odm-redirect-url) and log in as an ODM admin with the account you created in [the first step](#manage-group-and-user).
-
->Note:  Logout in ODM components using Microsoft Entra ID authentication raises an error for the time being.  This is a known issue.  We recommend to use a private window in your browser to log in, so that logout is done just by closing this window.
 
 ### Set up Rule Designer
 
@@ -449,7 +449,7 @@ To be able to securely connect your Rule Designer to the Decision Server and Dec
 
 4. Restart Rule Designer.
 
-For more information, refer to the [documentation](https://www.ibm.com/docs/en/odm/8.12.0?topic=designer-importing-security-certificate-in-rule).
+For more information, refer to the [documentation](https://ibmdocs-test.dcs.ibm.com/docs/en/odm/9.0.0?topic=designer-importing-security-certificate-in-rule).
 
 ### Getting Started with IBM Operational Decision Manager for Containers
 
@@ -469,7 +469,7 @@ Deploy the **Loan Validation Service** production_deployment ruleapps using the 
 
 You can retrieve the payload.json from the ODM Decision Server Console or use [the provided payload](payload.json).
 
-As explained in the ODM on Certified Kubernetes documentation [Configuring user access with OpenID](https://www.ibm.com/docs/en/odm/8.12.0?topic=access-configuring-user-openid), we advise to use basic authentication for the ODM runtime call for performance reasons and to avoid the issue of token expiration and revocation.
+As explained in the ODM on Certified Kubernetes documentation [Configuring user access with OpenID](https://ibmdocs-test.dcs.ibm.com/docs/en/odm/9.0.0?topic=access-configuring-user-openid), we advise to use basic authentication for the ODM runtime call for performance reasons and to avoid the issue of token expiration and revocation.
 
 You can realize a basic authentication ODM runtime call the following way:
 
