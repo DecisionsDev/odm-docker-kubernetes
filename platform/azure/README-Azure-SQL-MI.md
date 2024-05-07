@@ -54,7 +54,7 @@ Then you can deploy ODM with:
 ```bash
 helm install <release> ibmcharts/ibm-odm-prod --version 24.0.0 \
         --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=<registrysecret> \
-        --set image.arch=amd64 --set image.tag=${ODM_VERSION:-9.0.0} --set service.type=LoadBalancer \
+        --set image.tag=${ODM_VERSION:-9.0.0.0} --set service.type=LoadBalancer \
         --set externalDatabase.type=sqlserver \
         --set externalDatabase.serverName=<sqlminame>.public.<identifier>.database.windows.net \
         --set externalDatabase.databaseName=odmdb \
