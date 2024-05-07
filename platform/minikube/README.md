@@ -10,7 +10,7 @@ The ODM on Kubernetes Docker images are available in the [IBM Entitled Registry]
 
 ## Included Components
 
-- [IBM Operational Decision Manager](https://ibmdocs-test.dcs.ibm.com/docs/en/odm/9.0.0)
+- [IBM Operational Decision Manager](https://ibmdocs-test.dcs.ibm.com/docs/en/odm/9.0.0?topic=operational-decision-manager-certified-kubernetes-900)
 - [Kubernetes Minikube](https://minikube.sigs.k8s.io/docs/)
 
 ## Test environment
