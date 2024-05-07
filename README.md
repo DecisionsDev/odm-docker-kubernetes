@@ -25,11 +25,34 @@ The ODM Docker material is used here, which is available in the [odm-ondocker](h
 - [Google Cloud GKE](platform/gcloud/README.md)
 - [Minikube](platform/minikube/README.md) - Minikube can be used to evaluate ODM locally.
 
-### Contributions to customize the deployment
+### Integrating with Third-Party Providers
+
+#### Integration with OpenID Providers
+
+To integrate with OpenID providers for authentication and authorization, follow these steps:
 - [Configure ODM with an OpenID Okta service](authentication/Okta/README.md)
 - [Configure ODM with an Azure Active Directory service](authentication/AzureAD/README.md)
 - [Configure ODM with a Keycloak service](authentication/Keycloak/README.md)
 - [Configure ODM with a Cognito User Pool](authentication/Cognito/README.md)
+
+#### Managing Secrets within a Vault
+
+Ensure secure management of secrets within your deployment using one of the following methods:
+
+
+- [Manage secrets with Secret Store CSI Driver](./contrib/secrets-store/README.md): Use the Secrets Store CSI Driver (e.g., HashiCorp Vault) to securely manage sensitive information such as client secrets and keys. This option is designed to minimize configuration efforts and reduce the workload on your part.
+- [Manage secrets with Vault via InitContainer](./contrib/vault-initcontainer/README.md): Use an InitContainer to securely retrieve secrets from a Vault (e.g., HashiCorp Vault) and inject them into your application containers. This option requires more hands-on work but it offers greater flexibility to tailor the secret management to your specific requirements.
+
+We encourage you to explore both configurations to identify which setup aligns better with your operational needs and simplicity preferences. 
+
+#### Integration with Analytics Tools
+To enable analytics and monitoring capabilities within your deployment, consider integrating with analytics tools using Decisions' monitoring features:
+- [MPMetrics Integration](./contrib/monitor/mpmetrics/README.md) : Use MPMetrics for comprehensive monitoring and performance tracking. 
+- [OpenTelemetry Integration](./contrib/monitor/opentelemetry/README.md) : Leverage OpenTelemetry for observability and tracing functionalities. This article with guide you to configure your deployment to work seamlessly with OpenTelemetry.
+
+
+#### Contribution to customize the deployment
+
 - [Scope the Decision Server Console to a dedicated node with `kustomize`](contrib/kustomize/ds-console-dedicated-node/README.md)
 
 ## Issues and contributions
