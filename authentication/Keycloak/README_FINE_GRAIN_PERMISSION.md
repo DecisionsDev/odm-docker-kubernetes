@@ -27,7 +27,7 @@
 
 # Introduction
 
-ODM Decision Center allows to [manage users and groups from the Business console](https://www.ibm.com/docs/en/odm/8.11.1?topic=center-managing-users-groups-from-business-console) in order to set access security on specific projects.
+ODM Decision Center allows to [manage users and groups from the Business console](https://ibmdocs-test.dcs.ibm.com/docs/en/odm/9.0.0?topic=center-managing-users-groups-from-business-console) in order to set access security on specific projects.
 The Groups and Users import can be done using an LDAP connection.
 But, if the openId server also provides a SCIM server, then it can also be managed using a SCIM connection.
 
@@ -337,7 +337,7 @@ Make sure that you finish [Complete post-deployment tasks](README.md#complete-po
 
 # Manage Security on ODM Decision Service Project 
 
-ODM Decision Center allows to [manage users and groups from the Business console](https://www.ibm.com/docs/en/odm/8.11.1?topic=center-managing-users-groups-from-business-console) in order to set access security on specific projects.
+ODM Decision Center allows to [manage users and groups from the Business console](https://ibmdocs-test.dcs.ibm.com/docs/en/odm/9.0.0?topic=center-managing-users-groups-from-business-console) in order to set access security on specific projects.
 Now, we will manage the following scenario. We will load the "Loan Validation Service" and "Miniloan Service" projects that are available at the getting started repository.
 We will only provide access to the "Loan Validation Service" project for users belonging at the "TaskAuditors" group.
 We will only provide access to the "Miniloan Service" project for users belonging at the "TaskUsers" group.
