@@ -160,7 +160,7 @@ Check that you can access ODM charts:
 ```bash
 helm search repo ibm-odm-prod
 NAME                  	CHART VERSION   APP VERSION     DESCRIPTION
-ibm-helm/ibm-odm-prod   24.0.0       	  9.0.0           IBM Operational Decision Manager
+ibm-helm/ibm-odm-prod   24.0.0       	  9.0.0.0         IBM Operational Decision Manager
 ```
 
 #### Data to be injected in the pods
@@ -271,7 +271,7 @@ It replaces the K8s secret that would have been created with (again, don't do th
 kubectl create secret generic mynicecompanytlssecret --from-file=tls.crt=mynicecompany.crt --from-file=tls.key=mynicecompany.key
 ```
 
-The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://www.ibm.com/docs/en/odm/8.12.0?topic=servers-server-certificates).
+The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://ibmdocs-test.dcs.ibm.com/docs/en/odm/9.0.0?topic=servers-server-certificates).
 
 We also would like to create a Basic Registry configuration to be used as authSecretRef (refer to both accompanying files group-security-configurations.xml and webSecurity.xml). It will allow some "mat" guy to connect to ODM components. First upload their contents to HashiCorp Vault:
 

@@ -125,7 +125,7 @@ After activating your account by email, you should have access to your Microsoft
 
       * Click the **myodmuser** user previously created
         * Edit properties
-        * Fill the email field with *myodmuser*@YOURDOMAIN
+        * Fill the email field with *myodmuser*@YOURDOMAIN (in the 'Contact Information' tab)
 
       * Try to log in to the [Azure portal](https://portal.azure.com/) with the user principal name.
        This may require to enable 2FA and/or change the password for the first time.
@@ -134,7 +134,7 @@ After activating your account by email, you should have access to your Microsoft
 
 ## Choose the way to set up your application
 
-Client credentials are used in the context of authentication in systems that utilize OAuth 2.0, a common protocol for secure authorization. These credentials are typically used by a client application (like a web or mobile app) to prove its identity to an authorization server in order to obtain access tokens for making API requests. There are two ways to use client credentials in Microfoft Entra ID: with a private key (often referred to as client certificates) and with a secret (usually referred to as a client secret).
+Client credentials are used in the context of authentication in systems that utilize OAuth 2.0, a common protocol for secure authorization. These credentials are typically used by a client application (like a web or mobile app) to prove its identity to an authorization server in order to obtain access tokens for making API requests. There are two ways to use client credentials in Microsoft Entra ID: with a private key (often referred to as client certificates) and with a secret (usually referred to as a client secret).
 
 [Client Credentials with a Secret](README_WITH_CLIENT_SECRET.md) (Client Secret):
 

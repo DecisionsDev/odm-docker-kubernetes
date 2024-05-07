@@ -25,8 +25,6 @@ Options:
 -i : Client ID
 -n : AZUREAD domain (AZUREAD server name)
 -x : Cient Secret
--u : Username
--p : Password
 
 Usage example: $0 -i AzureADClientId -x AzureADClientSecret -n <Application ID (GUID)> -u <USERNAME> -p <PASSWORD>"
 EOF
