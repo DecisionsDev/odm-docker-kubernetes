@@ -294,7 +294,7 @@ In this step, we augment the token with meta-information that is required by the
     ```
     helm search repo ibm-odm-prod
     NAME                  	CHART VERSION	APP VERSION	DESCRIPTION
-    ibm-helm/ibm-odm-prod	23.2.0       	8.12.0.1   	IBM Operational Decision Manager
+    ibm-helm/ibm-odm-prod	24.0.0       	9.0.0   	IBM Operational Decision Manager
     ```
 
 3. Run the `helm install` command.
