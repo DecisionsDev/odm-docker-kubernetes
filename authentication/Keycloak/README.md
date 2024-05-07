@@ -2,35 +2,35 @@
 
 <!-- TOC depthfrom:1 depthto:6 withlinks:false updateonsave:false orderedlist:false -->
 
-- Introduction
-    - What is Keycloak?
-    - About this task
-    - ODM OpenID flows
-    - Prerequisites
-        - Install a Keycloak instance
-- Configure a Keycloak instance for ODM (Part 1)
-    - Log into the Keycloak Admin Console
-    - Create a dedicated odm realm
-    - Manage roles, groups, and users
-    - Set up the client
-- Deploy ODM on a container configured with Keycloak (Part 2)
-    - Prepare your environment for the ODM installation
-        - Create a secret to use the Entitled Registry
-        - Create secrets to configure ODM with Keycloak
-    - Install your ODM Helm release
-        - Add the public IBM Helm charts repository
-        - Check that you can access the ODM chart
-        - Run the `helm install` command
-            - a. Installation on OpenShift using Routes
-            - b. Installation using Ingress
-    - Complete post-deployment tasks
-        - Register the ODM redirect URL
-        - Access the ODM services
-        - Set up Rule Designer
-        - Getting Started with IBM Operational Decision Manager for Containers
-        - Calling the ODM Runtime Service
-- Troubleshooting
-- License
+- [Introduction](#introduction)
+    - [What is Keycloak?](#what-is-keycloak)
+    - [About this task](#about-this-task)
+    - [ODM OpenID flows](#odm-openid-flows)
+    - [Prerequisites](#prerequisites)
+        - [Install a Keycloak instance](#install-a-keycloak-instance)
+- [Configure a Keycloak instance for ODM (Part 1)](#configure-a-keycloak-instance-for-odm-part-1)
+    - [Log into the Keycloak Admin Console](#log-into-the-keycloak-admin-console)
+    - [Create a dedicated odm realm](#create-a-dedicated-odm-realm)
+    - [Manage roles, groups, and users](#manage-roles-groups-and-users)
+    - [Set up the client](#set-up-the-client)
+- [Deploy ODM on a container configured with Keycloak (Part 2)](#deploy-odm-on-a-container-configured-with-keycloak-part-2)
+    - [Prepare your environment for the ODM installation](#prepare-your-environment-for-the-odm-installation)
+        - [Create a secret to use the Entitled Registry](#create-a-secret-to-use-the-entitled-registry)
+        - [Create secrets to configure ODM with Keycloak](#create-secrets-to-configure-odm-with-keycloak)
+    - [Install your ODM Helm release](#install-your-odm-helm-release)
+        - [Add the public IBM Helm charts repository](#1-add-the-public-ibm-helm-charts-repository)
+        - [Check that you can access the ODM chart](#2-check-that-you-can-access-the-odm-chart)
+        - [Run the `helm install` command](#3-run-the-helm-install-command)
+            - [a. Installation on OpenShift using Routes](#a-installation-on-openshift-using-routes)
+            - [b. Installation using Ingress](#b-installation-using-ingress)
+    - [Complete post-deployment tasks](#complete-post-deployment-tasks)
+        - [Register the ODM redirect URL](#register-the-odm-redirect-url)
+        - [Access the ODM services](#access-the-odm-services)
+        - [Set up Rule Designer](#set-up-rule-designer)
+        - [Getting Started with IBM Operational Decision Manager for Containers](#getting-started-with-ibm-operational-decision-manager-for-containers)
+        - [Calling the ODM Runtime Service](#calling-the-odm-runtime-service)
+- [Troubleshooting](#troubleshooting)
+- [License](#license)
 
 <!-- /TOC -->
 
@@ -166,7 +166,7 @@ You can also create groups and do a mapping between groups and roles. This way, 
       * resDeployers
       * resExecutors
 
-    For more information about ODM groups and roles, refer to the [ODM on Kubernetes documentation](https://ibmdocs-test.dcs.ibm.com/docs/en/odm/9.0.0?topic=access-user-roles-user-groups).
+    For more information about ODM groups and roles, refer to the [ODM on Kubernetes documentation](https://ibmdocs-test.dcs.ibm.com/docs/en/odm/9.0.0?topic=access-user-roles-groups).
 
 
 2. Create a group for ODM administrators.
