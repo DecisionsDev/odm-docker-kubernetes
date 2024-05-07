@@ -5,7 +5,7 @@
       clientId="OKTA_CLIENT_ID" clientSecret="OKTA_CLIENT_SECRET"
       signatureAlgorithm="RS256" inboundPropagation="supported"
       audiences="ALL_AUDIENCES" tokenReuse="true"
-      userIdentifier="OKTA_CLAIM_LOGIN" groupIdentifier="OKTA_CLAIM_GROUPS"
+      userIdentifier="OKTA_CLAIM_LOGIN" groupIdentifier="OKTA_CLAIM_GROUPS" tokenOrderToFetchCallerClaims="AccessToken IDToken Userinfo"
       issuerIdentifier="${ServerHost}"
       jwkEndpointUrl="${ServerHost}/v1/keys"
       authorizationEndpointUrl="${ServerHost}/v1/authorize"
