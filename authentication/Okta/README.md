@@ -294,7 +294,7 @@ In this step, we augment the token with meta-information that is required by the
     ```
     helm search repo ibm-odm-prod
     NAME                  	CHART VERSION	APP VERSION	DESCRIPTION
-    ibm-helm/ibm-odm-prod	23.2.0       	8.12.0.1   	IBM Operational Decision Manager
+    ibm-helm/ibm-odm-prod	24.0.0       	9.0.0.0   	IBM Operational Decision Manager
     ```
 
 3. Run the `helm install` command.
@@ -411,7 +411,7 @@ As explained in the ODM on Certified Kubernetes documentation [Configuring user 
 You can realize a basic authentication ODM runtime call in the following way:
 
    ```
-  $ curl -H "Content-Type: application/json" -k --data @payload.json \
+  curl -H "Content-Type: application/json" -k --data @payload.json \
          -H "Authorization: Basic b2RtQWRtaW46b2RtQWRtaW4=" \
         https://<DS_RUNTIME_HOST>/DecisionService/rest/production_deployment/1.0/loan_validation_production/1.0
   ```
@@ -421,7 +421,7 @@ You can realize a basic authentication ODM runtime call in the following way:
 But if you want to execute a bearer authentication ODM runtime call using the Client Credentials flow, you have to get a bearer access token:
 
   ```
-  $ curl -k -X POST -H "Content-Type: application/x-www-form-urlencoded" \
+  curl -k -X POST -H "Content-Type: application/x-www-form-urlencoded" \
       -d 'client_id=<CLIENT_ID>&scope=<OKTA_API_SCOPE>&client_secret=<CLIENT_SECRET>&grant_type=client_credentials' \
       'https://<OKTA_SERVER_NAME>/oauth2/default/v1/token'
   ```
@@ -429,7 +429,7 @@ But if you want to execute a bearer authentication ODM runtime call using the Cl
  And use the retrieved access token in the following way:
 
    ```
-  $ curl -H "Content-Type: application/json" -k --data @payload.json \
+  curl -H "Content-Type: application/json" -k --data @payload.json \
          -H "Authorization: Bearer <ACCESS_TOKEN>" \
          https://<DS_RUNTIME_HOST>/DecisionService/rest/production_deployment/1.0/loan_validation_production/1.0
   ```
