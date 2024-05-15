@@ -69,7 +69,7 @@ vault secrets enable -version=2 -path <secretspath> kv
 
 ## Secrets Store CSI driver and provider
 
-The installation of the Secrets Store CSI driver is straightforward on OpenShift: Go the OperatorHub, look for "Secrets Store CSI Driver Operator" and deploy the operator with its defaults.
+The installation of the Secrets Store CSI driver is straightforward on OpenShift 4.14+: Go the OperatorHub, look for "Secrets Store CSI Driver Operator" and deploy the operator with its defaults.
 
 Then create the CSI Driver itself:
 
