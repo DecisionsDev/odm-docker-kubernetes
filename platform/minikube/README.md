@@ -27,7 +27,6 @@ This tutorial was tested on macOS and Linux.
 1. [Start Minikube](#1-start-minikube)
 2. [Prepare your environment for the ODM installation](#2-prepare-your-environment-for-the-odm-installation)
 3. [Install an IBM Operational Decision Manager release](#3-install-an-ibm-operational-decision-manager-release)
-4. [Access the ODM services](#4-access-the-odm-services)
 
 ### 1. Start Minikube
 
