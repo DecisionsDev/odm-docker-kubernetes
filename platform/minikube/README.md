@@ -38,7 +38,7 @@ minikube start --cpus 6 --memory 8GB --kubernetes-version=v1.25.16
 
 The kubectl context is automatically set to point to the created Minikube cluster.
 
-> **Note**
+> [!NOTE]
 > This installation guide has been tested with the Kubernetes version v1.25.0 onwards
 
 #### b. Check your environment
@@ -51,7 +51,7 @@ CoreDNS is running at https://<CLUSTER-IP>:8443/api/v1/namespaces/kube-system/se
 To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
 ```
 
-> **Note**
+> [!NOTE]
 > You can access the [Kubernetes Dashboard](https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/) by running the `minikube dashboard` command.
 
 ### 2. Prepare your environment for the ODM installation
@@ -76,7 +76,7 @@ Where:
 - `<ENTITLEMENT_KEY>` is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
 - `<USER_EMAIL>` is the email address associated with your IBMid.
 
-> **Note**
+> [!NOTE]
 > The `cp.icr.io` value for the docker-server parameter is the only registry domain name that contains the images. You must set the docker-username to `cp` to use an entitlement key as docker-password.
 
 The *my-odm-docker-registry* secret name is set as the `image.pullSecrets` parameter when you run a helm install of your containers. The `image.repository` parameter is also set to `cp.icr.io/cp/cp4a/odm`.
@@ -139,7 +139,7 @@ $ minikube service list
 |----------------------|------------------------------------------------|----------------------------------|---------------------------|
 ```
 
-> **Warning**
+> [!WARNING]
 > The URLs are prefixed with **http**. You must replace the prefix with **https** to access the services.
 
 You can directly open the URL corresponding to a component in a new browser tab with the following command:
