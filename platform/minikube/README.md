@@ -99,16 +99,7 @@ ibmcharts/ibm-odm-prod           	24.0.0       	9.0.0.0     IBM Operational Deci
 
 ### 3. Install an IBM Operational Decision Manager release
 
-#### a. Create the database credentials secret for the internal database
-
-To secure the access to the database, create a secret that encrypts the database user and password before you install the Helm release.
-
-```shell
-kubectl create secret generic <odmdbsecret> --from-literal=db-user=mynicedbuser \
-                                            --from-literal=db-password='mynicedbpassword'
-```
-
-#### b. Install an ODM Helm release with the default configuration and an internal database
+#### a. Install an ODM Helm release with the default configuration and an internal database
 
 Get the [minikube-values.yaml](./minikube-values.yaml) file and run the following command:
 
@@ -116,7 +107,7 @@ Get the [minikube-values.yaml](./minikube-values.yaml) file and run the followin
 helm install my-odm-release ibmcharts/ibm-odm-prod -f minikube-values.yaml
 ```
 
-#### c. Check the topology
+#### b. Check the topology
 
 Run the following command to check the status of the pods that have been created:
 
@@ -131,7 +122,7 @@ my-odm-release-odm-decisionserverruntime-xxxxxxx   1/1     Running   0          
 
 ```
 
-### 4. Access the ODM services
+#### c. Access the ODM services
 
 With this ODM topology in place, you can access web applications to author, deploy, and test your rule-based decision services. You can retrieve the URLs to access the ODM services with the following command:
 
