@@ -92,8 +92,8 @@ helm repo update
 
 ```shell
 $ helm search repo ibm-odm-prod
-NAME                             	CHART VERSION	APP VERSION	DESCRIPTION
-ibmcharts/ibm-odm-prod           	24.0.0       	9.0.0.0     IBM Operational Decision Manager
+NAME                              CHART VERSION APP VERSION DESCRIPTION
+ibmcharts/ibm-odm-prod            24.0.0        9.0.0.0     IBM Operational Decision Manager
 ```
 
 ### 3. Install an IBM Operational Decision Manager release
