@@ -145,7 +145,7 @@ $ minikube service list
 You can directly open the URL corresponding to a component in a new browser tab with the following command:
 
 ```shell
-minikube service my-odm-release-odm-decisioncenter -n default --https
+minikube service my-odm-release-odm-decisioncenter --https
 ```
 
 You can access the ODM components with the username / password : odmAdmin/odmAdmin
