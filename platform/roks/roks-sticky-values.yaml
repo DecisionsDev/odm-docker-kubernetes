@@ -1,0 +1,22 @@
+customization:
+  runAsUser: ''
+  securitySecretRef: default-ingress-cert
+decisionCenter:
+  enabled: true
+  replicaCount: 2
+image:
+  pullPolicy: Always
+  pullSecrets:
+    - registrysecret
+  repository: cp.icr.io/cp/cp4a/odm
+  tag: 8.12.0.1
+internalDatabase:
+  persistence:
+    enabled: false
+    useDynamicProvisioning: false
+  populateSampleData: true
+  runAsUser: ''
+license: true
+service:
+  enableRoute: true
+usersPassword: odmAdmin
