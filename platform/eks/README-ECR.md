@@ -77,11 +77,11 @@ The related instructions in the online documentation are:
   Here is an example of such a file after this modification:
 
   ```
-  cp.icr.io/cp/cp4a/odm/dbserver@sha256:bde14b68043370e9a4e49b1f3394978c202e0d5495e0121bd7972b37a7d99c35=194826081736.dkr.ecr.eu-west-3.amazonaws.com/cp/cp4a/odm/dbserver:8.12.0.0-amd64
-  cp.icr.io/cp/cp4a/odm/odm-decisioncenter@sha256:869a6a47b5c49865086242e60228eaba7292b8d2e8e56ee4b67ea4fc07d591ad=194826081736.dkr.ecr.eu-west-3.amazonaws.com/cp/cp4a/odm/odm-decisioncenter:8.12.0.0-amd64
-  cp.icr.io/cp/cp4a/odm/odm-decisionrunner@sha256:70824d9aa218c0b768e42a35f6dcc5f424779d1f54540a885fc9395a7a9e07c3=194826081736.dkr.ecr.eu-west-3.amazonaws.com/cp/cp4a/odm/odm-decisionrunner:8.12.0.0-amd64
-  cp.icr.io/cp/cp4a/odm/odm-decisionserverconsole@sha256:9a2f71ab6b62ffc2adf84d68b9d5fcee54d91ab76b62661265a6842479f4388b=194826081736.dkr.ecr.eu-west-3.amazonaws.com/cp/cp4a/odm/odm-decisionserverconsole:8.12.0.0-amd64
-  cp.icr.io/cp/cp4a/odm/odm-decisionserverruntime@sha256:b5539e7efbe410d1a874abcd20d170dabf073d91a0ad58ae69ee03b7acea92d3=194826081736.dkr.ecr.eu-west-3.amazonaws.com/cp/cp4a/odm/odm-decisionserverruntime:8.12.0.0-amd64
+  cp.icr.io/cp/cp4a/odm/dbserver@sha256:bde14b68043370e9a4e49b1f3394978c202e0d5495e0121bd7972b37a7d99c35=194826081736.dkr.ecr.eu-west-3.amazonaws.com/cp/cp4a/odm/dbserver:9.0.0.0-amd64
+  cp.icr.io/cp/cp4a/odm/odm-decisioncenter@sha256:869a6a47b5c49865086242e60228eaba7292b8d2e8e56ee4b67ea4fc07d591ad=194826081736.dkr.ecr.eu-west-3.amazonaws.com/cp/cp4a/odm/odm-decisioncenter9.0.0.0-amd64
+  cp.icr.io/cp/cp4a/odm/odm-decisionrunner@sha256:70824d9aa218c0b768e42a35f6dcc5f424779d1f54540a885fc9395a7a9e07c3=194826081736.dkr.ecr.eu-west-3.amazonaws.com/cp/cp4a/odm/odm-decisionrunner:9.0.0.0-amd64
+  cp.icr.io/cp/cp4a/odm/odm-decisionserverconsole@sha256:9a2f71ab6b62ffc2adf84d68b9d5fcee54d91ab76b62661265a6842479f4388b=194826081736.dkr.ecr.eu-west-3.amazonaws.com/cp/cp4a/odm/odm-decisionserverconsole:9.0.0.0-amd64
+  cp.icr.io/cp/cp4a/odm/odm-decisionserverruntime@sha256:b5539e7efbe410d1a874abcd20d170dabf073d91a0ad58ae69ee03b7acea92d3=194826081736.dkr.ecr.eu-west-3.amazonaws.com/cp/cp4a/odm/odm-decisionserverruntime:9.0.0.0-amd64
   ```
 
   > WARNING:
