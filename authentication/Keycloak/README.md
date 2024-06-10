@@ -166,7 +166,7 @@ You can also create groups and do a mapping between groups and roles. This way, 
       * resDeployers
       * resExecutors
 
-    For more information about ODM groups and roles, refer to the [ODM on Kubernetes documentation](https://ibmdocs-test.dcs.ibm.com/docs/en/odm/9.0.0?topic=access-user-roles-groups).
+    For more information about ODM groups and roles, refer to the [ODM on Kubernetes documentation](https://www.ibm.com/docs/en/odm/9.0.0?topic=access-user-roles-groups).
 
 
 2. Create a group for ODM administrators.
@@ -442,7 +442,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 
 #### a. Installation on OpenShift using Routes
 
-  See the [Preparing to install](https://ibmdocs-test.dcs.ibm.com/docs/en/odm/9.0.0?topic=production-preparing-install-operational-decision-manager) documentation for more information.
+  See the [Preparing to install](https://www.ibm.com/docs/en/odm/9.0.0?topic=production-preparing-install-operational-decision-manager) documentation for more information.
 
   ```shell
   helm install my-odm-release ibm-helm/ibm-odm-prod \
@@ -484,7 +484,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 
 
 1. Get the ODM endpoints.
-    Refer to [this documentation](https://ibmdocs-test.dcs.ibm.com/docs/en/odm/9.0.0?topic=tasks-configuring-external-access) to retrieve the endpoints.
+    Refer to [this documentation](https://www.ibm.com/docs/en/odm/9.0.0?topic=tasks-configuring-external-access) to retrieve the endpoints.
     For example, on OpenShift you can get the route names and hosts with:
 
     ```shell
@@ -566,7 +566,7 @@ To be able to securely connect your Rule Designer to the Decision Server and Dec
 
 4. Restart Rule Designer.
 
-For more information, refer to [this documentation](https://ibmdocs-test.dcs.ibm.com/docs/en/odm/9.0.0?topic=designer-importing-security-certificate-in-rule).
+For more information, refer to [this documentation](https://www.ibm.com/docs/en/odm/9.0.0?topic=designer-importing-security-certificate-in-rule).
 
 ### Getting Started with IBM Operational Decision Manager for Containers
 
@@ -586,7 +586,7 @@ Deploy the **Loan Validation Service** production_deployment ruleapps using the 
 
 You can retrieve the payload.json from the ODM Decision Server Console or use [the provided payload](payload.json).
 
-As explained in the ODM on Certified Kubernetes documentation [Configuring user access with OpenID](https://ibmdocs-test.dcs.ibm.com/docs/en/odm/9.0.0?topic=access-configuring-user-openid), we advise you to use basic authentication for the ODM runtime call for better performance and to avoid token expiration and revocation.
+As explained in the ODM on Certified Kubernetes documentation [Configuring user access with OpenID](https://www.ibm.com/docs/en/odm/9.0.0?topic=access-configuring-user-openid), we advise you to use basic authentication for the ODM runtime call for better performance and to avoid token expiration and revocation.
 
 You perform a basic authentication ODM runtime call in the following way:
 

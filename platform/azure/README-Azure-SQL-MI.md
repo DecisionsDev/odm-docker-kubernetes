@@ -68,7 +68,7 @@ Other deployment options (especially using NGINX) and IBM License Service usage 
 
 ## Troubleshooting
 
-If your ODM instances are not running properly, refer to [our dedicated troubleshooting page](https://ibmdocs-test.dcs.ibm.com/docs/en/odm/9.0.0?topic=900-troubleshooting-support).
+If your ODM instances are not running properly, refer to [our dedicated troubleshooting page](https://www.ibm.com/docs/en/odm/9.0.0?topic=900-troubleshooting-support).
 
 ## Getting Started with IBM Operational Decision Manager for Containers
 
