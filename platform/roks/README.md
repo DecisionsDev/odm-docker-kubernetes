@@ -102,6 +102,7 @@ oc get pods
 
 | *NAME* | *READY* | *STATUS* | *RESTARTS* | *AGE* |
 |---|---|---|---|---|
+| roks-tuto-dbserver-*** | 1/1 | Running | 0 | 44m |
 | roks-tuto-odm-decisioncenter-*** | 1/1 | Running | 0 | 44m |
 | roks-tuto-odm-decisionrunner-*** | 1/1 | Running | 0 | 44m |
 | roks-tuto-odm-decisionserverconsole-*** | 1/1 | Running | 0 | 44m |
@@ -109,20 +110,20 @@ oc get pods
 
 ### 4. Access the ODM services  
 
-    Refer to [this documentation](https://www.ibm.com/docs/en/odm/9.0.0?topic=tasks-configuring-external-access) to retrieve the endpoints.
-    For example, on OpenShift you can get the route names and hosts with:
+Refer to [this documentation](https://www.ibm.com/docs/en/odm/9.0.0?topic=tasks-configuring-external-access) to retrieve the endpoints.
+For example, on OpenShift you can get the route names and hosts with:
 
-    ```
-    kubectl get routes --no-headers --output custom-columns=":metadata.name,:spec.host"
-    ```
+```
+oc get routes --no-headers --output custom-columns=":metadata.name,:spec.host"
+```
 
-    You get the following hosts:
-    ```
-    my-odm-release-odm-dc-route           <DC_HOST>
-    my-odm-release-odm-dr-route           <DR_HOST>
-    my-odm-release-odm-ds-console-route   <DS_CONSOLE_HOST>
-    my-odm-release-odm-ds-runtime-route   <DS_RUNTIME_HOST>
-    ```
+You get the following hosts:
+```
+roks-tuto-odm-dc-route           <DC_HOST>
+roks-tuto-odm-dr-route           <DR_HOST>
+roks-tuto-odm-ds-console-route   <DS_CONSOLE_HOST>
+roks-tuto-odm-ds-runtime-route   <DS_RUNTIME_HOST>
+```
 
 ### 5. Track ODM usage with the IBM License Service
 
