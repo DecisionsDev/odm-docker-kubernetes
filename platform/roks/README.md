@@ -136,8 +136,8 @@ As explained in [OpenShift documentation](https://docs.openshift.com/container-p
 It's the reason why we will use a [reencrypt route](https://docs.openshift.com/container-platform/4.15/networking/routes/secured-routes.html#nw-ingress-creating-a-reencrypt-route-with-a-custom-certificate_secured-routes).
 
 Using reencrypt route, ROKS is very sensitive that route is using a valid domain certificate. So, we will explain :
-How to get the domain certificates and inject them in the ODM containers ?
-How to replace the ODM passthrough route to use a reencrypt route ?
+* How to get the domain certificates and inject them in the ODM containers ?
+* How to replace the ODM passthrough route to use a reencrypt route ?
  
 #### a. Get the ROKS Domain certificate
 
