@@ -135,8 +135,8 @@ As explained in [OpenShift documentation](https://docs.openshift.com/container-p
 It's the reason why we will use a [reencrypt route](https://docs.openshift.com/container-platform/4.15/networking/routes/secured-routes.html#nw-ingress-creating-a-reencrypt-route-with-a-custom-certificate_secured-routes).
 
 Using reencrypt route, ROKS is very sensitive that route is using a valid domain certificate. So, we will explain :
-1. How to get the domain certificates and inject them in the ODM containers ?
-2. How to replace the ODM passthrough route to use a reencrypt route ?
+How to get the domain certificates and inject them in the ODM containers ?
+How to replace the ODM passthrough route to use a reencrypt route ?
  
 #### a. Get the ROKS Domain certificate
 
@@ -172,18 +172,6 @@ oc extract secret default-ingress-cert
   ```bash
   oc logs <your-pod-name>
   ```
-
-- If the `ROOTURL` is empty, it means that the ALB controller did not deliver an address to the ODM Ingress instance (mycompany-odm-ingress).
-  Check the ALB controller logs with the following command:
-  ```bash
-  kubectl logs -n kube-system deployment.apps/aws-load-balancer-controller
-  ```
-
-  Check the ALB configuration if you get a message like:
-  `"msg"="Reconciler error" "error"="failed to reconcile ...`
-
-  For more information, refer to [Using a Network Load Balancer with the NGINX Ingress Controller on Amazon EKS](https://aws.amazon.com/blogs/opensource/network-load-balancer-nginx-ingress-controller-eks/).
-
 ## Getting Started with IBM Operational Decision Manager for Containers
 
 Get hands-on experience with IBM Operational Decision Manager in a container environment by following this [Getting started tutorial](https://github.com/DecisionsDev/odm-for-container-getting-started/blob/master/README.md).
