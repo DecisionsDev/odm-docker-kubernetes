@@ -4,7 +4,7 @@ This project demonstrates how to deploy an IBM® Operational Decision Manager (O
 Redhat Openshift is available on a lot of cloud platform. You can find details about all of these availability [here](https://www.redhat.com/en/technologies/cloud-computing/openshift#cloud-services-editions)
 Concerning this tutorial, it will be dedicated to the deploment on top of the [IBM Cloud platform](https://www.redhat.com/en/technologies/cloud-computing/openshift/ibm).
 
-<img src="./images/eks-schema.jpg" alt="Flow" width="2050" height="600" />
+<img src="./images/roks-schema.jpg" alt="Flow" width="2050" height="600" />
 
 The ODM on Kubernetes Docker images are available in the [IBM Cloud Container Registry](https://www.ibm.com/cloud/container-registry). The ODM Helm chart is available in the [IBM Helm charts repository](https://github.com/IBM/charts).
 
