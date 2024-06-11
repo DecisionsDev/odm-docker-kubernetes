@@ -23,7 +23,7 @@ The ODM Docker material is used here, which is available in the [odm-ondocker](h
 - [Amazon EKS](platform/eks/README.md)
 - [Azure AKS](platform/azure/README.md)
 - [Google Cloud GKE](platform/gcloud/README.md)
-- [IBM Cloud Redhat OpenShift Kubernetes Service](platform/roks/README.md)
+- [Redhat OpenShift Kubernetes Service on IBM Cloud (ROKS)](platform/roks/README.md)
 - [Minikube](platform/minikube/README.md) - Minikube can be used to evaluate ODM locally.
 
 ### Integrating with Third-Party Providers
