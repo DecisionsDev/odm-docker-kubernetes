@@ -140,11 +140,12 @@ How to replace the ODM passthrough route to use a reencrypt route ?
  
 #### a. Get the ROKS Domain certificate
 
-Get the default-ingress-cert secret of the openshift-ingress project that is storing the ROKS domain certificate into the odm-tutorial project.
+Copy the default-ingress-cert secret of the openshift-ingress project that is storing the ROKS domain certificate into the odm-tutorial project.
 You can do it manually using the OpenShift dashboard or using the following command line :
 
 ```bash
-kubectl patch secret default-ingress-cert -n openshift-ingress --type=json -p='[{"op": "replace", "path": "/metadata/namespace", "value": "odm-tutorial"}]' -o yaml --dry-run=client | kubectl apply -f -
+oc extract secret/default-ingress-cert -n openshift-ingress
+oc create secret tls default-ingress-cert --cert=./tls.crt --key=./tls.key -n odm-tutorial
 ```
 
 #### b. Launch the ODM instance injecting the domain certificate 
@@ -159,12 +160,18 @@ The ODM containers will embbed the ROKS Domain certificates. And, 2 Decision Cen
 
 #### c. Create a reencrypt route for the Decision Center service
 
-Extract the public certificate (tls.crt) and private key (tls.key) of the default-ingress-cert secret
-
 ```bash
-oc extract secret default-ingress-cert
+oc create route reencrypt my-sticky-dc-route --service=roks-sticky-tuto-odm-decisioncenter --cert=tls.crt --key=tls.key --dest-ca-cert=tls.crt
 ```
 
+#### d. Access Decision Center using the created reencrypt route
+
+You can now access Decision Center managing a sticky session with this reencrypt route with the URL:
+
+```bash
+DC_URL='https://'$(oc get route my-sticky-dc-route -o jsonpath='{.spec.host}')
+echo $DC_URL
+```
 
 ## Troubleshooting
 
