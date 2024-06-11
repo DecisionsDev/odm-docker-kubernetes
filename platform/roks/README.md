@@ -48,8 +48,6 @@ oc new-project odm-tutorial
 To get access to the ODM material, you must have an IBM entitlement key to pull the images from the IBM Cloud Container registry.
 This is what will be used in the next step of this tutorial.
 
-You can also download the ODM on Kubernetes package (.tgz file) from Passport Advantage® (PPA), and then push the contained images to the EKS Container Registry (ECR). If you prefer to manage the ODM images this way, see the details [here](README-ECR.md)
-
 #### a. Retrieve your entitled registry key
 
 - Log in to [MyIBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary) with the IBMid and password that are associated with the entitled software.
@@ -89,11 +87,8 @@ ibm-helm/ibm-odm-prod           	24.0.0       	9.0.0.0   	IBM Operational Decisi
 
 ### 3. Install an IBM Operational Decision Manager release (10 min)
 
-Install a Kubernetes release with the default configuration and a name of `mycompany`.
 
-To install ODM with the AWS RDS PostgreSQL database created in [step 2](#2-create-an-rds-database-10-min):
-
-- Get the [roks-values.yaml](./roks-values.yaml) file and launch your ODM instance :
+Get the [roks-values.yaml](./roks-values.yaml) file and launch your ODM instance :
 
 ```bash
 helm install roks-tuto ibm-helm/ibm-odm-prod --version 24.0.0 -f roks-values.yaml
@@ -135,7 +130,7 @@ Follow the **Installation** section of the [Manual installation without the Oper
 
 ### 6. Deploy ODM to support sticky session on ROKS
 
-The ODM Decision Center component needs sticky session, also named session affinity(https://kubernetes.io/docs/reference/networking/virtual-ips/#session-affinity).
+The ODM Decision Center component needs sticky session, also named [session affinity](https://kubernetes.io/docs/reference/networking/virtual-ips/#session-affinity).
 As explained in [OpenShift documentation](https://docs.openshift.com/container-platform/4.15/networking/routes/route-configuration.html#nw-using-cookies-keep-route-statefulness_route-configuration), using a passthrough route for Decision Center is not enough to allow sticky session. 
 It's the reason why we will use a [reencrypt route](https://docs.openshift.com/container-platform/4.15/networking/routes/secured-routes.html#nw-ingress-creating-a-reencrypt-route-with-a-custom-certificate_secured-routes).
 

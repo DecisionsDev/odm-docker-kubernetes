@@ -1,7 +1,6 @@
 customization:
   runAsUser: ''
 image:
-  pullPolicy: Always
   pullSecrets:
     - my-odm-docker-registry
   repository: cp.icr.io/cp/cp4a/odm
