@@ -1,8 +1,8 @@
 # Deploying IBM Operational Decision Manager on Redhat Openshift Kubernetes Service aka ROKS
 
 This project demonstrates how to deploy an IBM® Operational Decision Manager (ODM) clustered topology on Redhat Openshift Kubernetes Service (ROKS). This deployment implements Kubernetes and Docker technologies.
-Redhat Openshift is available on a lot of cloud platform. You can find details about all of these availability [here](https://www.redhat.com/en/technologies/cloud-computing/openshift#cloud-services-editions)
-Concerning this tutorial, it will be dedicated to the deploment on top of the [IBM Cloud platform](https://www.redhat.com/en/technologies/cloud-computing/openshift/ibm).
+Redhat Openshift is available on a lot of cloud platform. You can find more details about all of [these availability](https://www.redhat.com/en/technologies/cloud-computing/openshift#cloud-services-editions).
+Concerning this tutorial, it will be dedicated to the deployment of ODM on top of the [IBM Cloud platform](https://www.redhat.com/en/technologies/cloud-computing/openshift/ibm).
 
 <img src="./images/roks-schema.jpg" alt="Flow" width="2050" height="600" />
 
@@ -137,7 +137,7 @@ It's the reason why we will use a [reencrypt route](https://docs.openshift.com/c
 
 Using reencrypt route, ROKS is very sensitive that route is using a valid domain certificate. So, we will explain :
 * How to get the domain certificates and inject them in the ODM containers ?
-* How to replace the ODM passthrough route to use a reencrypt route ?
+* How to create a reencrypt route for Decision Center ?
  
 #### a. Get the ROKS Domain certificate
 
@@ -157,7 +157,8 @@ oc create secret tls default-ingress-cert --cert=./tls.crt --key=./tls.key -n od
 helm install roks-sticky-tuto ibm-helm/ibm-odm-prod --version 24.0.0 -f roks-sticky-values.yaml
 ```
 
-The ODM containers will embbed the ROKS Domain certificates. And, 2 Decision Center pods will be launched to check the sticky session behaviour.
+The ODM containers will embbed the ROKS Domain certificates.
+And, 2 Decision Center pods will be launched to check the sticky session behaviour.
 
 #### c. Create a reencrypt route for the Decision Center service
 
