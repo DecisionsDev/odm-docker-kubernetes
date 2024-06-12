@@ -1,0 +1,16 @@
+customization:
+  runAsUser: ''
+image:
+  pullSecrets:
+    - my-odm-docker-registry
+  repository: cp.icr.io/cp/cp4a/odm
+internalDatabase:
+  persistence:
+    enabled: false
+    useDynamicProvisioning: false
+  populateSampleData: true
+  runAsUser: ''
+license: true
+service:
+  enableRoute: true
+usersPassword: odmAdmin
