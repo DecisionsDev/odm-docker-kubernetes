@@ -1,8 +1,9 @@
 # Deploying IBM Operational Decision Manager on Redhat Openshift Kubernetes Service on IBM Cloud aka ROKS
+This project demonstrates how to deploy an IBM® Operational Decision Manager (ODM) clustered topology on Redhat OpenShift Kubernetes Service on IBM Cloud (ROKS), leveraging Kubernetes and Docker technologies.
 
-This project demonstrates how to deploy an IBM® Operational Decision Manager (ODM) clustered topology on Redhat Openshift Kubernetes Service on IBM Cloud (ROKS). This deployment implements Kubernetes and Docker technologies.
-Redhat Openshift is available on a lot of cloud platform. You can find more details about all of [these availability](https://www.redhat.com/en/technologies/cloud-computing/openshift#cloud-services-editions).
-Concerning this tutorial, it will be dedicated to the deployment of ODM on top of the [IBM Cloud platform](https://www.redhat.com/en/technologies/cloud-computing/openshift/ibm).
+Redhat OpenShift is available on various cloud platforms. More details about all [these availabilities](https://www.redhat.com/en/technologies/cloud-computing/openshift#cloud-services-editions).
+
+This tutorial focuses on deploying ODM on the [IBM Cloud platform](https://www.redhat.com/en/technologies/cloud-computing/openshift/ibm).
 
 <img src="./images/roks-schema.jpg" alt="Flow" width="2050" height="600" />
 
@@ -36,8 +37,7 @@ Then, create an [IBM Cloud Account](https://cloud.ibm.com/registration).
 
 ### 1. Prepare your environment (20 min)
 
-When you have created your IBM Cloud account, if you have no available ROKS cluster, you can follow this [IBM Cloud tutorial](https://cloud.ibm.com/docs/openshift?topic=openshift-openshift_tutorial&locale=en) to create your first cluster.
-Then, create a new project dedicated to the ODM instance deployment using the command line:
+Create your IBM Cloud account and set up your first ROKS cluster following this [IBM Cloud tutorial](https://cloud.ibm.com/docs/openshift?topic=openshift-openshift_tutorial&locale=en). Then, create a project for ODM deployment:
 
 ```bash
 oc new-project odm-tutorial
@@ -62,13 +62,13 @@ oc create secret docker-registry my-odm-docker-registry --docker-server=cp.icr.i
 ```
 
 Where:
-* `<ENTITLEMENT_KEY>` is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
-* `<USER_EMAIL>` is the email address associated with your IBMid.
+* `<ENTITLEMENT_KEY>`: The entitlement key from the previous step. Make sure to enclose the key in double quotes. 
+* `<USER_EMAIL>`: The email address associated with your IBMid.
 
 > **Note**
-> The `cp.icr.io` value for the docker-server parameter is the only registry domain name that contains the images. You must set the docker-username to `cp` to use an entitlement key as docker-password.
+> The `cp.icr.io` value for the docker-server parameter is the only registry domain name that contains the images. You must set the docker-username to `cp` to use the entitlement key as the docker-password.
 
-The my-odm-docker-registry secret name is already used for the `image.pullSecrets` parameter when you run a helm install of your containers. The `image.repository` parameter is also set by default to `cp.icr.io/cp/cp4a/odm`.
+The my-odm-docker-registry secret name is already used for the `image.pullSecrets` parameter when you run a Helm install of your containers. The `image.repository` parameter is also set by default to `cp.icr.io/cp/cp4a/odm`.
 
 #### c. Add the public IBM Helm charts repository
 
@@ -88,7 +88,7 @@ ibm-helm/ibm-odm-prod           	24.0.0       	9.0.0.0   	IBM Operational Decisi
 ### 3. Install an IBM Operational Decision Manager release (10 min)
 
 
-Get the [roks-values.yaml](./roks-values.yaml) file and launch your ODM instance :
+Get the [roks-values.yaml](./roks-values.yaml) file and install your ODM instance :
 
 ```bash
 helm install roks-tuto ibm-helm/ibm-odm-prod --version 24.0.0 -f roks-values.yaml
@@ -131,18 +131,20 @@ Follow the **Installation** section of the [Manual installation without the Oper
 
 ### 6. Deploy ODM to support sticky session on ROKS
 
-The ODM Decision Center component needs sticky session, also named [session affinity](https://kubernetes.io/docs/reference/networking/virtual-ips/#session-affinity).
-As explained in [OpenShift documentation](https://docs.openshift.com/container-platform/4.15/networking/routes/route-configuration.html#nw-using-cookies-keep-route-statefulness_route-configuration), using a passthrough route for Decision Center is not enough to allow sticky session. 
-It's the reason why we will use a [reencrypt route](https://docs.openshift.com/container-platform/4.15/networking/routes/secured-routes.html#nw-ingress-creating-a-reencrypt-route-with-a-custom-certificate_secured-routes).
+The ODM Decision Center component requires a sticky session, also known as [session affinity](https://kubernetes.io/docs/reference/networking/virtual-ips/#session-affinity). This is necessary when using more than **one** replica for the Decision Center to ensure that each user's requests are consistently routed to the same pod.
 
-Using reencrypt route, ROKS is very sensitive that route is using a valid domain certificate. So, we will explain :
-* How to get the domain certificates and inject them in the ODM containers ?
-* How to create a reencrypt route for Decision Center ?
- 
+According to the [OpenShift documentation](https://docs.openshift.com/container-platform/4.15/networking/routes/route-configuration.html#nw-using-cookies-keep-route-statefulness_route-configuration), using a passthrough route for Decision Center is not sufficient to enable a sticky session. Therefore, we need to use a [reencrypt route](https://docs.openshift.com/container-platform/4.15/networking/routes/secured-routes.html#nw-ingress-creating-a-reencrypt-route-with-a-custom-certificate_secured-routes).
+
+Using a reencrypt route, ROKS requires the route to use a valid domain certificate. Below are the steps to achieve this:
+
+1. How to obtain the domain certificates and inject them into the ODM containers.
+2. How to create a reencrypt route for the Decision Center.
+
+
 #### a. Get the ROKS Domain certificate
 
-Copy the default-ingress-cert secret of the openshift-ingress project that is storing the ROKS domain certificate into the odm-tutorial project.
-You can do it manually using the OpenShift dashboard or using the following command line :
+Copy the default-ingress-cert secret from the openshift-ingress project, which stores the ROKS domain certificate, into the odm-tutorial project. 
+You can do this manually using the OpenShift dashboard or by using the following command line:
 
 ```bash
 oc extract secret/default-ingress-cert -n openshift-ingress
@@ -157,8 +159,7 @@ oc create secret tls default-ingress-cert --cert=./tls.crt --key=./tls.key -n od
 helm install roks-sticky-tuto ibm-helm/ibm-odm-prod --version 24.0.0 -f roks-sticky-values.yaml
 ```
 
-The ODM containers will embbed the ROKS Domain certificates.
-And, 2 Decision Center pods will be launched to check the sticky session behaviour.
+The ODM containers will embed the ROKS domain certificates. Additionally, two Decision Center pods will be launched to verify the sticky session behavior.
 
 #### c. Create a reencrypt route for the Decision Center service
 
