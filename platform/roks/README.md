@@ -94,6 +94,8 @@ Get the [roks-values.yaml](./roks-values.yaml) file and install your ODM instanc
 helm install roks-tuto ibm-helm/ibm-odm-prod --version 24.0.0 -f roks-values.yaml
 ```
 
+> This configuration will deployed ODM with a sample database. You should used your own database such as [IBM Cloud Databases for PostgreSQL](https://www.ibm.com/products/databases-for-postgresql) for production. 
+
 #### Check the topology
 Run the following command to check the status of the pods that have been created: 
 ```bash
