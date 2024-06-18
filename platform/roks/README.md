@@ -1,4 +1,5 @@
 # Deploying IBM Operational Decision Manager on Redhat Openshift Kubernetes Service on IBM Cloud aka ROKS
+
 This project demonstrates how to deploy an IBM® Operational Decision Manager (ODM) clustered topology on Redhat OpenShift Kubernetes Service on IBM Cloud (ROKS), leveraging Kubernetes and Docker technologies.
 
 Redhat OpenShift is available on various cloud platforms. More details about all [these availabilities](https://www.redhat.com/en/technologies/cloud-computing/openshift#cloud-services-editions).
@@ -10,28 +11,33 @@ This tutorial focuses on deploying ODM on the [IBM Cloud platform](https://www.r
 The ODM on Kubernetes Docker images are available in the [IBM Cloud Container Registry](https://www.ibm.com/cloud/container-registry). The ODM Helm chart is available in the [IBM Helm charts repository](https://github.com/IBM/charts).
 
 ## Included components
+
 The project uses the following components:
+
 - [IBM Operational Decision Manager](https://ibmdocs-test.dcs.ibm.com/docs/en/odm/9.0.0?topic=operational-decision-manager-certified-kubernetes-900)
 - [IBM Cloud](https://cloud.ibm.com)
 
 ## Tested environment
+
 The commands and tools have been tested on Linux and macOS.
 
 ## Prerequisites
+
 First, install the following software on your machine:
-* [Helm v3](https://helm.sh/docs/intro/install/)
+
+- [Helm v3](https://helm.sh/docs/intro/install/)
 
 Then, create an [IBM Cloud Account](https://cloud.ibm.com/registration).
 
 ## Steps to deploy ODM on Kubernetes from ROKS
-<!-- TOC depthFrom:3 depthTo:3 withLinks:1 updateOnSave:1 orderedList:0 -->
+<!-- TOC depthfrom:3 depthto:3 withlinks:false updateonsave:false orderedlist:false -->
 
-- [1. Prepare your environment (20 min)](#1-prepare-your-environment-20-min)
-- [2. Prepare your environment for the ODM installation (5 min)](#2-prepare-your-environment-for-the-odm-installation-5-min)
-- [3. Install an IBM Operational Decision Manager release (10 min)](#3-install-an-ibm-operational-decision-manager-release-10-min)
-- [4. Access the ODM services](#4-access-the-odm-services)
-- [5. Track ODM usage with the IBM License Service](#5-track-odm-usage-with-the-ibm-license-service)
-- [6. Deploy ODM to support sticky session on ROKS](#6-deploy-odm-to-support-sticky-session-on-roks)
+- Prepare your environment (20 min)
+- Prepare your environment for the ODM installation (5 min)
+- Install an IBM Operational Decision Manager release (10 min)
+- Access the ODM services
+- Track ODM usage with the IBM License Service
+- Deploy ODM to support sticky session on ROKS
 
 <!-- /TOC -->
 
@@ -62,8 +68,9 @@ oc create secret docker-registry my-odm-docker-registry --docker-server=cp.icr.i
 ```
 
 Where:
-* `<ENTITLEMENT_KEY>`: The entitlement key from the previous step. Make sure to enclose the key in double quotes. 
-* `<USER_EMAIL>`: The email address associated with your IBMid.
+
+- `<ENTITLEMENT_KEY>`: The entitlement key from the previous step. Make sure to enclose the key in double quotes.
+- `<USER_EMAIL>`: The email address associated with your IBMid.
 
 > **Note**
 > The `cp.icr.io` value for the docker-server parameter is the only registry domain name that contains the images. You must set the docker-username to `cp` to use the entitlement key as the docker-password.
@@ -81,23 +88,24 @@ helm repo update
 
 ```bash
 $ helm search repo ibm-odm-prod
-NAME                             	CHART VERSION	APP VERSION	DESCRIPTION
-ibm-helm/ibm-odm-prod           	24.0.0       	9.0.0.0   	IBM Operational Decision Manager
+NAME                    CHART VERSION APP VERSION DESCRIPTION
+ibm-helm/ibm-odm-prod   24.0.0        9.0.0.0     IBM Operational Decision Manager
 ```
 
 ### 3. Install an IBM Operational Decision Manager release (10 min)
 
-
-Get the [roks-values.yaml](./roks-values.yaml) file and install your ODM instance :
+Get the [roks-values.yaml](./roks-values.yaml) file and install your ODM instance:
 
 ```bash
 helm install roks-tuto ibm-helm/ibm-odm-prod --version 24.0.0 -f roks-values.yaml
 ```
 
-> This configuration will deployed ODM with a sample database. You should used your own database such as [IBM Cloud Databases for PostgreSQL](https://www.ibm.com/products/databases-for-postgresql) for production. 
+> This configuration will deployed ODM with a sample database. You should used your own database such as [IBM Cloud Databases for PostgreSQL](https://www.ibm.com/products/databases-for-postgresql) for production.
 
 #### Check the topology
-Run the following command to check the status of the pods that have been created: 
+
+Run the following command to check the status of the pods that have been created:
+
 ```bash
 oc get pods
 ```
@@ -115,12 +123,13 @@ oc get pods
 Refer to [this documentation](https://www.ibm.com/docs/en/odm/9.0.0?topic=tasks-configuring-external-access) to retrieve the endpoints.
 For example, on OpenShift you can get the route names and hosts with:
 
-```
+```bash
 oc get routes --no-headers --output custom-columns=":metadata.name,:spec.host"
 ```
 
 You get the following hosts:
-```
+
+```none
 roks-tuto-odm-dc-route           <DC_HOST>
 roks-tuto-odm-dr-route           <DR_HOST>
 roks-tuto-odm-ds-console-route   <DS_CONSOLE_HOST>
@@ -142,10 +151,9 @@ Using a reencrypt route, ROKS requires the route to use a valid domain certifica
 1. How to obtain the domain certificates and inject them into the ODM containers.
 2. How to create a reencrypt route for the Decision Center.
 
-
 #### a. Get the ROKS Domain certificate
 
-Copy the default-ingress-cert secret from the openshift-ingress project, which stores the ROKS domain certificate, into the odm-tutorial project. 
+Copy the default-ingress-cert secret from the openshift-ingress project, which stores the ROKS domain certificate, into the odm-tutorial project.
 You can do this manually using the OpenShift dashboard or by using the following command line:
 
 ```bash
@@ -153,7 +161,7 @@ oc extract secret/default-ingress-cert -n openshift-ingress
 oc create secret tls default-ingress-cert --cert=./tls.crt --key=./tls.key -n odm-tutorial
 ```
 
-#### b. Launch the ODM instance injecting the domain certificate 
+#### b. Launch the ODM instance injecting the domain certificate
 
 - Get the [roks-sticky-values.yaml](./roks-sticky-values.yaml) file and launch your ODM instance :
 
@@ -181,12 +189,15 @@ echo $DC_URL
 ## Troubleshooting
 
 - If your ODM instances are not running properly, check the logs with the following command:
+
   ```bash
   oc logs <your-pod-name>
   ```
+
 ## Getting Started with IBM Operational Decision Manager for Containers
 
 Get hands-on experience with IBM Operational Decision Manager in a container environment by following this [Getting started tutorial](https://github.com/DecisionsDev/odm-for-container-getting-started/blob/master/README.md).
 
-# License
+## License
+
 [Apache 2.0](/LICENSE)
