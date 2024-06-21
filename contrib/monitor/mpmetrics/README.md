@@ -163,7 +163,7 @@ For example put **base_gc_total** in the **Expression** field and click on the *
 
 ![Queries](./images/queries.png)
 
-If you are interested by servlet requests managed by the runtime, you can use the query **vendor_servlet_request_total{servlet="DecisionService_RESTDecisionService"}**
+If you are interested in servlet requests managed by the runtime, you can use the query **vendor_servlet_request_total{servlet="DecisionService_RESTDecisionService"}**
 For example, by monitoring this metrics, you can check the behaviour of the load balancer is correct if all Decision Server Runtime replicas are reciving almost the same number of requets like in the following screenshot.
  
 ![Runtime Servlet Request](./images/RuntimeRequest.png)
