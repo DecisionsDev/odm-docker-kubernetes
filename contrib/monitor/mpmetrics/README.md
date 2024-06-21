@@ -132,7 +132,7 @@ base_gc_total{name="scavenge"} 157
 vendor_connectionpool_waitTime_total_seconds{datasource="jdbc_ilogDataSource"} 0.0
 ```
 
-## Explose metrics in OCP
+## Expose metrics in OCP
 
 ### Enable Monitoring
 
