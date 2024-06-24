@@ -110,4 +110,86 @@ entries:
     urls:
     - https://raw.githubusercontent.com/DecisionsDev/odm-docker-kubernetes/master/repo/stable/ibm-odm-dev-21.2.1.tgz
     version: 21.2.1
+  ibm-odm-prod:
+  - apiVersion: v2
+    appVersion: 8.11.1.0
+    created: "2022-12-16T00:23:48.568548799Z"
+    description: 'IBM Operational Decision Manager  License By installing this product
+      you accept the following license terms: https://www14.software.ibm.com/cgi-bin/weblap/lap.pl?li_formnum=L-ASAY-C55D8E'
+    digest: 7199d9b2379312a09dc2b954fd554fc7c50c3764c0af923971eea56a6274f716
+    home: https://developer.ibm.com/odm/
+    icon: https://raw.githubusercontent.com/ODMDev/ruledesigner/master/icons/automation-decision.png
+    keywords:
+    - OperationalDecisionManager
+    - businessrules
+    - Commercial
+    - s390x
+    - ppc64le
+    - amd64
+    - ICP
+    - RHOCP
+    - Middleware
+    kubeVersion: '>=1.11.0-0'
+    maintainers:
+    - name: IBM
+    name: ibm-odm-prod
+    sources:
+    - https://github.com/IBM/charts/tree/master/stable
+    urls:
+    - https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm/ibm-odm-prod-22.2.0.tgz
+    version: 22.2.0
+  - apiVersion: v2
+    appVersion: 8.12.0.0
+    created: "2023-06-22T10:04:39.643441813Z"
+    description: 'IBM Operational Decision Manager  License By installing this product
+      you accept the following license terms: https://www14.software.ibm.com/cgi-bin/weblap/lap.pl?li_formnum=L-PGCG-X4ZD6R'
+    digest: 94b95f5aadedcf5c7e5bac86f7a384f28d6ffbf3e0793d9e3911c3b1e9c629f8
+    home: https://developer.ibm.com/odm/
+    icon: https://raw.githubusercontent.com/ODMDev/ruledesigner/master/icons/automation-decision.png
+    keywords:
+    - OperationalDecisionManager
+    - businessrules
+    - Commercial
+    - s390x
+    - ppc64le
+    - amd64
+    - ICP
+    - RHOCP
+    - Middleware
+    kubeVersion: '>=1.11.0-0'
+    maintainers:
+    - name: IBM
+    name: ibm-odm-prod
+    sources:
+    - https://github.com/IBM/charts/tree/master/stable
+    urls:
+    - https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm/ibm-odm-prod-23.1.0.tgz
+    version: 23.1.0
+  - apiVersion: v2
+    appVersion: 8.12.0.1
+    created: "2023-12-14T10:58:46.092737136Z"
+    description: 'IBM Operational Decision Manager  License By installing this product
+      you accept the following license terms: https://www14.software.ibm.com/cgi-bin/weblap/lap.pl?li_formnum=L-PGCG-X4ZD6R'
+    digest: bd1aaa14f76e9fa03ac537bc634e03b4c7b275c04f1adb1e6d5927bcbe35209d
+    home: https://developer.ibm.com/odm/
+    icon: https://raw.githubusercontent.com/ODMDev/ruledesigner/master/icons/automation-decision.png
+    keywords:
+    - OperationalDecisionManager
+    - businessrules
+    - Commercial
+    - s390x
+    - ppc64le
+    - amd64
+    - ICP
+    - RHOCP
+    - Middleware
+    kubeVersion: '>= 1.24.0-0'
+    maintainers:
+    - name: IBM
+    name: ibm-odm-prod
+    sources:
+    - https://github.com/IBM/charts/tree/master/stable
+    urls:
+    - https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm/ibm-odm-prod-23.2.0.tgz
+    version: 23.2.0
 generated: "2024-06-10T15:32:15.406464+02:00"
