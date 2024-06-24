@@ -1,0 +1,92 @@
+# Default values for odmcharts.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Accept the terms of the IBM license by setting the license parameter to "true"
+license: true
+
+# Users password is required if authSecretRef is not set.
+# Set the password for odm default users.
+usersPassword: "odmAdmin"
+
+image:
+  repository: "cp.stg.icr.io/cp/cp4a/odm/"
+  tag: 9.0.0.0
+  pullPolicy: IfNotPresent
+## Optionally specify an list of imagePullSecrets.
+## Secrets must be manually created in the namespace.
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  pullSecrets: 
+  - ibm-registry
+
+## Architecture - e.g. amd64, ppc64le. If left empty, the architecture will be determined automatically.
+## You can use kubectl version command to determine the architecture on the desired worker node.
+  arch: "amd64"
+
+
+
+service:
+  enableRoute: true
+
+externalDatabase:
+  type: "postgresql"
+  serverName: "myexternalpostgres-ibm-postgres-dev.odm-privileged.svc.cluster.local"
+  databaseName: "postgresdb"
+  secretCredentials: "odm-prod-secret"
+  port: "5432"
+#  sslSecretRef: "odm-db-dc-ssl-secret"
+
+decisionRunner:
+  initContainer:
+    image: busybox:1.28
+    command:
+      - sh
+      - "-c"
+      - "source /ibm/icp4ba/initconfig/vault.sh"
+    configRef: vaultcm
+    env:
+      - name: TARGETENV
+        value: "Production"
+decisionServerRuntime:
+  initContainer:
+    image: busybox:1.28
+    command:
+      - sh
+      - "-c"
+      - "source /ibm/icp4ba/initconfig/vault.sh"
+    configRef: vaultcm
+    env:
+      - name: TARGETENV
+        value: "Production"
+decisionServerConsole:
+  initContainer:
+    image: busybox:1.28
+    command:
+      - sh
+      - "-c"
+      - "source /ibm/icp4ba/initconfig/vault.sh"
+    configRef: vaultcm
+    env:
+      - name: TARGETENV
+        value: "Production"
+decisionCenter:
+  enabled: true
+  initContainer:
+    image: busybox:1.28
+    command:
+      - sh
+      - "-c"
+      - "source /ibm/icp4ba/initconfig/vault.sh"
+    configRef: vaultcm
+    env:
+      - name: TARGETENV
+        value: "Production"
+      
+customization:
+  runAsUser: ''
+  enableFips: false
+  vault: "initcontainer"
+serviceAccountName: "odm-sa"
+
+
+

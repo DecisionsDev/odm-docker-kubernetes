@@ -214,7 +214,7 @@ If you need to add or modify a parameter to the `openidConnectClient` tag in the
 
 ## Results
 
-- [Optional] To use an external OIDC provider with Rule Designer, see [Configuring Rule Designer](https://www.ibm.com/docs/en/odm/8.12.0?topic=parties-configuring-rule-designer).
+- [Optional] To use an external OIDC provider with Rule Designer, see [Configuring Rule Designer](https://www.ibm.com/docs/en/odm/9.0.0?topic=parties-configuring-rule-designer).
 
   You must import the security certificate that is used in the ODM instance into Rule Designer. For more information, see [Importing a security certificate in Rule Designer](https://www.ibm.com/docs/en/cloud-paks/cp-biz-automation/21.0.x?topic=designer-importing-security-certificate-in-rule). To provide the truststore.jks file to the eclipse.ini, you can identify the ODM pods with the `oc get pods | grep odm` command, and then copy the file by running the `oc cp` command.
 

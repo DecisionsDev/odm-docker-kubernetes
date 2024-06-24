@@ -1,0 +1,31 @@
+# Accept the terms of the IBM license by setting the license parameter to "true"
+license: true
+
+image:
+  repository: cp.stg.icr.io/cp/cp4a/odm/
+  tag: 9.0.0.0
+## Optionally specify an list of imagePullSecrets.
+## Secrets must be manually created in the namespace.
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  pullSecrets:
+  - ibm-registry
+
+internalDatabase:
+  persistence:
+    enabled: false
+  runAsUser: ""
+  secretCredentials: odmdbsecret
+
+service:
+  enableRoute: true
+
+customization:
+  authSecretRef: authsecret
+  runAsUser: ''
+  securitySecretRef: mynicecompanytlssecret
+
+vault:
+  enabled: true
+  type: spc
+
+serviceAccountName: odm-sa

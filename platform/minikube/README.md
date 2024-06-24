@@ -1,4 +1,4 @@
-#  Deploying IBM Operational Decision Manager on Kubernetes Minikube
+# Deploying IBM Operational Decision Manager on Kubernetes Minikube
 
 This tutorial explains how to deploy an IBM® Operational Decision Manager (ODM) clustered topology on a Minikube Kubernetes cluster. This deployment implements Kubernetes and Docker technologies.
 
@@ -9,50 +9,50 @@ Minikube is a local Kubernetes that makes it easy to learn and develop for Kuber
 The ODM on Kubernetes Docker images are available in the [IBM Entitled Registry](https://www.ibm.com/cloud/container-registry). The ODM Helm chart is available in the [IBM Helm charts repository](https://github.com/IBM/charts).
 
 ## Included Components
-- [IBM Operational Decision Manager](https://www.ibm.com/docs/en/odm/8.12.0)
-- [Kubernetes Minikube](https://github.com/kubernetes/minikube)
+
+- [IBM Operational Decision Manager](https://www.ibm.com/docs/en/odm/9.0.0?topic=operational-decision-manager-certified-kubernetes-900)
+- [Kubernetes Minikube](https://minikube.sigs.k8s.io/docs/)
 
 ## Test environment
+
 This tutorial was tested on macOS and Linux.
 
 ## Prerequisites
 
-* [Minikube](https://github.com/kubernetes/minikube#installation)
-* [Helm v3](https://helm.sh/docs/intro/install/)
-
+- [Minikube](https://minikube.sigs.k8s.io/docs/start/)
+- [Helm](https://helm.sh/docs/intro/install/)
 
 ## Steps
 
 1. [Start Minikube](#1-start-minikube)
 2. [Prepare your environment for the ODM installation](#2-prepare-your-environment-for-the-odm-installation)
 3. [Install an IBM Operational Decision Manager release](#3-install-an-ibm-operational-decision-manager-release)
-4. [Access the ODM services](#4-access-the-odm-services)
 
 ### 1. Start Minikube
 
 #### a. Start Minikube with sufficient resources
 
-  ```
-  minikube start --cpus 6 --memory 8GB --kubernetes-version=v1.25.0
-  ```
+```shell
+minikube start --cpus 6 --memory 8GB --kubernetes-version=v1.25.16
+```
 
-  The kubectl context is automatically set to point to the created Minikube cluster.
+The kubectl context is automatically set to point to the created Minikube cluster.
 
-    > **Note** 
-    > This installation guide has been tested with the Kubernetes version v1.25.0 onwards 
+> [!NOTE]
+> This installation guide has been tested with the Kubernetes version v1.25.0 onwards
 
 #### b. Check your environment
 
-  ```
-  $ kubectl cluster-info
-  Kubernetes control plane is running at https://<CLUSTER-IP>:8443
-  CoreDNS is running at https://<CLUSTER-IP>:8443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+```shell
+$ kubectl cluster-info
+Kubernetes control plane is running at https://<CLUSTER-IP>:8443
+CoreDNS is running at https://<CLUSTER-IP>:8443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
 
-  To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
-  ```
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+```
 
-  > **Note**  
-  > You can access the [Kubernetes Dashboard](https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/) by running the `minikube dashboard` command.
+> [!NOTE]
+> You can access the [Kubernetes Dashboard](https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/) by running the `minikube dashboard` command.
 
 ### 2. Prepare your environment for the ODM installation
 
@@ -66,33 +66,34 @@ To get access to the ODM material, you need an IBM entitlement key to pull the i
 
 #### b. Create a pull secret by running the `kubectl create secret` command
 
-```
+```shell
 kubectl create secret docker-registry my-odm-docker-registry --docker-server=cp.icr.io \
     --docker-username=cp --docker-password="<ENTITLEMENT_KEY>" --docker-email=<USER_EMAIL>
 ```
 
 Where:
-* `<ENTITLEMENT_KEY>` is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
-* `<USER_EMAIL>` is the email address associated with your IBMid.
 
-> **Note**  
+- `<ENTITLEMENT_KEY>` is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
+- `<USER_EMAIL>` is the email address associated with your IBMid.
+
+> [!NOTE]
 > The `cp.icr.io` value for the docker-server parameter is the only registry domain name that contains the images. You must set the docker-username to `cp` to use an entitlement key as docker-password.
 
 The *my-odm-docker-registry* secret name is set as the `image.pullSecrets` parameter when you run a helm install of your containers. The `image.repository` parameter is also set to `cp.icr.io/cp/cp4a/odm`.
 
 #### c. Add the public IBM Helm charts repository
 
-```
+```shell
 helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm
 helm repo update
 ```
 
 #### d. Check your access to the ODM chart
 
-```
+```shell
 $ helm search repo ibm-odm-prod
-NAME                             	CHART VERSION	APP VERSION	DESCRIPTION
-ibmcharts/ibm-odm-prod           	23.2.0       	8.12.0.1   	IBM Operational Decision Manager
+NAME                              CHART VERSION APP VERSION DESCRIPTION
+ibmcharts/ibm-odm-prod            24.0.0        9.0.0.0     IBM Operational Decision Manager
 ```
 
 ### 3. Install an IBM Operational Decision Manager release
@@ -101,15 +102,15 @@ ibmcharts/ibm-odm-prod           	23.2.0       	8.12.0.1   	IBM Operational Deci
 
 Get the [minikube-values.yaml](./minikube-values.yaml) file and run the following command:
 
-```
-helm install my-odm-release ibmcharts/ibm-odm-prod --version 23.2.0 -f minikube-values.yaml
+```shell
+helm install my-odm-release ibmcharts/ibm-odm-prod -f minikube-values.yaml
 ```
 
 #### b. Check the topology
 
-Run the following command to check the status of the pods that have been created: 
+Run the following command to check the status of the pods that have been created:
 
-```
+```shell
 kubectl get pods
 NAME                                               READY   STATUS    RESTARTS   AGE
 my-odm-release-dbserver-xxxxxxx                    1/1     Running   0          16m
@@ -120,12 +121,12 @@ my-odm-release-odm-decisionserverruntime-xxxxxxx   1/1     Running   0          
 
 ```
 
-### 4. Access the ODM services
+#### c. Access the ODM services
 
 With this ODM topology in place, you can access web applications to author, deploy, and test your rule-based decision services. You can retrieve the URLs to access the ODM services with the following command:
 
-```
-$ minikube service list -n default
+```shell
+$ minikube service list
 |----------------------|------------------------------------------------|----------------------------------|---------------------------|
 |      NAMESPACE       |                      NAME                      |           TARGET PORT            |            URL            |
 |----------------------|------------------------------------------------|----------------------------------|---------------------------|
@@ -138,12 +139,13 @@ $ minikube service list -n default
 |----------------------|------------------------------------------------|----------------------------------|---------------------------|
 ```
 
-> **Warning**  
+> [!WARNING]
 > The URLs are prefixed with **http**. You must replace the prefix with **https** to access the services.
 
 You can directly open the URL corresponding to a component in a new browser tab with the following command:
-```
-$ minikube service my-odm-release-odm-decisioncenter -n default --https
+
+```shell
+minikube service my-odm-release-odm-decisioncenter --https
 ```
 
 You can access the ODM components with the username / password : odmAdmin/odmAdmin
@@ -151,7 +153,8 @@ You can access the ODM components with the username / password : odmAdmin/odmAdm
 ## Troubleshooting
 
 If your ODM instances are not running properly, check the logs by running the following command:
-```
+
+```shell
 kubectl logs <your-pod-name>
 ```
 
@@ -159,5 +162,6 @@ kubectl logs <your-pod-name>
 
 Get hands-on experience with IBM Operational Decision Manager in a container environment by following this [Getting started tutorial](https://github.com/DecisionsDev/odm-for-container-getting-started/blob/master/README.md).
 
-# License
+## License
+
 [Apache 2.0](/LICENSE)

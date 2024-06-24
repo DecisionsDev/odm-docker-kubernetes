@@ -11,7 +11,7 @@ The ODM on Kubernetes Docker images are available in the [IBM Entitled Registry]
 
 The project comes with the following components:
 
-- [IBM Operational Decision Manager](https://www.ibm.com/docs/en/odm/8.12.0)
+- [IBM Operational Decision Manager](https://www.ibm.com/docs/en/odm/9.0.0)
 - [Azure Database for PostgreSQL](https://docs.microsoft.com/en-us/azure/postgresql/)
 - [Azure Kubernetes Service (AKS)](https://docs.microsoft.com/en-us/azure/aks/)
 - [Network concepts for applications in AKS](https://docs.microsoft.com/en-us/azure/aks/concepts-network)
@@ -29,7 +29,7 @@ First, install the following software on your machine:
 Then, [create an Azure account and pay as you go](https://azure.microsoft.com/en-us/pricing/purchase-options/pay-as-you-go/).
 
 > [!NOTE]
-> Prerequisites and software supported by ODM 8.12.0 are listed in [the Detailed System Requirements page](https://www.ibm.com/support/pages/ibm-operational-decision-manager-detailed-system-requirements).
+> Prerequisites and software supported by ODM 9.0.0 are listed in [the Detailed System Requirements page](https://www.ibm.com/support/pages/ibm-operational-decision-manager-detailed-system-requirements).
 
 ## Steps to deploy ODM on Kubernetes to Azure AKS
 
@@ -139,8 +139,8 @@ The following example output shows the single node created in the previous steps
 
 ```
 NAME                                STATUS   ROLES   AGE   VERSION
-aks-nodepool1-26476812-vmss000000   Ready    agent   21m   v1.25.6
-aks-nodepool1-26476812-vmss000001   Ready    agent   21m   v1.25.6
+aks-nodepool1-27504729-vmss000000   Ready    agent   21m   v1.28.5
+aks-nodepool1-27504729-vmss000001   Ready    agent   21m   v1.28.5
 ```
 
 ## Create the PostgreSQL Azure instance (10 min)
@@ -269,19 +269,19 @@ Check that you can access the ODM charts:
 ```shell
 helm search repo ibm-odm-prod
 NAME                        	CHART VERSION	APP VERSION	DESCRIPTION
-ibmcharts/ibm-odm-prod      	23.2.0       	8.12.0.1   	IBM Operational Decision Manager  License By in...
+ibmcharts/ibm-odm-prod      	24.0.0       	9.0.0.0  	IBM Operational Decision Manager  License By in...
 ```
 
 ### Manage a digital certificate (10 min)
 
 1. (Optional) Generate a self-signed certificate.
 
-If you do not have a trusted certificate, you can use OpenSSL and other cryptography and certificate management libraries to generate a certificate file and a private key, to define the domain name, and to set the expiration date. The following command creates a self-signed certificate (.crt file) and a private key (.key file) that accept the domain name *myodmcompany.com*. The expiration is set to 1000 days:
+If you do not have a trusted certificate, you can use OpenSSL and other cryptography and certificate management libraries to generate a certificate file and a private key, to define the domain name, and to set the expiration date. The following command creates a self-signed certificate (.crt file) and a private key (.key file) that accept the domain name *mynicecompany.com*. The expiration is set to 1000 days:
 
 ```shell
-openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout myodmcompany.key \
-        -out myodmcompany.crt -subj "/CN=myodmcompany.com/OU=it/O=myodmcompany/L=Paris/C=FR" \
-        -addext "subjectAltName = DNS:myodmcompany.com"
+openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mynicecompany.key \
+        -out mynicecompany.crt -subj "/CN=mynicecompany.com/OU=it/O=mynicecompany/L=Paris/C=FR" \
+        -addext "subjectAltName = DNS:mynicecompany.com"
 ```
 
 > [!NOTE]
@@ -290,10 +290,10 @@ openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout myodmcompany.key \
 2. Create a Kubernetes secret with the certificate.
 
 ```shell
-kubectl create secret generic <myodmcompanytlssecret> --from-file=tls.crt=myodmcompany.crt --from-file=tls.key=myodmcompany.key
+kubectl create secret generic <mynicecompanytlssecret> --from-file=tls.crt=mynicecompany.crt --from-file=tls.key=mynicecompany.key
 ```
 
-The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://www.ibm.com/docs/en/odm/8.12.0?topic=servers-server-certificates).
+The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://www.ibm.com/docs/en/odm/9.0.0?topic=servers-server-certificates).
 
 ## Install an ODM Helm release and expose it with the service type LoadBalancer (10 min)
 
@@ -308,15 +308,15 @@ az aks update --name <cluster> --resource-group <resourcegroup> --load-balancer-
 You can now install the product:
 
 ```shell
-helm install <release> ibmcharts/ibm-odm-prod --version 23.2.0 \
+helm install <release> ibmcharts/ibm-odm-prod --version 24.0.0 \
         --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=<registrysecret> \
-        --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.12.0.1} --set service.type=LoadBalancer \
+        --set image.tag=${ODM_VERSION:-9.0.0.0} --set service.type=LoadBalancer \
         --set externalDatabase.type=postgres \
         --set externalDatabase.serverName=<postgresqlserver>.postgres.database.azure.com \
         --set externalDatabase.databaseName=postgres \
         --set externalDatabase.port=5432 \
         --set externalDatabase.secretCredentials=<odmdbsecret> \
-        --set customization.securitySecretRef=<myodmcompanytlssecret> \
+        --set customization.securitySecretRef=<mynicecompanytlssecret> \
         --set license=true --set usersPassword=<password>
 ```
 
@@ -362,7 +362,7 @@ Installing an NGINX Ingress controller allows you to access ODM components throu
 1. Use the official YAML manifest:
 
     ```shell
-    kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.2/deploy/static/provider/cloud/deploy.yaml
+    kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.9.6/deploy/static/provider/cloud/deploy.yaml
     ```
 
     > [!NOTE]
@@ -396,16 +396,16 @@ You might want to access ODM components through a single external IP address.
 You can reuse the secret with TLS certificate created [above](#manage-adigital-certificate-10-min):
 
 ```shell
-helm install <release> ibmcharts/ibm-odm-prod --version 23.2.0 \
+helm install <release> ibmcharts/ibm-odm-prod --version 24.0.0 \
         --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=<registrysecret> \
-        --set image.arch=amd64 --set image.tag=${ODM_VERSION:-8.12.0.1} \
+        --set image.tag=${ODM_VERSION:-9.0.0.0} \
         --set externalDatabase.type=postgres \
         --set externalDatabase.serverName=<postgresqlserver>.postgres.database.azure.com \
         --set externalDatabase.databaseName=postgres \
         --set externalDatabase.port=5432 \
         --set externalDatabase.secretCredentials=<odmdbsecret> \
-        --set service.ingress.enabled=true --set service.ingress.tlsSecretRef=<myodmcompanytlssecret> \
-        --set service.ingress.tlsHosts={myodmcompany.com} --set service.ingress.host=myodmcompany.com \
+        --set service.ingress.enabled=true --set service.ingress.tlsSecretRef=<mynicecompanytlssecret> \
+        --set service.ingress.tlsHosts={mynicecompany.com} --set service.ingress.host=mynicecompany.com \
         --set service.ingress.annotations={"nginx.ingress.kubernetes.io/backend-protocol: HTTPS"} \
         --set service.ingress.class=nginx \
         --set license=true --set usersPassword=<password>
@@ -415,11 +415,11 @@ helm install <release> ibmcharts/ibm-odm-prod --version 23.2.0 \
 > By default, the NGINX Ingress controller does not enable sticky session. If you want to use sticky session to connect to DC, refer to [Using sticky session for Decision Center connection](../../contrib/sticky-session/README.md)
 
 
-### Edit your /etc/hosts
+### Edit the file /etc/hosts on your host
 
 ```shell
 # vi /etc/hosts
-<externalip> myodmcompany.com
+<externalip> mynicecompany.com
 ```
 
 ### Access the ODM services
@@ -441,10 +441,10 @@ ODM services are available through the following URLs:
 <!-- markdown-link-check-disable -->
 | SERVICE NAME | URL | USERNAME/PASSWORD
 | --- | --- | ---
-| Decision Server Console | https://myodmcompany.com/res | odmAdmin/\<password\>
-| Decision Center | https://myodmcompany.com/decisioncenter | odmAdmin/\<password\>
-| Decision Server Runtime | https://myodmcompany.com/DecisionService | odmAdmin/\<password\>
-| Decision Runner | https://myodmcompany.com/DecisionRunner | odmAdmin/\<password\>
+| Decision Server Console | https://mynicecompany.com/res | odmAdmin/\<password\>
+| Decision Center | https://mynicecompany.com/decisioncenter | odmAdmin/\<password\>
+| Decision Server Runtime | https://mynicecompany.com/DecisionService | odmAdmin/\<password\>
+| Decision Runner | https://mynicecompany.com/DecisionRunner | odmAdmin/\<password\>
 <!-- markdown-link-check-enable -->
 
 Where:
@@ -486,7 +486,7 @@ If your IBM License Service instance is not running properly, refer to this [tro
 
 ## Troubleshooting
 
-If your ODM instances are not running properly, refer to [our dedicated troubleshooting page](https://www.ibm.com/docs/en/odm/8.12.0?topic=8120-troubleshooting-support).
+If your ODM instances are not running properly, refer to [our dedicated troubleshooting page](https://www.ibm.com/docs/en/odm/9.0.0?topic=900-troubleshooting-support).
 
 ## Getting Started with IBM Operational Decision Manager for Containers
 

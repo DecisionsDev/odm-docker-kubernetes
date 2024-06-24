@@ -1,0 +1,14 @@
+{
+  "providers": [
+    {
+        "name": "cognito-cc",
+        "grantType": "client_credentials",
+        "authorizationURL": "https://COGNITO_DOMAIN_NAME.auth.COGNITO_REGION.amazoncognito.com/oauth2/authorize",
+        "tokenURL": "https://COGNITO_DOMAIN_NAME.auth.COGNITO_REGION.amazoncognito.com/oauth2/token",
+        "logoutURL": "https://COGNITO_DOMAIN_NAME.auth.COGNITO_REGION.amazoncognito.com/oauth2/logout",
+        "clientId": "COGNITO_CC_CLIENT_ID",
+        "clientSecret": "COGNITO_CC_CLIENT_SECRET",
+        "scope": "odmcc/write"
+    }
+  ]
+}

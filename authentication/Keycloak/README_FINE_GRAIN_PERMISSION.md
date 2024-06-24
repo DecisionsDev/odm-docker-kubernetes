@@ -27,7 +27,7 @@
 
 # Introduction
 
-ODM Decision Center allows to [manage users and groups from the Business console](https://www.ibm.com/docs/en/odm/8.11.1?topic=center-managing-users-groups-from-business-console) in order to set access security on specific projects.
+ODM Decision Center allows to [manage users and groups from the Business console](https://www.ibm.com/docs/en/odm/9.0.0?topic=center-managing-users-groups-from-business-console) in order to set access security on specific projects.
 The Groups and Users import can be done using an LDAP connection.
 But, if the openId server also provides a SCIM server, then it can also be managed using a SCIM connection.
 
@@ -139,15 +139,14 @@ The following command should return the OpenLDAP Schema :
 oc exec -ti <OPENLDAP_POD> bash -- ldapsearch -x -Z -H ldap://ldap-service.<PROJECT>.svc:389  -D 'cn=admin,dc=example,dc=org' -b 'dc=example,dc=org' -w xNxICc74qG24x3GoW03n
 ```
 
-    Where:
-
-    - OPENLDAP_POD is the name of the OpenLDAP pod
-    - PROJECT is the name of the current project
+Where:
+  - OPENLDAP_POD is the name of the OpenLDAP pod
+  - PROJECT is the name of the current project
 
 
 # Add an LDAP User Federation to Keycloak
 
-- Connect at the Keycloak Admin Dashboard using the odm realm with login/pass admin/admin
+- Connect at the Keycloak Admin Dashboard using the odm realm with login/pass `admin/admin`
 - Select "User federation" and click Add Provider > LDAP
 
 - Fill "Add LDAP provider" dialog
@@ -227,7 +226,7 @@ oc exec -ti <OPENLDAP_POD> bash -- ldapsearch -x -Z -H ldap://ldap-service.<PROJ
   - Click the "Save" button
   - Click on Action>Sync All users
 
-  Now you can check the openldap groups have been imported using the Groups tab. You shoud see :
+  Now you can check the openldap groups have been imported using the Groups tab. You should see :
 
   ![OpenLdap Groups Import](images/import_openldap_groups.png)
 
@@ -258,7 +257,7 @@ oc exec -ti <OPENLDAP_POD> bash -- ldapsearch -x -Z -H ldap://ldap-service.<PROJ
    - Click on the "Save" Button
 
    - Select "Authorization"
-   - Select"odm" (clientId of the application) in the "Available Clients" list and click on "Add selected" to move it to the "Assigned Clients" list
+   - Select **odm** (clientId of the application) in the "Available Clients" list and click on "Add selected" to move it to the "Assigned Clients" list
 
 
   By default, the SCIM Groups and Users Endpoints require authentication.
@@ -269,14 +268,14 @@ oc exec -ti <OPENLDAP_POD> bash -- ldapsearch -x -Z -H ldap://ldap-service.<PROJ
   Now, we will configure these endpoints to authorize authenticated users that have the rtsAdministrators role. In the ODM client application, we will use the client_credentials flow using the "service-account-odm" service account having assigned the rtsAdministrators role. We just have to configure authorization for the "Get" endpoint as the ODM SCIM Import is a read only mode and doesn't need the other endpoints (Create, Update, Delete)
 
   - Select the "Resource Type" tab
-
-   - Click on "Group" inside the table
-   - Click on the "Authorization" tab
-   - Expand "Common Roles", select "rtsAdministrators" in the "Available Roles" and click on "Add selected" to move it to the "Assigned Roles" list
-   - Expand "Roles for Get", select "rtsAdministrators" in the "Available Roles" and click on "Add selected" to move it to the "Assigned Roles" list
+    - Click on "Group" inside the table
+    - Click on the "Authorization" tab
+    - Expand "Common Roles", select "rtsAdministrators" in the "Available Roles" and click on "Add selected" to move it to the "Assigned Roles" list
+    - Expand "Roles for Get", select "rtsAdministrators" in the "Available Roles" and click on "Add selected" to move it to the "Assigned Roles" list
 
   ![SCIM Group Authorization Tab](images/scim_groups_authorization.png)
 
+ - Select the "Resource Type" tab again
    - Click on "User" inside the table
    - Click on the "Authorization" tab
    - Expand "Common Roles", select "rtsAdministrators" in the "Available Roles" and click on "Add selected" to move it to the "Assigned Roles" list
@@ -334,48 +333,49 @@ But replace the previous step "3. Create the Keycloak authentication secret" of 
         --from-file=openIdWebSecurity.xml=./output/openIdWebSecurity.xml \
         --from-file=webSecurity.xml=./output/webSecurity.xml
     ```
+Make sure that you finish [Complete post-deployment tasks](README.md#complete-post-deployment-tasks).
 
-# Manage Security on ODM Decision Service Project
+# Manage Security on ODM Decision Service Project 
 
-ODM Decision Center allows to [manage users and groups from the Business console](https://www.ibm.com/docs/en/odm/8.11.1?topic=center-managing-users-groups-from-business-console) in order to set access security on specific projects.
+ODM Decision Center allows to [manage users and groups from the Business console](https://www.ibm.com/docs/en/odm/9.0.0?topic=center-managing-users-groups-from-business-console) in order to set access security on specific projects.
 Now, we will manage the following scenario. We will load the "Loan Validation Service" and "Miniloan Service" projects that are available at the getting started repository.
 We will only provide access to the "Loan Validation Service" project for users belonging at the "TaskAuditors" group.
 We will only provide access to the "Miniloan Service" project for users belonging at the "TaskUsers" group.
 
 ## Provide the relevant roles on groups
 
-The first step is to declare groups of users that will be Decision Center Administrators, having access to the Business Console Adminitration Tab.
+The first step is to declare groups of users that will be Decision Center Administrators, having access to the Business Console Administration Tab.
 
-  - Select the Manage>Groups Tab
-  - Double-Click on TaskAdmins
-  - Select the Role Mappings Tab
+  - In Keycloak admin console of **odm** realm, select the `Manage>Groups` Tab
+  - Double-click on "TaskAdmins"
+  - Select the "Role Mappings" Tab
   - Select all rts*** roles in the "Available Roles" list and click on "Add selected" to move it to the "Assigned Roles" list
 
   ![Assign Admin Roles](images/assign_rtsadministrators_role.png)
 
-We also need to declare TaskAuditors and TaskUsers groups having rtsUSers roles. If you dn't do this, users are not authorized to login into the Business Console.
+We also need to declare "TaskAuditors" and "TaskUsers" groups having rtsUSers roles. If you don't do this, users are not authorized to login into the Business Console.
 
-  - Select the Manage>Groups Tab
-  - Double-Click on TaskAuditors
-  - Select the Role Mappins Tab
+  - Select the `Manage>Groups` Tab
+  - Double-click on "TaskAuditors"
+  - Select the "Role Mappings" Tab
   - Select the "rtsUsers" role in the "Available Roles" list and click on "Add selected" to move it to the "Assigned Roles" list
-  - Repeat the same for the TaskUsers group
+  - Repeat the same for the "TaskUsers" group
 
   ![Assign User Roles](images/assign_rtsusers_role.png)
 
 ## Load projects
 
-  For all the coming steps, the users password can be found in the ldap_user.ldif file of the openldap-customldif secret
+  For all the coming steps, the users' password can be found in the `ldap_user.ldif` file of the `openldap-customldif` secret.
 
-  - Log into the ODM Decision Center Business Console using the cp4admin user
-  - Select the LIBRARY tab
+  - Log into the ODM Decision Center Business Console using the `cp4admin` user
+  - Select the **LIBRARY** tab
   - Import the [Loan Validation Service](https://github.com/DecisionsDev/odm-for-container-getting-started/blob/master/Loan%20Validation%20Service.zip) and [Miniloan Service](https://github.com/DecisionsDev/odm-for-container-getting-started/blob/master/Miniloan%20Service.zip) projects
 
   ![Load Projects](images/load_projects.png)
 
 ## Import Groups and Users
 
-  - Select the ADMINISTRATION tab
+  - Select the **ADMINISTRATION** tab
   - Select the "Connection Settings" sub-tab
   - Check the KEYCLOAK_SCIM connection status is green
   - Select the "Groups" sub-tab
@@ -408,23 +408,23 @@ We also need to declare TaskAuditors and TaskUsers groups having rtsUSers roles.
   - Click the "Log out" link
   - Click the Keycloak Logout button
 
-  - Login with user1 > the ADMINISTRATION tab is not available
-  - Click on LIBRARY tab > only the "Miniloan Service" project must be available
-  - Click on top-right user1 link
+  - Login with `user1`. Check that the **ADMINISTRATION** tab is not available
+  - Click on **LIBRARY** tab, only the "Miniloan Service" project must be available
+  - Click on top-right `user1` link
   - Select "Profile" link
-  - The "user1" User Profile is showing the "TaskUsers" group
+  - The `user1` User Profile is showing the "TaskUsers" group
 
   ![User1 Check](images/user1_check.png)
 
-  - Login with user6 > the ADMINISTRATION tab is not available
-  - Click on LIBRARY tab > only the "Loan Validation Service" project must be available
-  - Click on top-right user6 link
+  - Login with `user6`. Check that the **ADMINISTRATION** tab is not available
+  - Click on **LIBRARY** tab, only the "Loan Validation Service" project must be available
+  - Click on top-right `user6` link
   - Select "Profile" link
-  - The "user6" User Profile is showing the "TaskAuditors" group
+  - The `user6` User Profile is showing the "TaskAuditors" group
 
   ![User6 Check](images/user6_check.png)
 
-# Synchonize Decision Center when updating Keycloak
+# Synchronize Decision Center when updating Keycloak
 
   During the life of a project, common situation can happen like :
   - a user is moving from a group to an other.
@@ -433,4 +433,6 @@ We also need to declare TaskAuditors and TaskUsers groups having rtsUSers roles.
   - a user change of group
   - ...
 
-  All these operation are done using the Keycloak dashboard and are reflected on Decision Center. It can be done manually using the Decision Center Synchronize button or using the automatic synchronization happening by default every 2 hours. You can change the frequency using the "-Dcom.ibm.rules.decisioncenter.ldap.sync.refresh.period=60000" Decision Center JVM options expressed in milliseconds.
+  All these operations are done using the Keycloak dashboard and are reflected on Decision Center. It can be done manually using the Decision Center Synchronize button or using the automatic synchronization happening by default every 2 hours. 
+  
+  You can change the frequency using the Decision Center JVM option: `-Dcom.ibm.rules.decisioncenter.ldap.sync.refresh.period=60000`. The value is expressed in milliseconds.

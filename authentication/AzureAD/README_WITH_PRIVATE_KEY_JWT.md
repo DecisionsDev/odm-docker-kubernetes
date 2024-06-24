@@ -66,63 +66,63 @@ For additional information regarding the implement in Liberty, please refer to t
 
   * From the Overview page, click on the link Client credentials: **Add a certificate or secret** or on the **Manage / Certificates & secrets** tab
   * Select the **Certificates** tab
-  * Click on **Upload certificate**
-    * Select the myodmcompany.crt or your own public file
+  * Click **Upload certificate**
+    * Select the `myodmcompany.crt` or your own public file
     * Description: `For ODM integration`
-    * Click Add
+    * Click **Add**
 
 4. Add Claims.
 
     In **Identity** / **Applications** / **App registrations**, select **ODM Application**, and in **Manage / Token Configuration**:
 
   * Add Optional Email ID Claim
-    * Click +Add optional claim
-    * Select ID
-    * Check Email
-    * Click Add
+    * Click **+ Add optional claim**
+    * Select **ID**
+    * Check **Email**
+    * Click **Add**
 
   * Add Optional Email Access Claim
-    * Click +Add optional claim
-    * Select Access
-    * Check Email
-    * Click Add
+    * Click **+ Add optional claim**
+    * Select **Access**
+    * Check **Email**
+    * Click **Add**
 
     * Turn on Microsoft Graph email permission
-      * Check Turn on the Microsoft Graph email permission
-      * Click Add
+      * Check **Turn on the Microsoft Graph email permission**
+      * Click **Add**
 
   * Add Group Claim
-    * Click +Add groups claim
-    * Check Security Groups
-    * Click Add
+    * Click **+ Add groups claim**
+    * Check **Security Groups**
+    * Click **Add**
 
 5. Create a custom claim named "identity"
 
-   To enable the ODM REST API to utilize both the password flow with email as the user identifier and the client-credentials flow with client_id as the user identifier, we must establish a new claim named "identity" that will dynamically capture the appropriate value based on the chosen flow:
+   To enable the ODM REST API to use both the 'Password Credentials' flow with email as the user identifier and the 'Client Credentials' flow with client_id as the user identifier, we must establish a new claim named "identity" that will dynamically capture the appropriate value based on the chosen flow:
    In **Identity** / **Applications** / **Enterprise applications**, select **ODM Application**, and in **Manage / Single sign-on**:
 
   * Click on Edit of the "Attributes & Claims" section
-    * Click + Add new claim
-      * Name: identity
+    * Click **+ Add new claim**
+      * Name: `identity`
       * Fill 2 Claim conditions in the exact following order:
-        1. User Type: Any / Scope Groups: 0 / Source: Attribute / Value: <CLIENT_ID>
-        2. User Type: Members / Scope Groups: 0 / Source: Attribute / Value: user.mail
+        1. User Type: Any / Scoped Groups: 0 / Source: Attribute / Value: <CLIENT_ID>
+        2. User Type: Members / Scoped Groups: 0 / Source: Attribute / Value: user.mail
 
 6. API Permissions.
 
     In **Identity** / **Applications** / **App Registration**, select **ODM Application**, and then click **API Permissions**.
 
-    * Click Grant Admin Consent for Default Directory
+    * Click **Grant Admin Consent for <Directory name>**
 
 7. Manifest change.
 
     In **Identity** / **Applications** / **App Registration**, select **ODM Application**, and then click **Manifest**.
 
-    As explained in [accessTokenAcceptedVersion attribute explanation](https://docs.microsoft.com/en-us/azure/active-directory/develop/reference-app-manifest#accesstokenacceptedversion-attribute), change the value to 2.
+    As explained in [accessTokenAcceptedVersion attribute explanation](https://docs.microsoft.com/en-us/azure/active-directory/develop/reference-app-manifest#accesstokenacceptedversion-attribute), change the value of **accessTokenAcceptedVersion** to `2`.
 
     ODM OpenID Liberty configuration needs version 2.0 for the issuerIdentifier. See the [openIdWebSecurity.xml](templates/openIdWebSecurity.xml) file.
 
-    It is also necessary to set **acceptMappedClaims** to true to manage claims. Without this setting, you get the exception **AADSTS50146: This application is required to be configured with an application-specific signing key. It is either not configured with one, or the key has expired or is not yet valid.** when requesting a token.
+    It is also necessary to set **acceptMappedClaims** to `true` to manage claims. Without this setting, you get the exception `AADSTS50146: This application is required to be configured with an application-specific signing key. It is either not configured with one, or the key has expired or is not yet valid.` when requesting a token.
 
    Then, click Save.
 
@@ -197,10 +197,10 @@ For additional information regarding the implement in Liberty, please refer to t
 
     Where:
     - *TENANT_ID* and *CLIENT_ID* have been obtained from [previous step](#retrieve-tenant-and-client-information)
-    - *GROUP_ID* is the ODM Admin group created in a [previous step](#manage-group-and-user) (*odm-admin*)
+    - *GROUP_ID* is the identifier of the ODM Admin group created in [Manage groups and users](README.md#manage-group-and-user) (*ID of `odm-admin`*)
     - *SSO_DOMAIN* is the domain name of your SSO. If your AzureAD is connected to another SSO, you should add the SSO domain name in this parameter. If your user has been declared as explained in step **Create at least one user that belongs to this new group**, you can omit this parameter.
 
-    The following four files are generated into the `output` directory:
+    The following four files are generated into the `outputPKeyJWT` directory:
 
     - webSecurity.xml contains the mapping between Liberty J2EE ODM roles and Microsoft Entra ID groups and users:
       * All ODM roles are given to the GROUP_ID group
@@ -235,7 +235,7 @@ For additional information regarding the implement in Liberty, please refer to t
   ```shell
   helm search repo ibm-odm-prod
   NAME                  	CHART VERSION	APP VERSION	DESCRIPTION
-  ibm-helm/ibm-odm-prod	        23.2.0       	8.12.0.1   	IBM Operational Decision Manager
+  ibm-helm/ibm-odm-prod	24.0.0       	9.0.0.0   	IBM Operational Decision Manager
   ```
 
 ### Run the `helm install` command
@@ -244,7 +244,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 
 #### a. Installation on OpenShift using Routes
 
-  See the [Preparing to install](https://www.ibm.com/docs/en/odm/8.12.0?topic=production-preparing-install-operational-decision-manager) documentation for additional information.
+  See the [Preparing to install](https://www.ibm.com/docs/en/odm/9.0.0?topic=production-preparing-install-operational-decision-manager) documentation for additional information.
 
   ```shell
   helm install my-odm-release ibm-helm/ibm-odm-prod \
@@ -289,7 +289,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 
 1. Get the ODM endpoints.
 
-    Refer to the [documentation](https://www.ibm.com/docs/en/odm/8.12.0?topic=tasks-configuring-external-access) to retrieve the endpoints.
+    Refer to the [documentation](https://www.ibm.com/docs/en/odm/9.0.0?topic=tasks-configuring-external-access) to retrieve the endpoints.
     For example, on OpenShift you can get the route names and hosts with:
 
     ```shell
@@ -340,10 +340,10 @@ You can now install the product. We will use the PostgreSQL internal database an
     - Click `Add Platform`
     - Select `Web`
     - `Redirect URIs` Add the Decision Center redirect URI that you got earlier (`https://<DC_HOST>/decisioncenter/openid/redirect/odm` -- don't forget to replace <DC_HOST> with your actual host name!)
-    - Check Access Token and ID Token
-    - Click Configure
-    - Click Add URI Link
-      - Repeat the previous steps for all other redirect URIs.
+    - Check `Access Token` and `ID Token`
+    - Click `Configure`
+    - Click `Add URI Link` and enter another redirect URI
+      - Repeat the previous step until all the redirect URIs have been entered
 
     - Click **Save** at the bottom of the page.
     ![Add URI](images/AddURI.png)
@@ -364,9 +364,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 
 ### Access the ODM services
 
-Well done!  You can now connect to ODM using the endpoints you got [earlier](#register-the-odm-redirect-url) and log in as an ODM admin with the account you created in [the first step](#manage-group-and-user).
-
->Note:  Logout in ODM components using Microsoft Entra ID authentication raises an error for the time being.  This is a known issue.  We recommend to use a private window in your browser to log in, so that logout is done just by closing this window.
+Well done!  You can now connect to ODM using the endpoints you got [earlier](#register-the-odm-redirect-url) and log in as an ODM admin with the account you created in ['manage groups and users' in the first article](README.md#manage-group-and-user).
 
 ### Set up Rule Designer
 
@@ -396,7 +394,7 @@ To be able to securely connect your Rule Designer to the Decision Server and Dec
 
 4. Restart Rule Designer.
 
-For more information, refer to the [documentation](https://www.ibm.com/docs/en/odm/8.12.0?topic=designer-importing-security-certificate-in-rule).
+For more information, refer to the [documentation](https://www.ibm.com/docs/en/odm/9.0.0?topic=designer-importing-security-certificate-in-rule).
 
 ### Getting Started with IBM Operational Decision Manager for Containers
 
@@ -416,7 +414,7 @@ Deploy the **Loan Validation Service** production_deployment ruleapps using the 
 
 You can retrieve the payload.json from the ODM Decision Server Console or use [the provided payload](payload.json).
 
-As explained in the ODM on Certified Kubernetes documentation [Configuring user access with OpenID](https://www.ibm.com/docs/en/odm/8.12.0?topic=access-configuring-user-openid), we advise to use basic authentication for the ODM runtime call for performance reasons and to avoid the issue of token expiration and revocation.
+As explained in the ODM on Certified Kubernetes documentation [Configuring user access with OpenID](https://www.ibm.com/docs/en/odm/9.0.0?topic=access-configuring-user-openid), we advise to use basic authentication for the ODM runtime call for performance reasons and to avoid the issue of token expiration and revocation.
 
 You can realize a basic authentication ODM runtime call the following way:
 
@@ -437,7 +435,7 @@ $ openssl pkcs12 -export -out myodmcompany.p12 -inkey myodmcompany.key -in myodm
 keytool -importkeystore -srckeystore myodmcompany.p12 -srcstoretype pkcs12 -srcalias 1 -srcstorepass changeme -destkeystore myodmcompany.jks -deststoretype jks -deststorepass changeme -destalias myalias
 ```
 
-Now you can generate the client_assertion following the [ODM documentation](https://www.ibm.com/docs/en/odm/8.12.0?topic=8120-generating-json-web-token-client-assertion).
+Now you can generate the client_assertion following the [ODM documentation](https://www.ibm.com/docs/en/odm/9.0.0?topic=900-generating-json-web-token-client-assertion).
 
 ```shell
 java -cp $DCLIB/jrules-teamserver.jar:$DCLIB/jose4j-0.9.3.jar:$DCLIB/slf4j-api-1.7.25.jar com.ibm.rules.oauth.ClientAssertionHelper -clientId <CLIENT_ID> -tokenEndpoint https://login.microsoftonline.com/<TENANT_ID>/oauth2/v2.0/token -keyAliasName myalias -keyStorePwd changeme -keyStoreLocation ./myodmcompany.jks

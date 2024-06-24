@@ -14,7 +14,7 @@ The ODM on Kubernetes Docker images are available in the [IBM Entitled Registry]
 
 The project comes with the following components:
 
-- [IBM Operational Decision Manager](https://www.ibm.com/docs/en/odm/8.12.0?topic=operational-decision-manager-certified-kubernetes-8120)
+- [IBM Operational Decision Manager](https://www.ibm.com/docs/en/odm/9.0.0?topic=operational-decision-manager-certified-kubernetes-900)
 - [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine)
 - [Google Cloud SQL for PostgreSQL](https://cloud.google.com/sql)
 - [IBM License Service](https://github.com/IBM/ibm-licensing-operator)
@@ -40,7 +40,7 @@ Then, perform the following tasks:
 
 Without the relevant billing level, some Google Cloud resources will not be created.
 
-> NOTE:  Prerequisites and software supported by ODM 8.12.0 are listed on [the Detailed System Requirements page](https://www.ibm.com/support/pages/ibm-operational-decision-manager-detailed-system-requirements).
+> NOTE:  Prerequisites and software supported by ODM 9.0.0 are listed on [the Detailed System Requirements page](https://www.ibm.com/support/pages/ibm-operational-decision-manager-detailed-system-requirements).
 
 ## Steps to deploy ODM on Kubernetes from Google GKE
 
@@ -96,7 +96,7 @@ Regions and zones (used below) can be listed respectively with `gcloud compute r
 
   ```
   gcloud container clusters create <CLUSTER_NAME> \
-    --release-channel=regular --cluster-version=1.25 \
+    --release-channel=regular --cluster-version=1.28 \
     --enable-autoscaling --num-nodes=6 --total-min-nodes=1 --total-max-nodes=16
   ```
 
@@ -204,7 +204,7 @@ helm repo update
 ```
 helm search repo ibm-odm-prod
 NAME                  	CHART VERSION   APP VERSION     DESCRIPTION
-ibm-helm/ibm-odm-prod	23.2.0          8.12.0.1        IBM Operational Decision Manager
+ibm-helm/ibm-odm-prod	24.0.0          9.0.0.0        IBM Operational Decision Manager
 ```
 
 ### 4. Manage a digital certificate (2 min)
@@ -213,26 +213,26 @@ ibm-helm/ibm-odm-prod	23.2.0          8.12.0.1        IBM Operational Decision M
 
 In this step, you will generate a certificate to be used by the GKE load balancer.
 
-If you do not have a trusted certificate, you can use OpenSSL and other cryptography and certificate management libraries to generate a certificate file and a private key to define the domain name and to set the expiration date. The following command creates a self-signed certificate (`.crt` file) and a private key (`.key` file) that accept the domain name *mycompany.com*. The expiration is set to 1000 days:
+If you do not have a trusted certificate, you can use OpenSSL and other cryptography and certificate management libraries to generate a certificate file and a private key to define the domain name and to set the expiration date. The following command creates a self-signed certificate (`.crt` file) and a private key (`.key` file) that accept the domain name *mynicecompany.com*. The expiration is set to 1000 days:
 
 ```
-openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mycompany.key \
-        -out mycompany.crt -subj "/CN=mycompany.com/OU=it/O=mycompany/L=Paris/C=FR"
+openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mynicecompany.key \
+        -out mynicecompany.crt -subj "/CN=mynicecompany.com/OU=it/O=mynicecompany/L=Paris/C=FR"
 ```
 
 #### b. Create a TLS secret with these keys
 
 ```
-kubectl create secret tls mycompany-crt-secret --key mycompany.key --cert mycompany.crt
+kubectl create secret tls mynicecompany-crt-secret --key mynicecompany.key --cert mynicecompany.crt
 ```
 
-The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://www.ibm.com/docs/en/odm/8.12.0?topic=servers-server-certificates) and [Working with certificates and SSL](https://docs.oracle.com/cd/E19830-01/819-4712/ablqw/index.html).
+The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://www.ibm.com/docs/en/odm/9.0.0?topic=servers-server-certificates) and [Working with certificates and SSL](https://docs.oracle.com/cd/E19830-01/819-4712/ablqw/index.html).
 
 ### 5. Install the ODM release (10 min)
 
 #### a. Install an ODM Helm release
 
-The ODM services will be exposed with an Ingress that uses the previously created `mycompany` certificate.
+The ODM services will be exposed with an Ingress that uses the previously created `mynicecompany` certificate.
 It automatically creates an HTTPS GKE load balancer. We will disable the ODM internal TLS as it is not needed.
 
 - Get the [gcp-values.yaml](./gcp-values.yaml) file and replace the following keys:
@@ -311,10 +311,10 @@ A configuration that uses [BackendConfig](https://cloud.google.com/kubernetes-en
 
 ### 6. Access ODM services
 
-In a real enterprise use case, to access the mycompany.com domain name, you have to deal with [Google Managed Certificate](https://cloud.google.com/load-balancing/docs/ssl-certificates/google-managed-certs) and [Google Cloud DNS](https://cloud.google.com/dns).
+In a real enterprise use case, to access the mynicecompany.com domain name, you have to deal with [Google Managed Certificate](https://cloud.google.com/load-balancing/docs/ssl-certificates/google-managed-certs) and [Google Cloud DNS](https://cloud.google.com/dns).
 
 In this trial, we use a self-signed certificate. So, there is no extra charge like certificate and domain purchase.
-We only have to manage a configuration to simulate the mycompany.com access.
+We only have to manage a configuration to simulate the mynicecompany.com access.
 
 - Get the EXTERNAL-IP with the command line:
 
@@ -325,7 +325,7 @@ We only have to manage a configuration to simulate the mycompany.com access.
 - Edit your /etc/hosts file and add the following entry:
 
   ```
-  <EXTERNAL-IP> mycompany.com
+  <EXTERNAL-IP> mynicecompany.com
   ```
 
 - You can now access all ODM services with the following URLs:
@@ -333,11 +333,11 @@ We only have to manage a configuration to simulate the mycompany.com access.
 <!-- markdown-link-check-disable -->
   | SERVICE NAME | URL | USERNAME/PASSWORD
   | --- | --- | ---
-  | Decision Server Console | https://mycompany.com/res | odmAdmin/odmAdmin
-  | Decision Center | https://mycompany.com/decisioncenter | odmAdmin/odmAdmin
-  | Decision Center REST-API | https://mycompany.com/decisioncenter-api | odmAdmin/odmAdmin
-  | Decision Server Runtime | https://mycompany.com/DecisionService | odmAdmin/odmAdmin
-  | Decision Runner | https://mycompany.com/DecisionRunner | odmAdmin/odmAdmin
+  | Decision Server Console | https://mynicecompany.com/res | odmAdmin/odmAdmin
+  | Decision Center | https://mynicecompany.com/decisioncenter | odmAdmin/odmAdmin
+  | Decision Center REST-API | https://mynicecompany.com/decisioncenter-api | odmAdmin/odmAdmin
+  | Decision Server Runtime | https://mynicecompany.com/DecisionService | odmAdmin/odmAdmin
+  | Decision Runner | https://mynicecompany.com/DecisionRunner | odmAdmin/odmAdmin
 <!-- markdown-link-check-enable -->
   > NOTE:You can also click the Ingress routes accessible from the Google Cloud console under the [Kubernetes Engine/Services & Ingress Details Panel](https://console.cloud.google.com/kubernetes/ingresses).
   > <img width="1000" height="532" src='./images/ingress_routes.png'/>
@@ -396,7 +396,7 @@ If your IBM License Service instance is not running properly, refer to this [tro
 
 ## Troubleshooting
 
-If your ODM instances are not running properly, refer to [our dedicated troubleshooting page](https://www.ibm.com/docs/en/odm/8.12.0?topic=8120-troubleshooting-support).
+If your ODM instances are not running properly, refer to [our dedicated troubleshooting page](https://www.ibm.com/docs/en/odm/9.0.0?topic=900-troubleshooting).
 
 ## Getting Started with IBM Operational Decision Manager for Containers
 
