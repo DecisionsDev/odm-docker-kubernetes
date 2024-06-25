@@ -97,7 +97,7 @@ ibm-helm/ibm-odm-prod   24.0.0        9.0.0.0     IBM Operational Decision Manag
 Get the [roks-values.yaml](./roks-values.yaml) file and install your ODM instance:
 
 ```bash
-helm install roks-tuto ibm-helm/ibm-odm-prod --version 24.0.0 -f roks-values.yaml
+helm install roks-tuto ibm-helm/ibm-odm-prod --set image.tag=9.0.0.0 -f roks-values.yaml
 ```
 
 > This configuration will deployed ODM with a sample database. You should used your own database such as [IBM Cloud Databases for PostgreSQL](https://www.ibm.com/products/databases-for-postgresql) for production.
@@ -166,7 +166,7 @@ oc create secret tls default-ingress-cert --cert=./tls.crt --key=./tls.key -n od
 - Get the [roks-sticky-values.yaml](./roks-sticky-values.yaml) file and launch your ODM instance :
 
 ```bash
-helm install roks-sticky-tuto ibm-helm/ibm-odm-prod --version 24.0.0 -f roks-sticky-values.yaml
+helm install roks-sticky-tuto ibm-helm/ibm-odm-prod --set image.tag=9.0.0.0 -f roks-sticky-values.yaml
 ```
 
 The ODM containers will embed the ROKS domain certificates. Additionally, two Decision Center pods will be launched to verify the sticky session behavior.
