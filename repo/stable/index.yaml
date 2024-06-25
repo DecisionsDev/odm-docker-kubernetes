@@ -3,10 +3,10 @@ entries:
   ibm-odm-dev:
   - apiVersion: v2
     appVersion: 9.0.0.0
-    created: "2024-06-24T18:35:22.654855+02:00"
+    created: "2024-06-25T10:35:33.026161+02:00"
     description: 'IBM Operational Decision Manager for Developers    License   By
       installing this product you accept the following license terms: https://www14.software.ibm.com/cgi-bin/weblap/lap.pl?li_formnum=L-RBPW-WQTC4A'
-    digest: 32de0c6eee72d88655f017b67e2c4c26a2ad24838b9fef5566363a996d955e18
+    digest: 634fa1606a53d88fc72eb4cb3edb4fa16bda9947632fe79a87b4373b958be83a
     home: https://www.ibm.com/docs/en/odm/9.0.0?topic=kubernetes-installing-odm-developers
     icon: https://raw.githubusercontent.com/ODMDev/ruledesigner/master/icons/automation-decision.png
     keywords:
