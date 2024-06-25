@@ -192,4 +192,31 @@ entries:
     urls:
     - https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm/ibm-odm-prod-23.2.0.tgz
     version: 23.2.0
+  - apiVersion: v2
+    appVersion: 9.0.0.0
+    created: "2024-06-25T08:35:54.901932045Z"
+    description: 'IBM Operational Decision Manager  License By installing this product
+      you accept the following license terms: https://www14.software.ibm.com/cgi-bin/weblap/lap.pl?li_formnum=L-SJDA-MUA6UZ'
+    digest: ba5228ac3ed21e70f3410a17a4120d4964aac197f746406ac70c2031b2ac27a0
+    home: https://www.ibm.com/docs/en/odm/9.0.0?topic=production-installing-helm-release-odm
+    icon: https://raw.githubusercontent.com/ODMDev/ruledesigner/master/icons/automation-decision.png
+    keywords:
+    - OperationalDecisionManager
+    - businessrules
+    - Commercial
+    - s390x
+    - ppc64le
+    - amd64
+    - ICP
+    - RHOCP
+    - Middleware
+    kubeVersion: '>= 1.24.0-0'
+    maintainers:
+    - name: IBM
+    name: ibm-odm-prod
+    sources:
+    - https://github.com/IBM/charts/tree/master/stable
+    urls:
+    - https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm/ibm-odm-prod-24.0.0.tgz
+    version: 24.0.0
 generated: "2024-06-10T15:32:15.406464+02:00"
