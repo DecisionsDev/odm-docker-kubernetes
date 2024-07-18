@@ -1,4 +1,4 @@
-# Learn terraform on IBM Cloud
+# Provision an ODM landing zone on IBM CLoud
 
 > Estimated duration: 60 mins
 
