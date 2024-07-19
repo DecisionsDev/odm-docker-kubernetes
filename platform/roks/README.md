@@ -17,6 +17,7 @@ The project uses the following components:
 - [IBM Operational Decision Manager](https://ibmdocs-test.dcs.ibm.com/docs/en/odm/9.0.0?topic=operational-decision-manager-certified-kubernetes-900)
 - [IBM Cloud](https://cloud.ibm.com/login)
 
+
 ## Tested environment
 
 The commands and tools have been tested on Linux and macOS.
