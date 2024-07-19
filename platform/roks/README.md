@@ -15,7 +15,7 @@ The ODM on Kubernetes Docker images are available in the [IBM Cloud Container Re
 The project uses the following components:
 
 - [IBM Operational Decision Manager](https://ibmdocs-test.dcs.ibm.com/docs/en/odm/9.0.0?topic=operational-decision-manager-certified-kubernetes-900)
-- [IBM Cloud](https://cloud.ibm.com)
+- [IBM Cloud](https://cloud.ibm.com/login)
 
 ## Tested environment
 
