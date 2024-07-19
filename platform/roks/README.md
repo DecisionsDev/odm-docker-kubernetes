@@ -45,15 +45,22 @@ Then, create an [IBM Cloud Account](https://cloud.ibm.com/registration).
 
 ### 1. Prepare your environment (20 min)
 
-Create your IBM Cloud account and set up your first ROKS cluster following this [IBM Cloud tutorial](https://cloud.ibm.com/docs/openshift?topic=openshift-openshift_tutorial&locale=en). Then, create a project for ODM deployment:
+1. Create your IBM Cloud account
 
-```bash
-oc new-project odm-tutorial
-```
+1. Follow the steps to provision the full infrastructure via Terraform in this [README](./terraform/README.md)
+
+    > Should you want to provision the cluster via the Console, you could follow this [IBM Cloud tutorial](https://cloud.ibm.com/docs/openshift?topic=openshift-openshift_tutorial&locale=en).
+
+1. Then, create an OpenShift project for ODM deployment:
+
+    ```bash
+    oc new-project odm-tutorial
+    ```
 
 ### 2. Prepare your environment for the ODM installation (5 min)
 
 To get access to the ODM material, you must have an IBM entitlement key to pull the images from the IBM Cloud Container registry.
+
 This is what will be used in the next step of this tutorial.
 
 #### a. Retrieve your entitled registry key
