@@ -516,7 +516,7 @@ In the **Container software library** tile, verify your entitlement on the **Vie
   See the [Preparing to install](https://www.ibm.com/docs/en/odm/9.0.0?topic=production-preparing-install-operational-decision-manager) documentation for more information.
 
   ```shell
-  helm install my-odm-release ibm-helm/ibm-odm-prod \
+  helm install my-odm-release ibm-helm/ibm-odm-prod --set image.tag=9.0.0.0 \
           --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
           --set oidc.enabled=true \
           --set license=true \
@@ -536,7 +536,7 @@ In the **Container software library** tile, verify your entitlement on the **Vie
   When the NGINX Ingress Controller is ready, you can install the ODM release with:
 
   ```
-  helm install my-odm-release ibm-helm/ibm-odm-prod \
+  helm install my-odm-release ibm-helm/ibm-odm-prod --set image.tag=9.0.0.0 \
           --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
           --set oidc.enabled=true \
           --set license=true \

@@ -15,9 +15,8 @@ The ODM on Kubernetes Docker images are available in the [IBM Cloud Container Re
 The project uses the following components:
 
 - [IBM Operational Decision Manager](https://ibmdocs-test.dcs.ibm.com/docs/en/odm/9.0.0?topic=operational-decision-manager-certified-kubernetes-900)
-  <!-- markdown-link-check-disable -->
-- [IBM Cloud](https://cloud.ibm.com)
-  <!-- markdown-link-check-enable -->
+- [IBM Cloud](https://cloud.ibm.com/login)
+
 
 ## Tested environment
 
@@ -45,15 +44,22 @@ Then, create an [IBM Cloud Account](https://cloud.ibm.com/registration).
 
 ### 1. Prepare your environment (20 min)
 
-Create your IBM Cloud account and set up your first ROKS cluster following this [IBM Cloud tutorial](https://cloud.ibm.com/docs/openshift?topic=openshift-openshift_tutorial&locale=en). Then, create a project for ODM deployment:
+1. Create your IBM Cloud account
 
-```bash
-oc new-project odm-tutorial
-```
+1. Follow the steps to provision the full infrastructure via Terraform in this [README](./terraform/README.md)
+
+    > Should you want to provision the cluster via the Console, you could follow this [IBM Cloud tutorial](https://cloud.ibm.com/docs/openshift?topic=openshift-openshift_tutorial&locale=en).
+
+1. Then, create an OpenShift project for ODM deployment:
+
+    ```bash
+    oc new-project odm-tutorial
+    ```
 
 ### 2. Prepare your environment for the ODM installation (5 min)
 
 To get access to the ODM material, you must have an IBM entitlement key to pull the images from the IBM Cloud Container registry.
+
 This is what will be used in the next step of this tutorial.
 
 #### a. Retrieve your entitled registry key
@@ -99,7 +105,7 @@ ibm-helm/ibm-odm-prod   24.0.0        9.0.0.0     IBM Operational Decision Manag
 Get the [roks-values.yaml](./roks-values.yaml) file and install your ODM instance:
 
 ```bash
-helm install roks-tuto ibm-helm/ibm-odm-prod --version 24.0.0 -f roks-values.yaml
+helm install roks-tuto ibm-helm/ibm-odm-prod --set image.tag=9.0.0.0 -f roks-values.yaml
 ```
 
 > This configuration will deployed ODM with a sample database. You should used your own database such as [IBM Cloud Databases for PostgreSQL](https://www.ibm.com/products/databases-for-postgresql) for production.
@@ -168,7 +174,7 @@ oc create secret tls default-ingress-cert --cert=./tls.crt --key=./tls.key -n od
 - Get the [roks-sticky-values.yaml](./roks-sticky-values.yaml) file and launch your ODM instance :
 
 ```bash
-helm install roks-sticky-tuto ibm-helm/ibm-odm-prod --version 24.0.0 -f roks-sticky-values.yaml
+helm install roks-sticky-tuto ibm-helm/ibm-odm-prod --set image.tag=9.0.0.0 -f roks-sticky-values.yaml
 ```
 
 The ODM containers will embed the ROKS domain certificates. Additionally, two Decision Center pods will be launched to verify the sticky session behavior.
