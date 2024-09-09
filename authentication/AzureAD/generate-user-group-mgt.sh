@@ -111,7 +111,7 @@ XML_CONTENT="<dc-usermanagement>"
 echo "Generating XML for roles and groups..."
 
 for group_name in $GROUP_NAMES; do
-    XML_CONTENT+="\n <group name=\"$group_name\" roles=\"rts_users\"/>"
+    XML_CONTENT+="\n <group name=\"$group_name\" roles=\"rtsUser\"/>"
 done
 
 # Process users
