@@ -353,7 +353,8 @@ You can now install the product. We will use the PostgreSQL internal database an
   ```
 
 > **Note**
-> If you want the optional synchronization of groups and users with Entra ID, you have to add to the helm install command :
+> If you want the optional synchronization of groups and users with Entra ID, you have to add to the helm install command:
+> 
 > --set decisionCenter.sidecar.enabled=true --set decisionCenter.sidecar.confSecretRef=users-groups-synchro-secret
 
 #### b. Installation using Ingress
@@ -381,7 +382,8 @@ You can now install the product. We will use the PostgreSQL internal database an
 > By default, NGINX does not enable sticky session. If you want to use sticky session to connect to DC, refer to [Using sticky session for Decision Center connection](../../contrib/sticky-session/README.md)
 
 > **Note**
-> If you want the optional synchronization of groups and users with Entra ID, you have to add to the helm install command :
+> If you want the optional synchronization of groups and users with Entra ID, you have to add to the helm install command:
+> 
 > --set decisionCenter.sidecar.enabled=true --set decisionCenter.sidecar.confSecretRef=users-groups-synchro-secret
 
 ## Complete post-deployment tasks
