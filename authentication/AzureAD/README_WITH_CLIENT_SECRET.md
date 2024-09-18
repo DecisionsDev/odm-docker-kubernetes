@@ -7,7 +7,7 @@
     - [Prepare your environment for the ODM installation](#prepare-your-environment-for-the-odm-installation)
         - [Create a secret to use the Entitled Registry](#create-a-secret-to-use-the-entitled-registry)
         - [Create secrets to configure ODM with Microsoft Entra ID](#create-secrets-to-configure-odm-with-microsoft-entra-id)
-        - [Create the secret allowing to synchronize Decision Center Users and Groups with Entra ID](create-the-secret-allowing-to-synchronize-decision-center-users-and-groups-with-entra-id)
+        - [Create the secret allowing to synchronize Decision Center Users and Groups with Entra ID](#create-the-secret-allowing-to-synchronize-decision-center-users-and-groups-with-entra-id)
     - [Install your ODM Helm release](#install-your-odm-helm-release)
         - [Add the public IBM Helm charts repository](#add-the-public-ibm-helm-charts-repository)
         - [Check that you can access the ODM chart](#check-that-you-can-access-the-odm-chart)
