@@ -1,13 +1,13 @@
 # 1. Pre-requisite 
 
-To deploy ODM containers on AWS ECS Fargate from docker-compose files, you must meet the following requirements:
+To deploy ODM containers on AWS ECS Fargate from [docker-compose](docker-compose-http.yaml) file, you must meet the following requirements:
 
    * Install the latest version of [AWS Cli](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html).
    * Install the latest version of Podman.
+   * Install python3.6+ and later version.
    * Ensure you have an [AWS Account](https://aws.amazon.com/getting-started/). 
-   * Ensure that you have python3.6+ and later version.
    * Install [ECS Compose-x](https://github.com/compose-x/ecs_composex?tab=readme-ov-file#installation), preferably in a virtual environment.
-   * Ensure that you have an existing internet-facing Elastic Load balancer and a VPC with public subnets [setup](https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-manage-subnets.html).
+   * Ensure that you have an existing internet-facing Elastic Load balancer and a VPC with public subnets [setup](https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-manage-subnets.html) on Amazon Web Services(AWS).
 
 # 2. Prepare your environment for the ODM installation
 
@@ -18,8 +18,12 @@ export REGION=<aws_deployment_region>
 export AWSACCOUNTID=<aws_account_id>
 aws ecr get-login-password --region ${REGION} | podman login --username AWS --password-stdin ${AWSACCOUNTID}.dkr.ecr.${REGION}.amazonaws.com
 ```
+where
+- `REGION`: AWS Regions where you want to deploy your services
+- `AWSACCOUNTID`: your AWS account ID
 
 ## Create RDS Database
+- Run the following command to create an Amazon RDS database instance that can be used by ODM.
 ```
 aws rds create-db-instance \
   --db-instance-identifier "odm-rds" \
@@ -37,6 +41,7 @@ aws rds create-db-instance \
   --storage-encrypted \
   --tags Key=project,Value=odm
 ```
+- Note down the RDS instance endpoint, you will assign it to the `DB_SERVER_NAME` parameter under `environment` section of each ODM service in the [docker-compose](docker-compose-http.yaml) file.
 
 ## Create a secret for the Entitled registry
 To get access to the ODM material, you must have an IBM entitlement registry key to pull the images from the IBM Entitled registry. 
@@ -75,19 +80,23 @@ aws secretsmanager create-secret \
     "VersionId": "..."
 }
 ```
-- Note down the secret's ARN.  You will assign it to the `x-aws-pull_credentials` custom extension along with the image URI of the ODM service in the docker-compose file. 
+- Note down the secret's ARN.  You will assign it to the `x-aws-pull_credentials` custom extension along with the image URI of each ODM service in the [docker-compose](docker-compose-http.yaml) file. 
 For example:
 ```
-  my-odm-decisioncenter:
+  odm-decisioncenter:
     image: cp.icr.io/cp/cp4a/odm/odm-decisioncenter:8.12.0.1-amd64
     x-aws-pull_credentials: "arn:aws:secretsmanager:<aws_deployment_region>:<aws_account_id>:secret:IBMCPSecret-YYYYY"
+    ...
+  odm-decisionserverruntime:
+    image: cp.icr.io/cp/cp4a/odm/odm-decisionserverruntime:8.12.0.1-amd64
+    x-aws-pull_credentials: "arn:aws:secretsmanager:<aws_deployment_region>:<aws_account_id>:secret:IBMCPSecret-XXXXXX"
     ...
 ```
 ## Create S3 bucket and IAM policy for IBM licensing service
 
-- Make sure to create a S3 buckets in AWS for storing the IBM software license usage data. The name of the bucket must follow the `ibm-license-service-<aws_account_id>` pattern. 
+- Make sure to create a S3 bucket in AWS for storing the IBM software license usage data. The name of the bucket must follow the `ibm-license-service-<aws_account_id>` pattern. 
 
-- Add a new IAM policy with read and write access, and define it on the S3 bucket. 
+- Add a IAM policy with read and write access, and define it on the S3 bucket. 
 
 ```json
 {
@@ -106,7 +115,7 @@ For example:
 }
 ```
 
-- You will assign this policy to the `x-aws-policies` custom extension of each service in the docker-compose file. 
+- You will assign this policy to the `x-aws-policies` custom extension of each service in the [docker-compose](docker-compose-http.yaml) file. 
 ```
     x-aws-policies:
       - arn:aws:iam::<aws_account_id>:policy/<policy_allow_access_S3_bucket>
@@ -117,9 +126,9 @@ For more information, see [Tracking license usage on AWS ECS Fargate](https://ww
 
 ## Initialize ECS Compose-X
 
-You will need to setup some permissions to validate the templates with AWS CloudFormation, Lookup AWS resources and etc when using ECS Compose-X commands. For more information about the configuration, see [AWS Account configuration](https://github.com/compose-x/ecs_composex/blob/main/docs/requisites.rst#aws-account-configuration) and [Permissions to upload files to S3](https://github.com/compose-x/ecs_composex/blob/main/docs/requisites.rst#permissions-to-upload-files-to-s3). If your AWS account has administrator permissions, then it is not required to do so.
+You will need to setup some permissions to validate the AWS CloudFormation (CFN) templates, Lookup AWS resources and etc when using ECS Compose-X commands. For more information about the configuration, see [AWS Account configuration](https://github.com/compose-x/ecs_composex/blob/main/docs/requisites.rst#aws-account-configuration) and [Permissions to upload files to S3](https://github.com/compose-x/ecs_composex/blob/main/docs/requisites.rst#permissions-to-upload-files-to-s3). If your AWS account has administrator permissions, then it is not required to do so.
 
-Upon setting up the appropriate permissions, run this command which enables some ECS settings and create a default S3 bucket [required by ECS Compose-X](https://github.com/compose-x/ecs_composex/blob/main/docs/requisites.rst#aws-ecs-settings):
+Upon setting up the appropriate permissions, run this `ecs-compose-x` command which enables some ECS settings and create a default S3 bucket [required by ECS Compose-X](https://github.com/compose-x/ecs_composex/blob/main/docs/requisites.rst#aws-ecs-settings):
 ```
 ecs-compose-x init  
 ```
@@ -140,29 +149,31 @@ Result:
 
 ## a. Edit docker-compose.yaml
 
-- Download the [docker-compose.yaml](docker-compose.yaml) and save this content in your working dir.
+- Download the [docker-compose-http.yaml](docker-compose-http.yaml) and save this file in your working dir.
 - Edit the file and assign the appropriate values in the all `<PLACEHOLDER>`.
 
 ## b. Create the AWS CloudFormation stacks
 
-- Run the following command to generate the AWS CloudFormation (CFN) templates, validate the templates, and create the stacks in CFN.
+- Run the following command to generate the CFN templates, validate the templates, and create the stacks in CFN.
 
 ```
-ecs-compose-x up -n <your_stack_name> -b <generated_s3_bucket> -f docker-compose-http-service-connect.yaml -d outputdir
+ecs-compose-x up -n odm-stack -b <generated_s3_bucket> -f docker-compose-http.yaml -d outputdir
 ```
 
 - Sign in to the [AWS CloudFormation console](https://console.aws.amazon.com/cloudformation/home?) to monitor the stacks (root, CloudMap, IAM, elbv2, service networking, and ODM) creation status. 
+![alt text](images/odm-stack-cfn.png)
 
-- If all the stacks complete without error, access to [Elastic Container Service](https://console.aws.amazon.com/ecs/v2/home?) to look for the newly created cluster named `<your_stack_name>`.  
+- If all the stacks complete without error, go to [Elastic Container Service](https://console.aws.amazon.com/ecs/v2/home?) to look for the newly created cluster named `odm-stack`.  
 
-- Click on the cluster and you shall find the service with ODM and IBM licensing service containers running:
+- Click on the cluster and you shall find the ODM and IBM licensing service containers running in healthy state. For example:
+![alt text](images/odm-stack-ecs.png)
 
 ## c. Access ODM services:
 
 - Access to [EC2 Loadbalancer](https://console.aws.amazon.com/ec2/home?#LoadBalancers:) console.
-- Click on the load balancer that you have defined in your docker-compose file.
+- Click on the load balancer that you have defined in your [docker-compose](docker-compose-http.yaml) file.
 - Verify that the listener rules for the ODM services are added and the target groups are in healthy state.
-- Copy the loadbalancer DNS name.
+- Copy the loadbalancer's DNS name.
 - The URLs for the ODM components are as follows:
     - http://<loadbalance_dns>:81/decisioncenter
     - http://<loadbalance_dns>:81/res
@@ -172,17 +183,17 @@ ecs-compose-x up -n <your_stack_name> -b <generated_s3_bucket> -f docker-compose
 
 ## 4. Cleaup AWS CloudFormation stack
 
-To remove the base stack and its nested stack, there are 2 options.
+To remove the base stack and its nested stacks, there are 2 options.
 
 ### 1. AWS CloudFormation console:
 - Access to the [AWS CloudFormation console](https://console.aws.amazon.com/cloudformation/home?).
-- Select the base stack `<your_stack_name>` and click `Delete` button.
+- Select the base stack `odm-stack` and click `Delete` button.
 
 ### 2. AWS Cli command
 
 ```console
 aws --region <aws_deployment_region> cloudformation delete-stack \
---stack-name <your_stack_name>
+--stack-name odm-stack
 ```
 
 
