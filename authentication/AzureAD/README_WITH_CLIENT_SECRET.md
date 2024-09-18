@@ -7,7 +7,7 @@
     - [Prepare your environment for the ODM installation](#prepare-your-environment-for-the-odm-installation)
         - [Create a secret to use the Entitled Registry](#create-a-secret-to-use-the-entitled-registry)
         - [Create secrets to configure ODM with Microsoft Entra ID](#create-secrets-to-configure-odm-with-microsoft-entra-id)
-        - [Create the secret allowing to synchronize Decision Center Users/Groups with Entra ID](create-the-secret-allowing-to-synchronize-decision-center-users&groups-with-entra-id)
+        - [Create the secret allowing to synchronize Decision Center Users&Groups with Entra ID](create-the-secret-allowing-to-synchronize-decision-center-users&groups-with-entra-id)
     - [Install your ODM Helm release](#install-your-odm-helm-release)
         - [Add the public IBM Helm charts repository](#add-the-public-ibm-helm-charts-repository)
         - [Check that you can access the ODM chart](#check-that-you-can-access-the-odm-chart)
@@ -291,7 +291,7 @@
         --from-file=webSecurity.xml=./output/webSecurity.xml
     ```
 
-4. Create the secret allowing to synchronize Decision Center Users/Groups with EntraID.
+4. Create the secret allowing to synchronize Decision Center Users&Groups with Entra ID.
 
 This section is optional.
 
@@ -300,7 +300,7 @@ The Groups and Users import can be done using an LDAP connection.
 But, if the openId server also provides a SCIM server, then it can also be managed using a SCIM connection.
 
 However, in some context, it's not possible to use LDAP or SCIM to import groups and users inside Decision Center.
-We will explain here how to synchronize Decision Center Groups and Users with EntraID by leveraging EntraID and Decision Center rest-api.
+We will explain here how to synchronize Decision Center Groups and Users with EntraID by leveraging Entra ID and Decision Center rest-api.
 
 A script will be responsible to get groups and users located in the EntraID tenant using the Microsoft Graph API :
 - [for users](https://learn.microsoft.com/en-us/graph/api/resources/users?view=graph-rest-1.0&preserve-view=true)
@@ -311,11 +311,11 @@ Then, it will generate a [group-security-configurations.xml](https://www.ibm.com
 In a kubernetes context, this script can be called by a CRON job.
 Using the new ODM sidecar container mechanism, it can also be managed by the Decision Center pod himself.
 
-    ```shell
-    kubectl create secret generic users-groups-synchro-secret \
-        --from-file=sidecar-start.sh \
-        --from-file=generate-user-group-mgt.sh \
-    ```
+```shell
+kubectl create secret generic users-groups-synchro-secret \
+    --from-file=sidecar-start.sh \
+    --from-file=generate-user-group-mgt.sh
+```
 
 ## Install your ODM Helm release
 
