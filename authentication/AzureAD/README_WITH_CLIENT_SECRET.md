@@ -101,6 +101,12 @@
 
     * Click Grant Admin Consent for Default Directory
 
+    [Optional] If you are interested by the groups and users synchronization in the Business Console, you have to add some specific permission to allow Microsoft Graph Rest API Usage like :
+
+    * Click on **Add a permission**, select **Application permissions** and choose **Group.Read.All**, **User.Read.All**
+    * Don't forget to **Grant Admin Consent for Default Directory** on these API permissions 
+    
+
 7. Manifest change.
 
     In **Azure Active Directory** / **App Registration**, select **ODM Application**, and then click **Manifest**.
