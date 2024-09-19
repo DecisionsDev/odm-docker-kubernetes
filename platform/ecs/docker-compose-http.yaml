@@ -29,7 +29,7 @@ x-elbv2:
     Lookup:
       loadbalancer:
         Tags:
-          Name: <aws_existing_loadbalancer>
+          <loadbalance_tag>: <loadbalancer_tag_value>
     MacroParameters:
       Ingress:
         ExtSources:
@@ -39,8 +39,9 @@ x-elbv2:
       Scheme: internet-facing
       Type: application
     Listeners:
-    # Declare a HTTP port and the access paths for each ODM components
-      - Port: 81 
+    # Declare to use port 80 and the access paths for each ODM components
+    # If the port is used, change it to another value. 
+      - Port: 80 
         Protocol: HTTP
         Targets:
           - name: odm:odm-decisionserverconsole
