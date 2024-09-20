@@ -123,7 +123,7 @@ For example:
 
 For more information, see [Tracking license usage on AWS ECS Fargate](https://www.ibm.com/docs/en/cloud-paks/foundational-services/3.23?topic=platforms-tracking-license-usage-aws-ecs-fargate).
 
-## Add Outbound rule to Loadbalance's security group
+## Add Outbound rule to Loadbalancer's security group
 
 Verify that the outbound configuration of the security group of your existing loadbalancer is having "Allow all outbound traffic". However, if you have restricted outbound security group settings, then you must add this addition outbound rule to allow "Custom TCP" port range of `9060 - 9082` . These ports are for ODM Decision services.
 
@@ -163,6 +163,7 @@ Result:
 
 - Download the [docker-compose-http.yaml](docker-compose-http.yaml) and save this file in your working dir.
 - Edit the file and assign the appropriate values in the all `<PLACEHOLDER>`.
+- For the parameter `RES_URL` that is defined in `environment` section of `odm-decisionrunner` service, look for the DNS value of your [loadbalancer](https://console.aws.amazon.com/ec2/home?#LoadBalancers:) and assign it to the parameter as `http://your_loadbalancer_dns/res`. This is required for running Testing and Simulation in Decision Center under ECS Fargate network.
 
 ## b. Create the AWS CloudFormation stacks
 
@@ -187,10 +188,10 @@ ecs-compose-x up -n odm-stack -b <generated_s3_bucket> -f docker-compose-http.ya
 - Verify that the listener rules for the ODM services are added and the target groups are in healthy state.
 - Copy the loadbalancer's DNS name.
 - The URLs for the ODM components are as follows:
-    - http://<loadbalance_dns>/decisioncenter
-    - http://<loadbalance_dns>/res
-    - http://<loadbalance_dns>/DecisionService
-    - http://<loadbalance_dns>/DecisionRunner
+    - `http://<loadbalancer_dns>/decisioncenter`
+    - `http://<loadbalancer_dns>/res`
+    - `http://<loadbalancer_dns>/DecisionService`
+    - `http://<loadbalancer_dns>/DecisionRunner`
 
 
 ## 4. Cleaup AWS CloudFormation stack

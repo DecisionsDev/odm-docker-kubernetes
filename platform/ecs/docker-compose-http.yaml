@@ -209,7 +209,8 @@ services:
       odm-decisionserverconsole:
         condition: service_healthy
     environment:
-      - RES_URL=http://test-odm-odm-decisioncenter-alb-540600390.eu-west-3.elb.amazonaws.com:81/res
+      # An example of loadbalancer's DNS: loadbalancer-name-XXXXXXXX.eu-west-3.elb.amazonaws.com
+      - RES_URL=http://<your_loadbalancer_dns>/res
       - HTTP_PORT=9081
       - DB_TYPE=postgres
       - DB_USER=<db_user>
