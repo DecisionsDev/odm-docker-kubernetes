@@ -101,6 +101,12 @@
 
     * Click Grant Admin Consent for Default Directory
 
+    [Optional] If you are interested by the groups and users synchronization in the Business Console, you have to add some specific permission to allow Microsoft Graph Rest API Usage like :
+
+    * Click on **Add a permission**, select **Application permissions** and choose **Group.Read.All**, **User.Read.All**
+    * Don't forget to **Grant Admin Consent for Default Directory** on these API permissions 
+    
+
 7. Manifest change.
 
     In **Azure Active Directory** / **App Registration**, select **ODM Application**, and then click **Manifest**.
@@ -290,6 +296,32 @@
         --from-file=webSecurity.xml=./output/webSecurity.xml
     ```
 
+4. Create the secret allowing to synchronize Decision Center Users and Groups with Entra ID.
+
+This section is optional.
+
+ODM Decision Center allows to [manage users and groups from the Business console](https://www.ibm.com/docs/en/odm/9.0.0?topic=center-enabling-users-groups) in order to set access security on specific projects.
+The Groups and Users import can be done using an LDAP connection.
+But, if the openId server also provides a SCIM server, then it can also be managed using a SCIM connection.
+
+However, in some context, it's not possible to use LDAP or SCIM to import groups and users inside Decision Center.
+We will explain here how to synchronize Decision Center Groups and Users with EntraID by leveraging Entra ID and Decision Center rest-api.
+
+A script will be responsible to get groups and users located in the EntraID tenant using the Microsoft Graph API :
+- [for users](https://learn.microsoft.com/en-us/graph/api/resources/users?view=graph-rest-1.0&preserve-view=true)
+- [for groups](https://learn.microsoft.com/en-us/graph/api/resources/groups-overview?view=graph-rest-1.0&tabs=http)
+
+Then, it will generate a [group-security-configurations.xml](https://www.ibm.com/docs/en/odm/9.0.0?topic=access-optional-user-liberty-configurations#reference_w1b_xhq_2rb__title__3) file that will be consumed using the [Decision Center rest-api](https://www.ibm.com/docs/en/odm/9.0.0?topic=mufdc-creating-users-groups-roles-by-using-rest-api) to populate Groups and Users in the Administration Tab.
+
+In a kubernetes context, this script can be called by a CRON job.
+Using the new ODM sidecar container mechanism, it can also be managed by the Decision Center pod himself.
+
+```shell
+kubectl create secret generic users-groups-synchro-secret \
+    --from-file=sidecar-start.sh \
+    --from-file=generate-user-group-mgt.sh
+```
+
 ## Install your ODM Helm release
 
 ### Add the public IBM Helm charts repository
@@ -326,6 +358,11 @@ You can now install the product. We will use the PostgreSQL internal database an
           --set internalDatabase.runAsUser='' --set customization.runAsUser='' --set service.enableRoute=true
   ```
 
+> **Note**
+> If you want the optional synchronization of groups and users with Entra ID, you have to add to the helm install command:
+> 
+> --set decisionCenter.sidecar.enabled=true --set decisionCenter.sidecar.confSecretRef=users-groups-synchro-secret
+
 #### b. Installation using Ingress
 
   Refer to the following documentation to install an NGINX Ingress Controller on:
@@ -349,6 +386,11 @@ You can now install the product. We will use the PostgreSQL internal database an
 
 > **Note**
 > By default, NGINX does not enable sticky session. If you want to use sticky session to connect to DC, refer to [Using sticky session for Decision Center connection](../../contrib/sticky-session/README.md)
+
+> **Note**
+> If you want the optional synchronization of groups and users with Entra ID, you have to add to the helm install command:
+> 
+> --set decisionCenter.sidecar.enabled=true --set decisionCenter.sidecar.confSecretRef=users-groups-synchro-secret
 
 ## Complete post-deployment tasks
 

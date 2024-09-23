@@ -145,6 +145,17 @@ XML_CONTENT+="\n</dc-usermanagement>"
 
 # Output the XML to a file
 echo "Writing XML to output file..."
-echo -e "$XML_CONTENT" > usermanagement.xml
+echo -e "$XML_CONTENT" > /tmp/group-security-configurations.xml
 
-echo "Script completed. XML file 'usermanagement.xml' generated successfully."
+echo "Script completed. XML file 'group-security-configurations.xml' generated successfully."
+
+echo "Getting ODM access token..."
+ODM_ACCESS_TOKEN=$(curl -s --location --request POST "https://login.microsoftonline.com/$TENANT_ID/oauth2/v2.0/token" \
+--header "Content-Type: application/x-www-form-urlencoded" \
+--data-urlencode "client_id=$CLIENT_ID" \
+--data-urlencode "scope=$CLIENT_ID/.default" \
+--data-urlencode "client_secret=$CLIENT_SECRET" \
+--data-urlencode "grant_type=client_credentials" | jq -r '.access_token')
+
+echo "Calling /v1/repository/users-roles-registry Decision Center Endpoint..."
+curl -X 'POST' 'http://localhost:9060/decisioncenter-api/v1/repository/users-roles-registry?eraseAllUsersAndGroups=true' -H 'accept: */*'   -H 'Content-Type: multipart/form-data'   -F 'file=@/tmp/group-security-configurations.xml;type=text/xml' -H "Authorization: Bearer $ODM_ACCESS_TOKEN"
