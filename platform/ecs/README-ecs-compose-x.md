@@ -243,6 +243,14 @@ ecs-compose-x up -n odm-stack -b <generated_s3_bucket> -f docker-compose-http.ya
     - `http://<loadbalancer_dns>/DecisionService`
     - `http://<loadbalancer_dns>/DecisionRunner`
 
+## d. Edit Server configurations in Decision Center
+
+- Login to Decision Center with `odmAdmin` user.
+- Click on `Administration` tab and then `Servers` tab.
+- Edit `Decision Service Execution` configuration and update the `Server URL` to `http://<loadbalancer_dns>/res`.
+- Test the connection. If the test is successful, save the changes.
+![alt text](images/test-res-configuration.png)
+- Repeat the same for `Test and Simulation Execution` configuration. Update the `Server URL` to `http://<loadbalancer_dns>/DecisionRunner`. Test and then save the changes.
 
 ## 4. Cleaup AWS CloudFormation stack
 
