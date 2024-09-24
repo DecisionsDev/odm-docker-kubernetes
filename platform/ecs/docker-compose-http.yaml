@@ -39,7 +39,7 @@ x-elbv2:
       Scheme: internet-facing
       Type: application
     Listeners:
-    # Declare to use port 80 and the access paths for each ODM components
+    # Declare to use port=80, protocol=HTTP and the access paths for each ODM components
     # If the port is used, change it to another value. 
       - Port: 80 
         Protocol: HTTP
