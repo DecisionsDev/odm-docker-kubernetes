@@ -157,6 +157,55 @@ Result:
 
 *NOTE*: A S3 bucket will automatically be created. It is used to store the generated CFN templates when running `ecs-compose-x` commands.
 
+## Store Amazon Root CA
+
+Since ODM Decision services are HTTPS enabled. It is required to provide the Amazon Root CA in ODM Decision Center to allow ruleApp deployments and also running `Test and Simulation`.
+
+- Go to [Amazon Trust Services](https://www.amazontrust.com/repository/) and download [Amazon Root CA 1](https://www.amazontrust.com/repository/AmazonRootCA1.pem) in `PEM` format.
+- Rename the downloaded `AmazonRootCA1.pem` file to `AmazonRootCA1.crt`.
+- In the S3 bucket created by `ecs-compose-x init`, create a folder named `certificate`.
+- Upload this `AmazonRootCA1.crt` file into this folder.
+![alt text](images/S3-certificate.png)
+- Create a new file system name `odm-filesystem` in [Amazon EFS](https:/console.aws.amazon.com/efs/home?#/get-started) using the same VPC where you plan to create ECS Fargate cluster with ODM services. This file system will be used as a volume for Decision Center. See :
+```
+volumes:
+  app:
+    x-efs:
+      Lookup:
+        Tags: 
+          Name: odm-filesystem
+      RoleArn: arn:aws:iam::aws:policy/service-role/AmazonEFSCSIDriverPolicy
+...
+  odm-decisioncenter:
+    image: cp.icr.io/cp/cp4a/odm/odm-decisioncenter:8.12.0.1-amd64
+    x-aws-pull_credentials: "arn:aws:secretsmanager:<aws_deployment_region>:<aws_account_id>:secret:IBMCPSecret-XXXXXX"
+    volumes:
+      - app:/config/security/trusted-cert-volume
+```
+- At [AWS DataSync](https://console.aws.amazon.com/datasync), create a new task for data transfer and synchronization between the S3 bucket `certificate` folder and `odm-filesystem`.
+    - Step 1: Configure source location. 
+        - Select *Location type*: `Amazon S3`, *Region*, *S3 bucket*. In *Folder* field, and enter `/certificate`. Auto-generate the IAM role. Click `Next`.
+    ![alt text](images/data-sync1.png)
+
+    - Step 2: Configure destination location.
+        - Select *Location type*: `Amazon EFS file system`, *Region*, *File System*: `odm-filesystem` and *Mount path*: `/`. Choose the appropriate subnet (that this filesystem will be accessed) and the security group (that can access this file system). Click `Next`.
+    ![alt text](images/data-sync2.png)
+
+    - Step 3: Configure settings.
+        - Give a name to the datasync. Use the default options and click `Next` to `Review` page.
+        ![alt text](images/data-sync3.png)
+    - Step 4: Review
+        - Verify the details and click `Create Task` to create the task.
+
+- After the task is created, you can launch data synchronising using `Start with defaults`.
+![alt text](images/data-sync4.png)
+    - Wait for a few minutes and check the status at `Task history`.  It should be successful.
+    ![alt text](images/data-sync-ok.png)
+    - If the task failed with this following error, the security group that you configured at Step 2 does not allow ingress and egress on port 2049.
+    ![alt text](images/data-sync-ko.png)
+    - Make sure to add an inbound and outbound rule with NFS type at port 2049 to this security group. For example:
+    ![alt text](images/security-group-nfs-2049.png)
+
 # 3. Deploy ODM to AWS ECS Fargate
 
 ## a. Edit docker-compose.yaml
@@ -164,6 +213,7 @@ Result:
 - Download the [docker-compose-http.yaml](docker-compose-http.yaml) and save this file in your working dir.
 - Edit the file and assign the appropriate values in the all `<PLACEHOLDER>`.
 - For the parameter `RES_URL` that is defined in `environment` section of `odm-decisionrunner` service, look for the DNS value of your [loadbalancer](https://console.aws.amazon.com/ec2/home?#LoadBalancers:) and assign it to the parameter as `http://your_loadbalancer_dns/res`. This is required for running Testing and Simulation in Decision Center under ECS Fargate network.
+
 
 ## b. Create the AWS CloudFormation stacks
 
@@ -208,6 +258,3 @@ To remove the base stack and its nested stacks, there are 2 options.
 aws --region <aws_deployment_region> cloudformation delete-stack \
 --stack-name odm-stack
 ```
-
-
-
