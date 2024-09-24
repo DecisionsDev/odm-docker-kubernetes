@@ -298,29 +298,33 @@
 
 4. Create the secret allowing to synchronize Decision Center Users and Groups with Entra ID.
 
-This section is optional.
+    This section is optional.
 
-ODM Decision Center allows to [manage users and groups from the Business console](https://www.ibm.com/docs/en/odm/9.0.0?topic=center-enabling-users-groups) in order to set access security on specific projects.
-The Groups and Users import can be done using an LDAP connection.
-But, if the openId server also provides a SCIM server, then it can also be managed using a SCIM connection.
+    ODM Decision Center allows to [manage users and groups from the Business console](https://www.ibm.com/docs/en/odm/9.0.0?topic=center-enabling-users-groups) in order to set access security on specific projects.
+    The Groups and Users import can be done using an LDAP connection.
+    But, if the openId server also provides a SCIM server, then it can also be managed using a SCIM connection.
 
-However, in some context, it's not possible to use LDAP or SCIM to import groups and users inside Decision Center.
-We will explain here how to synchronize Decision Center Groups and Users with EntraID by leveraging Entra ID and Decision Center rest-api.
+    However, in some context, it's not possible to use LDAP or SCIM to import groups and users inside Decision Center.
+    We will explain here how to synchronize Decision Center Groups and Users with Entra ID by leveraging Entra ID and Decision Center rest-api.
 
-A script will be responsible to get groups and users located in the EntraID tenant using the Microsoft Graph API :
-- [for users](https://learn.microsoft.com/en-us/graph/api/resources/users?view=graph-rest-1.0&preserve-view=true)
-- [for groups](https://learn.microsoft.com/en-us/graph/api/resources/groups-overview?view=graph-rest-1.0&tabs=http)
+    A script will be responsible to get groups and users located in the EntraID tenant using the Microsoft Graph API :
+    - [for users](https://learn.microsoft.com/en-us/graph/api/resources/users?view=graph-rest-1.0&preserve-view=true)
+    - [for groups](https://learn.microsoft.com/en-us/graph/api/resources/groups-overview?view=graph-rest-1.0&tabs=http)
 
-Then, it will generate a [group-security-configurations.xml](https://www.ibm.com/docs/en/odm/9.0.0?topic=access-optional-user-liberty-configurations#reference_w1b_xhq_2rb__title__3) file that will be consumed using the [Decision Center rest-api](https://www.ibm.com/docs/en/odm/9.0.0?topic=mufdc-creating-users-groups-roles-by-using-rest-api) to populate Groups and Users in the Administration Tab.
+    Then, it will generate a [group-security-configurations.xml](https://www.ibm.com/docs/en/odm/9.0.0?topic=access-optional-user-liberty-configurations#reference_w1b_xhq_2rb__title__3) file that will be consumed using the [Decision Center rest-api](https://www.ibm.com/docs/en/odm/9.0.0?topic=mufdc-creating-users-groups-roles-by-using-rest-api) to populate Groups and Users in the Administration Tab.
 
-In a kubernetes context, this script can be called by a CRON job.
-Using the new ODM sidecar container mechanism, it can also be managed by the Decision Center pod himself.
+    In a kubernetes context, this script can be called by a CRON job.
+    Using the new ODM sidecar container mechanism, it can also be managed by the Decision Center pod himself.
 
-```shell
-kubectl create secret generic users-groups-synchro-secret \
-    --from-file=sidecar-start.sh \
-    --from-file=generate-user-group-mgt.sh
-```
+    ```shell
+    kubectl create secret generic users-groups-synchro-secret \
+        --from-file=sidecar-start.sh \
+        --from-file=generate-user-group-mgt.sh
+    ```
+    > **Note**
+    > The scripts will be used inside a container using the Decision Center image. It's possible to use a dedicated lighter image instead
+    > by setting the helm chart parameter **--set decisionCenter.sidecar.image**
+    > You can find a [Dockerfile](Dockerfile) containing the minimal tooling to execute the scripts.    
 
 ## Install your ODM Helm release
 
