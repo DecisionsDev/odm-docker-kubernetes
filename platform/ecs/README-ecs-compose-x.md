@@ -132,8 +132,7 @@ Verify that the outbound configuration of the security group of your existing lo
 - Click on the load balancer that you want to define in the docker-compose file.
 - Click `Security` tab and then click on the security group.
 - Click `Outbound rules` tab, `Edit outbound rules` button and add the outbound rule as shown below:
-
-![alt text](images/security-group-outbound.png)
+<br><img src="images/security-group-outbound.png" width="80%"/>
 
 ## Initialize ECS Compose-X
 
@@ -163,8 +162,7 @@ If you want to run ODM Decision services in HTTPS mode, it is required to provid
 - Go to [Amazon Trust Services](https://www.amazontrust.com/repository/) and download [Amazon Root CA 1](https://www.amazontrust.com/repository/AmazonRootCA1.pem) in `PEM` format.
 - Rename the downloaded `AmazonRootCA1.pem` file to `AmazonRootCA1.crt`.
 - In the S3 bucket created by `ecs-compose-x init`, create a folder named `certificate`.
-- Upload this `AmazonRootCA1.crt` file into this folder.
-![alt text](images/S3-certificate.png)
+- Upload this `AmazonRootCA1.crt` file into this folder. <br><img src="images/S3-certificate.png" width="80%"/>
 - Create a new file system name `odm-filesystem` in [Amazon EFS](https:/console.aws.amazon.com/efs/home) using the same VPC where you plan to create ECS Fargate cluster with ODM services. This file system will be used as a volume for Decision Center. See :
 ```
 volumes:
@@ -184,27 +182,23 @@ volumes:
 - At [AWS DataSync](https://console.aws.amazon.com/datasync), create a new task for data transfer and synchronization between the S3 bucket `certificate` folder and `odm-filesystem`.
     - Step 1: Configure source location. 
         - Select *Location type*: `Amazon S3`, *Region*, *S3 bucket*. In *Folder* field, and enter `/certificate`. Auto-generate the IAM role. Click `Next`.
-    ![alt text](images/data-sync1.png)
+   <br><img src="images/data-sync1.png" width="50%"/>
 
     - Step 2: Configure destination location.
         - Select *Location type*: `Amazon EFS file system`, *Region*, *File System*: `odm-filesystem` and *Mount path*: `/`. Choose the appropriate subnet (that this filesystem will be accessed) and the security group (that can access this file system). Click `Next`.
-    ![alt text](images/data-sync2.png)
+    <br><img src="images/data-sync2.png" width="50%"/>
 
     - Step 3: Configure settings.
         - Give a name to the datasync. Use the default options and click `Next` to `Review` page.
-        ![alt text](images/data-sync3.png)
+         <br><img src="images/data-sync3.png" width="50%"/>
     - Step 4: Review
         - Verify the details and click `Create Task` to create the task.
 
 - After the task is created, you can launch data synchronising using `Start with defaults`.
-![alt text](images/data-sync4.png)
-    - Wait for a few minutes and check the status at `Task history`.  It should be successful.
-    ![alt text](images/data-sync-ok.png)
-    - If the task failed with this following error, the security group that you configured at Step 2 does not allow ingress and egress on port 2049.
-    ![alt text](images/data-sync-ko.png)
-    - Make sure to add an inbound and outbound rule with NFS type at port 2049 to this security group. For example:
-    ![alt text](images/security-group-nfs-2049.png)
-
+ <br><img src="images/data-sync4.png" width="80%"/>
+    - Wait for a few minutes and check the status at `Task history`.  It should be successful. <br><img src="images/data-sync-ok.png" width="50%"/>
+    - If the task failed with this following error, the security group that you configured at Step 2 does not allow ingress and egress on port 2049. <br><img src="images/data-sync-ko.png" width="50%"/>
+    - Make sure to add an inbound and outbound rule with NFS type at port 2049 to this security group. For example: <br><img src="images/security-group-nfs-2049.png" width="80%"/>
 # 3. Deploy ODM to AWS ECS Fargate
 
 ## a. Edit docker-compose file
@@ -249,13 +243,11 @@ ecs-compose-x up -n odm-stack -b <generated_s3_bucket> -f docker-compose-http.ya
 ```
 
 - Sign in to the [AWS CloudFormation console](https://console.aws.amazon.com/cloudformation/home?) to monitor the stacks (root, CloudMap, IAM, elbv2, service networking, and ODM) creation status. 
-![alt text](images/odm-stack-cfn.png)
-
+<br><img src="images/odm-stack-cfn.png" width="80%"/>
 - If all the stacks complete without error, go to [Elastic Container Service](https://console.aws.amazon.com/ecs/v2/home?) to look for the newly created cluster named `odm-stack`.  
 
 - Click on the cluster and you shall find the ODM and IBM licensing service containers running in healthy state. For example:
-![alt text](images/odm-stack-ecs.png)
-
+<br><img src="images/odm-stack-ecs.png" width="80%"/>
 ## c. Access ODM services:
 
 - Access to [EC2 Loadbalancer](https://console.aws.amazon.com/ec2/home?#LoadBalancers:) console.
@@ -273,8 +265,8 @@ ecs-compose-x up -n odm-stack -b <generated_s3_bucket> -f docker-compose-http.ya
 - Login to Decision Center with `odmAdmin` user.
 - Click on `Administration` tab and then `Servers` tab.
 - Edit `Decision Service Execution` configuration and update the `Server URL` to `http://<loadbalancer_dns>/res`. If HTTPS mode, use `https://`.
-- Test the connection. If the test is successful, save the changes.
-![alt text](images/test-res-configuration.png)
+- Test the connection. If the test is successful, save the changes. 
+<br><img src="images/test-res-configuration.png" width="40%"/>
 - Repeat the same for `Test and Simulation Execution` configuration. Update the `Server URL` to `http://<loadbalancer_dns>/DecisionRunner`. If HTTPS mode, use `https://`. Test and then save the changes.
 
 ## 4. Cleaup AWS CloudFormation stack
