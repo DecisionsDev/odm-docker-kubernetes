@@ -1,3 +1,4 @@
+# Docker-compose file with ECS-compose-x extensions to create a ECS Fargate stack with ODM deployment in HTTPS
 version: "3.8"
 
 volumes:
@@ -27,7 +28,7 @@ x-vpc:
     AppSubnets: {}
     PublicSubnets:
       Tags:
-        - <tag_label>: <tag_label_value>
+        - <vpc_tag>: <vpc_tag_value>
     PrivateSubnets: {}
     StorageSubnets: {}
 
@@ -37,7 +38,7 @@ x-elbv2:
     Lookup:
       loadbalancer:
         Tags:
-          <loadbalance_tag>: <loadbalancer_tag_value>
+          <loadbalancer_tag>: <loadbalancer_tag_value>
     MacroParameters:
       Ingress:
         ExtSources:
@@ -51,9 +52,9 @@ x-elbv2:
     # If the port is used, change it to another value. 
       - Port: 443
         Protocol: HTTPS
-    # Make sure there is ACM public certificate that can be applied on ELB for HTTPS purpose
+        # Make sure there is an ACM public certificate that can be applied on ELB for HTTPS purpose
         Certificates:
-         - CertificateArn: arn:aws:acm:eu-west-3:194826081736:certificate/XXXX-YYYY
+         - CertificateArn: arn:aws:acm:<aws_deployment_region>:<aws_account_id>:certificate/XXXX-YYYY
         SslPolicy: ELBSecurityPolicy-TLS13-1-2-2021-06
         Targets:
           - name: odm:odm-decisionserverconsole

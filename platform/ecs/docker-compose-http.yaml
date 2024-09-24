@@ -1,3 +1,4 @@
+# Docker-compose file with ECS-compose-x extensions to create a ECS Fargate stack with ODM deployment in HTTP
 version: "3.8"
 
 # To create a namespace in CloudMap required by Service Connect
@@ -19,7 +20,7 @@ x-vpc:
     AppSubnets: {}
     PublicSubnets:
       Tags:
-        - <tag_label>: <tag_label_value>
+        - <vpc_tag>: <vpc_tag_value>
     PrivateSubnets: {}
     StorageSubnets: {}
 
