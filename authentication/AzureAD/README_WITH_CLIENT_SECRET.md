@@ -324,7 +324,7 @@
     > **Note**
     > The scripts will be used inside a container using the Decision Center image. It's possible to use a dedicated lighter image instead
     > by setting the helm chart parameter **--set decisionCenter.sidecar.image**
-    > You can find a [Dockerfile](Dockerfile) containing the minimal tooling to execute the scripts.    
+    > You can find a [Dockerfile](Dockerfile) containing the minimal tooling (bash,curl,jq) to execute the scripts.    
 
 ## Install your ODM Helm release
 
