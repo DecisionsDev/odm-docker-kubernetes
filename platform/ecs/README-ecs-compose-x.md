@@ -163,7 +163,7 @@ If you want to run ODM Decision services in HTTPS mode, it is required to provid
 - Rename the downloaded `AmazonRootCA1.pem` file to `AmazonRootCA1.crt`.
 - In the S3 bucket created by `ecs-compose-x init`, create a folder named `certificate`.
 - Upload this `AmazonRootCA1.crt` file into this folder. <br><img src="images/S3-certificate.png" width="80%"/>
-- Create a new file system name `odm-filesystem` in [Amazon EFS](https:/console.aws.amazon.com/efs/home) using the same VPC where you plan to create ECS Fargate cluster with ODM services. This file system will be used as a volume for Decision Center. See :
+- Create a new file system name `odm-filesystem` in [Amazon EFS](https://console.aws.amazon.com/efs/home) using the same VPC where you plan to create ECS Fargate cluster with ODM services. This file system will be used as a volume for Decision Center. See :
 ```
 volumes:
   app:
