@@ -8,7 +8,7 @@ To deploy ODM containers on AWS ECS Fargate from [docker-compose](docker-compose
    * Ensure you have an [AWS Account](https://aws.amazon.com/getting-started/). 
    * Install [ECS Compose-x](https://github.com/compose-x/ecs_composex?tab=readme-ov-file#installation), preferably in a virtual environment.
    * Ensure that you have an existing internet-facing Elastic Load balancer and a VPC with public subnets [setup](https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-manage-subnets.html) on Amazon Web Services(AWS).
-   * If you want to run ODM Decision services in HTTPS mode, you need to have an [ACM public certificate](https://console.aws.amazon.com/acm/home).
+   * If you want to run ODM Decision services in HTTPS mode, you need to have an [ACM public certificate](https://console.aws.amazon.com/acm/home). 
 
 # 2. Prepare your environment for the ODM installation
 
@@ -124,7 +124,7 @@ For example:
 
 For more information, see [Tracking license usage on AWS ECS Fargate](https://www.ibm.com/docs/en/cloud-paks/foundational-services/3.23?topic=platforms-tracking-license-usage-aws-ecs-fargate).
 
-## Add Outbound rule to Loadbalancer's security group
+## Add Outbound rule to Load balancer's security group
 
 Verify that the outbound configuration of the security group of your existing loadbalancer is having "Allow all outbound traffic". However, if you have restricted outbound security group settings, then you must add an addition outbound rule to allow "Custom TCP" port range of `9060 - 9082` . These ports are for ODM Decision services in HTTP mode. For HTTPS mode, the port range should be `9653 - 9953`.
 
@@ -207,13 +207,14 @@ volumes:
 
 - Download the [docker-compose-http.yaml](docker-compose-http.yaml) and save this file in your working dir.
 - Edit the file and assign the appropriate values in the all `<PLACEHOLDER>`.
-- For the parameter `RES_URL` that is defined in `environment` section of `odm-decisionrunner` service, look for the DNS value of your [loadbalancer](https://console.aws.amazon.com/ec2/home?#LoadBalancers:) and assign it to the parameter as `http://your_loadbalancer_dns/res`. This is required for running Testing and Simulation in Decision Center under ECS Fargate network.
+- For the parameter `RES_URL` that is defined in `environment` section of `odm-decisionrunner` service, look for the DNS value of your [load balancer](https://console.aws.amazon.com/ec2/home?#LoadBalancers:) and assign it to the parameter as `http://your_loadbalancer_dns/res`. This is required for running Testing and Simulation in Decision Center under ECS Fargate network.
 
 ### 2. HTTPS mode
 
 - Download the [docker-compose-https.yaml](docker-compose-https.yaml) and save this file in your working dir.
 - Edit the file and assign the appropriate values in the all `<PLACEHOLDER>`.
-- For HTTPS mode, you need to assign the arn of the [ACM public certificate](https://console.aws.amazon.com/acm/home) at `x-elbv2` extension. The ssl policy is set to TLS1.3 `ELBSecurityPolicy-TLS13-1-2-2021-06` policy. 
+- In this case, HTTPS listeners for each ODM service will be added to the load balancer. You need to assign the arn of the [ACM public certificate](https://console.aws.amazon.com/acm/home) at `x-elbv2` extension. The ssl policy is set to TLS1.3 `ELBSecurityPolicy-TLS13-1-2-2021-06` policy.  For more information, see [Create an HTTPS listener for your Application Load Balancer](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-https-listener.html#describe-ssl-policies).
+
 ```x-elbv2:
   public-alb:
     Lookup:
@@ -228,10 +229,10 @@ volumes:
         Protocol: HTTPS
         # Make sure there is ACM public certificate that can be applied on ELB for HTTPS purpose
         Certificates:
-         - CertificateArn: arn:aws:acm:<aws_deployment_region>:<aws_account_id>:certificate/XXXX-YYYY
-         SslPolicy: ELBSecurityPolicy-TLS13-1-2-2021-06
+          - CertificateArn: arn:aws:acm:<aws_deployment_region>:<aws_account_id>:certificate/XXXX-YYYY
+        SslPolicy: ELBSecurityPolicy-TLS13-1-2-2021-06
   ```
-- For the parameter `RES_URL` that is defined in `environment` section of `odm-decisionrunner` service, look for the DNS value of your [loadbalancer](https://console.aws.amazon.com/ec2/home?#LoadBalancers:) and assign it to the parameter as `https://your_loadbalancer_dns/res`. This is required for running Testing and Simulation in Decision Center under ECS Fargate network.
+- For the parameter `RES_URL` that is defined in `environment` section of `odm-decisionrunner` service, look for the DNS value of your [load balancer](https://console.aws.amazon.com/ec2/home?#LoadBalancers:) and assign it to the parameter as `https://your_loadbalancer_dns/res`. This is required for running Testing and Simulation in Decision Center.
 
 
 ## b. Create the AWS CloudFormation stacks
@@ -253,7 +254,7 @@ ecs-compose-x up -n odm-stack -b <generated_s3_bucket> -f docker-compose-http.ya
 - Access to [EC2 Loadbalancer](https://console.aws.amazon.com/ec2/home?#LoadBalancers:) console.
 - Click on the load balancer that you have defined in your [docker-compose](docker-compose-http.yaml) file.
 - Verify that the listener rules for the ODM services are added and the target groups are in healthy state.
-- Copy the loadbalancer's DNS name.
+- Copy the load balancer's DNS name.
 - Depending on HTTP or HTTPS mode, the URLs for the ODM components are as follows:
     - `http://<loadbalancer_dns>/decisioncenter` or `https://<loadbalancer_dns>/decisioncenter`
     - `http://<loadbalancer_dns>/res` or `https://<loadbalancer_dns>/res`
