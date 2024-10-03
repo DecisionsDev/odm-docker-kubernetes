@@ -1,4 +1,10 @@
-# 1. Pre-requisite 
+# Deploying IBM Operational Decision Manager on Amazon ECS Fargate (BETA)
+
+This tutorial demonstrates how to deploy an IBM® Operational Decision Manager (ODM) topology on Amazon ECS Fargate with the help of ECS Compose-x tool. 
+
+<br><img src="images/ODM-ECS.png"/>
+
+## 1. Pre-requisite 
 
 To deploy ODM containers on AWS ECS Fargate from [docker-compose](docker-compose-http.yaml) file, you must meet the following requirements:
 
@@ -10,9 +16,11 @@ To deploy ODM containers on AWS ECS Fargate from [docker-compose](docker-compose
    * Ensure that you have an existing internet-facing Elastic Load balancer and a VPC with public subnets [setup](https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-manage-subnets.html) on Amazon Web Services(AWS).
    * If you want to run ODM Decision services in HTTPS mode, you need to have an [ACM public certificate](https://console.aws.amazon.com/acm/home). 
 
-# 2. Prepare your environment for the ODM installation
+*Note*: The commands and tools have been tested on macOS.
 
-##  Login to AWS
+## 2. Prepare your environment for the ODM installation
+
+### 2.1 Login to AWS
 
 ```
 export REGION=<aws_deployment_region>
@@ -23,8 +31,11 @@ where
 - `REGION`: AWS Regions where you want to deploy your services
 - `AWSACCOUNTID`: your AWS account ID
 
-## Create RDS Database
-- Run the following command to create an Amazon RDS database instance that can be used by ODM.
+### 2.2 Create RDS Database
+
+In this tutorial, we will create an Amazon RDS database instance that can be used by ODM.
+
+- Run the following command to create the postgres database instance:
 ```
 aws rds create-db-instance \
   --db-instance-identifier "odm-rds" \
@@ -44,18 +55,20 @@ aws rds create-db-instance \
 ```
 - Note down the RDS instance endpoint, you will assign it to the `DB_SERVER_NAME` parameter under `environment` section of each ODM service in the docker-compose file.
 
-## Create a secret for the Entitled registry
+### 2.3 Create a secret for the Entitled registry access
+
 To get access to the ODM material, you must have an IBM entitlement registry key to pull the images from the IBM Entitled registry. 
 It will be used in the next step of this tutorial.
 
-### a. Retrieve your entitled registry key
-  - Log in to [MyIBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary) with the IBMid and password that are associated with the entitled software.
+#### 2.3.1 Retrieve your entitled registry key
 
-  - In the Container software library tile, verify your entitlement on the View library page, and then go to *Get entitlement key* to retrieve the key.
+- Log in to [MyIBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary) with the IBMid and password that are associated with the entitled software.
 
-### b. Create a JSON file 
+- In the Container software library tile, verify your entitlement on the View library page, and then go to *Get entitlement key* to retrieve the key.
 
-Create a `token.json` file with that format.
+#### 2.3.2 Create a JSON file 
+
+- Create a `token.json` file with that format.
 ```json
 {
     "username":"cp",
@@ -63,7 +76,9 @@ Create a `token.json` file with that format.
 }
 ```
 
-### c. Create the secret in ASW Secrets Manager:
+#### 2.3.3 Create the secret in ASW Secrets Manager:
+
+You can proceed to create an AWS Secret containing the `token.json` file. The secret with the pull credential will be assigned in the docker-compose file.
 
 - Create the secret using the following AWS Cli command. For more information, see [Create an AWS Secrets Manager secret](https://docs.aws.amazon.com/secretsmanager/latest/userguide/create_secret.html).
 
@@ -81,6 +96,7 @@ aws secretsmanager create-secret \
     "VersionId": "..."
 }
 ```
+
 - Note down the secret's ARN.  You will assign it to the `x-aws-pull_credentials` custom extension along with the image URI of each ODM service in the docker-compose file. 
 For example:
 ```
@@ -90,12 +106,17 @@ For example:
     ...
   odm-decisionserverruntime:
     image: cp.icr.io/cp/cp4a/odm/odm-decisionserverruntime:8.12.0.1-amd64
-    x-aws-pull_credentials: "arn:aws:secretsmanager:<aws_deployment_region>:<aws_account_id>:secret:IBMCPSecret-XXXXXX"
+    x-aws-pull_credentials: "arn:aws:secretsmanager:<aws_deployment_region>:<aws_account_id>:secret:IBMCPSecret-YYYYY"
     ...
 ```
-## Create S3 bucket and IAM policy for IBM licensing service
 
-- Make sure to create a S3 bucket in AWS for storing the IBM software license usage data. The name of the bucket must follow the `ibm-license-service-<aws_account_id>` pattern. 
+### 2.3.4 Create S3 bucket and IAM policy for IBM licensing service
+
+In this tutorial, we have included IBM Licensing service for tracking runtime license usage of ODM that is deployed on AWS ECS Fargate.
+
+The following steps are needed by IBM Licensing service:
+
+- Create a S3 bucket in AWS for storing the IBM software license usage data. The name of the bucket must follow the `ibm-license-service-<aws_account_id>` pattern. 
 
 - Add a IAM policy with read and write access, and define it on the S3 bucket. 
 
@@ -124,7 +145,7 @@ For example:
 
 For more information, see [Tracking license usage on AWS ECS Fargate](https://www.ibm.com/docs/en/cloud-paks/foundational-services/3.23?topic=platforms-tracking-license-usage-aws-ecs-fargate).
 
-## Add Outbound rule to Load balancer's security group
+### 2.3.5 Add Outbound rule to Load balancer's security group
 
 Verify that the outbound configuration of the security group of your existing loadbalancer is having "Allow all outbound traffic". However, if you have restricted outbound security group settings, then you must add an addition outbound rule to allow "Custom TCP" port range of `9060 - 9082` . These ports are for ODM Decision services in HTTP mode. For HTTPS mode, the port range should be `9653 - 9953`.
 
@@ -134,7 +155,7 @@ Verify that the outbound configuration of the security group of your existing lo
 - Click `Outbound rules` tab, `Edit outbound rules` button and add the outbound rule as shown below:
 <br><img src="images/security-group-outbound.png" width="80%"/>
 
-## Initialize ECS Compose-X
+### 2.3.6 Initialize ECS Compose-X
 
 You will need to setup some permissions to validate the AWS CloudFormation (CFN) templates, Lookup AWS resources and etc when using ECS Compose-X commands. For more information about the configuration, see [AWS Account configuration](https://github.com/compose-x/ecs_composex/blob/main/docs/requisites.rst#aws-account-configuration) and [Permissions to upload files to S3](https://github.com/compose-x/ecs_composex/blob/main/docs/requisites.rst#permissions-to-upload-files-to-s3). If your AWS account has administrator permissions, then it is not required to do so.
 
@@ -155,7 +176,7 @@ Result:
 
 *NOTE*: A S3 bucket will automatically be created. It is used to store the generated CFN templates when running `ecs-compose-x` commands.
 
-## Store Amazon Root CA (For HTTPS mode only)
+### 2.3.7 Store Amazon Root CA (For HTTPS mode only)
 
 If you want to run ODM Decision services in HTTPS mode, it is required to provide the Amazon Root CA to ODM Decision Center for authentication purposes during ruleApp deployments and also running `Test and Simulation`.
 
@@ -199,23 +220,25 @@ volumes:
     - Wait for a few minutes and check the status at `Task history`.  It should be successful. <br><img src="images/data-sync-ok.png" width="50%"/>
     - If the task failed with this following error, the security group that you configured at Step 2 does not allow ingress and egress on port 2049. <br><img src="images/data-sync-ko.png" width="50%"/>
     - Make sure to add an inbound and outbound rule with NFS type at port 2049 to this security group. For example: <br><img src="images/security-group-nfs-2049.png" width="80%"/>
-# 3. Deploy ODM to AWS ECS Fargate
 
-## a. Edit docker-compose file
+## 3. Deploy ODM to AWS ECS Fargate
 
-### 1. HTTP mode
+### 3.1 Edit docker-compose file
+
+#### 3.1.1 HTTP mode
 
 - Download the [docker-compose-http.yaml](docker-compose-http.yaml) and save this file in your working dir.
 - Edit the file and assign the appropriate values in the all `<PLACEHOLDER>`.
 - For the parameter `RES_URL` that is defined in `environment` section of `odm-decisionrunner` service, look for the DNS value of your [load balancer](https://console.aws.amazon.com/ec2/home?#LoadBalancers:) and assign it to the parameter as `http://your_loadbalancer_dns/res`. This is required for running Testing and Simulation in Decision Center under ECS Fargate network.
 
-### 2. HTTPS mode
+#### 3.1.2 HTTPS mode
 
 - Download the [docker-compose-https.yaml](docker-compose-https.yaml) and save this file in your working dir.
 - Edit the file and assign the appropriate values in the all `<PLACEHOLDER>`.
-- In this case, HTTPS listeners for each ODM service will be added to the load balancer. You need to assign the arn of the [ACM public certificate](https://console.aws.amazon.com/acm/home) at `x-elbv2` extension. The ssl policy is set to TLS1.3 `ELBSecurityPolicy-TLS13-1-2-2021-06` policy.  For more information, see [Create an HTTPS listener for your Application Load Balancer](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-https-listener.html#describe-ssl-policies).
+- In this case, HTTPS listeners for each ODM service will be added to the load balancer. You need to assign the arn of the [ACM public certificate](https://console.aws.amazon.com/acm/home) at `x-elbv2` custom extension. The ssl policy is set to TLS1.3 `ELBSecurityPolicy-TLS13-1-2-2021-06` policy.  For more information, see [Create an HTTPS listener for your Application Load Balancer](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-https-listener.html#describe-ssl-policies).
 
-```x-elbv2:
+```
+x-elbv2:
   public-alb:
     Lookup:
       loadbalancer:
@@ -232,10 +255,10 @@ volumes:
           - CertificateArn: arn:aws:acm:<aws_deployment_region>:<aws_account_id>:certificate/XXXX-YYYY
         SslPolicy: ELBSecurityPolicy-TLS13-1-2-2021-06
   ```
-- For the parameter `RES_URL` that is defined in `environment` section of `odm-decisionrunner` service, look for the DNS value of your [load balancer](https://console.aws.amazon.com/ec2/home?#LoadBalancers:) and assign it to the parameter as `https://your_loadbalancer_dns/res`. This is required for running Testing and Simulation in Decision Center.
+- For the parameter `RES_URL` that is defined in `environment` section of `odm-decisionrunner` service, look for the DNS value of your [load balancer](https://console.aws.amazon.com/ec2/home?#LoadBalancers:) and assign it to the parameter as `https://your_loadbalancer_dns/res`. This is required for running `Testing and Simulation` in Decision Center.
 
 
-## b. Create the AWS CloudFormation stacks
+### 3.2 Create the AWS CloudFormation stacks
 
 - Run the following command to generate the CFN templates, validate the templates, and create the stacks in CFN.
 
@@ -249,7 +272,8 @@ ecs-compose-x up -n odm-stack -b <generated_s3_bucket> -f docker-compose-http.ya
 
 - Click on the cluster and you shall find the ODM and IBM licensing service containers running in healthy state. For example:
 <br><img src="images/odm-stack-ecs.png" width="80%"/>
-## c. Access ODM services:
+
+### 3.3 Access ODM services:
 
 - Access to [EC2 Loadbalancer](https://console.aws.amazon.com/ec2/home?#LoadBalancers:) console.
 - Click on the load balancer that you have defined in your [docker-compose](docker-compose-http.yaml) file.
@@ -261,7 +285,7 @@ ecs-compose-x up -n odm-stack -b <generated_s3_bucket> -f docker-compose-http.ya
     - `http://<loadbalancer_dns>/DecisionService` or `https://<loadbalancer_dns>/DecisionService`
     - `http://<loadbalancer_dns>/DecisionRunner` or `https://<loadbalancer_dns>/DecisionRunner`
 
-## d. Edit Server configurations in Decision Center
+### 3.4 Edit Server configurations in Decision Center
 
 - Login to Decision Center with `odmAdmin` user.
 - Click on `Administration` tab and then `Servers` tab.
@@ -274,11 +298,11 @@ ecs-compose-x up -n odm-stack -b <generated_s3_bucket> -f docker-compose-http.ya
 
 To remove the base stack and its nested stacks, there are 2 options.
 
-### 1. AWS CloudFormation console:
+### 4.1 AWS CloudFormation console:
 - Access to the [AWS CloudFormation console](https://console.aws.amazon.com/cloudformation/home?).
 - Select the base stack `odm-stack` and click `Delete` button.
 
-### 2. AWS Cli command
+### 4.2 AWS Cli command
 
 ```console
 aws --region <aws_deployment_region> cloudformation delete-stack \
