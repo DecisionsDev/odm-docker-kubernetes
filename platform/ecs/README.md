@@ -266,14 +266,39 @@ x-elbv2:
 ecs-compose-x up -n odm-stack -b <generated_s3_bucket> -f docker-compose-http.yaml -d outputdir
 ```
 
-- Sign in to the [AWS CloudFormation console](https://console.aws.amazon.com/cloudformation/home?) to monitor the stacks (root, CloudMap, IAM, elbv2, service networking, and ODM) creation status. 
+- Sign in to the [AWS CloudFormation console](https://console.aws.amazon.com/cloudformation/home?) to monitor the stacks (root, CloudMap, IAM, elbv2, service networking, and odm services) creation status. 
 <br><img src="images/odm-stack-cfn.png" width="80%"/>
 - If all the stacks complete without error, go to [Elastic Container Service](https://console.aws.amazon.com/ecs/v2/home?) to look for the newly created cluster named `odm-stack`.  
 
-- Click on the cluster and you shall find the ODM and IBM licensing service containers running in healthy state. For example:
+#### 3.3 Configure inbound rule on RES security group:
+
+- Click on the cluster and you will find 4 services with their respective tasks starting up :
 <br><img src="images/odm-stack-ecs.png" width="80%"/>
 
-### 3.3 Access ODM services:
+As Decision Server Console and Decision Server Runtime are deployed as separate services for IBM license tracking and scalability, an addition setup is required to allow Decision Server Runtime to connect to the notification server of Decision Server Console.
+
+- Under the `Services` tab, click on `odm-stack-res-XXX` service
+
+- At the `odm-stack-res-XXX` page, click the `Configuration and networking` tab.
+
+- Under `Network configuration` section, click on the security group `sg-YYYYY`. The security group configuration of the RES service will be displayed.
+
+- Click the `Edit inbound rules` button, and update the rule that defines custom TCP port:1883. 
+  - Change the default security group to the security group of Decision Server Runtime. 
+  - Update the description to `From runtime to res on port 1883`. 
+  - Save the rules.
+<br><img src="images/res-inbound-rules.png" width="80%"/><br>
+*Tips:* Enter `runtime` in the *Source* field to filter the list of existing security groups
+
+After saving the inbound rules, restart the Decision Server Runtime service to be sure that the changes are well taken into account. Follow these steps:
+
+- Go back to `odm-stack`, click on `odm-stack-runtime-YYY` service.
+
+- Click `Update service` button and check the `Force new deployment` checkout on the top of the page.
+
+- Click `Update` button to restart the service. 
+
+### 3.4 Access ODM services:
 
 - Access to [EC2 Loadbalancer](https://console.aws.amazon.com/ec2/home?#LoadBalancers:) console.
 - Click on the load balancer that you have defined in your [docker-compose](docker-compose-http.yaml) file.
