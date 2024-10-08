@@ -57,45 +57,45 @@ x-elbv2:
          - CertificateArn: arn:aws:acm:<aws_deployment_region>:<aws_account_id>:certificate/XXXX-YYYY
         SslPolicy: ELBSecurityPolicy-TLS13-1-2-2021-06
         Targets:
-          - name: odm:odm-decisionserverconsole
+          - name: res:odm-decisionserverconsole
             access: /res
-          - name: odm:odm-decisionserverconsole
+          - name: res:odm-decisionserverconsole
             access: /res/*            
-          - name: odm:odm-decisioncenter
+          - name: rts:odm-decisioncenter
             access: /decisioncenter
-          - name: odm:odm-decisioncenter
+          - name: rts:odm-decisioncenter
             access: /decisioncenter/*
-          - name: odm:odm-decisioncenter
+          - name: rts:odm-decisioncenter
             access: /decisioncenter-api/*
-          - name: odm:odm-decisionrunner
+          - name: test:odm-decisionrunner
             access: /DecisionRunner
-          - name: odm:odm-decisionrunner
+          - name: test:odm-decisionrunner
             access: /DecisionRunner/*
-          - name: odm:odm-decisionserverruntime
+          - name: runtime:odm-decisionserverruntime
             access: /DecisionService
-          - name: odm:odm-decisionserverruntime
+          - name: runtime:odm-decisionserverruntime
             access: /DecisionService/*
     Services:
-      odm:odm-decisionserverconsole:
+      res:odm-decisionserverconsole:
         port: 9853
         protocol: HTTPS
         healthcheck: 9853:HTTPS:/res/login.jsf:200
-      odm:odm-decisioncenter:
+      rts:odm-decisioncenter:
         port: 9653
         protocol: HTTPS
         healthcheck: 9653:HTTPS:/decisioncenter/healthCheck:200
-      odm:odm-decisionrunner:
+      test:odm-decisionrunner:
         port: 9753
         protocol: HTTPS
         healthcheck: 9753:HTTPS:/DecisionRunner:302
-      odm:odm-decisionserverruntime:
+      runtime:odm-decisionserverruntime:
         port: 9953
         protocol: HTTPS
         healthcheck: 9953:HTTPS:/DecisionService:302
 
 services:
   odm-decisionserverconsole:
-    image: cp.icr.io/cp/cp4a/odm/odm-decisionserverconsole:8.12.0.1-amd64
+    image: cp.icr.io/cp/cp4a/odm/odm-decisionserverconsole:9.0.0.0-amd64
     x-aws-pull_credentials:  "arn:aws:secretsmanager:<aws_deployment_region>:<aws_account_id>:secret:IBMCPSecret-XXXXXX"
     # Optional: Set to true, to enable execute command and access the container
     x-ecs:
@@ -108,7 +108,7 @@ services:
           service_ports:
             tcp_1883:
               DnsName: odm-decisionserverconsole
-              CloudMapServiceName: odm-decisionserverconsole-service
+              CloudMapServiceName: odm-decisionserverconsole
           x-cloudmap: PrivateNamespace
     restart: always
     networks:
@@ -128,7 +128,7 @@ services:
     labels:
       - productName=IBM Operational Decision Manager
       - productID=e32af5770e06427faae142993c691048
-      - productVersion=8.12.0.1
+      - productVersion=9.0.0.0
       - productMetric=FREE
       - productChargedContainers=decisionserverconsole
     logging:
@@ -144,9 +144,7 @@ services:
           cpus: '0.5'
           memory: 512M
       labels:
-        ecs.task.family: odm
-    expose:
-      - 1883/tcp    
+        ecs.task.family: res
     healthcheck:
       test: ["CMD", "curl", "-k", "-f", "https://localhost:9853/res/login.jsf"]
       interval: 30s
@@ -154,8 +152,60 @@ services:
       retries: 5
       start_period: 50s
 
+  odm-decisionserverruntime:
+    image: cp.icr.io/cp/cp4a/odm/odm-decisionserverruntime:9.0.0.0-amd64
+    x-aws-pull_credentials: "arn:aws:secretsmanager:<aws_deployment_region>:<aws_account_id>:secret:IBMCPSecret-XXXXXX"
+    x-ecs:
+      EnableExecuteCommand: true
+    x-network:
+      AssignPublicIp: true
+      x-ecs_connect:
+        MacroParameters:
+          x-cloudmap: PrivateNamespace
+    restart: always
+    networks:
+      - application
+    environment:
+      - DECISIONSERVERCONSOLE_NAME=odm-decisionserverconsole
+      - HTTPS_PORT=9953
+      - DB_TYPE=postgres
+      - DB_USER=<db_user>
+      - DB_PASSWORD=<db_pwd>
+      - DB_NAME=odmdb
+      # Amazon RDS instance created for ODM. An example of the endpoint: odm-rds.XXXXXXX.eu-central-1.rds.amazonaws.com
+      - DB_SERVER_NAME=<amazon_rds_endpoint>
+    labels:
+      - productName=IBM Operational Decision Manager
+      - productID=b1a07d4dc0364452aa6206bb6584061d
+      - productVersion=9.0.0.0
+      - productMetric=PROCESSOR_VALUE_UNIT
+      - productChargedContainers=decisionserverruntime
+    logging:
+      driver: "awslogs"
+    x-aws-policies:
+      - arn:aws:iam::<aws_account_id>:policy/<policy_allow_access_S3_bucket>
+    ports:
+      - 9953
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '1'
+          memory: 1G
+      labels:
+        ecs.task.family: runtime
+    healthcheck:
+      test: ["CMD", "curl", "-k", "-f", "https://localhost:9953/DecisionService"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 50s
+
   odm-decisioncenter:
-    image: cp.icr.io/cp/cp4a/odm/odm-decisioncenter:8.12.0.1-amd64
+    image: cp.icr.io/cp/cp4a/odm/odm-decisioncenter:9.0.0.0-amd64
     x-aws-pull_credentials: "arn:aws:secretsmanager:<aws_deployment_region>:<aws_account_id>:secret:IBMCPSecret-XXXXXX"
     volumes:
       - app:/config/security/trusted-cert-volume
@@ -184,7 +234,7 @@ services:
     labels:
       - productName=IBM Operational Decision Manager
       - productID=b1a07d4dc0364452aa6206bb6584061d
-      - productVersion=8.12.0.1
+      - productVersion=9.0.0.0
       - productMetric=PROCESSOR_VALUE_UNIT
       - productChargedContainers=decisioncenter
     deploy:
@@ -197,7 +247,7 @@ services:
           cpus: '1'
           memory: 1G
       labels:
-        ecs.task.family: odm
+        ecs.task.family: rts
     healthcheck:
       test: ["CMD", "curl", "-k", "-f", "https://localhost:9653/decisioncenter/healthCheck"]
       interval: 30s
@@ -206,7 +256,7 @@ services:
       start_period: 50s
 
   odm-decisionrunner:
-    image: cp.icr.io/cp/cp4a/odm/odm-decisionrunner:8.12.0.1-amd64
+    image: cp.icr.io/cp/cp4a/odm/odm-decisionrunner:9.0.0.0-amd64
     x-aws-pull_credentials: "arn:aws:secretsmanager:<aws_deployment_region>:<aws_account_id>:secret:IBMCPSecret-XXXXXX"
     x-ecs:
       EnableExecuteCommand: true   
@@ -216,12 +266,9 @@ services:
     labels:
       - productName=IBM Operational Decision Manager - Non Prod
       - productID=e32af5770e06427faae142993c691048
-      - productVersion=8.12.0.1
+      - productVersion=9.0.0.0
       - productMetric=PROCESSOR_VALUE_UNIT
       - productChargedContainers=decisionrunner
-    depends_on:
-      odm-decisionserverconsole:
-        condition: service_healthy
     environment:
        # An example of loadbalancer's DNS: loadbalancer-name-XXXXXXXX.eu-west-3.elb.amazonaws.com
       - RES_URL=http://<your_loadbalancer_dns>/res
@@ -234,7 +281,7 @@ services:
     logging:
       driver: "awslogs"
     x-aws-policies:
-      - "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+      - arn:aws:iam::<aws_account_id>:policy/<policy_allow_access_S3_bucket>
     ports:
       - 9753
     deploy:
@@ -246,7 +293,7 @@ services:
           cpus: '1'
           memory: 1G
       labels:
-        ecs.task.family: odm
+        ecs.task.family: test
     healthcheck:
       test: ["CMD", "curl", "-k", "-f", "https://localhost:9753/DecisionRunner"]
       interval: 30s
@@ -254,55 +301,31 @@ services:
       retries: 5
       start_period: 50s
 
-  odm-decisionserverruntime:
-    image: cp.icr.io/cp/cp4a/odm/odm-decisionserverruntime:8.12.0.1-amd64
-    x-aws-pull_credentials: "arn:aws:secretsmanager:<aws_deployment_region>:<aws_account_id>:secret:IBMCPSecret-XXXXXX"
-    x-network:
-      Ingress:
-        Services:
-          - Name: odm:odm-decisionserverconsole
-    x-ecs:
-      EnableExecuteCommand: true
+  # IBM License Service to track ODM license usage 
+  # For information, see https://www.ibm.com/docs/en/was-liberty/base?topic=container-tracking-liberty-license-use-aws-ecs-fargate
+  ibm-license-usage-logger-for-fargate:
+    image: quay.io/opencloudio/ibm-license-usage-logger-for-fargate:latest
     restart: always
     networks:
       - application
-    environment:
-      - DECISIONSERVERCONSOLE_NAME=odm-decisionserverconsole
-      - HTTPS_PORT=9953
-      - DB_TYPE=postgres
-      - DB_USER=<db_user>
-      - DB_PASSWORD=<db_pwd>
-      - DB_NAME=odmdb
-      # Amazon RDS instance created for ODM. An example of the endpoint: odm-rds.XXXXXXX.eu-central-1.rds.amazonaws.com
-      - DB_SERVER_NAME=<amazon_rds_endpoint>
     labels:
-      - productName=IBM Operational Decision Manager
-      - productID=b1a07d4dc0364452aa6206bb6584061d
-      - productVersion=8.12.0.1
-      - productMetric=PROCESSOR_VALUE_UNIT
-      - productChargedContainers=decisionserverruntime
+      - productID=33687f02f10b4475aa7236f4cd2f94e6
+      - productMetric=FREE
+      - productName="IBM License Usage Logger for Fargate"
+    environment:
+      - AWS_S3_BUCKET_NAME=ibm-license-service-<aws_account_id>
+      - AWS_S3_HTTPS_ENABLED=true
     logging:
-      driver: "awslogs"
+      driver: "awslogs" 
     x-aws-policies:
       - arn:aws:iam::<aws_account_id>:policy/<policy_allow_access_S3_bucket>
-    depends_on:
-      odm-decisionserverconsole:
-        condition: service_healthy
-    ports:
-      - 9953
     deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 1G
-        reservations:
-          cpus: '1'
-          memory: 1G
+      replicas: 1
       labels:
-        ecs.task.family: odm
+        ecs.task.family: res,rts,test,runtime
     healthcheck:
-      test: ["CMD", "curl", "-k", "-f", "https://localhost:9953/DecisionService"]
+      test: ["CMD-SHELL", "./check-health.sh || exit 1"]
       interval: 30s
-      timeout: 5s
+      timeout: 10s
       retries: 5
-      start_period: 50s
+      start_period: 300s

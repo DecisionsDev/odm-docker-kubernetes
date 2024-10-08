@@ -101,18 +101,18 @@ aws secretsmanager create-secret \
 For example:
 ```
   odm-decisioncenter:
-    image: cp.icr.io/cp/cp4a/odm/odm-decisioncenter:8.12.0.1-amd64
+    image: cp.icr.io/cp/cp4a/odm/odm-decisioncenter:9.0.0.0-amd64
     x-aws-pull_credentials: "arn:aws:secretsmanager:<aws_deployment_region>:<aws_account_id>:secret:IBMCPSecret-YYYYY"
     ...
   odm-decisionserverruntime:
-    image: cp.icr.io/cp/cp4a/odm/odm-decisionserverruntime:8.12.0.1-amd64
+    image: cp.icr.io/cp/cp4a/odm/odm-decisionserverruntime:9.0.0.0-amd64
     x-aws-pull_credentials: "arn:aws:secretsmanager:<aws_deployment_region>:<aws_account_id>:secret:IBMCPSecret-YYYYY"
     ...
 ```
 
 ### 2.3.4 Create S3 bucket and IAM policy for IBM licensing service
 
-In this tutorial, we have included IBM Licensing service for tracking runtime license usage of ODM that is deployed on AWS ECS Fargate.
+In this tutorial, we have included IBM Licensing service for tracking license usage of ODM that is deployed on AWS ECS Fargate.
 
 The following steps are needed by IBM Licensing service:
 
@@ -192,7 +192,6 @@ volumes:
       Lookup:
         Tags: 
           Name: odm-filesystem
-      RoleArn: arn:aws:iam::aws:policy/service-role/AmazonEFSCSIDriverPolicy
 ...
   odm-decisioncenter:
     image: cp.icr.io/cp/cp4a/odm/odm-decisioncenter:8.12.0.1-amd64
@@ -277,7 +276,7 @@ ecs-compose-x up -n odm-stack -b <generated_s3_bucket> -f docker-compose-http.ya
 
 As Decision Server Console and Decision Server Runtime are deployed as separate services for IBM license tracking and scalability, an addition setup is required to allow Decision Server Runtime to connect to the notification server of Decision Server Console.
 
-- Under the `Services` tab, click on `odm-stack-res-XXX` service
+- Under the `Services` tab, click on `odm-stack-res-XXX` service.
 
 - At the `odm-stack-res-XXX` page, click the `Configuration and networking` tab.
 
