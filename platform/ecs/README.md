@@ -270,7 +270,7 @@ ecs-compose-x up -n odm-stack -b <generated_s3_bucket> -f docker-compose-http.ya
 <br><img src="images/odm-stack-cfn.png" width="80%"/>
 - If all the stacks complete without error, go to [Elastic Container Service](https://console.aws.amazon.com/ecs/v2/home?) to look for the newly created cluster named `odm-stack`.  
 
-#### 3.3 Configure inbound rule on RES security group:
+### 3.3 Configure inbound rule on RES security group:
 
 - Click on the cluster and you will find 4 services with their respective tasks starting up :
 <br><img src="images/odm-stack-ecs.png" width="80%"/>
@@ -290,13 +290,29 @@ As Decision Server Console and Decision Server Runtime are deployed as separate 
 <br><img src="images/res-inbound-rules.png" width="80%"/><br>
 *Tips:* Enter `runtime` in the *Source* field to filter the list of existing security groups
 
-After saving the inbound rules, restart the Decision Server Runtime service to be sure that the changes are well taken into account. Follow these steps:
+After saving the inbound rules, wait for all the services to be `Active` and that their respective tasks are in running state. Check the logs of the `odm-decisionserverruntime` containers. If the following exception persists, restart the Decision Server Runtime `odm-stack-runtime-YYY` service to be sure that the changes to the security rules are well taken into account.
+
+```
+com.ibm.rules.res.notificationserver.internal.ClientConnectionHandler$1 operationComplete GBRXX0102W: Rule Execution Server console : Client 66325de3-3537-4f56-8cc4-ede3460d6427 was unable to perform handshake with the notification server. It will disconnect and then try to reconnect. For details, see the exception trace....
+```
+
+Follow these steps to restart:
 
 - Go back to `odm-stack`, click on `odm-stack-runtime-YYY` service.
 
-- Click `Update service` button and check the `Force new deployment` checkout on the top of the page.
+- Click the `Update service` button and check the `Force new deployment` checkbox on the top of the page.
 
-- Click `Update` button to restart the service. 
+- Click the `Update` button to restart the service. You should see that the service is updated and a new deployment with `In progress` state as such:
+<br><img src="images/restart-runtime.png" width="80%"/>
+
+- When the deployment is complete, verify in the runtime log that the client is connected to the notification server:
+
+```
+[10/7/24, 17:17:49:451 CEST] 00000040 mbean I com.ibm.rules.res.notificationserver.internal.DefaultNotificationServerClient$1 serviceActivated GBRXX0119I: Rule Execution Server console : Client d6bcf2c5-26e3-4373-9e3f-3e33baf36b52 is connected to server odm-decisionserverconsole:1883.
+...
+
+[10/7/24, 17:17:50:592 CEST] 00000042 mbean I com.ibm.rules.res.notificationserver.internal.ClientConnectionHandler$1 operationComplete GBRXX0103I: Rule Execution Server console : Client d6bcf2c5-26e3-4373-9e3f-3e33baf36b52 performed handshake with the notification server.
+```
 
 ### 3.4 Access ODM services:
 
@@ -310,7 +326,7 @@ After saving the inbound rules, restart the Decision Server Runtime service to b
     - `http://<loadbalancer_dns>/DecisionService` or `https://<loadbalancer_dns>/DecisionService`
     - `http://<loadbalancer_dns>/DecisionRunner` or `https://<loadbalancer_dns>/DecisionRunner`
 
-### 3.4 Edit Server configurations in Decision Center
+### 3.5 Edit Server configurations in Decision Center
 
 - Login to Decision Center with `odmAdmin` user.
 - Click on `Administration` tab and then `Servers` tab.
