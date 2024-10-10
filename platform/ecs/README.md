@@ -13,7 +13,7 @@ To deploy ODM containers on AWS ECS Fargate from [docker-compose](docker-compose
    * Install python3.6+ and later version.
    * Ensure you have an [AWS Account](https://aws.amazon.com/getting-started/). 
    * Install [ECS Compose-x](https://github.com/compose-x/ecs_composex?tab=readme-ov-file#installation), preferably in a virtual environment.
-   * Ensure that you have an existing internet-facing Elastic Load balancer and a VPC with public subnets [setup](https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-manage-subnets.html) on Amazon Web Services(AWS).
+   * Ensure that you have an existing internet-facing Application Elastic Load balancer and a VPC with public subnets [setup](https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-manage-subnets.html) on Amazon Web Services(AWS).
    * If you want to run ODM Decision services in HTTPS mode, you need to have an [ACM public certificate](https://console.aws.amazon.com/acm/home). 
 
 *Note*: The commands and tools have been tested on macOS.
@@ -194,7 +194,7 @@ volumes:
           Name: odm-filesystem
 ...
   odm-decisioncenter:
-    image: cp.icr.io/cp/cp4a/odm/odm-decisioncenter:8.12.0.1-amd64
+    image: cp.icr.io/cp/cp4a/odm/odm-decisioncenter:9.0.0.0-amd64
     x-aws-pull_credentials: "arn:aws:secretsmanager:<aws_deployment_region>:<aws_account_id>:secret:IBMCPSecret-XXXXXX"
     volumes:
       - app:/config/security/trusted-cert-volume
@@ -222,6 +222,8 @@ volumes:
 
 ## 3. Deploy ODM to AWS ECS Fargate
 
+ODM can be deployed either in [HTTP](docker-compose-http.yaml) or [HTTPS](docker-compose-https.yaml) mode. Each of the ODM components are configured to be deployed as separate ECS task due to IBM licensing service which logs CPU usage per ECS task. The IBM Licensing service will be deployed to each ECS task for tracking purpose. Inspect the docker-compose file for more explanation.
+
 ### 3.1 Edit docker-compose file
 
 #### 3.1.1 HTTP mode
@@ -234,7 +236,7 @@ volumes:
 
 - Download the [docker-compose-https.yaml](docker-compose-https.yaml) and save this file in your working dir.
 - Edit the file and assign the appropriate values in the all `<PLACEHOLDER>`.
-- In this case, HTTPS listeners for each ODM service will be added to the load balancer. You need to assign the arn of the [ACM public certificate](https://console.aws.amazon.com/acm/home) at `x-elbv2` custom extension. The ssl policy is set to TLS1.3 `ELBSecurityPolicy-TLS13-1-2-2021-06` policy.  For more information, see [Create an HTTPS listener for your Application Load Balancer](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-https-listener.html#describe-ssl-policies).
+- In this mode, HTTPS listeners for each ODM service will be added to the load balancer. You need to assign the arn of the [ACM public certificate](https://console.aws.amazon.com/acm/home) at `x-elbv2` custom extension. The ssl policy is set to TLS1.3 `ELBSecurityPolicy-TLS13-1-2-2021-06` policy.  For more information, see [Create an HTTPS listener for your Application Load Balancer](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-https-listener.html#describe-ssl-policies).
 
 ```
 x-elbv2:

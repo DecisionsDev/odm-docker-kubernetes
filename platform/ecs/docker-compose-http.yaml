@@ -24,7 +24,7 @@ x-vpc:
     PrivateSubnets: {}
     StorageSubnets: {}
 
-# To lookup an exising internet-facing Loadbalancer and setup Listener rules on it 
+# To lookup an exising internet-facing Application Load balancer and setup Listener rules on it 
 x-elbv2:
   public-alb:
     Lookup:
@@ -73,6 +73,9 @@ x-elbv2:
         port: 9060
         protocol: HTTP
         healthcheck: 9060:HTTP:/decisioncenter/healthCheck:200
+        # Enable session stickiness
+        TargetGroupAttributes:
+          stickiness.enabled: "true"
       test:odm-decisionrunner:
         port: 9081
         protocol: HTTP
@@ -81,7 +84,10 @@ x-elbv2:
         port: 9082
         protocol: HTTP
         healthcheck: 9082:HTTP:/DecisionService:302
-        
+         # Set Least outstanding requests (LOR) algorithm
+        TargetGroupAttributes:
+          load_balancing.algorithm.type: least_outstanding_requests
+
 services:
   odm-decisionserverconsole:
     image: cp.icr.io/cp/cp4a/odm/odm-decisionserverconsole:9.0.0.0-amd64
@@ -176,6 +182,7 @@ services:
     ports:
       - 9082
     deploy:
+      replicas: 1
       resources:
         limits:
           cpus: '1'
@@ -272,6 +279,7 @@ services:
     ports:
       - 9081
     deploy:
+      replicas: 1
       resources:
         limits:
           cpus: '1'

@@ -7,7 +7,6 @@ volumes:
       Lookup:
         Tags: 
           Name: odm-filesystem
-      RoleArn: arn:aws:iam::aws:policy/service-role/AmazonEFSCSIDriverPolicy
 
 # To create a namespace in CloudMap required by Service Connect
 x-cloudmap:
@@ -32,7 +31,7 @@ x-vpc:
     PrivateSubnets: {}
     StorageSubnets: {}
 
-# To lookup an exising internet-facing Loadbalancer and setup Listener rules on it 
+# To lookup an exising internet-facing Application Load balancer and setup Listener rules on it 
 x-elbv2:
   public-alb:
     Lookup:
@@ -84,6 +83,9 @@ x-elbv2:
         port: 9653
         protocol: HTTPS
         healthcheck: 9653:HTTPS:/decisioncenter/healthCheck:200
+        # Enable session stickiness
+        TargetGroupAttributes:
+          stickiness.enabled: "true"
       test:odm-decisionrunner:
         port: 9753
         protocol: HTTPS
@@ -92,6 +94,9 @@ x-elbv2:
         port: 9953
         protocol: HTTPS
         healthcheck: 9953:HTTPS:/DecisionService:302
+        # Set Least outstanding requests (LOR) algorithm
+        TargetGroupAttributes:
+          load_balancing.algorithm.type: least_outstanding_requests
 
 services:
   odm-decisionserverconsole:
@@ -187,7 +192,7 @@ services:
     ports:
       - 9953
     deploy:
-      replicas: 2
+      replicas: 1
       resources:
         limits:
           cpus: '1'
@@ -285,6 +290,7 @@ services:
     ports:
       - 9753
     deploy:
+      replicas: 1
       resources:
         limits:
           cpus: '1'
