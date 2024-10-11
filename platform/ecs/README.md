@@ -2,9 +2,39 @@
 
 This tutorial demonstrates how to deploy an IBM® Operational Decision Manager (ODM) topology on Amazon ECS Fargate with the help of ECS Compose-x tool. 
 
-<br><img src="images/ODM-ECS.png"/>
+<br><img src="images/ODM-ECS.png"/> <br>
+**Table of Contents**
+<!-- TOC -->
 
-## 1. Pre-requisite 
+- [Deploying IBM Operational Decision Manager on Amazon ECS Fargate BETA](#deploying-ibm-operational-decision-manager-on-amazon-ecs-fargate-beta)
+    - [Pre-requisite](#pre-requisite)
+    - [Prepare your environment for the ODM installation](#prepare-your-environment-for-the-odm-installation)
+        - [Login to AWS](#login-to-aws)
+        - [Create RDS Database](#create-rds-database)
+        - [Create a secret for the Entitled registry access](#create-a-secret-for-the-entitled-registry-access)
+            - [Retrieve your entitled registry key](#retrieve-your-entitled-registry-key)
+            - [Create a JSON file](#create-a-json-file)
+            - [Create the secret in ASW Secrets Manager:](#create-the-secret-in-asw-secrets-manager)
+        - [Create S3 bucket and IAM policy for IBM licensing service](#create-s3-bucket-and-iam-policy-for-ibm-licensing-service)
+        - [Add Outbound rule to Load balancer's security group](#add-outbound-rule-to-load-balancers-security-group)
+        - [Initialize ECS Compose-X](#initialize-ecs-compose-x)
+        - [Store Amazon Root CA For HTTPS mode only](#store-amazon-root-ca-for-https-mode-only)
+    - [Deploy ODM to AWS ECS Fargate](#deploy-odm-to-aws-ecs-fargate)
+        - [Edit docker-compose file](#edit-docker-compose-file)
+            - [HTTP mode](#http-mode)
+            - [HTTPS mode](#https-mode)
+        - [Create the AWS CloudFormation stacks](#create-the-aws-cloudformation-stacks)
+        - [Configure inbound rule on RES security group:](#configure-inbound-rule-on-res-security-group)
+        - [Access ODM services:](#access-odm-services)
+        - [Edit Server configurations in Decision Center](#edit-server-configurations-in-decision-center)
+    - [Cleaup AWS CloudFormation stack](#cleaup-aws-cloudformation-stack)
+        - [AWS CloudFormation console:](#aws-cloudformation-console)
+        - [AWS Cli command](#aws-cli-command)
+
+<!-- /TOC -->
+
+
+## 1. Pre-requisite
 
 To deploy ODM containers on AWS ECS Fargate from [docker-compose](docker-compose-http.yaml) file, you must meet the following requirements:
 
@@ -222,7 +252,7 @@ volumes:
 
 ## 3. Deploy ODM to AWS ECS Fargate
 
-ODM can be deployed either in [HTTP](docker-compose-http.yaml) or [HTTPS](docker-compose-https.yaml) mode. Each of the ODM components are configured to be deployed as separate ECS task due to IBM licensing service which logs CPU usage per ECS task. The IBM Licensing service will be deployed to each ECS task for tracking purpose. Inspect the docker-compose file for more explanation.
+ODM can be deployed either in [HTTP](docker-compose-http.yaml) or [HTTPS](docker-compose-https.yaml) mode. Each of the ODM components are configured to be deployed as separate ECS task due to IBM licensing service which logs CPU usage per ECS task. The IBM Licensing service will be deployed to each ECS task for tracking purpose. Inspect the docker-compose file for more details.
 
 ### 3.1 Edit docker-compose file
 
