@@ -106,7 +106,7 @@ It will be used in the next step of this tutorial.
 }
 ```
 
-#### 2.3.3 Create the secret in ASW Secrets Manager:
+#### 2.3.3 Create the secret in ASW Secrets Manager
 
 You can proceed to create an AWS Secret containing the `token.json` file. The secret with the pull credential will be assigned in the docker-compose file.
 
@@ -301,7 +301,7 @@ ecs-compose-x up -n odm-stack -b <generated_s3_bucket> -f docker-compose-http.ya
 <br><img src="images/odm-stack-cfn.png" width="80%"/>
 - If all the stacks complete without error, go to [Elastic Container Service](https://console.aws.amazon.com/ecs/v2/home?) to look for the newly created cluster named `odm-stack`.  
 
-### 3.3 Configure inbound rule on RES security group:
+### 3.3 Configure inbound rule on RES security group
 
 - Click on the cluster and you will find 4 services with their respective tasks starting up :
 <br><img src="images/odm-stack-ecs.png" width="80%"/>
@@ -345,7 +345,7 @@ Follow these steps to restart:
 [10/7/24, 17:17:50:592 CEST] 00000042 mbean I com.ibm.rules.res.notificationserver.internal.ClientConnectionHandler$1 operationComplete GBRXX0103I: Rule Execution Server console : Client d6bcf2c5-26e3-4373-9e3f-3e33baf36b52 performed handshake with the notification server.
 ```
 
-### 3.4 Access ODM services:
+### 3.4 Access ODM services
 
 - Access to [EC2 Loadbalancer](https://console.aws.amazon.com/ec2/home?#LoadBalancers:) console.
 - Click on the load balancer that you have defined in your [docker-compose](docker-compose-http.yaml) file.
@@ -370,7 +370,7 @@ Follow these steps to restart:
 
 To remove the base stack and its nested stacks, there are 2 options.
 
-### 4.1 AWS CloudFormation console:
+### 4.1 AWS CloudFormation console
 - Access to the [AWS CloudFormation console](https://console.aws.amazon.com/cloudformation/home?).
 - Select the base stack `odm-stack` and click `Delete` button.
 
