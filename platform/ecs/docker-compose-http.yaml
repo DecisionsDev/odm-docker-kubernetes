@@ -24,7 +24,7 @@ x-vpc:
     PrivateSubnets: {}
     StorageSubnets: {}
 
-# To lookup an exising internet-facing Application Load balancer and setup Listener rules on it 
+# To lookup an existing internet-facing Application Load balancer and setup Listener rules on it 
 x-elbv2:
   public-alb:
     Lookup:
@@ -63,7 +63,7 @@ x-elbv2:
             access: /DecisionService
           - name: runtime:odm-decisionserverruntime
             access: /DecisionService/*
-    # Target services
+    # Target groups
     Services:
       res:odm-decisionserverconsole:
         port: 9080
@@ -152,6 +152,7 @@ services:
     x-aws-pull_credentials: "arn:aws:secretsmanager:<aws_deployment_region>:<aws_account_id>:secret:IBMCPSecret-XXXXXX"
     x-ecs:
       EnableExecuteCommand: true
+     # To enable Service Connect with "Client side only" option    
     x-network:
       AssignPublicIp: true
       x-ecs_connect:
