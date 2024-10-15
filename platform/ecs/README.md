@@ -7,7 +7,7 @@ This tutorial demonstrates how to deploy an IBM® Operational Decision Manager (
 <!-- TOC -->
 
 - [Deploying IBM Operational Decision Manager on Amazon ECS Fargate BETA](#deploying-ibm-operational-decision-manager-on-amazon-ecs-fargate-beta)
-    - [Pre-requisite](#pre-requisite)
+    - [Pre-requisite](#1-pre-requisite)
     - [Prepare your environment for the ODM installation](#2-prepare-your-environment-for-the-odm-installation)
         - [Login to AWS](#21-login-to-aws)
         - [Create RDS Database](#22-create-rds-database)
