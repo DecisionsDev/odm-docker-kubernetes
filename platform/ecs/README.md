@@ -8,28 +8,28 @@ This tutorial demonstrates how to deploy an IBM® Operational Decision Manager (
 
 - [Deploying IBM Operational Decision Manager on Amazon ECS Fargate BETA](#deploying-ibm-operational-decision-manager-on-amazon-ecs-fargate-beta)
     - [Pre-requisite](#pre-requisite)
-    - [Prepare your environment for the ODM installation](#prepare-your-environment-for-the-odm-installation)
-        - [Login to AWS](#login-to-aws)
-        - [Create RDS Database](#create-rds-database)
-        - [Create a secret for the Entitled registry access](#create-a-secret-for-the-entitled-registry-access)
-            - [Retrieve your entitled registry key](#retrieve-your-entitled-registry-key)
-            - [Create a JSON file](#create-a-json-file)
-            - [Create the secret in ASW Secrets Manager:](#create-the-secret-in-asw-secrets-manager)
-        - [Create S3 bucket and IAM policy for IBM licensing service](#create-s3-bucket-and-iam-policy-for-ibm-licensing-service)
-        - [Add Outbound rule to Load balancer's security group](#add-outbound-rule-to-load-balancers-security-group)
-        - [Initialize ECS Compose-X](#initialize-ecs-compose-x)
-        - [Store Amazon Root CA For HTTPS mode only](#store-amazon-root-ca-for-https-mode-only)
-    - [Deploy ODM to AWS ECS Fargate](#deploy-odm-to-aws-ecs-fargate)
-        - [Edit docker-compose file](#edit-docker-compose-file)
-            - [HTTP mode](#http-mode)
-            - [HTTPS mode](#https-mode)
-        - [Create the AWS CloudFormation stacks](#create-the-aws-cloudformation-stacks)
-        - [Configure inbound rule on RES security group:](#configure-inbound-rule-on-res-security-group)
-        - [Access ODM services:](#access-odm-services)
-        - [Edit Server configurations in Decision Center](#edit-server-configurations-in-decision-center)
-    - [Cleaup AWS CloudFormation stack](#cleaup-aws-cloudformation-stack)
-        - [AWS CloudFormation console:](#aws-cloudformation-console)
-        - [AWS Cli command](#aws-cli-command)
+    - [Prepare your environment for the ODM installation](#2-prepare-your-environment-for-the-odm-installation)
+        - [Login to AWS](#21-login-to-aws)
+        - [Create RDS Database](#22-create-rds-database)
+        - [Create a secret for the Entitled registry access](#23-create-a-secret-for-the-entitled-registry-access)
+            - [Retrieve your entitled registry key](#231-retrieve-your-entitled-registry-key)
+            - [Create a JSON file](#232-create-a-json-file)
+            - [Create the secret in ASW Secrets Manager:](#233-create-the-secret-in-asw-secrets-manager)
+        - [Create S3 bucket and IAM policy for IBM licensing service](#24-create-s3-bucket-and-iam-policy-for-ibm-licensing-service)
+        - [Add Outbound rule to Load balancer's security group](#25-add-outbound-rule-to-load-balancers-security-group)
+        - [Initialize ECS Compose-X](#26-initialize-ecs-compose-x)
+        - [Store Amazon Root CA For HTTPS mode only](#27-store-amazon-root-ca-for-https-mode-only)
+    - [Deploy ODM to AWS ECS Fargate](#3-deploy-odm-to-aws-ecs-fargate)
+        - [Edit docker-compose file](#31-edit-docker-compose-file)
+            - [HTTP mode](#311-http-mode)
+            - [HTTPS mode](#312-https-mode)
+        - [Create the AWS CloudFormation stacks](#32-create-the-aws-cloudformation-stacks)
+        - [Configure inbound rule on RES security group:](#33-configure-inbound-rule-on-res-security-group)
+        - [Access ODM services:](#34-access-odm-services)
+        - [Edit Server configurations in Decision Center](#35-edit-server-configurations-in-decision-center)
+    - [Cleaup AWS CloudFormation stack](#4-cleaup-aws-cloudformation-stack)
+        - [AWS CloudFormation console:](#41-aws-cloudformation-console)
+        - [AWS Cli command](#42-aws-cli-command)
 
 <!-- /TOC -->
 
@@ -140,7 +140,7 @@ For example:
     ...
 ```
 
-### 2.3.4 Create S3 bucket and IAM policy for IBM licensing service
+### 2.4 Create S3 bucket and IAM policy for IBM licensing service
 
 In this tutorial, we have included IBM Licensing service for tracking license usage of ODM that is deployed on AWS ECS Fargate.
 
@@ -175,7 +175,7 @@ The following steps are needed by IBM Licensing service:
 
 For more information, see [Tracking license usage on AWS ECS Fargate](https://www.ibm.com/docs/en/cloud-paks/foundational-services/3.23?topic=platforms-tracking-license-usage-aws-ecs-fargate).
 
-### 2.3.5 Add Outbound rule to Load balancer's security group
+### 2.5 Add Outbound rule to Load balancer's security group
 
 Verify that the outbound configuration of the security group of your existing loadbalancer is having "Allow all outbound traffic". However, if you have restricted outbound security group settings, then you must add an addition outbound rule to allow "Custom TCP" port range of `9060 - 9082` . These ports are for ODM Decision services in HTTP mode. For HTTPS mode, the port range should be `9653 - 9953`.
 
@@ -185,7 +185,7 @@ Verify that the outbound configuration of the security group of your existing lo
 - Click `Outbound rules` tab, `Edit outbound rules` button and add the outbound rule as shown below:
 <br><img src="images/security-group-outbound.png" width="80%"/>
 
-### 2.3.6 Initialize ECS Compose-X
+### 2.6 Initialize ECS Compose-X
 
 You will need to setup some permissions to validate the AWS CloudFormation (CFN) templates, Lookup AWS resources and etc when using ECS Compose-X commands. For more information about the configuration, see [AWS Account configuration](https://github.com/compose-x/ecs_composex/blob/main/docs/requisites.rst#aws-account-configuration) and [Permissions to upload files to S3](https://github.com/compose-x/ecs_composex/blob/main/docs/requisites.rst#permissions-to-upload-files-to-s3). If your AWS account has administrator permissions, then it is not required to do so.
 
@@ -206,7 +206,7 @@ Result:
 
 *NOTE*: A S3 bucket will automatically be created. It is used to store the generated CFN templates when running `ecs-compose-x` commands.
 
-### 2.3.7 Store Amazon Root CA (For HTTPS mode only)
+### 2.7 Store Amazon Root CA (For HTTPS mode only)
 
 If you want to run ODM Decision services in HTTPS mode, it is required to provide the Amazon Root CA to ODM Decision Center for authentication purposes during ruleApp deployments and also running `Test and Simulation`.
 
