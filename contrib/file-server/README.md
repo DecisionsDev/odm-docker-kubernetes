@@ -86,3 +86,10 @@ If, for security reason, it's not allowed to expose the service, you can directl
 ```bash
 kubectl cp <sample-file> <namespace>/<file-server-pod-name>:/opt/bitnami/apache/htdocs/<sample-file> -n <namespace>
 ```
+
+You can check the download URL from a container inside the same cluster :
+
+```bash
+curl http://fileserver-apache.<namespace>.svc.cluster.local:80/<sample-file> -o <sample-file>
+```
+
