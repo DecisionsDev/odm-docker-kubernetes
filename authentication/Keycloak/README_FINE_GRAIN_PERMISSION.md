@@ -4,7 +4,7 @@
 <!-- TOC depthfrom:1 depthto:6 withlinks:false updateonsave:false orderedlist:false -->
 - [Introduction](#introduction)
 - [Deploy on OpenShift a custom Keycloak service with a SCIM Server](#deploy-on-openShift-a-custom-keycloak-service-with-a-scim-server)
-  - [Build the Keycloak docker image embbeding the open source SCIM plug-in](#build-the-keycloak-docker-image-embbeding-the-open-source-scim-plug-in)
+  - [Build the Keycloak docker image embedding the open source SCIM plug-in](#build-the-keycloak-docker-image-embedding-the-open-source-scim-plug-in)
   - [Push the image on the OpenShift Cluster](#push-the-image-on-the-openShift-cluster)
   - [Deploy Keycloak Service using the keycloak-scim image](#deploy-keycloak-service-using-the-keycloak-scim-image)
 - [Configure an ODM Application with Keycloak dashboard](#configure-an-odm-application-with-keycloak-dashboard)
@@ -21,7 +21,7 @@
   - [Import Groups and Users](#import-groups-and-users)
   - [Set the project security](#set-the-project-security)
   - [Check the project security](#check-the-project-security)
-- [Synchonize Decision Center when updating Keycloak](#synchonize-decision-center-when-updating-keycloak)
+- [Synchronize Decision Center when updating Keycloak](#synchronize-decision-center-when-updating-keycloak)
 
 <!-- /TOC -->
 
@@ -36,7 +36,7 @@ As the project [https://scim-for-keycloak.de/](https://scim-for-keycloak.de) wil
 
 # Deploy on OpenShift a custom Keycloak service with a SCIM Server
 
-## Build the Keycloak docker image embbeding the open source SCIM plug-in
+## Build the Keycloak docker image embedding the open source SCIM plug-in
 
 - Get the [SCIM for Keycloak scim-for-keycloak-kc-20-b1.jar file](https://github.com/Captain-P-Goldfish/scim-for-keycloak/releases/download/kc-20-b1/scim-for-keycloak-kc-20-b1.jar)
 - Get the [Dockerfile](Dockerfile)
@@ -240,7 +240,7 @@ Where:
   - Select the "Realm settings" Menu
   - Select the "Themes" Tab
   - Select "scim" for the "Admin console theme"
-  - Click the "Save" button => the "Realm sucessfully updated" message is displayed
+  - Click the "Save" button => the "Realm successfully updated" message is displayed
   - Refresh the browser page => a "Page not found..." message is displayed
   - Click on the "Go to the home page >>" hyperlink
 
