@@ -64,9 +64,11 @@ helm install fileserver bitnami/apache -f httpd-values.yaml
 [Optional] Expose the service
 
 The service exposition is optional. It's only needed if you want to manage an upload on the file server using an external URL.
+On several platform like AWS EKS, a cluster external access is provided.
+For OCP, if you want to create a route providing a public URL, you have to do :
 
 ```bash
-kubectl expose svc fileserver-apache
+oc expose svc fileserver-apache
 ```
 
 If you are on OCP, you can get the fileserver route URL to upload the sample jar or zip file :
