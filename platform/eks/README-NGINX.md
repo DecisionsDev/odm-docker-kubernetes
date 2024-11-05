@@ -24,11 +24,11 @@ The `my-odm-nginx` service should have an available `External-IP` when you run t
 kubectl get service my-odm-nginx-ingress-nginx-controller
 ```
 
-You can then go back to the [main documentation](README.md#2-create-an-rds-database-10-min).
+You can then go back to the [main documentation](README.md#2-create-an-rds-database-10-min) to continue Step 2 to Step 4.
 
 ## Install an ODM release with NGINX Ingress Controller
 
-During the helm install, you just have to replace  [eks-values.yaml](./eks-values.yaml) with [eks-nginx-values.yaml](./eks-nginx-values.yaml) that contains the relevant Ingress class: `nginx` and annotation: `nginx.ingress.kubernetes.io/backend-protocol: https`
+In this tutorial, you will use [eks-nginx-values.yaml](./eks-nginx-values.yaml) or [eks-rds-nginx-values.yaml](./eks-rds-nginx-values.yaml) file that contains the relevant Ingress class: `nginx` and annotation: `nginx.ingress.kubernetes.io/backend-protocol: https` for the installation.
 
 To install ODM with the AWS RDS PostgreSQL database created in [step 2](README.md#2-create-an-rds-database-10-min):
 
@@ -37,7 +37,7 @@ To install ODM with the AWS RDS PostgreSQL database created in [step 2](README.m
   - `<RDS_DATABASE_NAME>`: the initial database name defined when creating the RDS database
 
 ```bash
-helm install mycompany ibm-helm/ibm-odm-prod --version 23.2.0 -f eks-rds-nginx-values.yaml
+helm install mycompany ibm-helm/ibm-odm-prod --version 24.1.0 -f eks-rds-nginx-values.yaml
 ```
 
 > **Note**
@@ -49,8 +49,9 @@ helm install mycompany ibm-helm/ibm-odm-prod --version 23.2.0 -f eks-rds-nginx-v
 > - Get the [eks-nginx-values.yaml](./eks-nginx-values.yaml) file:
 >
 > ```bash
-> helm install mycompany ibm-helm/ibm-odm-prod --version 23.2.0 -f eks-nginx-values.yaml
+> helm install mycompany ibm-helm/ibm-odm-prod --version 24.1.0 -f eks-nginx-values.yaml
 > ```
+
 
 ## Track ODM usage with the IBM License Service with NGINX Ingress Controller
 

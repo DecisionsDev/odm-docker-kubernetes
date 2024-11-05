@@ -212,7 +212,7 @@ To install ODM with the AWS RDS PostgreSQL database created in [step 2](#2-creat
   - `<RDS_DATABASE_NAME>` is the initial database name defined when creating the RDS database
 
 ```bash
-helm install mycompany ibm-helm/ibm-odm-prod --version 23.2.0 -f eks-rds-values.yaml
+helm install mycompany ibm-helm/ibm-odm-prod --version 24.1.0 -f eks-rds-values.yaml
 ```
 
 > **Note**
@@ -222,7 +222,7 @@ helm install mycompany ibm-helm/ibm-odm-prod --version 23.2.0 -f eks-rds-values.
 >   - `<AWS-AccountId>` is your AWS Account Id
 >
 >```bash
->helm install mycompany ibm-helm/ibm-odm-prod --version 23.2.0 -f eks-values.yaml
+>helm install mycompany ibm-helm/ibm-odm-prod --version 24.1.0 -f eks-values.yaml
 >```
 
 > **Note**
