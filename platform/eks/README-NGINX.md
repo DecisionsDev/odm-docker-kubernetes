@@ -6,6 +6,10 @@ The aim of this complementary documentation is to explain how to replace the **A
 
 You must have created an EKS cluster and set up your environment by following step 1 of [Deploying IBM Operational Decision Manager on Amazon EKS](README.md#1-prepare-your-environment-20-min).
 
+> **Note**:
+> Make sure that AWS Load Balancer Controller is not provisioned in this cluster.
+
+
 ## Provision an NGINX Ingress Controller
 
 You can replace the [Provision an AWS Load Balancer Controller](README.md#d-provision-an-aws-load-balancer-controller) step by provisioning an NGINX Ingress Controller with the following commands.
@@ -13,7 +17,7 @@ You can replace the [Provision an AWS Load Balancer Controller](README.md#d-prov
 ```bash
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 helm repo update
-helm install my-odm-nginx ingress-nginx/ingress-nginx
+helm install my-odm-nginx ingress-nginx/ingress-nginx --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-type"=nlb
 ```
 
 For more information, refer to the [ingress-nginx readme](https://github.com/kubernetes/ingress-nginx/tree/main/charts/ingress-nginx#install-chart).
@@ -24,7 +28,7 @@ The `my-odm-nginx` service should have an available `External-IP` when you run t
 kubectl get service my-odm-nginx-ingress-nginx-controller
 ```
 
-You can then go back to the [main documentation](README.md#2-create-an-rds-database-10-min) to continue Step 2 to Step 4.
+You can then go back to the main documentation to continue [Step 2: Create an RDS database](README.md#2-create-an-rds-database-10-min) and [Step 3: Prepare your environment for the ODM installation](README.md#3-prepare-your-environment-for-the-odm-installation-5-min).
 
 ## Install an ODM release with NGINX Ingress Controller
 
@@ -70,10 +74,12 @@ export LICENSING_URL=$(kubectl get ingress ibm-licensing-service-instance -n ibm
 export TOKEN=$(kubectl get secret ibm-licensing-token -n ibm-common-services -o jsonpath='{.data.token}' |base64 -d)
 ```
 
-You can access the `http://${LICENSING_URL}/status?token=${TOKEN}` URL to view the licensing usage or retrieve the licensing report .zip file by running:
+You can access the `http://${LICENSING_URL}/ibm-licensing-service-instance/status?token=${TOKEN}` URL to view the licensing usage. 
+
+Otherwise, you can also retrieve the licensing report .zip file by running:
 
 ```bash
-curl "http://${LICENSING_URL}/snapshot?token=${TOKEN}" --output report.zip
+curl "http://${LICENSING_URL}/ibm-licensing-service-instance/snapshot?token=${TOKEN}" --output report.zip
 ```
 
 If your IBM License Service instance is not running properly, refer to this [troubleshooting page](https://www.ibm.com/docs/en/cpfs?topic=software-troubleshooting).
