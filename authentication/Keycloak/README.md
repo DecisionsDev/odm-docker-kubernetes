@@ -100,7 +100,7 @@ If you already have an Openshift cluster, you can skip the section [Before you s
   ```shell
   oc new-project keycloak
   ```
-- Continue from the section [Start Keycloak](https://www.keycloak.org/getting-started/getting-started-openshift#_start_keycloak) using the file [keycloak.yaml](keycloak.yaml) instead of the one online as suggested at the first step, ie.:
+- Continue from the section [Start Keycloak](https://www.keycloak.org/getting-started/getting-started-openshift#_start_keycloak) using the file [keycloak.yaml](keycloak.yaml) instead of the one online as suggested at the first step (which may prevent from accessing the console behind a proxy), ie.:
   ```shell
   oc process -f keycloak.yaml \
       -p KEYCLOAK_ADMIN=admin \
