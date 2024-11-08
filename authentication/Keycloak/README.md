@@ -103,8 +103,8 @@ If you already have an Openshift cluster, you can skip the section [Before you s
 - Continue from the section [Start Keycloak](https://www.keycloak.org/getting-started/getting-started-openshift#_start_keycloak) using the file [keycloak.yaml](keycloak.yaml) instead of the one online as suggested at the first step, ie.:
   ```shell
   oc process -f keycloak.yaml \
-      -p KC_BOOTSTRAP_ADMIN_USERNAME=admin \
-      -p KC_BOOTSTRAP_ADMIN_PASSWORD=admin \
+      -p KEYCLOAK_ADMIN=admin \
+      -p KEYCLOAK_ADMIN_PASSWORD=admin \
       -p NAMESPACE=keycloak \
   | oc create -f -
   ```
