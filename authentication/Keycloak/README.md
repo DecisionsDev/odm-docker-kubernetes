@@ -239,7 +239,7 @@ You can create roles and grant these roles directly to an individual user, or ev
     * Client type: **OpenID Connect**
     * Client ID: **odm**
     * Name: **ODM Application**
-    * Always display in UI: On
+    * Always display in console: On
     * Click **Next**
 
     ![Create Client 1](images/create_client_1.png)
