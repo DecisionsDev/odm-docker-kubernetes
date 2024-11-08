@@ -4,17 +4,35 @@ This project demonstrates how to deploy an IBM® Operational Decision Manager (O
 
 <img src="./images/eks-schema.jpg" alt="Flow" width="2050" height="600" />
 
-<!-- TOC depthfrom:3 depthto:3 withlinks:false updateonsave:false orderedlist:false -->
 
-- Prepare your environment (20 min)
-- Create an RDS database (10 min)
-- Prepare your environment for the ODM installation (5 min)
-- Manage a  digital certificate (10 min)
-- Install an IBM Operational Decision Manager release (10 min)
-- Access the ODM services
-- Track ODM usage with the IBM License Service
+The ODM on Kubernetes Docker images are available in the [IBM Cloud Container Registry](https://www.ibm.com/cloud/container-registry). The ODM Helm chart is available in the [IBM Helm charts repository](https://github.com/IBM/charts).
 
-<!-- /TOC -->a  digital certificate (10 min)](#4-manage-a-digital-certificate-10-min)
+## Included components
+The project uses the following components:
+- [IBM Operational Decision Manager](https://www.ibm.com/docs/en/odm/9.0.0?topic=operational-decision-manager-certified-kubernetes-900)
+- [Amazon Elastic Kubernetes Service (Amazon EKS)](https://aws.amazon.com/eks/)
+- [Amazon Relational Database Service (Amazon RDS)](https://aws.amazon.com/rds/)
+- [AWS Application Load Balancer (ALB)](https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html)
+
+## Tested environment
+The commands and tools have been tested on Linux and macOS.
+
+## Prerequisites
+First, install the following software on your machine:
+* [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html)
+* [eksctl](https://docs.aws.amazon.com/eks/latest/userguide/eksctl.html)
+* [Helm v3](https://helm.sh/docs/intro/install/)
+* [kubectl](https://kubernetes.io/docs/tasks/tools/)
+
+Then, create an [AWS Account](https://aws.amazon.com/getting-started/).
+
+## Steps to deploy ODM on Kubernetes from Amazon EKS
+<!-- TOC depthFrom:3 depthTo:3 withLinks:1 updateOnSave:1 orderedList:0 -->
+
+- [1. Prepare your environment (20 min)](#1-prepare-your-environment-20-min)
+- [2. Create an RDS database (10 min)](#2-create-an-rds-database-10-min)
+- [3. Prepare your environment for the ODM installation (5 min)](#3-prepare-your-environment-for-the-odm-installation-5-min)
+- [4. Manage a  digital certificate (10 min)](#4-manage-a-digital-certificate-10-min)
 - [5. Install an IBM Operational Decision Manager release (10 min)](#5-install-an-ibm-operational-decision-manager-release-10-min)
 - [6. Access the ODM services](#6-access-the-odm-services)
 - [7. Track ODM usage with the IBM License Service](#7-track-odm-usage-with-the-ibm-license-service)
