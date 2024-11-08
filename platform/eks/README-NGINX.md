@@ -59,7 +59,7 @@ helm install mycompany ibm-helm/ibm-odm-prod --version 24.1.0 -f eks-rds-nginx-v
 
 ## Track ODM usage with the IBM License Service with NGINX Ingress Controller
 
-Install the IBM License Service following a. section of [Track ODM usage with the IBM License Service](README.md#7-track-odm-usage-with-the-ibm-license-service) step of the documentation.
+Install the IBM License Service following 7a. section of [Track ODM usage with the IBM License Service](README.md#7-track-odm-usage-with-the-ibm-license-service) step of the documentation.
 
 To create the IBM Licensing instance using NGINX, get the [licensing-instance-nginx.yaml](./licensing-instance-nginx.yaml) file and run the command:
 
@@ -74,12 +74,12 @@ export LICENSING_URL=$(kubectl get ingress ibm-licensing-service-instance -n ibm
 export TOKEN=$(kubectl get secret ibm-licensing-token -n ibm-common-services -o jsonpath='{.data.token}' |base64 -d)
 ```
 
-You can access the `http://${LICENSING_URL}/ibm-licensing-service-instance/status?token=${TOKEN}` URL to view the licensing usage. 
+You can access the `http://${LICENSING_URL}/status?token=${TOKEN}` URL to view the licensing usage. 
 
 Otherwise, you can also retrieve the licensing report .zip file by running:
 
 ```bash
-curl "http://${LICENSING_URL}/ibm-licensing-service-instance/snapshot?token=${TOKEN}" --output report.zip
+curl "http://${LICENSING_URL}/snapshot?token=${TOKEN}" --output report.zip
 ```
 
 If your IBM License Service instance is not running properly, refer to this [troubleshooting page](https://www.ibm.com/docs/en/cpfs?topic=software-troubleshooting).
