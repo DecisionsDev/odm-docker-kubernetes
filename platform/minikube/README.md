@@ -21,6 +21,7 @@ This tutorial was tested on macOS and Linux.
 
 - [Minikube](https://minikube.sigs.k8s.io/docs/start/)
 - [Helm](https://helm.sh/docs/intro/install/)
+- [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/)
 
 ## Steps
 
@@ -93,7 +94,7 @@ helm repo update
 ```shell
 $ helm search repo ibm-odm-prod
 NAME                              CHART VERSION APP VERSION DESCRIPTION
-ibmcharts/ibm-odm-prod            24.0.0        9.0.0.0     IBM Operational Decision Manager
+ibmcharts/ibm-odm-prod            24.1.0        9.0.0.1     IBM Operational Decision Manager
 ```
 
 ### 3. Install an IBM Operational Decision Manager release
