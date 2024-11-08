@@ -4,6 +4,7 @@ This project demonstrates how to deploy an IBM® Operational Decision Manager (O
 
 <img src="./images/eks-schema.jpg" alt="Flow" width="2050" height="600" />
 
+
 The ODM on Kubernetes Docker images are available in the [IBM Cloud Container Registry](https://www.ibm.com/cloud/container-registry). The ODM Helm chart is available in the [IBM Helm charts repository](https://github.com/IBM/charts).
 
 ## Included components
@@ -49,16 +50,16 @@ Set up your environment by [configuring the AWS CLI](https://docs.aws.amazon.com
 ```bash
 aws configure 
 ```
+Where you provide your `AWS Access Key ID`, `AWS Secret Access Key` and the `Default region name`.
 
 #### b. Create an EKS cluster (20 min)
 
 ```bash
-eksctl create cluster <CLUSTER_NAME> --version 1.28 --alb-ingress-access
-
+eksctl create cluster <CLUSTER_NAME> --version 1.30 --alb-ingress-access
 ```
 
 > **Note**
-> The tutorial has been tested with the Kubernetes version 1.28. Check the supported kubernetes version in the [system requirement](https://www.ibm.com/support/pages/ibm-operational-decision-manager-detailed-system-requirements) page.
+> The tutorial has been tested with the Kubernetes version 1.30. Check the supported kubernetes version in the [system requirement](https://www.ibm.com/support/pages/ibm-operational-decision-manager-detailed-system-requirements) page.
 
 > **Warning**
 > If you prefer to use the NGINX Ingress Controller instead of the ALB Load Balancer to expose ODM services, don't use the --alb-ingress-access option during the creation of the cluster !
@@ -177,7 +178,7 @@ helm repo update
 ```bash
 $ helm search repo ibm-odm-prod
 NAME                             	CHART VERSION	APP VERSION	DESCRIPTION
-ibm-helm/ibm-odm-prod           	24.0.0       	9.0.0.0   	IBM Operational Decision Manager
+ibm-helm/ibm-odm-prod           	24.1.0       	9.0.0.1   	IBM Operational Decision Manager
 ```
 
 ### 4. Manage a  digital certificate (10 min)
@@ -229,7 +230,7 @@ To install ODM with the AWS RDS PostgreSQL database created in [step 2](#2-creat
   - `<RDS_DATABASE_NAME>` is the initial database name defined when creating the RDS database
 
 ```bash
-helm install mycompany ibm-helm/ibm-odm-prod --version 23.2.0 -f eks-rds-values.yaml
+helm install mycompany ibm-helm/ibm-odm-prod --version 24.1.0 -f eks-rds-values.yaml
 ```
 
 > **Note**
@@ -239,7 +240,7 @@ helm install mycompany ibm-helm/ibm-odm-prod --version 23.2.0 -f eks-rds-values.
 >   - `<AWS-AccountId>` is your AWS Account Id
 >
 >```bash
->helm install mycompany ibm-helm/ibm-odm-prod --version 23.2.0 -f eks-values.yaml
+>helm install mycompany ibm-helm/ibm-odm-prod --version 24.1.0 -f eks-values.yaml
 >```
 
 > **Note**
@@ -267,6 +268,7 @@ After a couple of minutes, the ALB reflects the Ingress configuration. You can 
 
 ```bash
 export ROOTURL=$(kubectl get ingress mycompany-odm-ingress --no-headers |awk '{print $4}')
+echo $ROOTURL
 ```
 
 > **Note**

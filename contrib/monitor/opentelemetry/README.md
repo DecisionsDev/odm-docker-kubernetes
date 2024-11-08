@@ -20,7 +20,7 @@ For installations on other platforms, refer to the [Jaeger documentation](https:
 
 ## Deploy the OpenTelemetry Collector
 
-We used the following [descriptor](https://github.com/open-telemetry/opentelemetry-go/blob/main/example/otel-collector/otel-collector.yaml) as the basis for the OTEL Collector deployment.
+We used the following [descriptor](https://github.com/open-telemetry/opentelemetry-go-contrib/blob/main/examples/otel-collector/otel-collector.yaml) as the basis for the OTEL Collector deployment.
 However, it's likely that you will encounter an error similar to:
 
  ```console
