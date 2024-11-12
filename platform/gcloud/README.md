@@ -1,12 +1,12 @@
 # Deploying IBM Operational Decision Manager on Google GKE
 
-This project demonstrates how to deploy an IBM® Operational Decision Manager (ODM) clustered topology using the [container-native load balancer of GKE](https://cloud.google.com/blog/products/containers-kubernetes/container-native-load-balancing-on-gke-now-generally-available).
+This project demonstrates how to deploy an IBM® Operational Decision Manager (ODM) clustered topology using the [container-native load balancer of GKE](https://cloud.google.com/kubernetes-engine/docs/concepts/container-native-load-balancing).
 
 The ODM services will be exposed using the Ingress provided by the ODM on Kubernetes Helm chart.
 This deployment implements Kubernetes and Docker technologies.
-Here is the Google Cloud home page: https://cloud.google.com
+Here is the Google Cloud home page: <https://cloud.google.com>
 
-<img width="1000" height="560" src='./images/architecture.png'/>
+![Architecture](images/architecture.png)
 
 The ODM on Kubernetes Docker images are available in the [IBM Entitled Registry](https://www.ibm.com/cloud/container-registry). The ODM Helm chart is available in the [IBM Helm charts repository](https://github.com/IBM/charts).
 
@@ -26,6 +26,7 @@ The commands and tools have been tested on macOS and Linux.
 ## Prerequisites
 
 First, install the following software on your machine:
+
 - [gcloud CLI](https://cloud.google.com/sdk/gcloud)
 - [kubectl](https://kubernetes.io/docs/tasks/tools/)
 - [Helm v3](https://helm.sh/docs/intro/install/)
@@ -40,7 +41,8 @@ Then, perform the following tasks:
 
 Without the relevant billing level, some Google Cloud resources will not be created.
 
-> NOTE:  Prerequisites and software supported by ODM 9.0.0 are listed on [the Detailed System Requirements page](https://www.ibm.com/support/pages/ibm-operational-decision-manager-detailed-system-requirements).
+> [!NOTE]
+> Prerequisites and software supported by ODM 9.0.0 are listed on [the Detailed System Requirements page](https://www.ibm.com/support/pages/ibm-operational-decision-manager-detailed-system-requirements).
 
 ## Steps to deploy ODM on Kubernetes from Google GKE
 
@@ -64,8 +66,8 @@ Refer to the [GKE quickstart](https://cloud.google.com/kubernetes-engine/docs/qu
 
 After installing the `gcloud` tool, use the following command line:
 
-```
-gcloud auth login <ACCOUNT>
+```shell
+gcloud auth login
 ```
 
 #### b. Create a GKE cluster
@@ -76,49 +78,54 @@ Regions and zones (used below) can be listed respectively with `gcloud compute r
 
 - Set the project (associated to a billing account):
 
-  ```
+  ```shell
   gcloud config set project <PROJECT_ID>
   ```
 
 - Set the region:
 
-  ```
-  gcloud config set compute/region <REGION (ex: europe-west1)>
+  ```shell
+  gcloud config set compute/region <REGION (ex: europe-west9)>
   ```
 
 - Set the zone:
 
-  ```
-  gcloud config set compute/zone <ZONE (ex: europe-west1-b)>
+  ```shell
+  gcloud config set compute/zone <ZONE (ex: europe-west9-b)>
   ```
 
 - Create a cluster and [enable autoscaling](https://cloud.google.com/kubernetes-engine/docs/how-to/cluster-autoscaler). Here, we start with 6 nodes (16 max):
 
-  ```
+  ```shell
   gcloud container clusters create <CLUSTER_NAME> \
-    --release-channel=regular --cluster-version=1.28 \
+    --release-channel=regular --cluster-version=1.30 \
     --enable-autoscaling --num-nodes=6 --total-min-nodes=1 --total-max-nodes=16
   ```
 
-  > If you get a red warning about a missing gke-gcloud-auth-plugin, install it with `gcloud components install gke-gcloud-auth-plugin` and enable it for each kubectl command with `export USE_GKE_GCLOUD_AUTH_PLUGIN=True` ([more information](https://cloud.google.com/blog/products/containers-kubernetes/kubectl-auth-changes-in-gke)).
-
-  > NOTE: You can also create your cluster from the Google Cloud Platform using the **Kubernetes Engine** > **Clusters** panel and clicking the **Create** button
-  > <img width="1000" height="300" src='./images/create_cluster.png'/>
+  > [!NOTE]
+  > If you get a red warning about a missing gke-gcloud-auth-plugin, install it with `gcloud components install gke-gcloud-auth-plugin`.
+  > For Kubernetes versions lower than 1.26 you have to enable it for each kubectl command with `export USE_GKE_GCLOUD_AUTH_PLUGIN=True` ([more information](https://cloud.google.com/blog/products/containers-kubernetes/kubectl-auth-changes-in-gke)).
+  > [!NOTE]
+  > You can also create your cluster from the Google Cloud Platform using the **Kubernetes Engine** > **Clusters** panel and clicking the **Create** button
+  > ![Create cluster](images/create_cluster.png)
 
 #### c. Set up your environment
 
 - Create a kubeconfig to connect to your cluster:
-  ```
+
+  ```shell
   gcloud container clusters get-credentials <CLUSTER_NAME>
   ```
 
-  > NOTE: You can also retrieve the command line to configure `kubectl` from the Google Cloud Console using the **Kubernetes Engine** > **Clusters** panel and clicking **Connect** on the dedicated cluster.
-  > <img width="1000" height="300" src='./images/connection.png'/>
+  > [!NOTE]
+  > You can also retrieve the command line to configure `kubectl` from the Google Cloud Console using the **Kubernetes Engine** > **Clusters** panel and clicking **Connect** on the dedicated cluster.
+  > ![Connection](images/connection.png)
 
 - Check your environment
 
   If your environment is set up correctly, you should be able to get the cluster information by running the following command:
-  ```
+
+  ```shell
   kubectl cluster-info
   ```
 
