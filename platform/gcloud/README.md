@@ -117,7 +117,7 @@ Regions and zones (used below) can be listed respectively with `gcloud compute r
   gcloud container clusters get-credentials <CLUSTER_NAME>
   ```
 
-  > [!NOTE]
+> [!NOTE]
   > You can also retrieve the command line to configure `kubectl` from the Google Cloud Console using the **Kubernetes Engine** > **Clusters** panel and clicking **Connect** on the dedicated cluster.
   > ![Connection](images/connection.png)
 
