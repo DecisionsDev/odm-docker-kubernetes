@@ -105,6 +105,7 @@ Regions and zones (used below) can be listed respectively with `gcloud compute r
 > [!NOTE]
   > If you get a red warning about a missing gke-gcloud-auth-plugin, install it with `gcloud components install gke-gcloud-auth-plugin`.
   > For Kubernetes versions lower than 1.26 you have to enable it for each kubectl command with `export USE_GKE_GCLOUD_AUTH_PLUGIN=True` ([more information](https://cloud.google.com/blog/products/containers-kubernetes/kubectl-auth-changes-in-gke)).
+
 > [!NOTE]
   > You can also create your cluster from the Google Cloud Platform using the **Kubernetes Engine** > **Clusters** panel and clicking the **Create** button
   > ![Create cluster](images/create_cluster.png)
