@@ -320,13 +320,13 @@ We only have to manage a configuration to simulate the mynicecompany.com access.
 
 - Get the EXTERNAL-IP with the command line:
 
-  ```
+  ```shell
   kubectl get ingress <release>-odm-ingress -o jsonpath='{.status.loadBalancer.ingress[].ip}'
   ```
 
 - Edit your /etc/hosts file and add the following entry:
 
-  ```
+  ```shell
   <EXTERNAL-IP> mynicecompany.com
   ```
 
@@ -335,12 +335,13 @@ We only have to manage a configuration to simulate the mynicecompany.com access.
 <!-- markdown-link-check-disable -->
   | SERVICE NAME | URL | USERNAME/PASSWORD
   | --- | --- | ---
-  | Decision Server Console | https://mynicecompany.com/res | odmAdmin/odmAdmin
-  | Decision Center | https://mynicecompany.com/decisioncenter | odmAdmin/odmAdmin
-  | Decision Center REST-API | https://mynicecompany.com/decisioncenter-api | odmAdmin/odmAdmin
-  | Decision Server Runtime | https://mynicecompany.com/DecisionService | odmAdmin/odmAdmin
-  | Decision Runner | https://mynicecompany.com/DecisionRunner | odmAdmin/odmAdmin
+  | Decision Server Console | <https://mynicecompany.com/res> | odmAdmin/odmAdmin
+  | Decision Center | <https://mynicecompany.com/decisioncenter> | odmAdmin/odmAdmin
+  | Decision Center REST-API | <https://mynicecompany.com/decisioncenter-api> | odmAdmin/odmAdmin
+  | Decision Server Runtime | <https://mynicecompany.com/DecisionService> | odmAdmin/odmAdmin
+  | Decision Runner | <https://mynicecompany.com/DecisionRunner> | odmAdmin/odmAdmin
 <!-- markdown-link-check-enable -->
+
   > NOTE:You can also click the Ingress routes accessible from the Google Cloud console under the [Kubernetes Engine/Services & Ingress Details Panel](https://console.cloud.google.com/kubernetes/ingresses).
   > <img width="1000" height="532" src='./images/ingress_routes.png'/>
 
