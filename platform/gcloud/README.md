@@ -219,14 +219,14 @@ In this step, you will generate a certificate to be used by the GKE load balance
 
 If you do not have a trusted certificate, you can use OpenSSL and other cryptography and certificate management libraries to generate a certificate file and a private key to define the domain name and to set the expiration date. The following command creates a self-signed certificate (`.crt` file) and a private key (`.key` file) that accept the domain name *mynicecompany.com*. The expiration is set to 1000 days:
 
-```
+```shell
 openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mynicecompany.key \
         -out mynicecompany.crt -subj "/CN=mynicecompany.com/OU=it/O=mynicecompany/L=Paris/C=FR"
 ```
 
 #### b. Create a TLS secret with these keys
 
-```
+```shell
 kubectl create secret tls mynicecompany-crt-secret --key mynicecompany.key --cert mynicecompany.crt
 ```
 
@@ -241,17 +241,15 @@ It automatically creates an HTTPS GKE load balancer. We will disable the ODM int
 
 - Get the [gcp-values.yaml](./gcp-values.yaml) file and replace the following keys:
 
-  - `registrysecret`: the name of the secret containing the IBM Entitled Registry key
-  - `odmdbsecret`: the name of the secret containing the database user and password
   - `<DB_ENDPOINT>`: the database IP
-  - `<DATABASE_NAME>`: the database name (default is postgres)
 
-  > NOTE: You can configure the driversUrl parameter to point to the appropriate version of the Google Cloud SQL PostgreSQL driver. For more information, refer to the [Cloud SQL Connector for Java](https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory#cloud-sql-connector-for-java) documentation.
+> [!NOTE]
+> You can configure the driversUrl parameter to point to the appropriate version of the Google Cloud SQL PostgreSQL driver. For more information, refer to the [Cloud SQL Connector for Java](https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory#cloud-sql-connector-for-java) documentation.
 
 - Install the chart from IBM's public Helm charts repository:
 
-    ```
-    helm install <release> ibm-helm/ibm-odm-prod --version 23.2.0 -f gcp-values.yaml
+    ```shell
+    helm install <release> ibm-helm/ibm-odm-prod -f gcp-values.yaml
     ```
 
   > NOTE: You might prefer to access ODM components through the NGINX Ingress controller instead of using the IP addresses. If so, please follow [these instructions](README_NGINX.md).

@@ -20,7 +20,7 @@ externalDatabase:
   secretCredentials: odmdbsecret
   port: 5432
   serverName: <DB_ENDPOINT>
-  databaseName: <DATABASE_NAME>
+  databaseName: postgres
   # You can get the last Google Cloud SQL PostgreSQL driver version
   # at https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory/releases
   driversUrl:
