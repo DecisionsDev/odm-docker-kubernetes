@@ -248,17 +248,18 @@ It automatically creates an HTTPS GKE load balancer. We will disable the ODM int
 
 - Install the chart from IBM's public Helm charts repository:
 
-    ```shell
-    helm install <release> ibm-helm/ibm-odm-prod -f gcp-values.yaml
-    ```
+  ```shell
+  helm install <release> ibm-helm/ibm-odm-prod -f gcp-values.yaml
+  ```
 
-  > NOTE: You might prefer to access ODM components through the NGINX Ingress controller instead of using the IP addresses. If so, please follow [these instructions](README_NGINX.md).
+> [!NOTE]
+> You might prefer to access ODM components through the NGINX Ingress controller instead of using the IP addresses. If so, please follow [these instructions](README_NGINX.md).
 
 #### b. Check the topology
 
 Run the following command to check the status of the pods that have been created:
 
-```
+```shell
 kubectl get pods
 NAME                                                   READY   STATUS    RESTARTS   AGE
 <release>-odm-decisioncenter-***                       1/1     Running   0          20m
@@ -273,18 +274,17 @@ To get the status of the current deployment, go to the [Kubernetes Engine / Serv
 
 The Ingress remains in the state *Creating ingress* for several minutes until the pods are up and running, and the backend gets in a healthy state.
 
-<img width="1000" height="308" src='./images/ingress_creating.png'/>
+![Ingress creating](images/ingress_creating.png)
 
-You can also check the [load balancer status](https://console.cloud.google.com/net-services/loadbalancing/list/loadBalancers).
-It provides information about the backend using the service health check.
+You can also check the [load balancer status](https://console.cloud.google.com/net-services/loadbalancing/list/loadBalancers). It provides information about the backend using the service health check.
 
-<img width="1000" height="352" src='./images/loadbalancer.png'/>
+![Load balancer](images/loadbalancer.png)
 
 In the Ingress details, you should get a *HEALTHY* state on all backends.
 This panel also provides some logs on the load balancer activity.
 When the Ingress shows an OK status, all ODM services can be accessed.
 
-<img width="1000" height="517" src='./images/ingress_details.png'/>
+![Ingress details](images/ingress_details.png)
 
 #### d. Create a Backend Configuration for the Decision Center Service
 
@@ -296,20 +296,20 @@ A configuration that uses [BackendConfig](https://cloud.google.com/kubernetes-en
 
 - Create the [Decision Center Backend Config](decisioncenter-backendconfig.yaml):
 
-  ```
+  ```shell
   kubectl create -f decisioncenter-backendconfig.yaml
   ```
 
 - Annotate the Decision Center Service with this GKE Backend Config:
 
-  ```
+  ```shell
   kubectl annotate service <release>-odm-decisioncenter \
           cloud.google.com/backend-config='{"ports": {"9453":"dc-backendconfig"}}'
   ```
 
   As soon as GKE manages Decision Center session affinity at the load balancer level, you can check the ClientIP availability below the Decision Center Network Endpoint Group configuration from the Google Cloud Console in the Load Balancer details.
 
-  <img width="1000" height="353" src='./images/dc_sessionaffinity.png'/>
+  ![DecisionCenter session affinity](images/dc_sessionaffinity.png)
 
 ### 6. Access ODM services
 
