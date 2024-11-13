@@ -119,8 +119,8 @@ Regions and zones (used below) can be listed respectively with `gcloud compute r
   ```
 
 > [!NOTE]
-  > You can also retrieve the command line to configure `kubectl` from the Google Cloud Console using the **Kubernetes Engine** > **Clusters** panel and clicking **Connect** on the dedicated cluster.
-  > ![Connection](images/connection.png)
+> You can also retrieve the command line to configure `kubectl` from the Google Cloud Console using the **Kubernetes Engine** > **Clusters** panel and clicking **Connect** on the dedicated cluster.
+> ![Connection](images/connection.png)
 
 - Check your environment
 
@@ -138,11 +138,11 @@ We will use the Google Cloud Platform console to create the database instance.
 
 - Go to the [SQL context](https://console.cloud.google.com/sql), and then click the **CREATE INSTANCE** button
 - Click **Choose PostgreSQL**
+  - Database version: `PostgreSQL 15`
   - Instance ID: ``<YourInstanceName>``
   - Password: ``<PASSWORD>`` - Take note of this password.
-  - Database version: `PostgreSQL 15`
   - Region: ``<REGION>`` (must be the same as the cluster for the communication to be optimal between the database and the ODM instance)
-  - Keep **Multiple zones** for Zonal availability to the highest availability
+  - Eventually select **Multiple zones** for Zonal availability for redundancy
   - Expand **Show customization option** and expand **Connections**
     - As *Public IP* is selected by default, in Authorized networks, click the **ADD NETWORK** button, put a name and add *0.0.0.0/0* for Network, then click **DONE**.
       > NOTE: It is not recommended to use a public IP. In a production environment, you should use a private IP.
@@ -150,24 +150,20 @@ We will use the Google Cloud Platform console to create the database instance.
 
 After the database instance is created, you can drill on the SQL instance overview to retrieve needed information to connect to this instance, like the IP address and the connection name. Take note of the **Public IP address**.
 
-<img width="1000" height="630" src='./images/database_overview.png'/>
-
-> NOTE: A default *postgres* database is created with a default *postgres* user. You can change the password of the postgres user in the **Users** panel by selecting the *postgres* user, and then using the **Change password** menu:
-> <img width="1000" height="360" src='./images/database_changepassword.png'/>
+![Database overview](images/database_overview.png)
 
 #### b. Create the database secret for Google Cloud SQL PostgreSQL
 
 To secure access to the database, you must create a secret that encrypts the database user and password before you install the Helm release.
 
-```
-kubectl create secret generic <ODM_DB_SECRET> \
-  --from-literal=db-user=<USERNAME> \
-  --from-literal=db-password=<PASSWORD> 
+```shell
+kubectl create secret generic odmdbsecret \
+  --from-literal=db-user=postgres \
+  --from-literal=db-password=<PASSWORD>
 ```
 
 Where:
-- `<ODM_DB_SECRET>` is the secret name
-- `<USERNAME>` is the database username (default is *postgres*)
+
 - `<PASSWORD>` is the database password (PASSWORD set during the PostgreSQL instance creation above)
 
 ### 3. Prepare your environment for the ODM installation (10 min)
@@ -180,39 +176,39 @@ To get access to the ODM material, you need an IBM entitlement key to pull the i
 
 - In the Container software library tile, verify your entitlement on the **View library** page, and then go to **Get entitlement key** to retrieve the key.
 
-#### b. Create a pull secret by running a kubectl create secret command.
+#### b. Create a pull secret by running a kubectl create secret command
 
-```
-kubectl create secret docker-registry <REGISTRY_SECRET> \
+```shell
+kubectl create secret docker-registry registrysecret \
         --docker-server=cp.icr.io \
         --docker-username=cp \
-        --docker-password="<API_KEY_GENERATED>" \
+        --docker-password='<API_KEY_GENERATED>' \
         --docker-email=<USER_EMAIL>
 ```
 
 Where:
 
-* `<REGISTRY_SECRET>` is the secret name.
-* `<API_KEY_GENERATED>` is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
-* `<USER_EMAIL>` is the email address associated with your IBMid.
+- `<API_KEY_GENERATED>` is the entitlement key from the previous step. Make sure you enclose the key in quotes.
+- `<USER_EMAIL>` is the email address associated with your IBMid.
 
-> NOTE:  The `cp.icr.io` value for the docker-server parameter is the only registry domain name that contains the images. You must set the docker-username to `cp` to use an entitlement key as docker-password.
+> [!NOTE]
+> The `cp.icr.io` value for the docker-server parameter is the only registry domain name that contains the images. You must set the docker-username to `cp` to use an entitlement key as docker-password.
 
-Take note of the secret name so that you can set it for the *image.pullSecrets* parameter when you run a helm install command of your containers.  The *image.repository* parameter will later be set to `cp.icr.io/cp/cp4a/odm`.
+The *image.repository* parameter will later be set to `cp.icr.io/cp/cp4a/odm`.
 
 #### c. Add the public IBM Helm charts repository
 
-```
+```shell
 helm repo add ibm-helm https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm
 helm repo update
 ```
 
 #### d. Check you can access ODM charts
 
-```
+```shell
 helm search repo ibm-odm-prod
-NAME                  	CHART VERSION   APP VERSION     DESCRIPTION
-ibm-helm/ibm-odm-prod	24.0.0          9.0.0.0        IBM Operational Decision Manager
+NAME                  CHART VERSION   APP VERSION     DESCRIPTION
+ibm-helm/ibm-odm-prod 24.1.0          9.0.0.1         IBM Operational Decision Manager
 ```
 
 ### 4. Manage a digital certificate (2 min)
@@ -245,8 +241,8 @@ It automatically creates an HTTPS GKE load balancer. We will disable the ODM int
 
 - Get the [gcp-values.yaml](./gcp-values.yaml) file and replace the following keys:
 
-  - `<REGISTRY_SECRET>`: the name of the secret containing the IBM Entitled Registry key
-  - `<ODM_DB_SECRET>`: the name of the secret containing the database user and password
+  - `registrysecret`: the name of the secret containing the IBM Entitled Registry key
+  - `odmdbsecret`: the name of the secret containing the database user and password
   - `<DB_ENDPOINT>`: the database IP
   - `<DATABASE_NAME>`: the database name (default is postgres)
 
