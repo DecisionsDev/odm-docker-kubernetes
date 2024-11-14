@@ -290,27 +290,37 @@ The ODM services are accessible from the following URLs:
 
 #### a. Install the IBM License Service
 
-Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cpfs?topic=software-manual-installation-without-operator-lifecycle-manager-olm) documentation.
+Follow the **Installation** section of the [Installation License Service without Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.9?topic=ils-installing-license-service-without-operator-lifecycle-manager-olm) documentation.
 
-> **Warning**
-> Make sure you do not follow the **Creating an IBM Licensing instance** part!
-
-#### b. Create the IBM Licensing instance
+#### b. Patch the IBM Licensing instance
 
 Get the [licensing-instance.yaml](./licensing-instance.yaml) file and run the command:
 
 ```bash
-kubectl create -f licensing-instance.yaml
+kubectl patch IBMLicensing instance --type merge --patch-file licensing-instance.yaml -n ibm-licensing 
 ```
 
-You can find more information and use cases on [this page](https://www.ibm.com/docs/en/cpfs?topic=software-configuration).
+Wait a couple of minutes for the changes to be applied. 
+
+Run the following command to see the status of Ingress instance:
+
+```bash
+kubectl get ingress -n ibm-licensing                         
+```
+
+You should be able to see the address and other details about `ibm-licensing-service-instance`.
+```
+NAME                             CLASS   HOSTS   ADDRESS                                                                 PORTS   AGE
+ibm-licensing-service-instance   alb     *       k8s-ibmlicen-ibmlicen-xxxxxxxx-yyyyyyy.<aws-region>.elb.amazonaws.com   80      44m
+```
+You can find more information and use cases on [this page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.9?topic=configuration-configuring-kubernetes-ingress).
 
 > **Note**
 > If you choose to use the NGINX Ingress Controller, you must use the [licensing-instance-nginx.yaml](./licensing-instance-nginx.yaml) file. Refer to [Track ODM usage with the IBM License Service with NGINX Ingress Controller](README-NGINX.md#track-odm-usage-with-the-ibm-license-service-with-nginx-ingress-controller).
 
 #### c. Retrieving license usage
 
-After a couple of minutes, the ALB reflects the Ingress configuration. You will be able to access the IBM License Service by retrieving the URL with this command:
+The ALB address should be reflected in the Ingress configuration. You will be able to access the IBM License Service by retrieving the URL with this command:
 
 ```bash
 export LICENSING_URL=$(kubectl get ingress ibm-licensing-service-instance -n ibm-licensing -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
