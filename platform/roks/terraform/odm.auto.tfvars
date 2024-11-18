@@ -8,7 +8,6 @@ region = "eu-de" # eu-de for Frankfurt MZR
 ##############################################################################
 ## VPC
 ##############################################################################
-vpc_classic_access            = false
 vpc_address_prefix_management = "manual"
 vpc_enable_public_gateway     = true
 
