@@ -131,11 +131,11 @@ aws secretsmanager create-secret \
 For example:
 ```
   odm-decisioncenter:
-    image: cp.icr.io/cp/cp4a/odm/odm-decisioncenter:9.0.0.0-amd64
+    image: cp.icr.io/cp/cp4a/odm/odm-decisioncenter:9.0.0.1-amd64
     x-aws-pull_credentials: "arn:aws:secretsmanager:<aws_deployment_region>:<aws_account_id>:secret:IBMCPSecret-YYYYY"
     ...
   odm-decisionserverruntime:
-    image: cp.icr.io/cp/cp4a/odm/odm-decisionserverruntime:9.0.0.0-amd64
+    image: cp.icr.io/cp/cp4a/odm/odm-decisionserverruntime:9.0.0.1-amd64
     x-aws-pull_credentials: "arn:aws:secretsmanager:<aws_deployment_region>:<aws_account_id>:secret:IBMCPSecret-YYYYY"
     ...
 ```
@@ -224,7 +224,7 @@ volumes:
           Name: odm-filesystem
 ...
   odm-decisioncenter:
-    image: cp.icr.io/cp/cp4a/odm/odm-decisioncenter:9.0.0.0-amd64
+    image: cp.icr.io/cp/cp4a/odm/odm-decisioncenter:9.0.0.1-amd64
     x-aws-pull_credentials: "arn:aws:secretsmanager:<aws_deployment_region>:<aws_account_id>:secret:IBMCPSecret-XXXXXX"
     volumes:
       - app:/config/security/trusted-cert-volume
