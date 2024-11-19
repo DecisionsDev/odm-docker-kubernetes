@@ -249,7 +249,7 @@ It automatically creates an HTTPS GKE load balancer. We will disable the ODM int
 - Install the chart from IBM's public Helm charts repository:
 
   ```shell
-  helm install <release> ibm-helm/ibm-odm-prod -f gcp-values.yaml
+  helm install <release> ibm-helm/ibm-odm-prod -set image.tag=9.0.0.1 -f gcp-values.yaml
   ```
 
 > [!NOTE]
@@ -304,7 +304,7 @@ A configuration that uses [BackendConfig](https://cloud.google.com/kubernetes-en
 
   ```shell
   kubectl annotate service <release>-odm-decisioncenter \
-          cloud.google.com/backend-config='{"ports": {"9453":"dc-backendconfig"}}'
+    cloud.google.com/backend-config='{"ports": {"9453":"dc-backendconfig"}}'
   ```
 
   As soon as GKE manages Decision Center session affinity at the load balancer level, you can check the ClientIP availability below the Decision Center Network Endpoint Group configuration from the Google Cloud Console in the Load Balancer details.
