@@ -26,7 +26,7 @@
 
 1. Create the *ODM application*.
 
-    In **Azure Active Directory** / **App registration**, click **New Registration**:
+    In **Microsoft Entra Id** / **Manage** / **App registration**, click **New Registration**:
 
     * Name: **ODM Application**
     * Supported account types / Who can use this application or access this API?: select `Accounts in this organizational directory only (Default Directory only - Single tenant)`
@@ -36,7 +36,7 @@
 
 2. Retrieve Tenant and Client information.
 
-    In **Azure Active Directory** / **App Registration**, select **ODM Application** and click **Overview**:
+    In **Microsoft Entra Id** / **Manage** / **App Registration**, select **ODM Application** and click **Overview**:
 
     * Application (client) ID: **Client ID**. It will be referenced as `CLIENT_ID` in the next steps.
     * Directory (tenant) ID: **Your Tenant ID**. It will be referenced as `TENANT_ID` in the next steps.
@@ -45,7 +45,7 @@
 
 3. Generate an OpenID client secret.
 
-    In **Azure Active Directory** / **App registrations**, select **ODM Application**:
+    In **Microsoft Entra Id** / **Manage** / **App registrations**, select **ODM Application**:
 
     * From the Overview page, click on the link Client credentials: **Add a certificate or secret** or on the **Manage / Certificates & secrets** tab
     * Click + New Client Secret
@@ -58,7 +58,7 @@
 
 4. Add Claims.
 
-    In **Azure Active Directory** / **App registrations**, select **ODM Application**, and in **Manage / Token Configuration**:
+    In **Microsoft Entra Id** / **Manage** / **App registrations**, select **ODM Application**, and in **Manage / Token Configuration**:
 
   * Add Optional Email ID Claim
     * Click +Add optional claim
@@ -85,7 +85,7 @@
 
    To allow ODM rest-api to use the password flow with email as user identifier and the client-credentials flow with client_id as user identifier, we need to create a new claim named "identity" that will take the relevant value according to the flow:
 
-   In **Azure Active Directory** / **Enterprise applications**, select **ODM Application**, and in **Manage / Single sign-on**:
+   In **Microsoft Entra Id** / **Manage** / **Enterprise applications**, select **ODM Application**, and in **Manage / Single sign-on**:
 
   * Click Edit in the "Attributes & Claims" section
     * Click + Add new claim
@@ -97,7 +97,7 @@
 
 6. API Permissions.
 
-    In **Azure Active Directory** / **App Registration**, select **ODM Application**, and then click **API Permissions**.
+    In **Microsoft Entra Id** / **Manage** / **App Registration**, select **ODM Application**, and then click **API Permissions**.
 
     * Click Grant Admin Consent for Default Directory
 
@@ -109,7 +109,7 @@
 
 7. Manifest change.
 
-    In **Azure Active Directory** / **App Registration**, select **ODM Application**, and then click **Manifest**.
+    In **Microsoft Entra Id** / **Manage** / **App Registration**, select **ODM Application**, and then click **Manifest**.
 
     As explained in [accessTokenAcceptedVersion attribute explanation](https://docs.microsoft.com/en-us/azure/active-directory/develop/reference-app-manifest#accesstokenacceptedversion-attribute), change the value to 2.
 
@@ -449,7 +449,7 @@ You can now install the product. We will use the PostgreSQL internal database an
       - Decision Server Runtime redirect URI:  `https://<INGRESS_ADDRESS>/DecisionService/openid/redirect/odm`
       - Rule Designer redirect URI: `https://127.0.0.1:9081/oidcCallback`
 
-   From the Azure console, in **Azure Active Directory** / **App Registrations** / **ODM Application**:
+   From the Microsoft Azure console, in **Microsoft Entra Id** / **Manage** / **App Registrations** / **ODM Application**:
 
     - Click the `Add a Redirect URI` link
     - Click `Add Platform`
@@ -507,11 +507,11 @@ To manage ODM runtime call on the next steps, we used the [Loan Validation Decis
 
 Import the **Loan Validation Service** in Decision Center connected using *myodmuser*@YOURDOMAIN created at step 2
 
-![Import project](../Keycloak/images/import_project.png)
+![Import project](images/import_project.png)
 
 Deploy the **Loan Validation Service** production_deployment ruleapps using the **production deployment** deployment configuration in the Deployments>Configurations tab.
 
-![Deploy project](../Keycloak/images/deploy_project.png)
+![Deploy project](images/deploy_project.png)
 
 You can retrieve the payload.json from the ODM Decision Server Console or use [the provided payload](payload.json).
 

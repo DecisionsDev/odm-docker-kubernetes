@@ -32,7 +32,7 @@ For additional information regarding the implement in Liberty, please refer to t
 
 1. Create the *ODM application*.
 
-    In **Identity** / **Applications** / **App registration**, click **New Registration**:
+    In **Microsoft Entra Id** / **Manage** / **App registration**, click **New Registration**:
 
     * Name: **ODM Application**
     * Supported account types / Who can use this application or access this API?: select `Accounts in this organizational directory only (Default Directory only - Single tenant)`
@@ -42,7 +42,7 @@ For additional information regarding the implement in Liberty, please refer to t
 
 2. Retrieve Tenant and Client information.
 
-    In **Identity** / **Applications** / **App Registration**, select **ODM Application** and click **Overview**:
+    In **Microsoft Entra Id** / **Manage** / **App Registration**, select **ODM Application** and click **Overview**:
 
     * Application (client) ID: **Client ID**. It will be referenced as `CLIENT_ID` in the next steps.
     * Directory (tenant) ID: **Your Tenant ID**. It will be referenced as `TENANT_ID` in the next steps.
@@ -62,7 +62,7 @@ For additional information regarding the implement in Liberty, please refer to t
         -addext "subjectAltName = DNS:myodmcompany.com"
   ```
 
-  In **Identity** / **Applications** / **App registrations**, select **ODM Application**:
+  In **Microsoft Entra Id** / **Manage** / **App registrations**, select **ODM Application**:
 
   * From the Overview page, click on the link Client credentials: **Add a certificate or secret** or on the **Manage / Certificates & secrets** tab
   * Select the **Certificates** tab
@@ -73,7 +73,7 @@ For additional information regarding the implement in Liberty, please refer to t
 
 4. Add Claims.
 
-    In **Identity** / **Applications** / **App registrations**, select **ODM Application**, and in **Manage / Token Configuration**:
+    In **Microsoft Entra Id** / **Manage** / **App registrations**, select **ODM Application**, and in **Manage / Token Configuration**:
 
   * Add Optional Email ID Claim
     * Click **+ Add optional claim**
@@ -99,7 +99,7 @@ For additional information regarding the implement in Liberty, please refer to t
 5. Create a custom claim named "identity"
 
    To enable the ODM REST API to use both the 'Password Credentials' flow with email as the user identifier and the 'Client Credentials' flow with client_id as the user identifier, we must establish a new claim named "identity" that will dynamically capture the appropriate value based on the chosen flow:
-   In **Identity** / **Applications** / **Enterprise applications**, select **ODM Application**, and in **Manage / Single sign-on**:
+   In **Microsoft Entra Id** / **Manage** / **Enterprise applications**, select **ODM Application**, and in **Manage / Single sign-on**:
 
   * Click on Edit of the "Attributes & Claims" section
     * Click **+ Add new claim**
@@ -110,13 +110,13 @@ For additional information regarding the implement in Liberty, please refer to t
 
 6. API Permissions.
 
-    In **Identity** / **Applications** / **App Registration**, select **ODM Application**, and then click **API Permissions**.
+    In **Microsoft Entra Id** / **Manage** / **App Registration**, select **ODM Application**, and then click **API Permissions**.
 
     * Click **Grant Admin Consent for <Directory name>**
 
 7. Manifest change.
 
-    In **Identity** / **Applications** / **App Registration**, select **ODM Application**, and then click **Manifest**.
+    In **Microsoft Entra Id** / **Manage** / **App Registration**, select **ODM Application**, and then click **Manifest**.
 
     As explained in [accessTokenAcceptedVersion attribute explanation](https://docs.microsoft.com/en-us/azure/active-directory/develop/reference-app-manifest#accesstokenacceptedversion-attribute), change the value of **accessTokenAcceptedVersion** to `2`.
 
@@ -334,7 +334,7 @@ You can now install the product. We will use the PostgreSQL internal database an
       - Decision Server Console redirect URI:  `https://<INGRESS_ADDRESS>/res/openid/redirect/odm`
       - Decision Server Runtime redirect URI:  `https://<INGRESS_ADDRESS>/DecisionService/openid/redirect/odm`
 
-   From the Azure console, in **Identity** / **Applications** / **App Registrations** / **ODM Application**:
+   From the Azure console, in **Microsoft Entra Id** / **Manage** / **App Registrations** / **ODM Application**:
 
     - Click`Add Redirect URIs link`
     - Click `Add Platform`
@@ -352,7 +352,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 
    The ODM Rule Designer will use the [PKCE authorization code flow](https://oauth.net/2/pkce/) to connect to Decision Center and Decision Server Console.
 
-   From the Azure console, in **Identity** / **Applications** / **App Registrations** / **ODM Application**:
+   From the Azure console, in **Microsoft Entra Id** / **Manage** / **App Registrations** / **ODM Application**:
 
     - Click`Add Redirect URIs link`
     - Click `Add Platform`
@@ -406,11 +406,11 @@ To manage ODM runtime call on the next steps, we used the [Loan Validation Decis
 
 Import the **Loan Validation Service** in Decision Center connected using *myodmuser*@YOURDOMAIN created at step 2
 
-![Import project](../Keycloak/images/import_project.png)
+![Import project](images/import_project.png)
 
 Deploy the **Loan Validation Service** production_deployment ruleapps using the **production deployment** deployment configuration in the Deployments>Configurations tab.
 
-![Deploy project](../Keycloak/images/deploy_project.png)
+![Deploy project](images/deploy_project.png)
 
 You can retrieve the payload.json from the ODM Decision Server Console or use [the provided payload](payload.json).
 
