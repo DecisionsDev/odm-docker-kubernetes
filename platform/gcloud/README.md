@@ -249,7 +249,7 @@ It automatically creates an HTTPS GKE load balancer. We will disable the ODM int
 - Install the chart from IBM's public Helm charts repository:
 
   ```shell
-  helm install <release> ibm-helm/ibm-odm-prod -set image.tag=9.0.0.1 -f gcp-values.yaml
+  helm install <release> ibm-helm/ibm-odm-prod --set image.tag=9.0.0.1 -f gcp-values.yaml
   ```
 
 > [!NOTE]
