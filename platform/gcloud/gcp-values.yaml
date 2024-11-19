@@ -10,7 +10,7 @@ service:
   enableTLS: false
   ingress:
     enabled: true
-    tlsSecretRef: mynicecompany-crt-secret
+    tlsSecretRef: mynicecompany-tls-secret
     host: mynicecompany.com
     tlsHosts:
     - mynicecompany.com

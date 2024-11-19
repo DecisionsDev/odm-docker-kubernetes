@@ -227,7 +227,7 @@ openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mynicecompany.key \
 #### b. Create a TLS secret with these keys
 
 ```shell
-kubectl create secret tls mynicecompany-crt-secret --key mynicecompany.key --cert mynicecompany.crt
+kubectl create secret tls mynicecompany-tls-secret --key mynicecompany.key --cert mynicecompany.crt
 ```
 
 The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://www.ibm.com/docs/en/odm/9.0.0?topic=servers-server-certificates) and [Working with certificates and SSL](https://docs.oracle.com/cd/E19830-01/819-4712/ablqw/index.html).
@@ -342,8 +342,9 @@ We only have to manage a configuration to simulate the mynicecompany.com access.
   | Decision Runner | <https://mynicecompany.com/DecisionRunner> | odmAdmin/odmAdmin
 <!-- markdown-link-check-enable -->
 
-  > NOTE:You can also click the Ingress routes accessible from the Google Cloud console under the [Kubernetes Engine/Services & Ingress Details Panel](https://console.cloud.google.com/kubernetes/ingresses).
-  > <img width="1000" height="532" src='./images/ingress_routes.png'/>
+> [!NOTE]
+> You can also click the Ingress frontends accessible from the Google Cloud console under the [Kubernetes Engine/Services & Ingress Details Panel](https://console.cloud.google.com/kubernetes/ingresses).
+> ![Ingress routes](images/ingress_routes.png)
 
 ### 7. Track ODM usage with the IBM License Service
 
@@ -351,7 +352,7 @@ This section explains how to track ODM usage with the IBM License Service.
 
 #### a. Install the IBM License Service
 
-Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cpfs?topic=software-manual-installation-without-operator-lifecycle-manager-olm)
+Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.9?topic=ils-installing-license-service-without-operator-lifecycle-manager-olm)
 
 > NOTE: Make sure you do not follow the instantiation part!
 
@@ -374,7 +375,7 @@ Follow the **Installation** section of the [Manual installation without the Oper
 
 Get the [licensing-instance.yaml](./licensing-instance.yaml) file and run the following command:
 
-```
+```shell
 kubectl create -f licensing-instance.yaml -n ibm-common-services
 ```
 
@@ -384,9 +385,9 @@ kubectl create -f licensing-instance.yaml -n ibm-common-services
 
 After a couple of minutes, the Ingress configuration is created and you will be able to access the IBM License Service by retrieving the URL with the following command:
 
-```
-export LICENSING_URL=$(kubectl get ingress ibm-licensing-service-instance -n ibm-common-services -o jsonpath='{.status.loadBalancer.ingress[0].ip}')/ibm-licensing-service-instance
-export TOKEN=$(kubectl get secret ibm-licensing-token -o jsonpath={.data.token} -n ibm-common-services |base64 -d)
+```shell
+export LICENSING_URL=$(kubectl get ingress ibm-licensing-service-instance -n ibm-licensing -o jsonpath='{.status.loadBalancer.ingress[0].ip}')/ibm-licensing-service-instance
+export TOKEN=$(kubectl get secret ibm-licensing-token -o jsonpath={.data.token} -n ibm-licensing |base64 -d)
 ```
 
 You can access the `http://${LICENSING_URL}/status?token=${TOKEN}` URL to view the licensing usage or retrieve the licensing report .zip file by running the following command:
