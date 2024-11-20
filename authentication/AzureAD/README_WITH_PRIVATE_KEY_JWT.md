@@ -118,13 +118,20 @@ For additional information regarding the implement in Liberty, please refer to t
 
     In **Microsoft Entra Id** / **Manage** / **App Registration**, select **ODM Application**, and then click **Manifest**.
 
-    As explained in [accessTokenAcceptedVersion attribute explanation](https://docs.microsoft.com/en-us/azure/active-directory/develop/reference-app-manifest#accesstokenacceptedversion-attribute), change the value of **accessTokenAcceptedVersion** to `2`.
+    The Manifest feature (a JSON representation of an app registration) is currently in transition.
+    [**AAD Graph app manifest**](https://learn.microsoft.com/en-us/entra/identity-platform/azure-active-directory-graph-app-manifest-deprecation) will be deprecated soon and not editable anymore starting 12/2/2024. It will be replaced by the **Microsoft Graph App Manifest**
+
+    As explained in [accessTokenAcceptedVersion attribute explanation](https://docs.microsoft.com/en-us/azure/active-directory/develop/reference-app-manifest#accesstokenacceptedversion-attribute), change the value to 2.
 
     ODM OpenID Liberty configuration needs version 2.0 for the issuerIdentifier. See the [openIdWebSecurity.xml](templates/openIdWebSecurity.xml) file.
 
-    It is also necessary to set **acceptMappedClaims** to `true` to manage claims. Without this setting, you get the exception `AADSTS50146: This application is required to be configured with an application-specific signing key. It is either not configured with one, or the key has expired or is not yet valid.` when requesting a token.
+    It is also necessary to set **acceptMappedClaims** to true to manage claims. Without this setting, you get the exception **AADSTS50146: This application is required to be configured with an application-specific signing key. It is either not configured with one, or the key has expired or is not yet valid.** when requesting a token.
 
-   Then, click Save.
+    With **Microsoft Graph App Manifest**:
+    *  **acceptMappedClaims** is relocated as a property of the **api** attribute
+    *  **accessTokenAcceptedVersion** is relocated as a property of the **api** attribute and renamed **requestedAccessTokenVersion**
+
+    Then, click Save.
 
 # Deploy ODM on a container configured with Microsoft Entra ID (Part 2)
 

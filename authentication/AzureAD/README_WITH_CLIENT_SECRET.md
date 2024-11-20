@@ -60,21 +60,21 @@
 
     In **Microsoft Entra Id** / **Manage** / **App registrations**, select **ODM Application**, and in **Manage / Token Configuration**:
 
-  * Add Optional Email ID Claim
+  * Add Optional **email** ID Claim
     * Click +Add optional claim
     * Select ID
-    * Check Email
-    * Click Add
-
-  * Add Optional Email Access Claim
-    * Click +Add optional claim
-    * Select Access
-    * Check Email
+    * Check **email**
     * Click Add
 
     * Turn on Microsoft Graph email permission
       * Check Turn on the Microsoft Graph email permission
       * Click Add
+
+  * Add Optional **email** Access Claim
+    * Click +Add optional claim
+    * Select Access
+    * Check **email**
+    * Click Add
 
   * Add Group Claim
     * Click +Add groups claim
@@ -89,7 +89,7 @@
 
   * Click Edit in the "Attributes & Claims" section
     * Click + Add new claim
-      * Name: identity
+      * Name: **identity**
       * Fill 2 Claim conditions in the exact following order:
         1. User Type: Any / Scoped Groups: 0 / Source: Attribute / Value: <CLIENT_ID>
         2. User Type: Members / Scoped Groups: 0 / Source: Attribute / Value: user.mail
@@ -111,11 +111,18 @@
 
     In **Microsoft Entra Id** / **Manage** / **App Registration**, select **ODM Application**, and then click **Manifest**.
 
+    The Manifest feature (a JSON representation of an app registration) is currently in transition.
+    [**AAD Graph app manifest**](https://learn.microsoft.com/en-us/entra/identity-platform/azure-active-directory-graph-app-manifest-deprecation) will be deprecated soon and not editable anymore starting 12/2/2024. It will be replaced by the **Microsoft Graph App Manifest**
+
     As explained in [accessTokenAcceptedVersion attribute explanation](https://docs.microsoft.com/en-us/azure/active-directory/develop/reference-app-manifest#accesstokenacceptedversion-attribute), change the value to 2.
 
     ODM OpenID Liberty configuration needs version 2.0 for the issuerIdentifier. See the [openIdWebSecurity.xml](templates/openIdWebSecurity.xml) file.
 
     It is also necessary to set **acceptMappedClaims** to true to manage claims. Without this setting, you get the exception **AADSTS50146: This application is required to be configured with an application-specific signing key. It is either not configured with one, or the key has expired or is not yet valid.** when requesting a token.
+
+    With **Microsoft Graph App Manifest**:
+    *  **acceptMappedClaims** is relocated as a property of the **api** attribute
+    *  **accessTokenAcceptedVersion** is relocated as a property of the **api** attribute and renamed **requestedAccessTokenVersion**
 
    Then, click Save.
 
@@ -318,7 +325,7 @@
 
     ```shell
     kubectl create secret generic users-groups-synchro-secret \
-        --from-file=sidecar-start.sh \
+        --from-file=./output/sidecar-start.sh \
         --from-file=generate-user-group-mgt.sh
     ```
     > **Note**
@@ -340,7 +347,7 @@
   ```shell
   helm search repo ibm-odm-prod
   NAME                  	CHART VERSION	APP VERSION	DESCRIPTION
-  ibm-helm/ibm-odm-prod   24.0.0          9.0.0.0   	IBM Operational Decision Manager
+  ibm-helm/ibm-odm-prod   24.1.0          9.0.0.1   	IBM Operational Decision Manager
   ```
 
 ### Run the `helm install` command
@@ -520,7 +527,7 @@ As explained in the ODM on Certified Kubernetes documentation [Configuring user 
 You can realize a basic authentication ODM runtime call the following way:
 
   ```shell
-$ curl -H "Content-Type: application/json" -k --data @payload.json \
+curl -H "Content-Type: application/json" -k --data @payload.json \
         -H "Authorization: Basic b2RtQWRtaW46b2RtQWRtaW4=" \
       https://<DS_RUNTIME_HOST>/DecisionService/rest/production_deployment/1.0/loan_validation_production/1.0
 ```
@@ -530,7 +537,7 @@ Where b2RtQWRtaW46b2RtQWRtaW4= is the base64 encoding of the current username:pa
 But if you want to execute a bearer authentication ODM runtime call using the Client Credentials flow, you have to get a bearer access token:
 
 ```shell
-$ curl -k -X POST -H "Content-Type: application/x-www-form-urlencoded" \
+curl -k -X POST -H "Content-Type: application/x-www-form-urlencoded" \
     -d 'client_id=<CLIENT_ID>&scope=<CLIENT_ID>%2F.default&client_secret=<CLIENT_SECRET>&grant_type=client_credentials' \
     'https://login.microsoftonline.com/<TENANT_ID>/oauth2/v2.0/token'
 ```
@@ -538,7 +545,7 @@ $ curl -k -X POST -H "Content-Type: application/x-www-form-urlencoded" \
 And use the retrieved access token in the following way:
 
   ```shell
-$ curl -H "Content-Type: application/json" -k --data @payload.json \
+curl -H "Content-Type: application/json" -k --data @payload.json \
         -H "Authorization: Bearer <ACCESS_TOKEN>" \
         https://<DS_RUNTIME_HOST>/DecisionService/rest/production_deployment/1.0/loan_validation_production/1.0
 ```
