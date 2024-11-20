@@ -57,7 +57,7 @@ For additional information regarding the implement in Liberty, please refer to t
   The expiration is set to 1000 days:
 
   ```shell
-    $ openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout myodmcompany.key \
+    openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout myodmcompany.key \
         -out myodmcompany.crt -subj "/CN=myodmcompany.com/OU=it/O=myodmcompany/L=Paris/C=FR" \
         -addext "subjectAltName = DNS:myodmcompany.com"
   ```
@@ -242,7 +242,7 @@ For additional information regarding the implement in Liberty, please refer to t
   ```shell
   helm search repo ibm-odm-prod
   NAME                  	CHART VERSION	APP VERSION	DESCRIPTION
-  ibm-helm/ibm-odm-prod	24.0.0       	9.0.0.0   	IBM Operational Decision Manager
+  ibm-helm/ibm-odm-prod	24.1.0       	9.0.0.1   	IBM Operational Decision Manager
   ```
 
 ### Run the `helm install` command
@@ -426,7 +426,7 @@ As explained in the ODM on Certified Kubernetes documentation [Configuring user 
 You can realize a basic authentication ODM runtime call the following way:
 
   ```shell
-$ curl -H "Content-Type: application/json" -k --data @payload.json \
+curl -H "Content-Type: application/json" -k --data @payload.json \
         -H "Authorization: Basic b2RtQWRtaW46b2RtQWRtaW4=" \
       https://<DS_RUNTIME_HOST>/DecisionService/rest/production_deployment/1.0/loan_validation_production/1.0
 ```
@@ -438,7 +438,7 @@ But if you want to execute a bearer authentication ODM runtime call using the Cl
 Before to generate the client_assertion, you need a keystore.jks that will be build using the previously generated myodmcompany.key private key and myodmcompany.crt public key PEM files with the commands:
 
 ```shell
-$ openssl pkcs12 -export -out myodmcompany.p12 -inkey myodmcompany.key -in myodmcompany.crt -passout pass:changeme
+openssl pkcs12 -export -out myodmcompany.p12 -inkey myodmcompany.key -in myodmcompany.crt -passout pass:changeme
 keytool -importkeystore -srckeystore myodmcompany.p12 -srcstoretype pkcs12 -srcalias 1 -srcstorepass changeme -destkeystore myodmcompany.jks -deststoretype jks -deststorepass changeme -destalias myalias
 ```
 
@@ -451,7 +451,7 @@ java -cp $DCLIB/jrules-teamserver.jar:$DCLIB/jose4j-0.9.3.jar:$DCLIB/slf4j-api-1
 Now, generate the access token using the client_assertion:
 
 ```shell
-$ curl -k -X POST -H "Content-Type: application/x-www-form-urlencoded" \
+curl -k -X POST -H "Content-Type: application/x-www-form-urlencoded" \
     -d 'client_id=<CLIENT_ID>&scope=<CLIENT_ID>%2F.default&client_assertion_type=urn%3Aietf%3Aparams%3Aoauth%3Aclient-assertion-type%3Ajwt-bearer&client_assertion=<CLIENT_ASSERTION>&grant_type=client_credentials' \
     'https://login.microsoftonline.com/<TENANT_ID>/oauth2/v2.0/token'
 ```
@@ -459,7 +459,7 @@ $ curl -k -X POST -H "Content-Type: application/x-www-form-urlencoded" \
 And use the retrieved access token in the following way:
 
   ```shell
-$ curl -H "Content-Type: application/json" -k --data @payload.json \
+curl -H "Content-Type: application/json" -k --data @payload.json \
         -H "Authorization: Bearer <ACCESS_TOKEN>" \
         https://<DS_RUNTIME_HOST>/DecisionService/rest/production_deployment/1.0/loan_validation_production/1.0
 ```
