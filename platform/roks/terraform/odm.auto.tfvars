@@ -17,6 +17,7 @@ vpc_enable_public_gateway     = true
 ##############################################################################
 # Optional: Specify OpenShift version. If not included, 4.15 is used
 openshift_version        = "4.16_openshift"
+
 openshift_os             = "RHCOS"
 openshift_machine_flavor = "bx2.4x16"
 
