@@ -67,7 +67,7 @@ fi
 if [[ ${AZUREAD_TENANT_ID} != "https://.*" ]]; then
   AZUREAD_SERVER_URL=https://login.microsoftonline.com/${AZUREAD_TENANT_ID}
 else
-  AZUREAD_SERVER_URL=${AZUREAD_SERVER_NAME}
+  AZUREAD_SERVER_URL=${AZUREAD_TENANT_ID}
 fi
 
 mkdir -p $OUTPUT_DIR && cp $TEMPLATE_DIR/* $OUTPUT_DIR
