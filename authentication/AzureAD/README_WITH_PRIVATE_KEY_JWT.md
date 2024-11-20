@@ -75,21 +75,21 @@ For additional information regarding the implement in Liberty, please refer to t
 
     In **Microsoft Entra Id** / **Manage** / **App registrations**, select **ODM Application**, and in **Manage / Token Configuration**:
 
-  * Add Optional Email ID Claim
+  * Add Optional **email** ID Claim
     * Click **+ Add optional claim**
     * Select **ID**
-    * Check **Email**
-    * Click **Add**
-
-  * Add Optional Email Access Claim
-    * Click **+ Add optional claim**
-    * Select **Access**
-    * Check **Email**
+    * Check **email**
     * Click **Add**
 
     * Turn on Microsoft Graph email permission
       * Check **Turn on the Microsoft Graph email permission**
       * Click **Add**
+
+  * Add Optional **email** Access Claim
+    * Click **+ Add optional claim**
+    * Select **Access**
+    * Check **email**
+    * Click **Add**
 
   * Add Group Claim
     * Click **+ Add groups claim**
@@ -445,7 +445,7 @@ keytool -importkeystore -srckeystore myodmcompany.p12 -srcstoretype pkcs12 -srca
 Now you can generate the client_assertion following the [ODM documentation](https://www.ibm.com/docs/en/odm/9.0.0?topic=900-generating-json-web-token-client-assertion).
 
 ```shell
-java -cp $DCLIB/jrules-teamserver.jar:$DCLIB/jose4j-0.9.3.jar:$DCLIB/slf4j-api-1.7.25.jar com.ibm.rules.oauth.ClientAssertionHelper -clientId <CLIENT_ID> -tokenEndpoint https://login.microsoftonline.com/<TENANT_ID>/oauth2/v2.0/token -keyAliasName myalias -keyStorePwd changeme -keyStoreLocation ./myodmcompany.jks
+java -cp $DCLIB/jrules-teamserver.jar:$DCLIB/jose4j-0.9.5.jar:$DCLIB/slf4j-api-1.7.25.jar com.ibm.rules.oauth.ClientAssertionHelper -clientId <CLIENT_ID> -tokenEndpoint https://login.microsoftonline.com/<TENANT_ID>/oauth2/v2.0/token -keyAliasName myalias -keyStorePwd changeme -keyStoreLocation ./myodmcompany.jks
 ```
 
 Now, generate the access token using the client_assertion:
