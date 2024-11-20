@@ -1,8 +1,8 @@
-# Deploying IBM Operational Decision Manager on Redhat Openshift Kubernetes Service on IBM Cloud aka ROKS
+# Deploying IBM Operational Decision Manager on a managed OpenShift cluster on IBM Cloud
 
-This project demonstrates how to deploy an IBM® Operational Decision Manager (ODM) clustered topology on Redhat OpenShift Kubernetes Service on IBM Cloud (ROKS), leveraging Kubernetes and Docker technologies.
+This project demonstrates how to deploy an IBM® Operational Decision Manager (ODM) clustered topology on a managed OpenShift Service on IBM Cloud, also known as ROKS, leveraging Kubernetes and Docker technologies.
 
-Redhat OpenShift is available on various cloud platforms. More details about all [these availabilities](https://www.redhat.com/en/technologies/cloud-computing/openshift#cloud-services-editions).
+Red Hat OpenShift is available on various cloud platforms. More details about all [these availabilities](https://www.redhat.com/en/technologies/cloud-computing/openshift#cloud-services-editions).
 
 This tutorial focuses on deploying ODM on the [IBM Cloud platform](https://www.redhat.com/en/technologies/cloud-computing/openshift/ibm).
 
