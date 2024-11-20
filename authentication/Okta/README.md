@@ -329,7 +329,7 @@ In this step, we augment the token with meta-information that is required by the
     You can now install the product. We will use the PostgreSQL internal database and disable the data persistence (`internalDatabase.persistence.enabled=false`) to avoid any platform complexity concerning persistent volume allocation.
 
     ```
-    helm install my-odm-release ibm-helm/ibm-odm-prod \
+    helm install my-odm-release ibm-helm/ibm-odm-prod --set image.tag=9.0.0.0 \
           --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
           --set oidc.enabled=true \
           --set internalDatabase.persistence.enabled=false \

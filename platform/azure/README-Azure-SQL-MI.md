@@ -52,7 +52,7 @@ kubectl create secret generic <odmdbsecret> --from-literal=db-user=<sqlmiadmin> 
 Then you can deploy ODM with:
 
 ```bash
-helm install <release> ibmcharts/ibm-odm-prod --version 24.0.0 \
+helm install <release> ibmcharts/ibm-odm-prod \
         --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=<registrysecret> \
         --set image.tag=${ODM_VERSION:-9.0.0.0} --set service.type=LoadBalancer \
         --set externalDatabase.type=sqlserver \

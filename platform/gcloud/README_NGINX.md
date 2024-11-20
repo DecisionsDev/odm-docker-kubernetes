@@ -28,7 +28,7 @@ The secured HTTPS communication is managed by the NGINX ingress controller. So, 
 Replace the placeholders in the [gcp-values.yaml](./gcp-values.yaml) file and install the chart:
 
 ```
-helm install mycompany ibm-helm/ibm-odm-prod --version 24.0.0 \
+helm install mycompany ibm-helm/ibm-odm-prod --set image.tag=9.0.0.0 \
     -f gcp-values.yaml \
     --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"}
 ```
