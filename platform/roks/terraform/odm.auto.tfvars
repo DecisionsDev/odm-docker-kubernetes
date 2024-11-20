@@ -8,7 +8,6 @@ region = "eu-de" # eu-de for Frankfurt MZR
 ##############################################################################
 ## VPC
 ##############################################################################
-vpc_classic_access            = false
 vpc_address_prefix_management = "manual"
 vpc_enable_public_gateway     = true
 
@@ -17,7 +16,7 @@ vpc_enable_public_gateway     = true
 ## Cluster ROKS
 ##############################################################################
 # Optional: Specify OpenShift version. If not included, 4.15 is used
-openshift_version        = "4.15_openshift"
+openshift_version        = "4.16_openshift"
 openshift_os             = "RHCOS"
 openshift_machine_flavor = "bx2.4x16"
 
