@@ -43,8 +43,6 @@ Then, [create an Azure account and pay as you go](https://azure.microsoft.com/en
 - [Create the PostgreSQL Azure instance 10 min](#create-the-postgresql-azure-instance-10-min)
 - [Prepare your environment for the ODM installation](#prepare-your-environment-for-the-odm-installation)
 - [Install an ODM Helm release and expose it with the service type LoadBalancer 10 min](#install-an-odm-helm-release-and-expose-it-with-the-service-type-loadbalancer-10-min)
-- [Create an NGINX Ingress controller](#create-an-nginx-ingress-controller)
-- [Optional Install an ODM Helm release and expose it with the NGINX Ingress controller 10 min](#optional-install-an-odm-helm-release-and-expose-it-with-the-nginx-ingress-controller-10-min)
 - [Install the IBM License Service and retrieve license usage](#install-the-ibm-license-service-and-retrieve-license-usage)
 - [Troubleshooting](#troubleshooting)
 - [Getting Started with IBM Operational Decision Manager for Containers](#getting-started-with-ibm-operational-decision-manager-for-containers)
@@ -112,7 +110,7 @@ After a few minutes, the command completes and returns JSON-formatted informatio
 
 ```shell
 az group update --name <noderesourcegroup> \
-    --tags Owner=<email> Team=DBA Usage=demo Usage_desc="Azure customers support" Delete_date=2023-12-31
+    --tags Owner=<email> Team=DBA Usage=demo Usage_desc="Azure customers support" Delete_date=2024-12-31
 ```
        
 ### Set up your environment to this cluster
@@ -139,8 +137,8 @@ The following example output shows the single node created in the previous steps
 
 ```
 NAME                                STATUS   ROLES   AGE   VERSION
-aks-nodepool1-27504729-vmss000000   Ready    agent   21m   v1.28.5
-aks-nodepool1-27504729-vmss000001   Ready    agent   21m   v1.28.5
+aks-nodepool1-27504729-vmss000000   Ready    agent   21m   v1.29.9
+aks-nodepool1-27504729-vmss000001   Ready    agent   21m   v1.29.9
 ```
 
 ## Create the PostgreSQL Azure instance (10 min)
@@ -269,7 +267,7 @@ Check that you can access the ODM charts:
 ```shell
 helm search repo ibm-odm-prod
 NAME                        	CHART VERSION	APP VERSION	DESCRIPTION
-ibmcharts/ibm-odm-prod      	24.0.0       	9.0.0.0  	IBM Operational Decision Manager  License By in...
+ibmcharts/ibm-odm-prod      	24.1.0       	9.0.0.1  	IBM Operational Decision Manager  License By in...
 ```
 
 ### Manage a digital certificate (10 min)
@@ -305,12 +303,15 @@ az aks update --name <cluster> --resource-group <resourcegroup> --load-balancer-
 
 ### Install the ODM release
 
+> **Note**
+> If you prefer to use the NGINX Ingress Controller instead of the default AKS Load Balancer, refer to [Deploying IBM Operational Decision Manager with NGINX Ingress Controller on Azure AKS](README-NGINX.md)
+
 You can now install the product:
 
 ```shell
 helm install <release> ibmcharts/ibm-odm-prod  \
         --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=<registrysecret> \
-        --set image.tag=${ODM_VERSION:-9.0.0.0} --set service.type=LoadBalancer \
+        --set service.type=LoadBalancer \
         --set externalDatabase.type=postgres \
         --set externalDatabase.serverName=<postgresqlserver>.postgres.database.azure.com \
         --set externalDatabase.databaseName=postgres \
@@ -355,131 +356,43 @@ NAME                                        TYPE           CLUSTER-IP     EXTERN
 You can then open a browser on `https://xxx.xxx.xxx.xxx:9453` to access Decision Center, and on `https://xxx.xxx.xxx.xxx:9443` to access Decision Server console, Decision Server Runtime, and Decision Runner.
 <!-- markdown-link-check-enable -->
 
-## Create an NGINX Ingress controller
-
-Installing an NGINX Ingress controller allows you to access ODM components through a single external IP address instead of the different IP addresses as seen above.  It is also mandatory to retrieve license usage through the IBM License Service.
-
-1. Use the official YAML manifest:
-
-    ```shell
-    kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.9.6/deploy/static/provider/cloud/deploy.yaml
-    ```
-
-    > [!NOTE]
-    > The version will probably change after the publication of our documentation so please refer to the actual [documentation](https://kubernetes.github.io/ingress-nginx/deploy/#azure)!
-
-2. Get the Ingress controller external IP address (it will appear 80 seconds or so after the resource application above):
-
-    ```shell
-    kubectl get service --selector app.kubernetes.io/name=ingress-nginx --namespace ingress-nginx
-    NAME                                 TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)                      AGE
-    ingress-nginx-controller             LoadBalancer   10.0.78.246    20.19.105.130   80:32208/TCP,443:30249/TCP   2m12s
-    ingress-nginx-controller-admission   ClusterIP      10.0.229.164   <none>          443/TCP                      2m12s
-    ```
-
-3. Verify the name of the new IngressClass:
-
-    ```shell
-    kubectl get ingressclass
-    NAME    CONTROLLER             PARAMETERS   AGE
-    nginx   k8s.io/ingress-nginx   <none>       5h38m
-    ```
-
-    It should be "nginx" but if different please update the next command accordingly.
-
-## (Optional) Install an ODM Helm release and expose it with the NGINX Ingress controller (10 min)
-
-You might want to access ODM components through a single external IP address.
-
-### Install the product
-
-You can reuse the secret with TLS certificate created [above](#manage-adigital-certificate-10-min):
-
-```shell
-helm install <release> ibmcharts/ibm-odm-prod \
-        --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=<registrysecret> \
-        --set image.tag=${ODM_VERSION:-9.0.0.0} \
-        --set externalDatabase.type=postgres \
-        --set externalDatabase.serverName=<postgresqlserver>.postgres.database.azure.com \
-        --set externalDatabase.databaseName=postgres \
-        --set externalDatabase.port=5432 \
-        --set externalDatabase.secretCredentials=<odmdbsecret> \
-        --set service.ingress.enabled=true --set service.ingress.tlsSecretRef=<mynicecompanytlssecret> \
-        --set service.ingress.tlsHosts={mynicecompany.com} --set service.ingress.host=mynicecompany.com \
-        --set service.ingress.annotations={"nginx.ingress.kubernetes.io/backend-protocol: HTTPS"} \
-        --set service.ingress.class=nginx \
-        --set license=true --set usersPassword=<password>
-```
-
-> [!NOTE]
-> By default, the NGINX Ingress controller does not enable sticky session. If you want to use sticky session to connect to DC, refer to [Using sticky session for Decision Center connection](../../contrib/sticky-session/README.md)
-
-
-### Edit the file /etc/hosts on your host
-
-```shell
-# vi /etc/hosts
-<externalip> mynicecompany.com
-```
-
-### Access the ODM services
-
-Check that ODM services are in NodePort type:
-
-```shell
-kubectl get services --selector release=<release>
-NAME                                             TYPE           CLUSTER-IP     EXTERNAL-IP    PORT(S)                      AGE
-release-odm-decisioncenter                       NodePort       10.0.178.43    <none>         9453:32720/TCP               16m
-release-odm-decisionrunner                       NodePort       10.0.171.46    <none>         9443:30223/TCP               16m
-release-odm-decisionserverconsole                NodePort       10.0.106.222   <none>         9443:30280/TCP               16m
-release-odm-decisionserverconsole-notif          ClusterIP      10.0.115.118   <none>         1883/TCP                     16m
-release-odm-decisionserverruntime                NodePort       10.0.232.212   <none>         9443:30082/TCP               16m
-```
-
-ODM services are available through the following URLs:
-
-<!-- markdown-link-check-disable -->
-| SERVICE NAME | URL | USERNAME/PASSWORD
-| --- | --- | ---
-| Decision Server Console | https://mynicecompany.com/res | odmAdmin/\<password\>
-| Decision Center | https://mynicecompany.com/decisioncenter | odmAdmin/\<password\>
-| Decision Server Runtime | https://mynicecompany.com/DecisionService | odmAdmin/\<password\>
-| Decision Runner | https://mynicecompany.com/DecisionRunner | odmAdmin/\<password\>
-<!-- markdown-link-check-enable -->
-
-Where:
-
-* \<password\> is the password provided to the **usersPassword** helm chart parameter
-
 ## Install the IBM License Service and retrieve license usage
 
 This section explains how to track ODM usage with the IBM License Service.
 
-Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cpfs?topic=software-manual-installation-without-operator-lifecycle-manager-olm) documentation. Do not follow the **Creating an IBM Licensing instance**  part!
+Follow the **Installation** section of the [Installation License Service without Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.9?topic=ils-installing-license-service-without-operator-lifecycle-manager-olm) documentation.
 
-### Create the Licensing instance
+#### b. Patch the IBM Licensing instance
 
-Just run:
+Get the [licensing-instance.yaml](./licensing-instance.yaml) file and run the command:
 
-```shell
-kubectl create -f licensing-instance.yml -n ibm-common-services
+```bash
+kubectl patch IBMLicensing instance --type merge --patch-file licensing-instance.yaml -n ibm-licensing 
 ```
 
-(More information and use cases on [this page](https://www.ibm.com/docs/en/cpfs?topic=software-configuration).)
+Wait a couple of minutes for the changes to be applied. 
+
+You can find more information and use cases on [this page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.9?topic=configuration-configuring-kubernetes-ingress).
+
+> **Note**
+> If you choose to use the NGINX Ingress Controller, you must use the [licensing-instance-nginx.yaml](./licensing-instance-nginx.yaml) file. Refer to [Track ODM usage with the IBM License Service with NGINX Ingress Controller](README-NGINX.md#track-odm-usage-with-the-ibm-license-service-with-nginx-ingress-controller).
 
 ### Retrieve license usage
 
-After a couple of minutes, the NGINX load balancer reflects the Ingress configuration and you will be able to access the IBM License Service by retrieving the URL with this command:
+You will be able to access the IBM License Service by retrieving the URL with this command:
 
-```shell
-export LICENSING_URL=$(kubectl get ingress ibm-licensing-service-instance --namespace ibm-common-services --no-headers | awk '{print $4}')/ibm-licensing-service-instance
-export TOKEN=$(kubectl get secret ibm-licensing-token --output jsonpath={.data.token} --namespace ibm-common-services | base64 -d)
+```bash
+export LICENSING_URL=$(kubectl get ingress ibm-licensing-service-instance -n ibm-licensing -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+export TOKEN=$(kubectl get secret ibm-licensing-token -n ibm-licensing -o jsonpath='{.data.token}' |base64 -d)
 ```
 
-You can access the `http://${LICENSING_URL}/status?token=${TOKEN}` URL to view the licensing usage, or retrieve the licensing report .zip file by running:
+> **Note**
+> If `LICENSING_URL` is empty, take a look at the [troubleshooting](#troubleshooting) section.
+
+You can access the `http://${LICENSING_URL}:8080/status?token=${TOKEN}` URL to view the licensing usage or retrieve the licensing report .zip file by running:
 
 ```shell
-curl "http://${LICENSING_URL}/snapshot?token=${TOKEN}" --output report.zip
+curl "http://${LICENSING_URL}:8080/snapshot?token=${TOKEN}" --output report.zip
 ```
 
 If your IBM License Service instance is not running properly, refer to this [troubleshooting page](https://www.ibm.com/docs/en/cpfs?topic=software-troubleshooting).
