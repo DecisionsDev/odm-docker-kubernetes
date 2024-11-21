@@ -404,7 +404,7 @@ export TOKEN=$(kubectl get secret ibm-licensing-token -n ibm-licensing -o jsonpa
 ```
 
 > **Note**
-> If `LICENSING_URL` is empty, take a look at the [troubleshooting](#troubleshooting) section.
+> If `LICENSING_URL` is empty, take a look at the [troubleshooting](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.9?topic=service-troubleshooting-license) page.
 
 You can access the `http://${LICENSING_URL}:8080/status?token=${TOKEN}` URL to view the licensing usage or retrieve the licensing report .zip file by running:
 
