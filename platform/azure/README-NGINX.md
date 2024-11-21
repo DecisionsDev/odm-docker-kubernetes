@@ -131,16 +131,16 @@ ibm-licensing-service-instance   nginx   *       xxx.xxx.xxx.xxx     80      11m
 You will be able to access the IBM License Service by retrieving the URL with this command:
 
 ```bash
-export LICENSING_URL=$(kubectl get ingress ibm-licensing-service-instance -n ibm-licensing -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')/ibm-licensing-service-instance
+export LICENSING_URL=$(kubectl get ingress ibm-licensing-service-instance -n ibm-licensing -o jsonpath='{.status.loadBalancer.ingress[0].ip}')/ibm-licensing-service-instance
 export TOKEN=$(kubectl get secret ibm-licensing-token -n ibm-licensing -o jsonpath='{.data.token}' |base64 -d)
 ```
 
-You can access the `http://${LICENSING_URL}:8080/status?token=${TOKEN}` URL to view the licensing usage. 
+You can access the `http://${LICENSING_URL}/status?token=${TOKEN}` URL to view the licensing usage. 
 
 Otherwise, you can also retrieve the licensing report .zip file by running:
 
 ```bash
-curl "http://${LICENSING_URL}:8080/snapshot?token=${TOKEN}" --output report.zip
+curl "http://${LICENSING_URL}/snapshot?token=${TOKEN}" --output report.zip
 ```
 
 If your IBM License Service instance is not running properly, refer to this [troubleshooting page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.9?topic=service-troubleshooting-license).
