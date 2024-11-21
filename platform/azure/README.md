@@ -103,7 +103,7 @@ Use the `az aks create` command to create an AKS cluster. The following example 
 
 ```shell
 az aks create --name <cluster> --resource-group <resourcegroup> --node-count 2 \
-          --enable-cluster-autoscaler --min-count 2 --max-count 4
+          --enable-cluster-autoscaler --min-count 2 --max-count 4 --generate-ssh-keys
 ```
 
 After a few minutes, the command completes and returns JSON-formatted information about the cluster.  Make a note of the newly-created Resource Group that is displayed in the JSON output (e.g. "nodeResourceGroup": "<noderesourcegroup>") if you have to tag it, for example:
@@ -145,13 +145,13 @@ aks-nodepool1-27504729-vmss000001   Ready    agent   21m   v1.29.9
 
 ### Create an Azure Database for PostgreSQL
 
-Create an Azure Database for PostgreSQL server by running the `az postgres server create` command. A server can contain multiple databases.
+Create an Azure Database for PostgreSQL flexible server by running the `az postgres flexible-server create` command. A server can contain multiple databases.
 To get a good bandwidth between ODM containers and the database, choose the same location for the PostgreSQL server and for the AKS cluster.
 
 ```shell
-az postgres server create --name <postgresqlserver> --resource-group <resourcegroup> \
+az postgres flexible-server create --name <postgresqlserver> --resource-group <resourcegroup> \
                           --admin-user myadmin --admin-password 'passw0rd!' \
-                          --sku-name GP_Gen5_2 --version 11
+                          --sku-name Standard_D2s_v3 --version 15
 ```
 
 > [!NOTE]
@@ -161,7 +161,7 @@ Verify the database.
 To connect to your server, you need to provide host information and access credentials.
 
 ```shell
-az postgres server show --name <postgresqlserver> --resource-group <resourcegroup>
+az postgres flexible-server show --name <postgresqlserver> --resource-group <resourcegroup>
 ```
 
 Result:
@@ -169,39 +169,88 @@ Result:
 ```json
 {
   "administratorLogin": "myadmin",
-  "byokEnforcement": "Disabled",
-  "earliestRestoreDate": "2022-01-06T09:15:54.563000+00:00",
+  "administratorLoginPassword": null,
+  "authConfig": {
+    "activeDirectoryAuth": "Disabled",
+    "passwordAuth": "Enabled",
+    "tenantId": null
+  },
+  "availabilityZone": "2",
+  "backup": {
+    "backupRetentionDays": 7,
+    "earliestRestoreDate": "2024-11-21T10:10:16.007641+00:00",
+    "geoRedundantBackup": "Disabled"
+  },
+  "cluster": null,
+  "createMode": null,
+  "dataEncryption": {
+    "geoBackupEncryptionKeyStatus": null,
+    "geoBackupKeyUri": null,
+    "geoBackupUserAssignedIdentityId": null,
+    "primaryEncryptionKeyStatus": null,
+    "primaryKeyUri": null,
+    "primaryUserAssignedIdentityId": null,
+    "type": "SystemManaged"
+  },
   "fullyQualifiedDomainName": "<postgresqlserver>.postgres.database.azure.com",
-  "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-5242e4507709/resourceGroups/<resourcegroup>/providers/Microsoft.DBforPostgreSQL/servers/<postgresqlserver>",
+  "highAvailability": {
+    "mode": "Disabled",
+    "standbyAvailabilityZone": null,
+    "state": "NotEnabled"
+  },
+  "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-cb6e4a84fda1/resourceGroups/<resourcegroup>/providers/Microsoft.DBforPostgreSQL/flexibleServers/<postgresqlserver>",
   "identity": null,
-  "infrastructureEncryption": "Disabled",
   "location": "<azurelocation>",
-  "masterServerId": "",
-  "minimalTlsVersion": "TLSEnforcementDisabled",
+  "maintenanceWindow": {
+    "customWindow": "Disabled",
+    "dayOfWeek": 0,
+    "startHour": 0,
+    "startMinute": 0
+  },
+  "minorVersion": "8",
   "name": "<postgresqlserver>",
+  "network": {
+    "delegatedSubnetResourceId": null,
+    "privateDnsZoneArmResourceId": null,
+    "publicNetworkAccess": "Enabled"
+  },
+  "pointInTimeUtc": null,
   "privateEndpointConnections": [],
-  "publicNetworkAccess": "Enabled",
+  "replica": {
+    "capacity": 5,
+    "promoteMode": null,
+    "promoteOption": null,
+    "replicationState": null,
+    "role": "Primary"
+  },
   "replicaCapacity": 5,
-  "replicationRole": "None",
+  "replicationRole": "Primary",
   "resourceGroup": "<resourcegroup>",
   "sku": {
-    "capacity": 2,
-    "family": "Gen5",
-    "name": "GP_Gen5_2",
-    "size": null,
+    "name": "Standard_D2s_v3",
     "tier": "GeneralPurpose"
   },
-  "sslEnforcement": "Enabled",
-  "storageProfile": {
-    "backupRetentionDays": 7,
-    "geoRedundantBackup": "Disabled",
-    "storageAutogrow": "Enabled",
-    "storageMb": 51200
+  "sourceServerResourceId": null,
+  "state": "Ready",
+  "storage": {
+    "autoGrow": "Disabled",
+    "iops": 500,
+    "storageSizeGb": 128,
+    "throughput": null,
+    "tier": "P10",
+    "type": ""
+  },
+  "systemData": {
+    "createdAt": "2024-11-21T10:05:19.405443+00:00",
+    "createdBy": null,
+    "createdByType": null,
+    "lastModifiedAt": null,
+    "lastModifiedBy": null,
+    "lastModifiedByType": null
   },
   "tags": null,
-  "type": "Microsoft.DBforPostgreSQL/servers",
-  "userVisibleState": "Ready",
-  "version": "11"
+  "type": "Microsoft.DBforPostgreSQL/flexibleServers",
+  "version": "15"
 }
 ```
 
@@ -212,8 +261,8 @@ Make a note of the server name that is displayed in the JSON output (e.g. "fully
 To make sure your database and your AKS cluster can communicate, put in place firewall rules with the following command:
 
 ```shell
-az postgres server firewall-rule create --resource-group <resourcegroup> --server-name <postgresqlserver> \
-            --name <rule> --start-ip-address 0.0.0.0 --end-ip-address 255.255.255.255
+az postgres flexible-server firewall-rule create --resource-group <resourcegroup> --name <postgresqlserver> \
+            --rule-name <rule-name> --start-ip-address 0.0.0.0 --end-ip-address 255.255.255.255
 ```
 
 ### Create the database credentials secret for Azure PostgreSQL
@@ -221,7 +270,7 @@ az postgres server firewall-rule create --resource-group <resourcegroup> --serve
 To secure the access to the database, create a secret that encrypts the database user and password before you install the Helm release.
 
 ```shell
-kubectl create secret generic <odmdbsecret> --from-literal=db-user=myadmin@<postgresqlserver> \
+kubectl create secret generic <odmdbsecret> --from-literal=db-user=myadmin \
                                             --from-literal=db-password='passw0rd!'
 ```
 
