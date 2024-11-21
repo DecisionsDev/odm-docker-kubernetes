@@ -362,6 +362,23 @@ This section explains how to track ODM usage with the IBM License Service.
 
 Follow the **Installation** section of the [Installation License Service without Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.9?topic=ils-installing-license-service-without-operator-lifecycle-manager-olm) documentation.
 
+#### a. Expose the licensing service using the AKS LoadBalancer
+
+To expose the licensing service using the AKS LoadBalancer, run the command:
+
+```bash
+kubectl patch svc ibm-licensing-service-instance -p '{"spec": { "type": "LoadBalancer"}}' -n ibm-licensing
+```
+
+Wait a couple of minutes for the changes to be applied.
+Then, you should see an EXTERNAL-IP available for the exposed licensing service.
+
+```shell
+oc get service -n ibm-licensing
+NAME                                        TYPE           CLUSTER-IP     EXTERNAL-IP       PORT(S)          AGE
+ibm-licensing-service-instance              LoadBalancer   10.0.58.142    xxx.xxx.xxx.xxx   8080:32301/TCP   10m
+```
+
 #### b. Patch the IBM Licensing instance
 
 Get the [licensing-instance.yaml](./licensing-instance.yaml) file and run the command:
@@ -382,7 +399,7 @@ You can find more information and use cases on [this page](https://www.ibm.com/d
 You will be able to access the IBM License Service by retrieving the URL with this command:
 
 ```bash
-export LICENSING_URL=$(kubectl get ingress ibm-licensing-service-instance -n ibm-licensing -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+export LICENSING_URL=$(kubectl get service ibm-licensing-service-instance -n ibm-licensing -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 export TOKEN=$(kubectl get secret ibm-licensing-token -n ibm-licensing -o jsonpath='{.data.token}' |base64 -d)
 ```
 
