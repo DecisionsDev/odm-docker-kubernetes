@@ -11,6 +11,7 @@ The related instructions in the online documentation are:
 ## Prerequisites:
 
 - Install the following tools on your bastion host (if needed, refer to [Setting up a host to mirror images to a private registry](https://www.ibm.com/docs/en/odm/9.0.0?topic=installation-setting-up-host-mirror-images-private-registry)):
+  - [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html)
   - Docker or Podman
   - OCP CLI (oc)
   - [IBM ibm-pak plugin](https://github.com/IBM/ibm-pak)
@@ -20,6 +21,12 @@ The related instructions in the online documentation are:
   - icr.io:443 for IBM Cloud Container Registry 
   - github.com for CASE files and tools
   - Amazon ECR
+
+- Configure the `aws` CLI environment by running the following command: 
+  ```bash
+  aws configure 
+  ```
+  You will be prompted to provide your AWS Access Key ID, AWS Secret Access Key and the Default region name.
 
 - Export the following environment variables (replace the placeholders `<AWS-Region>`, `<AWS-AccountId>`, `<ODM-CaseVersion>` and `<amd64|ppc64le|s390x>` with actual values):
 
@@ -74,14 +81,14 @@ The related instructions in the online documentation are:
   sed -i "s/$/-${ARCHITECTURE}/" ~/.ibm-pak/data/mirror/${CASE_NAME}/${CASE_VERSION}/images-mapping.txt
   ```
 
-  Here is an example of such a file after this modification:
+  Here is an example of such a file after this modification for CASE version `1.7.0`:
 
   ```
-  cp.icr.io/cp/cp4a/odm/dbserver@sha256:bde14b68043370e9a4e49b1f3394978c202e0d5495e0121bd7972b37a7d99c35=194826081736.dkr.ecr.eu-west-3.amazonaws.com/cp/cp4a/odm/dbserver:9.0.0.0-amd64
-  cp.icr.io/cp/cp4a/odm/odm-decisioncenter@sha256:869a6a47b5c49865086242e60228eaba7292b8d2e8e56ee4b67ea4fc07d591ad=194826081736.dkr.ecr.eu-west-3.amazonaws.com/cp/cp4a/odm/odm-decisioncenter9.0.0.0-amd64
-  cp.icr.io/cp/cp4a/odm/odm-decisionrunner@sha256:70824d9aa218c0b768e42a35f6dcc5f424779d1f54540a885fc9395a7a9e07c3=194826081736.dkr.ecr.eu-west-3.amazonaws.com/cp/cp4a/odm/odm-decisionrunner:9.0.0.0-amd64
-  cp.icr.io/cp/cp4a/odm/odm-decisionserverconsole@sha256:9a2f71ab6b62ffc2adf84d68b9d5fcee54d91ab76b62661265a6842479f4388b=194826081736.dkr.ecr.eu-west-3.amazonaws.com/cp/cp4a/odm/odm-decisionserverconsole:9.0.0.0-amd64
-  cp.icr.io/cp/cp4a/odm/odm-decisionserverruntime@sha256:b5539e7efbe410d1a874abcd20d170dabf073d91a0ad58ae69ee03b7acea92d3=194826081736.dkr.ecr.eu-west-3.amazonaws.com/cp/cp4a/odm/odm-decisionserverruntime:9.0.0.0-amd64
+  cp.icr.io/cp/cp4a/odm/dbserver@sha256:bde14b68043370e9a4e49b1f3394978c202e0d5495e0121bd7972b37a7d99c35=194826081736.dkr.ecr.eu-west-3.amazonaws.com/cp/cp4a/odm/dbserver:8.12.0.1-amd64
+  cp.icr.io/cp/cp4a/odm/odm-decisioncenter@sha256:869a6a47b5c49865086242e60228eaba7292b8d2e8e56ee4b67ea4fc07d591ad=194826081736.dkr.ecr.eu-west-3.amazonaws.com/cp/cp4a/odm/odm-decisioncenter:8.12.0.1-amd64
+  cp.icr.io/cp/cp4a/odm/odm-decisionrunner@sha256:70824d9aa218c0b768e42a35f6dcc5f424779d1f54540a885fc9395a7a9e07c3=194826081736.dkr.ecr.eu-west-3.amazonaws.com/cp/cp4a/odm/odm-decisionrunner:8.12.0.1-amd64
+  cp.icr.io/cp/cp4a/odm/odm-decisionserverconsole@sha256:9a2f71ab6b62ffc2adf84d68b9d5fcee54d91ab76b62661265a6842479f4388b=194826081736.dkr.ecr.eu-west-3.amazonaws.com/cp/cp4a/odm/odm-decisionserverconsole:8.12.0.1-amd64
+  cp.icr.io/cp/cp4a/odm/odm-decisionserverruntime@sha256:b5539e7efbe410d1a874abcd20d170dabf073d91a0ad58ae69ee03b7acea92d3=194826081736.dkr.ecr.eu-west-3.amazonaws.com/cp/cp4a/odm/odm-decisionserverruntime:8.12.0.1-amd64
   ```
 
   > WARNING:
@@ -92,7 +99,7 @@ The related instructions in the online documentation are:
 
     > NOTE: 
     You must specify the user as `cp` to log in to `cp.icr.io`. The password is your Entitlement key from the [IBM Cloud Container Registry](https://myibm.ibm.com/products-services/containerlibrary).
-
+    
     - If you use Podman:
 
       > Note: by default Podman reads and stores credentials in `${XDG_RUNTIME_DIR}/containers/auth.json`. Read more [here](https://docs.podman.io/en/stable/markdown/podman-login.1.html).
@@ -170,9 +177,9 @@ The related instructions in the online documentation are:
 
 - Find the Helm Chart version related to your CASE version:
 
-    For instance, if you choose the CASE version `1.8.0`, then the Helm chart version should be `24.0.0` and you should set:
+    For instance, if you choose the CASE version `1.9.0`, then the Helm chart version should be `24.1.0` and you should set:
     ```bash
-    export CHART_VERSION=24.0.0
+    export CHART_VERSION=24.1.0
     ```
 
     You can find the Helm chart version related to a given CASE version:
@@ -181,23 +188,23 @@ The related instructions in the online documentation are:
 
     - For an interim fix: click the link for your version of ODM in the page [Operational Decision Manager Interim Fixes](https://www.ibm.com/support/pages/operational-decision-manager-interim-fixes) and then check the table "Interim fix for ODM on Certified Kubernetes".
 
-    - Alternatively, you can also run the command `tree  ~/.ibm-pak/data/cases/ibm-odm-prod/` (on the bastion host), and you can find the chart version number in the name of the file `ibm-odm-prod-<CHART_VERSION>.tgz` located in `<CASE_VERSION>/charts/` :
+    - Alternatively, you can also run the command `tree  ~/.ibm-pak/data/cases/ibm-odm-prod/` (on the bastion host), and you can find the chart version number corresponding to the file `ibm-odm-prod-<CHART_VERSION>.tgz`. Below is an example for CASE version `1.9.0` that corresponds to Helm chart version `24.1.0` :
 
       ```bash
       /home/user/.ibm-pak/data/cases/ibm-odm-prod/
-      └── 1.8.0
+      └── 1.9.0
           ├── caseDependencyMapping.csv
           ├── charts
-          │   └── ibm-odm-prod-24.0.0.tgz
+          │   └── ibm-odm-prod-24.1.0.tgz
           ├── component-set-config.yaml
-          ├── ibm-odm-prod-1.8.0-airgap-metadata.yaml
-          ├── ibm-odm-prod-1.8.0-charts.csv
-          ├── ibm-odm-prod-1.8.0-images.csv
-          ├── ibm-odm-prod-1.8.0.tgz
+          ├── ibm-odm-prod-1.9.0-airgap-metadata.yaml
+          ├── ibm-odm-prod-1.9.0-charts.csv
+          ├── ibm-odm-prod-1.9.0-images.csv
+          ├── ibm-odm-prod-1.9.0.tgz
           └── resourceIndexes
               └── ibm-odm-prod-resourcesIndex.yaml
       ```
-- Run the `helm install` command below:
+- Run the `helm install` command below to install ODM:
 
   ```bash
   helm install mycompany ibm-helm/ibm-odm-prod --version ${CHART_VERSION} \
@@ -205,3 +212,6 @@ The related instructions in the online documentation are:
       --set image.repository=${TARGET_REGISTRY}/cp/cp4a/odm \
       --values eks-values.yaml
   ```
+
+  > **Note:**
+  > By using `eks-values.yaml`, ODM with a PostgreSQL internal database will be installed. It requires an ALB ingress controller and a server certificate. For more information, see [Provision an AWS Load Balancer Controller](README.md#d-provision-an-aws-load-balancer-controller) and [Manage a digital certificate](README.md#4-manage-a-digital-certificate-10-min).
