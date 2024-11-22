@@ -247,7 +247,7 @@ It automatically creates an HTTPS GKE load balancer. We will disable the ODM int
 - Install the chart from IBM's public Helm charts repository:
 
     ```
-    helm install <release> ibm-helm/ibm-odm-prod --set image.tag=9.0.0.0 -f gcp-values.yaml
+    helm install <release> ibm-helm/ibm-odm-prod --version 24.1.0 -f gcp-values.yaml
     ```
 
   > NOTE: You might prefer to access ODM components through the NGINX Ingress controller instead of using the IP addresses. If so, please follow [these instructions](README_NGINX.md).

@@ -310,7 +310,7 @@ You can now install the product:
 ```shell
 helm install <release> ibmcharts/ibm-odm-prod  \
         --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=<registrysecret> \
-        --set image.tag=${ODM_VERSION:-9.0.0.0} --set service.type=LoadBalancer \
+        --version 24.1.0 --set service.type=LoadBalancer \
         --set externalDatabase.type=postgres \
         --set externalDatabase.serverName=<postgresqlserver>.postgres.database.azure.com \
         --set externalDatabase.databaseName=postgres \
@@ -398,7 +398,7 @@ You can reuse the secret with TLS certificate created [above](#manage-adigital-c
 ```shell
 helm install <release> ibmcharts/ibm-odm-prod \
         --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=<registrysecret> \
-        --set image.tag=${ODM_VERSION:-9.0.0.0} \
+        --version 24.1.0 \
         --set externalDatabase.type=postgres \
         --set externalDatabase.serverName=<postgresqlserver>.postgres.database.azure.com \
         --set externalDatabase.databaseName=postgres \

@@ -104,7 +104,7 @@ ibmcharts/ibm-odm-prod            24.1.0        9.0.0.1     IBM Operational Deci
 Get the [minikube-values.yaml](./minikube-values.yaml) file and run the following command:
 
 ```shell
-helm install my-odm-release ibmcharts/ibm-odm-prod --set image.tag=9.0.0.0 -f minikube-values.yaml
+helm install my-odm-release ibmcharts/ibm-odm-prod --version 24.1.0 -f minikube-values.yaml
 ```
 
 #### b. Check the topology
