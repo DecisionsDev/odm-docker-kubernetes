@@ -1,0 +1,20 @@
+license: true
+usersPassword: <password>
+
+image:
+  repository: cp.icr.io/cp/cp4a/odm
+  pullSecrets:
+  - <registrysecret>
+
+service:
+  type: LoadBalancer
+
+externalDatabase:
+  type: sqlserver
+  secretCredentials: <odmdbsecret>
+  port: 3342
+  serverName: <sqlminame>.public.<identifier>.database.windows.net
+  databaseName: odmdb
+
+customization:
+  securitySecretRef: <mynicecompanytlssecret>

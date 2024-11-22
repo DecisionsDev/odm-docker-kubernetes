@@ -1,0 +1,27 @@
+license: true
+usersPassword: <password>
+
+image:
+  repository: cp.icr.io/cp/cp4a/odm
+  pullSecrets:
+  - <registrysecret>
+
+service:
+  ingress:
+    enabled: true
+    class: nginx
+    host: mynicecompany.com
+    tlsHosts:
+    - mynicecompany.com
+    annotations:
+      nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+
+externalDatabase:
+  type: postgres
+  secretCredentials: <odmdbsecret>
+  port: 5432
+  serverName: <postgresqlserver>.postgres.database.azure.com
+  databaseName: postgres
+
+customization:
+  securitySecretRef: <mynicecompanytlssecret>

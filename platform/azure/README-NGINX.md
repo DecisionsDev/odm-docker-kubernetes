@@ -45,19 +45,16 @@ Installing an NGINX Ingress controller allows you to access ODM components throu
 
 You can reuse the secret with TLS certificate created [above](README.md#manage-adigital-certificate-10-min):
 
+You can now install the product.
+- Get the [aks-nginx-values.yaml](./aks-nginx-values.yaml) file and replace the following keys:
+  - `<registrysecret>` is your registry secret name
+  - `<postgresqlserver>` is your flexible postgres server name
+  - `<odmdbsecret>` is the database credentials secret name
+  - `<mynicecompanytlssecret>` is the container certificate
+  - `<password>` is the password to login with the basic registry users like `odmAmin`
+
 ```shell
-helm install <release> ibmcharts/ibm-odm-prod \
-        --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=<registrysecret> \
-        --set externalDatabase.type=postgres \
-        --set externalDatabase.serverName=<postgresqlserver>.postgres.database.azure.com \
-        --set externalDatabase.databaseName=postgres \
-        --set externalDatabase.port=5432 \
-        --set externalDatabase.secretCredentials=<odmdbsecret> \
-        --set service.ingress.enabled=true --set service.ingress.tlsSecretRef=<mynicecompanytlssecret> \
-        --set service.ingress.tlsHosts={mynicecompany.com} --set service.ingress.host=mynicecompany.com \
-        --set service.ingress.annotations={"nginx.ingress.kubernetes.io/backend-protocol: HTTPS"} \
-        --set service.ingress.class=nginx \
-        --set license=true --set usersPassword=<password>
+helm install <release> ibmcharts/ibm-odm-prod  --version 24.1.0 -f aks-nginx-values.yaml
 ```
 
 > [!NOTE]

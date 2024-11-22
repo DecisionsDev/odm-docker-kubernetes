@@ -355,19 +355,16 @@ az aks update --name <cluster> --resource-group <resourcegroup> --load-balancer-
 > **Note**
 > If you prefer to use the NGINX Ingress Controller instead of the default AKS Load Balancer, refer to [Deploying IBM Operational Decision Manager with NGINX Ingress Controller on Azure AKS](README-NGINX.md)
 
-You can now install the product:
+You can now install the product.
+- Get the [aks-values.yaml](./aks-values.yaml) file and replace the following keys:
+  - `<registrysecret>` is your registry secret name
+  - `<postgresqlserver>` is your flexible postgres server name
+  - `<odmdbsecret>` is the database credentials secret name
+  - `<mynicecompanytlssecret>` is the container certificate
+  - `<password>` is the password to login with the basic registry users like `odmAmin`  
 
 ```shell
-helm install <release> ibmcharts/ibm-odm-prod  \
-        --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=<registrysecret> \
-        --set service.type=LoadBalancer \
-        --set externalDatabase.type=postgres \
-        --set externalDatabase.serverName=<postgresqlserver>.postgres.database.azure.com \
-        --set externalDatabase.databaseName=postgres \
-        --set externalDatabase.port=5432 \
-        --set externalDatabase.secretCredentials=<odmdbsecret> \
-        --set customization.securitySecretRef=<mynicecompanytlssecret> \
-        --set license=true --set usersPassword=<password>
+helm install <release> ibmcharts/ibm-odm-prod  --version 24.1.0 -f aks-values.yaml
 ```
 
 Where:
