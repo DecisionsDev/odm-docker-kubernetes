@@ -72,29 +72,6 @@ The related instructions in the online documentation are:
 
   This command generates the files `images-mapping.txt` and `image-content-source-policy.yaml` at `~/.ibm-pak/data/mirror/${CASE_NAME}/${CASE_VERSION}`. The `~/.ibm-pak/mirror` directory is also created.
 
-- For CASE versions up to 1.7.x (included), append `-<architecture>` at the end of each line in `~/.ibm-pak/data/mirror/${CASE_NAME}/${CASE_VERSION}/images-mapping.txt` (where `<architecture>` can be `amd64`, `ppc64le`, or `s390x`).
-
-  - either manually,
-  - or by running the command below (on Linux only, not for MacOS):
-
-  ```bash
-  sed -i "s/$/-${ARCHITECTURE}/" ~/.ibm-pak/data/mirror/${CASE_NAME}/${CASE_VERSION}/images-mapping.txt
-  ```
-
-  Here is an example of such a file after this modification for CASE version `1.7.0`:
-
-  ```
-  cp.icr.io/cp/cp4a/odm/dbserver@sha256:bde14b68043370e9a4e49b1f3394978c202e0d5495e0121bd7972b37a7d99c35=194826081736.dkr.ecr.eu-west-3.amazonaws.com/cp/cp4a/odm/dbserver:8.12.0.1-amd64
-  cp.icr.io/cp/cp4a/odm/odm-decisioncenter@sha256:869a6a47b5c49865086242e60228eaba7292b8d2e8e56ee4b67ea4fc07d591ad=194826081736.dkr.ecr.eu-west-3.amazonaws.com/cp/cp4a/odm/odm-decisioncenter:8.12.0.1-amd64
-  cp.icr.io/cp/cp4a/odm/odm-decisionrunner@sha256:70824d9aa218c0b768e42a35f6dcc5f424779d1f54540a885fc9395a7a9e07c3=194826081736.dkr.ecr.eu-west-3.amazonaws.com/cp/cp4a/odm/odm-decisionrunner:8.12.0.1-amd64
-  cp.icr.io/cp/cp4a/odm/odm-decisionserverconsole@sha256:9a2f71ab6b62ffc2adf84d68b9d5fcee54d91ab76b62661265a6842479f4388b=194826081736.dkr.ecr.eu-west-3.amazonaws.com/cp/cp4a/odm/odm-decisionserverconsole:8.12.0.1-amd64
-  cp.icr.io/cp/cp4a/odm/odm-decisionserverruntime@sha256:b5539e7efbe410d1a874abcd20d170dabf073d91a0ad58ae69ee03b7acea92d3=194826081736.dkr.ecr.eu-west-3.amazonaws.com/cp/cp4a/odm/odm-decisionserverruntime:8.12.0.1-amd64
-  ```
-
-  > WARNING:
-  For some interim fixes, the file `images-mapping.txt` need to be modified differently. The instructions can be found in the readme page of the interim fix.
-
-
  - Store authentication credentials of the source Docker registry `cp.icr.io` and the target Amazon ECR.
 
     > NOTE: 
