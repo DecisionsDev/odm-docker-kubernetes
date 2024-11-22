@@ -19,8 +19,8 @@ Installing an NGINX Ingress controller allows you to access ODM components throu
     kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.12.0-beta.0/deploy/static/provider/cloud/deploy.yaml
     ```
 
-    > [!NOTE]
-    > The version will probably change after the publication of our documentation so please refer to the actual [documentation](https://kubernetes.github.io/ingress-nginx/deploy/#azure)!
+> [!NOTE]
+> The version will probably change after the publication of our documentation so please refer to the actual [documentation](https://kubernetes.github.io/ingress-nginx/deploy/#azure)!
 
 2. Get the Ingress controller external IP address (it will appear 80 seconds or so after the resource application above):
 
