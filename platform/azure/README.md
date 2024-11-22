@@ -269,7 +269,7 @@ Check that you can access the ODM charts:
 ```shell
 helm search repo ibm-odm-prod
 NAME                        	CHART VERSION	APP VERSION	DESCRIPTION
-ibmcharts/ibm-odm-prod      	24.0.0       	9.0.0.0  	IBM Operational Decision Manager  License By in...
+ibmcharts/ibm-odm-prod      	24.1.0       	9.0.0.1  	IBM Operational Decision Manager  License By in...
 ```
 
 ### Manage a digital certificate (10 min)
