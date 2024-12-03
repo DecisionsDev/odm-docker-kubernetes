@@ -32,6 +32,7 @@ Each version has dedicated deployment instructions and materials tailored to its
 ### Deploying ODM Rules on a specific platform
 
 - [Amazon EKS](platform/eks/README.md)
+- [Amazon ECS Fargate](platform/ecs/README.md) (BETA)
 - [Azure AKS](platform/azure/README.md)
 - [Google Cloud GKE](platform/gcloud/README.md)
 - [Redhat OpenShift Kubernetes Service on IBM Cloud (ROKS)](platform/roks/README.md)
