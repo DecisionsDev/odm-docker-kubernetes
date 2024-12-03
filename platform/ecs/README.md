@@ -380,3 +380,7 @@ To remove the base stack and its nested stacks, there are 2 options.
 aws --region <aws_deployment_region> cloudformation delete-stack \
 --stack-name odm-stack
 ```
+
+## License
+
+[Apache 2.0](/LICENSE)
