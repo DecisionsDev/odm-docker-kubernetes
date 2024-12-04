@@ -505,7 +505,7 @@ In the **Container software library** tile, verify your entitlement on the **Vie
   ```shell
   helm search repo ibm-odm-prod
   NAME                          CHART VERSION   APP VERSION     DESCRIPTION
-  ibm-helm/ibm-odm-prod         24.0.0          9.0.0.0        IBM Operational Decision Manager
+  ibm-helm/ibm-odm-prod         24.1.0          9.0.0.1        IBM Operational Decision Manager
   ```
 
 ### 3. Run the `helm install` command
