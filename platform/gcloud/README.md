@@ -179,7 +179,7 @@ To get access to the ODM material, you need an IBM entitlement key to pull the i
 #### b. Create a pull secret by running a kubectl create secret command
 
 ```shell
-kubectl create secret docker-registry registrysecret \
+kubectl create secret docker-registry ibm-entitlement-key \
         --docker-server=cp.icr.io \
         --docker-username=cp \
         --docker-password='<API_KEY_GENERATED>' \
