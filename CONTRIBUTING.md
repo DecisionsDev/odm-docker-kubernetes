@@ -248,4 +248,4 @@ request.
 [Fork a Repo]: https://help.github.com/articles/fork-a-repo
 [coding guidelines]: https://github.com/ibm-js/sdk/blob/master/GUIDELINES.md
 [interactive rebase]: http://git-scm.com/book/en/Git-Tools-Rewriting-History#Changing-Multiple-Commit-Messages
-[rebasing]: http://git-scm.com/book/en/Git-Branching-Rebasing
+[rebasing]: https://git-scm.com/book/en/v2/Git-Branching-Rebasing

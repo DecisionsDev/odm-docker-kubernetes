@@ -58,7 +58,7 @@ The diagram visually represents the secure flow of secrets data from the central
    * [Vault client](https://developer.hashicorp.com/vault/install)
    * [Helm v3](https://helm.sh/docs/intro/install/)
    * [Kustomize](https://github.com/kubernetes-sigs/kustomize/releases)
-   * Operational Decision Manager on Container 9.0.0.0
+   * Operational Decision Manager on Container 9.0.0.1
 
 > Note: This documentation has been tested with a HashiCorp evaluation instance. We assume that the procedure will remain the same for the commercial product.
 

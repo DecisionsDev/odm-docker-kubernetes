@@ -3,12 +3,14 @@ kind: IBMLicensing
 metadata:
   name: instance
 spec:
+  apiSecretToken: ibm-licensing-token
   datasource: datacollector
-  instanceNamespace: ibm-common-services
   httpsEnable: false
   ingressEnabled: true
   ingressOptions:
     annotations:
-      kubernetes.io/ingress.class: nginx
-      nginx.ingress.kubernetes.io/rewrite-target: '/$2'
-    path: /ibm-licensing-service-instance(/|$)(.*)
+      ingress.kubernetes.io/rewrite-target: /
+    path: /ibm-licensing-service-instance/*
+  instanceNamespace: ibm-licensing
+  license:
+    accept: true

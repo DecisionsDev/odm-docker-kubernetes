@@ -1,0 +1,4 @@
+containerSecurityContext:
+  readOnlyRootFilesystem: false
+httpdConfConfigMap: httpd-cm
+htdocsPVC: httpd-pvc

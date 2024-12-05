@@ -17,10 +17,22 @@ The ODM Docker material is used here, which is available in the [odm-ondocker](h
 
 ![Flow](images/ODMinKubernetes-DeploymentOverview.png)
 
+## Supported Versions  
+
+This repository provides materials for the following versions of IBM ODM:  
+
+| ODM Version      |
+|--------------|
+| **[9.0.0.1 (Latest)](README.md)**    |
+| **[8.12.0.1](https://github.com/DecisionsDev/odm-docker-kubernetes/tree/8.12.0.1)**                               |
+| **[8.11.0.1](https://github.com/DecisionsDev/odm-docker-kubernetes/tree/8.11.0.1)**                               |
+
+Each version has dedicated deployment instructions and materials tailored to its release. Select the version that matches your requirements for compatibility and features.  
 
 ### Deploying ODM Rules on a specific platform
 
 - [Amazon EKS](platform/eks/README.md)
+- [Amazon ECS Fargate](platform/ecs/README.md) (BETA)
 - [Azure AKS](platform/azure/README.md)
 - [Google Cloud GKE](platform/gcloud/README.md)
 - [Redhat OpenShift Kubernetes Service on IBM Cloud (ROKS)](platform/roks/README.md)
