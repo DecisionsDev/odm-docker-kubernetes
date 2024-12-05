@@ -41,6 +41,12 @@ envsubst < ingress-ds.yaml | kubectl apply -f -
 
 The [ingress-dc.yaml](ingress-dc.yaml) configuration file uses the `nginx.ingress.kubernetes.io/affinity: cookie` annotation that enable sticky sessions.
 
+> **Note**
+> If you are on AWS/EKS and that your are using the ALB instead of NGINX Ingress Controller, [ALB annotations to manage sticky session](https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.2/guide/ingress/annotations/) will be :
+> 
+> alb.ingress.kubernetes.io/target-group-attributes: stickiness.enabled=true,stickiness.lb_cookie.duration_seconds=60
+> alb.ingress.kubernetes.io/target-type: ip 
+
 ### 6. Access the ODM services  
 
 After a couple of minutes, the Ingress configuration is updated. You can then access the ODM services by retrieving the URLs with this command:

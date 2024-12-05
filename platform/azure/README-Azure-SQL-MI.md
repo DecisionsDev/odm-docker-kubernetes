@@ -51,20 +51,21 @@ kubectl create secret generic <odmdbsecret> --from-literal=db-user=<sqlmiadmin> 
 
 Then you can deploy ODM with:
 
-```bash
-helm install <release> ibmcharts/ibm-odm-prod --version 24.0.0 \
-        --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=<registrysecret> \
-        --set image.tag=${ODM_VERSION:-9.0.0.0} --set service.type=LoadBalancer \
-        --set externalDatabase.type=sqlserver \
-        --set externalDatabase.serverName=<sqlminame>.public.<identifier>.database.windows.net \
-        --set externalDatabase.databaseName=odmdb \
-        --set externalDatabase.port=3342 \
-        --set externalDatabase.secretCredentials=<odmdbsecret> \
-        --set customization.securitySecretRef=<mynicecompanytlssecret> \
-        --set license=true --set usersPassword=<password>
+You can now install the product.
+- Get the [aks-sqlmi-values.yaml](./aks-sqlmi-values.yaml) file and replace the following keys:
+  - `<registrysecret>` is your registry secret name
+  - `<postgresqlserver>` is your flexible postgres server name
+  - `<odmdbsecret>` is the database credentials secret name
+  - `<mynicecompanytlssecret>` is the container certificate
+  - `<password>` is the password to login with the basic registry users like `odmAmin`
+  - `<sqlminame>` is the name of the SQL managed instance
+  - `<identifier>` is the identifier of the dnsZone of the SQL managed instance
+
+```shell
+helm install <release> ibmcharts/ibm-odm-prod  --version 24.1.0 -f aks-sqlmi-values.yaml
 ```
 
-Other deployment options (especially using NGINX) and IBM License Service usage are explained in the main [README](README.md).
+Other deployment options (especially using NGINX) and IBM License Service usage are explained in the [NGINX README](README-NGINX.md).
 
 ## Troubleshooting
 

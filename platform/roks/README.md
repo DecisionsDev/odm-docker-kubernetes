@@ -1,8 +1,8 @@
-# Deploying IBM Operational Decision Manager on Redhat Openshift Kubernetes Service on IBM Cloud aka ROKS
+# Deploying IBM Operational Decision Manager on a managed OpenShift cluster on IBM Cloud
 
-This project demonstrates how to deploy an IBM® Operational Decision Manager (ODM) clustered topology on Redhat OpenShift Kubernetes Service on IBM Cloud (ROKS), leveraging Kubernetes and Docker technologies.
+This project demonstrates how to deploy an IBM® Operational Decision Manager (ODM) clustered topology on a managed OpenShift Service on IBM Cloud, also known as ROKS, leveraging Kubernetes and Docker technologies.
 
-Redhat OpenShift is available on various cloud platforms. More details about all [these availabilities](https://www.redhat.com/en/technologies/cloud-computing/openshift#cloud-services-editions).
+Red Hat OpenShift is available on various cloud platforms. More details about all [these availabilities](https://www.redhat.com/en/technologies/cloud-computing/openshift#cloud-services-editions).
 
 This tutorial focuses on deploying ODM on the [IBM Cloud platform](https://www.redhat.com/en/technologies/cloud-computing/openshift/ibm).
 
@@ -96,7 +96,7 @@ helm repo update
 ```bash
 $ helm search repo ibm-odm-prod
 NAME                    CHART VERSION APP VERSION DESCRIPTION
-ibm-helm/ibm-odm-prod   24.0.0        9.0.0.0     IBM Operational Decision Manager
+ibm-helm/ibm-odm-prod   24.1.0        9.0.0.1     IBM Operational Decision Manager
 ```
 
 ### 3. Install an IBM Operational Decision Manager release (10 min)
@@ -104,7 +104,7 @@ ibm-helm/ibm-odm-prod   24.0.0        9.0.0.0     IBM Operational Decision Manag
 Get the [roks-values.yaml](./roks-values.yaml) file and install your ODM instance:
 
 ```bash
-helm install roks-tuto ibm-helm/ibm-odm-prod --version 24.0.0 -f roks-values.yaml
+helm install roks-tuto ibm-helm/ibm-odm-prod --version 24.1.0 -f roks-values.yaml
 ```
 
 > This configuration will deployed ODM with a sample database. You should used your own database such as [IBM Cloud Databases for PostgreSQL](https://www.ibm.com/products/databases-for-postgresql) for production.
@@ -145,7 +145,7 @@ roks-tuto-odm-ds-runtime-route   <DS_RUNTIME_HOST>
 
 ### 5. Track ODM usage with the IBM License Service
 
-Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.7?topic=ils-installing-license-service-without-operator-lifecycle-manager-olm) documentation.
+Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.9?topic=ils-installing-license-service-without-operator-lifecycle-manager-olm) documentation.
 
 ### 6. Deploy ODM to support sticky session on ROKS
 
@@ -173,7 +173,7 @@ oc create secret tls default-ingress-cert --cert=./tls.crt --key=./tls.key -n od
 - Get the [roks-sticky-values.yaml](./roks-sticky-values.yaml) file and launch your ODM instance :
 
 ```bash
-helm install roks-sticky-tuto ibm-helm/ibm-odm-prod --version 24.0.0 -f roks-sticky-values.yaml
+helm install roks-sticky-tuto ibm-helm/ibm-odm-prod --version 24.1.0 -f roks-sticky-values.yaml
 ```
 
 The ODM containers will embed the ROKS domain certificates. Additionally, two Decision Center pods will be launched to verify the sticky session behavior.

@@ -104,7 +104,7 @@ ibmcharts/ibm-odm-prod            24.1.0        9.0.0.1     IBM Operational Deci
 Get the [minikube-values.yaml](./minikube-values.yaml) file and run the following command:
 
 ```shell
-helm install my-odm-release ibmcharts/ibm-odm-prod -f minikube-values.yaml
+helm install my-odm-release ibmcharts/ibm-odm-prod --version 24.1.0 -f minikube-values.yaml
 ```
 
 #### b. Check the topology
@@ -128,17 +128,16 @@ With this ODM topology in place, you can access web applications to author, depl
 
 ```shell
 $ minikube service list
-|----------------------|------------------------------------------------|----------------------------------|---------------------------|
-|      NAMESPACE       |                      NAME                      |           TARGET PORT            |            URL            |
-|----------------------|------------------------------------------------|----------------------------------|---------------------------|
-| default              | my-odm-release-dbserver                        | No node port                     |
-| default              | my-odm-release-odm-decisioncenter              | decisioncenter/9453              | http://<CLUSTER-IP>:30108 |
-| default              | my-odm-release-odm-decisionrunner              | decisionrunner/9443              | http://<CLUSTER-IP>:32215 |
-| default              | my-odm-release-odm-decisionserverconsole       | decisionserverconsole/9443       | http://<CLUSTER-IP>:32040 |
-| default              | my-odm-release-odm-decisionserverconsole-notif | No node port                     |
-| default              | my-odm-release-odm-decisionserverruntime       | decisionserverruntime/9443       | http://<CLUSTER-IP>:32346 |
-|----------------------|------------------------------------------------|----------------------------------|---------------------------|
 ```
+
+| *NAMESPACE* | *NAME* | *TARGET PORT* | *URL* |
+|---|---|---|---|
+| default | my-odm-release-dbserver | No node port | |
+| default | my-odm-release-odm-decisioncenter | decisioncenter/9453 | http://`<CLUSTER-IP>`:30108 |
+| default | my-odm-release-odm-decisionrunner | decisionrunner/9443 | http://`<CLUSTER-IP>`:32215 |
+| default | my-odm-release-odm-decisionserverconsole | decisionserverconsole/9443 | http://`<CLUSTER-IP>`:32040 |
+| default | my-odm-release-odm-decisionserverconsole-notif | No node port | |
+| default | my-odm-release-odm-decisionserverruntime | decisionserverruntime/9443  | http://`<CLUSTER-IP>`:32346 |
 
 > [!WARNING]
 > The URLs are prefixed with **http**. You must replace the prefix with **https** to access the services.
