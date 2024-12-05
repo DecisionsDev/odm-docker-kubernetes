@@ -278,7 +278,7 @@ The Ingress remains in the state *Creating ingress* for several minutes until th
 
 You can also check the [load balancer status](https://console.cloud.google.com/net-services/loadbalancing/list/loadBalancers). It provides information about the backend using the service health check.
 
-![Load balancer](images/loadbalancer.png)
+![Load balancer](images/lb.png)
 
 In the Ingress details, you should get a *HEALTHY* state on all backends.
 This panel also provides some logs on the load balancer activity.
@@ -364,9 +364,9 @@ kubectl apply -f licensing-instance.yaml -n ibm-licensing
 
 > NOTE: You can find more information and use cases on [this page](https://www.ibm.com/docs/en/cpfs?topic=software-configuration).
 
-#### c. Modify Google Load Balancer settings
+#### c. Modify GKE Load Balancer settings
 
-As Google native Ingress does not support the same URL rewriting rules as other ones (such as NGINX), some settings have to be modified directly on GCP Web UI.
+As Google native Load Balancer does not support the same URL rewriting rules as other ones (such as NGINX), some settings have to be modified directly on GCP Web UI.
 
 You have to look for the ibm-licensing-service-instance in the list of Ingresses, then select its Load Balancer in the list of resources at the bottom:
 
