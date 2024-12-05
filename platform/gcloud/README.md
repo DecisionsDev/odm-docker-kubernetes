@@ -352,47 +352,38 @@ This section explains how to track ODM usage with the IBM License Service.
 
 #### a. Install the IBM License Service
 
-Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.9?topic=ils-installing-license-service-without-operator-lifecycle-manager-olm)
+Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.10?topic=ils-installing-license-service-without-operator-lifecycle-manager-olm) and stop before it asks you to update the License Service instance. It will be done in the next paragraph.
 
-> NOTE: Make sure you do not follow the instantiation part!
-
-#### b. Create an NGINX Ingress controller
-
-- Add the official stable repository:
-
-    ```
-    helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-    helm repo update
-    ```
-
-- Use Helm to deploy the NGINX Ingress controller:
-
-    ```
-    helm install nginx-ingress ingress-nginx/ingress-nginx -n ibm-common-services
-    ```
-
-#### c. Create the IBM Licensing instance
+#### b. Create the IBM Licensing instance
 
 Get the [licensing-instance.yaml](./licensing-instance.yaml) file and run the following command:
 
 ```shell
-kubectl create -f licensing-instance.yaml -n ibm-common-services
+kubectl apply -f licensing-instance.yaml -n ibm-licensing
 ```
 
 > NOTE: You can find more information and use cases on [this page](https://www.ibm.com/docs/en/cpfs?topic=software-configuration).
+
+#### c. Modify Google Load Balancer settings
+
+As Google native Ingress does not support the same URL rewriting rules as other ones (such as NGINX), some settings have to be modified directly on GCP Web UI.
+
+You have to look for the ibm-licensing-service-instance in the list of Ingresses, then select its Load Balancer in the list of resources at the bottom:
+
+![Load balancing resources](images/load_balancing_resources.png)
 
 #### d. Retrieving license usage
 
 After a couple of minutes, the Ingress configuration is created and you will be able to access the IBM License Service by retrieving the URL with the following command:
 
 ```shell
-export LICENSING_URL=$(kubectl get ingress ibm-licensing-service-instance -n ibm-licensing -o jsonpath='{.status.loadBalancer.ingress[0].ip}')/ibm-licensing-service-instance
+export LICENSING_URL=$(kubectl get ingress ibm-licensing-service-instance -n ibm-licensing -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 export TOKEN=$(kubectl get secret ibm-licensing-token -o jsonpath={.data.token} -n ibm-licensing |base64 -d)
 ```
 
 You can access the `http://${LICENSING_URL}/status?token=${TOKEN}` URL to view the licensing usage or retrieve the licensing report .zip file by running the following command:
 
-```
+```shell
 curl -v "http://${LICENSING_URL}/snapshot?token=${TOKEN}" --output report.zip
 ```
 
