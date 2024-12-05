@@ -44,6 +44,14 @@ helm install mycompany ibm-helm/ibm-odm-prod --version 24.1.0 \
 
 Refer to the [the main README](README.md#b-check-the-topology) to check the deployment and access the ODM services.
 
+### 4. Deploy and check IBM Licensing Service
+
+Refer to [the main README](README.md#b-check-the-topology) to install IBM Licensing Service, except that you have to apply this updated IBMLicensing instance instead:
+
+```shell
+kubectl apply -f licensing-instance-NGINX.yaml -n ibm-licensing
+```
+
 ## Troubleshooting
 
 If your ODM instances are not running properly, please refer to [our dedicated troubleshooting page](https://www.ibm.com/docs/en/odm/9.0.0?topic=900-troubleshooting-support).
