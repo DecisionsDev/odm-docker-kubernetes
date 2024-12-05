@@ -367,13 +367,13 @@ kubectl apply -f licensing-instance.yaml -n ibm-licensing
 
 #### c. Modify GKE Load Balancer settings
 
-As Google native Load Balancer does not support the same URL rewriting rules as other ones (such as NGINX), some settings have to be modified directly on GCP Web UI.
+As Google native Load Balancer does not support the same URL rewriting rules as other ones (such as NGINX), [some settings have to be modified](https://cloud.google.com/load-balancing/docs/https/setting-up-url-rewrite) directly on GCP Web UI.
 
 You have to look for the ibm-licensing-service-instance in the list of Ingresses, then select its Load Balancer in the list of resources at the bottom:
 
 ![Load balancing resources](images/lb_resources.png)
 
-Edit the rule about /ibm-licensing-service-instance/* and add / as path prefix rewrite:
+Edit the rule about /ibm-licensing-service-instance/* and add `/` as path prefix rewrite:
 
 ![Load balancing Host and Path rules](images/lb_host_and_path_rules.png)
 ![Load balancing Rewrite](images/lb_rewrite.png)
