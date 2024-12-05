@@ -15,7 +15,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-export KEYCLOAK_USERID="preferred_username"
 OUTPUT_DIR=./output
 TEMPLATE_DIR=./templates
 
@@ -29,18 +28,18 @@ Options:
 -n : KEYCLOAK URL (KEYCLOAK server name)
 -x : Cient Secret
 -r : Realm Name 
--u : UserID
-Usage example: $0 -i KeycloakClientId -x KeycloakClientSecret -n KeycloakURL [-r KeycloakRealm -u KeycloakUserID]"
+-u : UserID claim
+Usage example: $0 -i CLIENT_ID -x CLIENT_SECRET -n KEYCLOAK_SERVER_URL [-r REALM_NAME -u USERID_CLAIM]"
 EOF
 }
 
-while getopts "x:i:n:r:u:ha:" option; do
+while getopts "x:i:n:r:u:h:" option; do
     case "${option}" in
         i) KEYCLOAK_CLIENT_ID=${OPTARG};;
-        n) KEYCLOAK_SERVER_URL=${OPTARG};;
         x) KEYCLOAK_CLIENT_SECRET=${OPTARG};;
+        n) KEYCLOAK_SERVER_URL=${OPTARG};;
         r) KEYCLOAK_REALM=${OPTARG};;
-        u) KEYCLOAK_USERID=${OPTARG};;
+        u) KEYCLOAK_USERID_CLAIM=${OPTARG};;
         h) usage; exit 0;;
         *) usage; exit 1;;
     esac
@@ -62,9 +61,9 @@ if [[ -z ${KEYCLOAK_REALM} ]]; then
   echo "REALM not provided, using odm as realm name."
   KEYCLOAK_REALM=odm
 fi
-if [[ -z ${KEYCLOAK_USERID} ]]; then
-  echo "USERID not provided, using preferred_username as user_id."
-  KEYCLOAK_USERID=preferred_username
+if [[ -z ${KEYCLOAK_USERID_CLAIM} ]]; then
+  echo "USERID_CLAIM not provided, using preferred_username as user_id claim."
+  KEYCLOAK_USERID_CLAIM=preferred_username
 fi
 
 mkdir -p $OUTPUT_DIR && cp $TEMPLATE_DIR/* $OUTPUT_DIR
@@ -72,7 +71,7 @@ echo "Generating files for KEYCLOAK"
 sed -i.bak 's|KEYCLOAK_CLIENT_ID|'$KEYCLOAK_CLIENT_ID'|g' $OUTPUT_DIR/*
 sed -i.bak 's|KEYCLOAK_CLIENT_SECRET|'$KEYCLOAK_CLIENT_SECRET'|g' $OUTPUT_DIR/*
 sed -i.bak 's|KEYCLOAK_SERVER_URL|'$KEYCLOAK_SERVER_URL'|g' $OUTPUT_DIR/*
-sed -i.bak 's|KEYCLOAK_USERID|'$KEYCLOAK_USERID'|g' $OUTPUT_DIR/*
+sed -i.bak 's|KEYCLOAK_USERID_CLAIM|'$KEYCLOAK_USERID_CLAIM'|g' $OUTPUT_DIR/*
 # Claim replacement
 ALLOW_DOMAIN=$(echo $KEYCLOAK_SERVER_URL | sed -e "s/\/realms\/$KEYCLOAK_REALM//" -e "s/https:\/\///")
 sed -i.bak 's|KEYCLOAK_DOMAIN|'$ALLOW_DOMAIN'|g' $OUTPUT_DIR/*

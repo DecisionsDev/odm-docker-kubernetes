@@ -8,9 +8,8 @@ spec:
   httpsEnable: false
   ingressEnabled: true
   ingressOptions:
+    ingressClassName: alb
     annotations:
       alb.ingress.kubernetes.io/scheme: internet-facing
       alb.ingress.kubernetes.io/target-type: ip
-      kubernetes.io/ingress.class: alb
     path: /*
-  instanceNamespace: ibm-common-services

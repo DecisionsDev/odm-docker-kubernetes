@@ -26,7 +26,7 @@
 
 1. Create the *ODM application*.
 
-    In **Azure Active Directory** / **App registration**, click **New Registration**:
+    In **Microsoft Entra Id** / **Manage** / **App registration**, click **New Registration**:
 
     * Name: **ODM Application**
     * Supported account types / Who can use this application or access this API?: select `Accounts in this organizational directory only (Default Directory only - Single tenant)`
@@ -36,7 +36,7 @@
 
 2. Retrieve Tenant and Client information.
 
-    In **Azure Active Directory** / **App Registration**, select **ODM Application** and click **Overview**:
+    In **Microsoft Entra Id** / **Manage** / **App Registration**, select **ODM Application** and click **Overview**:
 
     * Application (client) ID: **Client ID**. It will be referenced as `CLIENT_ID` in the next steps.
     * Directory (tenant) ID: **Your Tenant ID**. It will be referenced as `TENANT_ID` in the next steps.
@@ -45,7 +45,7 @@
 
 3. Generate an OpenID client secret.
 
-    In **Azure Active Directory** / **App registrations**, select **ODM Application**:
+    In **Microsoft Entra Id** / **Manage** / **App registrations**, select **ODM Application**:
 
     * From the Overview page, click on the link Client credentials: **Add a certificate or secret** or on the **Manage / Certificates & secrets** tab
     * Click + New Client Secret
@@ -58,23 +58,23 @@
 
 4. Add Claims.
 
-    In **Azure Active Directory** / **App registrations**, select **ODM Application**, and in **Manage / Token Configuration**:
+    In **Microsoft Entra Id** / **Manage** / **App registrations**, select **ODM Application**, and in **Manage / Token Configuration**:
 
-  * Add Optional Email ID Claim
+  * Add Optional **email** ID Claim
     * Click +Add optional claim
     * Select ID
-    * Check Email
-    * Click Add
-
-  * Add Optional Email Access Claim
-    * Click +Add optional claim
-    * Select Access
-    * Check Email
+    * Check **email**
     * Click Add
 
     * Turn on Microsoft Graph email permission
       * Check Turn on the Microsoft Graph email permission
       * Click Add
+
+  * Add Optional **email** Access Claim
+    * Click +Add optional claim
+    * Select Access
+    * Check **email**
+    * Click Add
 
   * Add Group Claim
     * Click +Add groups claim
@@ -85,11 +85,11 @@
 
    To allow ODM rest-api to use the password flow with email as user identifier and the client-credentials flow with client_id as user identifier, we need to create a new claim named "identity" that will take the relevant value according to the flow:
 
-   In **Azure Active Directory** / **Enterprise applications**, select **ODM Application**, and in **Manage / Single sign-on**:
+   In **Microsoft Entra Id** / **Manage** / **Enterprise applications**, select **ODM Application**, and in **Manage / Single sign-on**:
 
   * Click Edit in the "Attributes & Claims" section
     * Click + Add new claim
-      * Name: identity
+      * Name: **identity**
       * Fill 2 Claim conditions in the exact following order:
         1. User Type: Any / Scoped Groups: 0 / Source: Attribute / Value: <CLIENT_ID>
         2. User Type: Members / Scoped Groups: 0 / Source: Attribute / Value: user.mail
@@ -97,19 +97,32 @@
 
 6. API Permissions.
 
-    In **Azure Active Directory** / **App Registration**, select **ODM Application**, and then click **API Permissions**.
+    In **Microsoft Entra Id** / **Manage** / **App Registration**, select **ODM Application**, and then click **API Permissions**.
 
     * Click Grant Admin Consent for Default Directory
 
+    [Optional] If you are interested by the groups and users synchronization in the Business Console, you have to add some specific permission to allow Microsoft Graph Rest API Usage like :
+
+    * Click on **Add a permission**, select **Application permissions** and choose **Group.Read.All**, **User.Read.All**
+    * Don't forget to **Grant Admin Consent for Default Directory** on these API permissions 
+    
+
 7. Manifest change.
 
-    In **Azure Active Directory** / **App Registration**, select **ODM Application**, and then click **Manifest**.
+    In **Microsoft Entra Id** / **Manage** / **App Registration**, select **ODM Application**, and then click **Manifest**.
+
+    The Manifest feature (a JSON representation of an app registration) is currently in transition.
+    [**AAD Graph app manifest**](https://learn.microsoft.com/en-us/entra/identity-platform/azure-active-directory-graph-app-manifest-deprecation) will be deprecated soon and not editable anymore starting 12/2/2024. It will be replaced by the **Microsoft Graph App Manifest**
 
     As explained in [accessTokenAcceptedVersion attribute explanation](https://docs.microsoft.com/en-us/azure/active-directory/develop/reference-app-manifest#accesstokenacceptedversion-attribute), change the value to 2.
 
     ODM OpenID Liberty configuration needs version 2.0 for the issuerIdentifier. See the [openIdWebSecurity.xml](templates/openIdWebSecurity.xml) file.
 
     It is also necessary to set **acceptMappedClaims** to true to manage claims. Without this setting, you get the exception **AADSTS50146: This application is required to be configured with an application-specific signing key. It is either not configured with one, or the key has expired or is not yet valid.** when requesting a token.
+
+    With **Microsoft Graph App Manifest**:
+    *  **acceptMappedClaims** is relocated as a property of the **api** attribute
+    *  **accessTokenAcceptedVersion** is relocated as a property of the **api** attribute and renamed **requestedAccessTokenVersion**
 
    Then, click Save.
 
@@ -290,6 +303,36 @@
         --from-file=webSecurity.xml=./output/webSecurity.xml
     ```
 
+4. Create the secret allowing to synchronize Decision Center Users and Groups with Entra ID.
+
+    This section is optional.
+
+    ODM Decision Center allows to [manage users and groups from the Business console](https://www.ibm.com/docs/en/odm/9.0.0?topic=center-enabling-users-groups) in order to set access security on specific projects.
+    The Groups and Users import can be done using an LDAP connection.
+    But, if the openId server also provides a SCIM server, then it can also be managed using a SCIM connection.
+
+    However, in some context, it's not possible to use LDAP or SCIM to import groups and users inside Decision Center.
+    We will explain here how to synchronize Decision Center Groups and Users with Entra ID by leveraging Entra ID and Decision Center rest-api.
+
+    A script will be responsible to get groups and users located in the EntraID tenant using the Microsoft Graph API :
+    - [for users](https://learn.microsoft.com/en-us/graph/api/resources/users?view=graph-rest-1.0&preserve-view=true)
+    - [for groups](https://learn.microsoft.com/en-us/graph/api/resources/groups-overview?view=graph-rest-1.0&tabs=http)
+
+    Then, it will generate a [group-security-configurations.xml](https://www.ibm.com/docs/en/odm/9.0.0?topic=access-optional-user-liberty-configurations#reference_w1b_xhq_2rb__title__3) file that will be consumed using the [Decision Center rest-api](https://www.ibm.com/docs/en/odm/9.0.0?topic=mufdc-creating-users-groups-roles-by-using-rest-api) to populate Groups and Users in the Administration Tab.
+
+    In a kubernetes context, this script can be called by a CRON job.
+    Using the new ODM sidecar container mechanism, it can also be managed by the Decision Center pod himself.
+
+    ```shell
+    kubectl create secret generic users-groups-synchro-secret \
+        --from-file=./output/sidecar-start.sh \
+        --from-file=generate-user-group-mgt.sh
+    ```
+    > **Note**
+    > The scripts will be used inside a container using the Decision Center image. It's possible to use a dedicated lighter image instead
+    > by setting the helm chart parameter **--set decisionCenter.sidecar.image**
+    > You can find a [Dockerfile](Dockerfile) containing the minimal tooling (bash,curl,jq) to execute the scripts.    
+
 ## Install your ODM Helm release
 
 ### Add the public IBM Helm charts repository
@@ -304,7 +347,7 @@
   ```shell
   helm search repo ibm-odm-prod
   NAME                  	CHART VERSION	APP VERSION	DESCRIPTION
-  ibm-helm/ibm-odm-prod   24.0.0          9.0.0.0   	IBM Operational Decision Manager
+  ibm-helm/ibm-odm-prod   24.1.0          9.0.0.1   	IBM Operational Decision Manager
   ```
 
 ### Run the `helm install` command
@@ -316,7 +359,7 @@ You can now install the product. We will use the PostgreSQL internal database an
   See the [Preparing to install](https://www.ibm.com/docs/en/odm/9.0.0?topic=production-preparing-install-operational-decision-manager) documentation for additional information.
 
   ```shell
-  helm install my-odm-release ibm-helm/ibm-odm-prod --set image.tag=9.0.0.0 \
+  helm install my-odm-release ibm-helm/ibm-odm-prod --version 24.1.0 \
           --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
           --set oidc.enabled=true \
           --set license=true \
@@ -325,6 +368,11 @@ You can now install the product. We will use the PostgreSQL internal database an
           --set customization.authSecretRef=azuread-auth-secret \
           --set internalDatabase.runAsUser='' --set customization.runAsUser='' --set service.enableRoute=true
   ```
+
+> **Note**
+> If you want the optional synchronization of groups and users with Entra ID, you have to add to the helm install command:
+> 
+> --set decisionCenter.sidecar.enabled=true --set decisionCenter.sidecar.confSecretRef=users-groups-synchro-secret
 
 #### b. Installation using Ingress
 
@@ -336,7 +384,7 @@ You can now install the product. We will use the PostgreSQL internal database an
   When the NGINX Ingress Controller is ready, you can install the ODM release with:
 
   ```
-  helm install my-odm-release ibm-helm/ibm-odm-prod --set image.tag=9.0.0.0 \
+  helm install my-odm-release ibm-helm/ibm-odm-prod --version 24.1.0 \
           --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
           --set oidc.enabled=true \
           --set license=true \
@@ -349,6 +397,11 @@ You can now install the product. We will use the PostgreSQL internal database an
 
 > **Note**
 > By default, NGINX does not enable sticky session. If you want to use sticky session to connect to DC, refer to [Using sticky session for Decision Center connection](../../contrib/sticky-session/README.md)
+
+> **Note**
+> If you want the optional synchronization of groups and users with Entra ID, you have to add to the helm install command:
+> 
+> --set decisionCenter.sidecar.enabled=true --set decisionCenter.sidecar.confSecretRef=users-groups-synchro-secret
 
 ## Complete post-deployment tasks
 
@@ -403,7 +456,7 @@ You can now install the product. We will use the PostgreSQL internal database an
       - Decision Server Runtime redirect URI:  `https://<INGRESS_ADDRESS>/DecisionService/openid/redirect/odm`
       - Rule Designer redirect URI: `https://127.0.0.1:9081/oidcCallback`
 
-   From the Azure console, in **Azure Active Directory** / **App Registrations** / **ODM Application**:
+   From the Microsoft Azure console, in **Microsoft Entra Id** / **Manage** / **App Registrations** / **ODM Application**:
 
     - Click the `Add a Redirect URI` link
     - Click `Add Platform`
@@ -461,11 +514,11 @@ To manage ODM runtime call on the next steps, we used the [Loan Validation Decis
 
 Import the **Loan Validation Service** in Decision Center connected using *myodmuser*@YOURDOMAIN created at step 2
 
-![Import project](../Keycloak/images/import_project.png)
+![Import project](images/import_project.png)
 
 Deploy the **Loan Validation Service** production_deployment ruleapps using the **production deployment** deployment configuration in the Deployments>Configurations tab.
 
-![Deploy project](../Keycloak/images/deploy_project.png)
+![Deploy project](images/deploy_project.png)
 
 You can retrieve the payload.json from the ODM Decision Server Console or use [the provided payload](payload.json).
 
@@ -474,7 +527,7 @@ As explained in the ODM on Certified Kubernetes documentation [Configuring user 
 You can realize a basic authentication ODM runtime call the following way:
 
   ```shell
-$ curl -H "Content-Type: application/json" -k --data @payload.json \
+curl -H "Content-Type: application/json" -k --data @payload.json \
         -H "Authorization: Basic b2RtQWRtaW46b2RtQWRtaW4=" \
       https://<DS_RUNTIME_HOST>/DecisionService/rest/production_deployment/1.0/loan_validation_production/1.0
 ```
@@ -484,7 +537,7 @@ Where b2RtQWRtaW46b2RtQWRtaW4= is the base64 encoding of the current username:pa
 But if you want to execute a bearer authentication ODM runtime call using the Client Credentials flow, you have to get a bearer access token:
 
 ```shell
-$ curl -k -X POST -H "Content-Type: application/x-www-form-urlencoded" \
+curl -k -X POST -H "Content-Type: application/x-www-form-urlencoded" \
     -d 'client_id=<CLIENT_ID>&scope=<CLIENT_ID>%2F.default&client_secret=<CLIENT_SECRET>&grant_type=client_credentials' \
     'https://login.microsoftonline.com/<TENANT_ID>/oauth2/v2.0/token'
 ```
@@ -492,7 +545,7 @@ $ curl -k -X POST -H "Content-Type: application/x-www-form-urlencoded" \
 And use the retrieved access token in the following way:
 
   ```shell
-$ curl -H "Content-Type: application/json" -k --data @payload.json \
+curl -H "Content-Type: application/json" -k --data @payload.json \
         -H "Authorization: Bearer <ACCESS_TOKEN>" \
         https://<DS_RUNTIME_HOST>/DecisionService/rest/production_deployment/1.0/loan_validation_production/1.0
 ```
