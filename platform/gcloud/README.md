@@ -370,7 +370,12 @@ As Google native Ingress does not support the same URL rewriting rules as other 
 
 You have to look for the ibm-licensing-service-instance in the list of Ingresses, then select its Load Balancer in the list of resources at the bottom:
 
-![Load balancing resources](images/load_balancing_resources.png)
+![Load balancing resources](images/lb_resources.png)
+
+Edit the rule about /ibm-licensing-service-instance/* and add / as path prefix rewrite:
+
+![Load balancing Host and Path rules](images/lb_host_and_path_rules.png)
+![Load balancing Rewrite](images/lb_rewrite.png)
 
 #### d. Retrieving license usage
 
