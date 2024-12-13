@@ -27,8 +27,6 @@ However, it's likely that you will encounter an error similar to:
 2023-07-06T17:28:37.520Z        debug   jaegerexporter@v0.80.0/exporter.go:106  failed to push trace data to Jaeger     {"kind": "exporter", "data_type": "traces", "name": "jaeger", "error": "rpc error: code = Unimplemented desc = unknown service jaeger.api_v2.CollectorService"}
  ```
 
-A solution is provided in the following [article](https://cloudbyt.es/blog/switching-to-jaeger-otel-collector).
-
 You can also utilize the [otel-collector.yaml](./otel-collector.yaml) file we used for this tutorial by applying it with:
 
  ```bash
