@@ -108,10 +108,10 @@ After activating your account by email, you should have access to your Okta inst
     In Menu **Directory** / **People**:
       * Click **Add Person** button
         * User type: *User*
-        * First name: ``<YourFirstName>``
-        * Last name: ``<YourLastName>``
-        * Username: ``<YourEmailAddress>``
-        * Primary email: ``<YourEmailAddress>``
+        * First name: `<YourFirstName>`
+        * Last name: `<YourLastName>`
+        * Username: `<YourEmailAddress>`
+        * Primary email: `<YourEmailAddress>`
         * Groups (optional): ***odm-admin***
         * Click **Save**
 
@@ -166,21 +166,46 @@ In this step, we augment the token with meta-information that is required by the
 
     In **Claims** tab, create the following claims:
 
-    * Click **Add claim**
-    * *groups - Access Token* claim:
+    * Click **Add claim** and set the fields:
       * Name: *groups*
       * Include in token type: *Access Token*
       * Value type: *Groups*
       * Filter: **Equals**: *odm-admin*
-    * *groups - Id Token* claim:
+    * Click **Create**
+    * Click **Add claim** and set the fields:
       * Name: *groups*
-      * Include in token type: *Id Token*
+      * Include in token type: *ID Token* (Always)
       * Value type: *Groups*
       * Filter: **Equals**: odm-admin
+    * Click **Create**
 
     ![Add Claim Result](images/ResultAddClaims.png)
 
-4. Verify the content of the token.
+4. Add an Access Policy and Rule.
+
+    Access Policies are containers for Rules.
+    Rules define particular token lifetimes for a given combination of grant type, user, and scope. If no matching rule is found, then the authorization request fails.
+
+    Let's create an Access Policy and rule for the *ODM Application*.
+
+    In the **Access Policies** tab:
+      * Click **Add New Access Policy**
+        * Name: *ODM Application policy*
+        * Description: *ODM Application policy*
+        * Assign to: **The following clients** and enter: *ODM Application*
+        * Click **Create Policy**
+      * Click **Add Rule**
+        * Rule Name: *default rule*
+        * In **grant type**:
+          * Check **Client Credentials**
+          * Check **Authorization Code**
+          * Check **Device Authorization**
+          * Check **Implicit (hybrid)**
+        * Click **Create rule**
+
+    ![Add Policy and Rule Result](images/ResultAddAccessPolicy.png)
+
+5. Verify the content of the token.
 
     Check that the login name and groups meta-information are available in the ID token.
 
@@ -293,8 +318,10 @@ In this step, we augment the token with meta-information that is required by the
 
     ```
     helm search repo ibm-odm-prod
+    ```
+    ```
     NAME                  	CHART VERSION	APP VERSION	DESCRIPTION
-    ibm-helm/ibm-odm-prod	24.0.0       	9.0.0.0   	IBM Operational Decision Manager
+    ibm-helm/ibm-odm-prod	24.1.0       	9.0.0.1   	IBM Operational Decision Manager
     ```
 
 3. Run the `helm install` command.
@@ -302,10 +329,11 @@ In this step, we augment the token with meta-information that is required by the
     You can now install the product. We will use the PostgreSQL internal database and disable the data persistence (`internalDatabase.persistence.enabled=false`) to avoid any platform complexity concerning persistent volume allocation.
 
     ```
-    helm install my-odm-release ibm-helm/ibm-odm-prod --set image.tag=9.0.0.0 \
+    helm install my-odm-release ibm-helm/ibm-odm-prod --version 24.1.0 \
           --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
           --set oidc.enabled=true \
           --set internalDatabase.persistence.enabled=false \
+          --set internalDatabase.populateSampleData=true \
           --set customization.trustedCertificateList={"okta-secret"} \
           --set customization.authSecretRef=okta-auth-secret \
           --set license=true
@@ -352,15 +380,13 @@ In this step, we augment the token with meta-information that is required by the
       - In the **General** tab, click **Edit** on the **General Settings** section.
       - In the **LOGIN** section, click **+ Add URI** in the **Sign-in redirect URIs** section and add the Decision Center redirect URI you got earlier (`https://<DC_HOST>/decisioncenter/openid/redirect/odm` -- do not forget to replace <DC_HOST> by your actual host name!)
       - Repeat the previous step for all other redirect URIs.
-      - Click **Save** at the bottom of the LOGIN section.
+      - Click **Save** at the bottom of the **General Settings** section.
 
     ![Sign-in redirect URIs](images/Sign-in_redirect_URIs.png)
 
 ### Access the ODM services
 
-Well done!  You can now connect to ODM using the endpoints you got [earlier](#register-the-odm-redirect-url), and log in as an ODM admin with the account you created in [the first step](#manage-groups-and-users).
-
->Note:  Logout in ODM components using Okta authentication raises an error for the time being.  This is a known issue.  We recommend you to use a private window in your browser to log in, so that logout is done just by closing this window.
+Well done!  You can now connect to ODM using the endpoints you got [earlier](#register-the-odm-redirect-urls), and log in as an ODM admin with the account you created in [the first step](#manage-groups-and-users).
 
 ### Set up Rule Designer
 

@@ -1,0 +1,327 @@
+# Docker-compose file with ECS-compose-x extensions to create a ECS Fargate stack with ODM deployment in HTTP
+version: "3.8"
+
+# To create a namespace in CloudMap required by Service Connect
+x-cloudmap:
+  PrivateNamespace:
+    Name: odm-namespace
+
+# To declare that the network for the ODM applications is via PublicSubnets
+networks:
+  application:
+    x-vpc: PublicSubnets
+
+# To lookup and use an existing VPC in AWS 
+x-vpc:
+  Lookup:
+    VpcId:
+      Tags:
+        - Name: <aws_existing_vpc>
+    AppSubnets: {}
+    PublicSubnets:
+      Tags:
+        - <vpc_tag>: <vpc_tag_value>
+    PrivateSubnets: {}
+    StorageSubnets: {}
+
+# To lookup an existing internet-facing Application Load balancer and setup Listener rules on it 
+x-elbv2:
+  public-alb:
+    Lookup:
+      loadbalancer:
+        Tags:
+          <loadbalancer_tag>: <loadbalancer_tag_value>
+    MacroParameters:
+      Ingress:
+        ExtSources:
+          - IPv4: "0.0.0.0/0"
+            Description: ANY
+    Properties:
+      Scheme: internet-facing
+      Type: application
+    Listeners:
+    # Declare to use port=80, protocol=HTTP and the access paths for each ODM components
+    # If the port is used, change it to another value. 
+      - Port: 80 
+        Protocol: HTTP
+        Targets:
+          - name: res:odm-decisionserverconsole
+            access: /res
+          - name: res:odm-decisionserverconsole
+            access: /res/*            
+          - name: rts:odm-decisioncenter
+            access: /decisioncenter
+          - name: rts:odm-decisioncenter
+            access: /decisioncenter/*
+          - name: rts:odm-decisioncenter
+            access: /decisioncenter-api/*
+          - name: test:odm-decisionrunner
+            access: /DecisionRunner
+          - name: test:odm-decisionrunner
+            access: /DecisionRunner/*
+          - name: runtime:odm-decisionserverruntime
+            access: /DecisionService
+          - name: runtime:odm-decisionserverruntime
+            access: /DecisionService/*
+    # Target groups
+    Services:
+      res:odm-decisionserverconsole:
+        port: 9080
+        protocol: HTTP
+        healthcheck: 9080:HTTP:/res/login.jsf:200
+      rts:odm-decisioncenter:
+        port: 9060
+        protocol: HTTP
+        healthcheck: 9060:HTTP:/decisioncenter/healthCheck:200
+        # Enable session stickiness
+        TargetGroupAttributes:
+          stickiness.enabled: "true"
+      test:odm-decisionrunner:
+        port: 9081
+        protocol: HTTP
+        healthcheck: 9081:HTTP:/DecisionRunner:302
+      runtime:odm-decisionserverruntime:
+        port: 9082
+        protocol: HTTP
+        healthcheck: 9082:HTTP:/DecisionService:302
+         # Set Least outstanding requests (LOR) algorithm
+        TargetGroupAttributes:
+          load_balancing.algorithm.type: least_outstanding_requests
+
+services:
+  odm-decisionserverconsole:
+    image: cp.icr.io/cp/cp4a/odm/odm-decisionserverconsole:9.0.0.1-amd64
+    x-aws-pull_credentials:  "arn:aws:secretsmanager:<aws_deployment_region>:<aws_account_id>:secret:IBMCPSecret-XXXXXX"
+    # Optional: Set to true, to enable execute command and access the container
+    x-ecs:
+      EnableExecuteCommand: true
+    # To enable Service Connect with "Client and server" option
+    x-network:
+      AssignPublicIp: true
+      x-ecs_connect:
+        MacroParameters:
+          service_ports:
+            tcp_1883:
+              DnsName: odm-decisionserverconsole
+              CloudMapServiceName: odm-decisionserverconsole
+          x-cloudmap: PrivateNamespace
+    restart: always
+    networks:
+      - application
+    ports:
+      - 9080
+      - 1883/tcp
+    environment:
+      - USERS_PASSWORD=odmAdmin
+      - HTTP_PORT=9080
+      - DB_TYPE=postgres
+      - DB_USER=<db_user>
+      - DB_PASSWORD=<db_pwd>
+      - DB_NAME=odmdb
+      # Amazon RDS instance created for ODM. An example of the endpoint: odm-rds.XXXXXXX.eu-central-1.rds.amazonaws.com
+      - DB_SERVER_NAME=<amazon_rds_endpoint>
+    labels:
+      - productName=IBM Operational Decision Manager
+      - productID=e32af5770e06427faae142993c691048
+      - productVersion=9.0.0.1
+      - productMetric=FREE
+      - productChargedContainers=decisionserverconsole
+    logging:
+      driver: "awslogs"
+    x-aws-policies:
+      - arn:aws:iam::<aws_account_id>:policy/<policy_allow_access_S3_bucket>
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+      labels:
+        ecs.task.family: res
+    healthcheck:
+      test: ["CMD", "curl", "-k", "-f", "http://localhost:9080/res/login.jsf"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 50s
+
+  odm-decisionserverruntime:
+    image: cp.icr.io/cp/cp4a/odm/odm-decisionserverruntime:9.0.0.1-amd64
+    x-aws-pull_credentials: "arn:aws:secretsmanager:<aws_deployment_region>:<aws_account_id>:secret:IBMCPSecret-XXXXXX"
+    x-ecs:
+      EnableExecuteCommand: true
+     # To enable Service Connect with "Client side only" option    
+    x-network:
+      AssignPublicIp: true
+      x-ecs_connect:
+        MacroParameters:
+          x-cloudmap: PrivateNamespace
+    restart: always
+    networks:
+      - application
+    environment:
+      - DECISIONSERVERCONSOLE_NAME=odm-decisionserverconsole
+      - HTTP_PORT=9082
+      - DB_TYPE=postgres
+      - DB_USER=<db_user>
+      - DB_PASSWORD=<db_pwd>
+      - DB_NAME=odmdb
+      # Amazon RDS instance created for ODM. An example of the endpoint: odm-rds.XXXXXXX.eu-central-1.rds.amazonaws.com
+      - DB_SERVER_NAME=<amazon_rds_endpoint>
+    labels:
+      - productName=IBM Operational Decision Manager
+      - productID=b1a07d4dc0364452aa6206bb6584061d
+      - productVersion=9.0.0.1
+      - productMetric=PROCESSOR_VALUE_UNIT
+      - productChargedContainers=decisionserverruntime 
+    logging:
+      driver: "awslogs"
+    x-aws-policies:
+      - arn:aws:iam::<aws_account_id>:policy/<policy_allow_access_S3_bucket>
+    ports:
+      - 9082
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '1'
+          memory: 1G
+      labels:
+        ecs.task.family: runtime
+    healthcheck:
+      test: ["CMD", "curl", "-k", "-f", "http://localhost:9082/DecisionService"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 50s
+
+  odm-decisioncenter:
+    image: cp.icr.io/cp/cp4a/odm/odm-decisioncenter:9.0.0.1-amd64
+    x-aws-pull_credentials: "arn:aws:secretsmanager:<aws_deployment_region>:<aws_account_id>:secret:IBMCPSecret-XXXXXX"  
+    x-ecs:
+      EnableExecuteCommand: true
+    restart: always
+    networks:
+      - application
+    environment:
+      - DECISIONSERVERCONSOLE_PORT=9080
+      - DECISIONRUNNER_PORT=9081
+      - HTTP_PORT=9060
+      - DECISION_MODEL_DISABLED=true
+      - DB_TYPE=postgres
+      - DB_USER=<db_user>
+      - DB_PASSWORD=<db_pwd>
+      - DB_NAME=odmdb
+      # Amazon RDS instance created for ODM. An example of the endpoint: odm-rds.XXXXXXX.eu-central-1.rds.amazonaws.com
+      - DB_SERVER_NAME=<amazon_rds_endpoint>
+    logging:
+      driver: "awslogs"
+    x-aws-policies:
+      - arn:aws:iam::<aws_account_id>:policy/<policy_allow_access_S3_bucket>
+    ports:
+      - 9060
+    labels:
+      - productName=IBM Operational Decision Manager
+      - productID=b1a07d4dc0364452aa6206bb6584061d
+      - productVersion=9.0.0.1
+      - productMetric=PROCESSOR_VALUE_UNIT
+      - productChargedContainers=decisioncenter
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+        reservations:
+          cpus: '1'
+          memory: 1G
+      labels:
+        ecs.task.family: rts
+    healthcheck:
+      test: ["CMD", "curl", "-k", "-f", "http://localhost:9060/decisioncenter/healthCheck"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 50s
+
+  odm-decisionrunner:
+    image: cp.icr.io/cp/cp4a/odm/odm-decisionrunner:9.0.0.1-amd64
+    x-aws-pull_credentials: "arn:aws:secretsmanager:<aws_deployment_region>:<aws_account_id>:secret:IBMCPSecret-XXXXXX"
+    x-ecs:
+      EnableExecuteCommand: true     
+    restart: always
+    networks:
+      - application
+    labels:
+      - productName=IBM Operational Decision Manager - Non Prod
+      - productID=e32af5770e06427faae142993c691048
+      - productVersion=9.0.0.1
+      - productMetric=PROCESSOR_VALUE_UNIT
+      - productChargedContainers=decisionrunner
+    environment:
+      # An example of loadbalancer's DNS: loadbalancer-name-XXXXXXXX.eu-west-3.elb.amazonaws.com
+      - RES_URL=http://<your_loadbalancer_dns>/res
+      - HTTP_PORT=9081
+      - DB_TYPE=postgres
+      - DB_USER=<db_user>
+      - DB_PASSWORD=<db_pwd>
+      - DB_NAME=odmdb
+      # Amazon RDS instance created for ODM. An example of the endpoint: odm-rds.XXXXXXX.eu-central-1.rds.amazonaws.com
+      - DB_SERVER_NAME=<amazon_rds_endpoint>
+    logging:
+      driver: "awslogs"
+    x-aws-policies:
+      - arn:aws:iam::<aws_account_id>:policy/<policy_allow_access_S3_bucket>
+    ports:
+      - 9081
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '1'
+          memory: 1G
+      labels:
+        ecs.task.family: test
+    healthcheck:
+      test: ["CMD", "curl", "-k", "-f", "http://localhost:9081/DecisionRunner"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 50s
+
+  # IBM License Service to track ODM license usage 
+  # For information, see https://www.ibm.com/docs/en/was-liberty/base?topic=container-tracking-liberty-license-use-aws-ecs-fargate
+  ibm-license-usage-logger-for-fargate:
+    image: quay.io/opencloudio/ibm-license-usage-logger-for-fargate:latest
+    restart: always
+    networks:
+      - application
+    labels:
+      - productID=33687f02f10b4475aa7236f4cd2f94e6
+      - productMetric=FREE
+      - productName="IBM License Usage Logger for Fargate"
+    environment:
+      - AWS_S3_BUCKET_NAME=ibm-license-service-<aws_account_id>
+      - AWS_S3_HTTPS_ENABLED=true
+    logging:
+      driver: "awslogs"
+    x-aws-policies:
+      - arn:aws:iam::<aws_account_id>:policy/<policy_allow_access_S3_bucket>
+    deploy:
+      replicas: 1
+      labels:
+        ecs.task.family: res,rts,test,runtime
+    healthcheck:
+      test: ["CMD-SHELL", "./check-health.sh || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 300s

@@ -6,11 +6,11 @@ metadata:
     app: ibm-odm-prod
     ingressroutes: ${RELEASE_NAME}
   annotations:
-    kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/backend-protocol: https
     nginx.ingress.kubernetes.io/affinity: cookie
 
 spec:
+  ingressClassName: nginx
   rules:
   - http:
       paths:

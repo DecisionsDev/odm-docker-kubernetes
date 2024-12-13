@@ -4,7 +4,7 @@
 <!-- TOC depthfrom:1 depthto:6 withlinks:false updateonsave:false orderedlist:false -->
 - [Introduction](#introduction)
 - [Deploy on OpenShift a custom Keycloak service with a SCIM Server](#deploy-on-openShift-a-custom-keycloak-service-with-a-scim-server)
-  - [Build the Keycloak docker image embbeding the open source SCIM plug-in](#build-the-keycloak-docker-image-embbeding-the-open-source-scim-plug-in)
+  - [Build the Keycloak docker image embedding the open source SCIM plug-in](#build-the-keycloak-docker-image-embedding-the-open-source-scim-plug-in)
   - [Push the image on the OpenShift Cluster](#push-the-image-on-the-openShift-cluster)
   - [Deploy Keycloak Service using the keycloak-scim image](#deploy-keycloak-service-using-the-keycloak-scim-image)
 - [Configure an ODM Application with Keycloak dashboard](#configure-an-odm-application-with-keycloak-dashboard)
@@ -21,7 +21,7 @@
   - [Import Groups and Users](#import-groups-and-users)
   - [Set the project security](#set-the-project-security)
   - [Check the project security](#check-the-project-security)
-- [Synchonize Decision Center when updating Keycloak](#synchonize-decision-center-when-updating-keycloak)
+- [Synchronize Decision Center when updating Keycloak](#synchronize-decision-center-when-updating-keycloak)
 
 <!-- /TOC -->
 
@@ -32,55 +32,65 @@ The Groups and Users import can be done using an LDAP connection.
 But, if the openId server also provides a SCIM server, then it can also be managed using a SCIM connection.
 
 Keycloak server doesn't provide a SCIM server by default. But, it's possible to manage it using the following opensource contribution [https://github.com/Captain-P-Goldfish/scim-for-keycloak](https://github.com/Captain-P-Goldfish/scim-for-keycloak).
-As the project [https://scim-for-keycloak.de/](https://scim-for-keycloak.de) will become Enterprise ready soon, we realized this tutorial using the last available open source version : kc-20-b1 for Keycloak 20.0.5.
+As the project [https://scim-for-keycloak.de/](https://scim-for-keycloak.de) will become Enterprise ready soon, this tutorial was performed using the last available open source version : kc-20-b1 for Keycloak 20.0.5.
 
 # Deploy on OpenShift a custom Keycloak service with a SCIM Server
 
-## Build the Keycloak docker image embbeding the open source SCIM plug-in
+## Build the Keycloak docker image embedding the open source SCIM plug-in
 
 - Get the [SCIM for Keycloak scim-for-keycloak-kc-20-b1.jar file](https://github.com/Captain-P-Goldfish/scim-for-keycloak/releases/download/kc-20-b1/scim-for-keycloak-kc-20-b1.jar)
 - Get the [Dockerfile](Dockerfile)
 - Build the image locally:
 
-```shell
-   docker build . --build-arg KEYCLOAK_IMAGE=quay.io/keycloak/keycloak:20.0.5 --build-arg SCIM_JAR_FILE=scim-for-keycloak-kc-20-b1.jar -t keycloak-scim:latest
-```
+  ```shell
+  docker build . --build-arg KEYCLOAK_IMAGE=quay.io/keycloak/keycloak:20.0.5 --build-arg SCIM_JAR_FILE=scim-for-keycloak-kc-20-b1.jar -t keycloak-scim:latest
+  ```
+
+  > Note:
+  > The build command produces an image suitable to the architecture (amd64, ...) of the machine where the build is performed.
+  >
+  > Make sure that the architecture of the cluster is the same.
+  > If not, you may consider using `docker buildx build --platform=linux/${ARCH} ...`  to build an image suitable to the target architecture.
+
 
 ## Push the image on the OpenShift Cluster
 
 - Log on your OCP Cluster
 - Expose the Docker image registry:
 
-```shell
-   oc patch configs.imageregistry.operator.openshift.io/cluster --patch '{"spec":{"defaultRoute":true}}' --type=merge
-```
+  ```shell
+  oc patch configs.imageregistry.operator.openshift.io/cluster --patch '{"spec":{"defaultRoute":true}}' --type=merge
+  ```
 
 - Log into it:
 
-```shell
-   REGISTRY_HOST=$(oc get route default-route -n openshift-image-registry --template='{{ .spec.host }}')
-   docker login -u kubeadmin -p $(oc whoami -t) $REGISTRY_HOST
-```
+  ```shell
+  REGISTRY_HOST=$(oc get route default-route -n openshift-image-registry --template='{{ .spec.host }}')
+  docker login -u kubeadmin -p $(oc whoami -t) $REGISTRY_HOST
+  ```
 
 - Upload the keycloak-scim:latest on the wanted <my-keycloak-project>:
 
-```shell
-   docker tag keycloak-scim:latest $REGISTRY_HOST/<my-keycloak-project>/keycloak-scim:latest
-   docker push $REGISTRY_HOST/<my-keycloak-project>/keycloak-scim:latest
-```
+  ```shell
+  docker tag keycloak-scim:latest $REGISTRY_HOST/<my-keycloak-project>/keycloak-scim:latest
+  docker push $REGISTRY_HOST/<my-keycloak-project>/keycloak-scim:latest
+  ```
 
-Note: To avoid an error on the image push, perhaps you will have to add $REGISTRY_HOST to your Docker insecure-registries list configuration.
-      With podman, you have to create a myregistry.conf file in the /etc/containers/registries.conf.d folder like:
-
-      [[registry]]
-      location = "$REGISTRY_HOST"
-      insecure = true
+>Note: To avoid an error on the image push, perhaps you will have to add $REGISTRY_HOST to your Docker insecure-registries list configuration.
+>
+> For instance, if you use podman, you have to create a myregistry.conf file in the /etc/containers/registries.conf.d folder (inside the virtual machine on Windows or Mac) with the content below:
+> ```
+> [[registry]]
+> location = "$REGISTRY_HOST"
+> insecure = true
+> ```
 
 ## Deploy Keycloak Service using the keycloak-scim image
+
 - Get the [keycloak.yaml](https://raw.githubusercontent.com/keycloak/keycloak-quickstarts/refs/heads/main/openshift/keycloak.yaml) file
 - Replace the provided image: input using image-registry.openshift-image-registry.svc:5000/\<my-keycloak-project>/keycloak-scim:latest
 
-```shell
+  ```shell
    ...
       spec:
           containers:
@@ -93,17 +103,17 @@ Note: To avoid an error on the image push, perhaps you will have to add $REGISTR
                   value: 'edge'
               image: image-registry.openshift-image-registry.svc:5000/<my-keycloak-project>/keycloak-scim:latest
    ...
-```
+  ```
 
 - Deploy keycloak:
 
-```shell
+  ```shell
    oc process -f ./keycloak.yaml \
     -p KEYCLOAK_ADMIN=admin \
     -p KEYCLOAK_ADMIN_PASSWORD=admin \
     -p NAMESPACE=<my-keycloak-project> \
-| oc create -f -
-```
+  | oc create -f -
+  ```
 # Configure an ODM Application with Keycloak dashboard
 
 You must start with the configuration of Keycloak with ODM roles as instructed in [Keycloak instance for ODM (Part 1)](README.md#configure-a-keycloak-instance-for-odm-part-1).
@@ -111,7 +121,7 @@ You must start with the configuration of Keycloak with ODM roles as instructed i
 
 # Deploy an Open LDAP Service
 
-- Create a Service Account with the anyuid policy
+- Create a Service Account with the `anyuid` policy
 
 ```shell
 oc apply -f ./openldap/service-account-for-anyuid.yaml
@@ -135,31 +145,31 @@ oc apply -f ./openldap/ldap-service.yaml
 The following command should return the OpenLDAP Schema :
 
 ```shell
-oc exec -ti <OPENLDAP_POD> bash -- ldapsearch -x -Z -H ldap://ldap-service.<PROJECT>.svc:389  -D 'cn=admin,dc=example,dc=org' -b 'dc=example,dc=org' -w xNxICc74qG24x3GoW03n
+oc exec -ti <OPENLDAP_POD> bash -- ldapsearch -x -Z -H ldap://ldap-service.<OPENLDAP_PROJECT>.svc:389  -D 'cn=admin,dc=example,dc=org' -b 'dc=example,dc=org' -w xNxICc74qG24x3GoW03n
 ```
 
 Where:
   - OPENLDAP_POD is the name of the OpenLDAP pod
-  - PROJECT is the name of the current project
+  - OPENLDAP_PROJECT is the name of the project in which the OpenLDAP pod has been deployed
 
 
 # Add an LDAP User Federation to Keycloak
 
-- Connect at the Keycloak Admin Dashboard using the odm realm with login/pass `admin/admin`
-- Select "User federation" and click Add Provider > LDAP
+- Connect at the Keycloak Admin Dashboard using the odm realm with username/password `admin/admin`
+- Select **Configure > User federation** and click **Add Provider > Add Ldap providers**
 
-- Fill "Add LDAP provider" dialog
+- Fill the **Add LDAP provider** dialog
 
    * General options
      * Console display name: openldap
      * Vendor: "Red Hat Directory Server"
 
    * Connection and authentication settings
-     * Connection URL should be:  ldap://ldap-service.\<PROJECT>.svc:389 (PROJECT is the name of the current project)
+     * Connection URL should be:  ldap://ldap-service.\<OPENLDAP_PROJECT>.svc:389 (when OPENLDAP_PROJECT is the project in which OpenLdap has been deployed)
      * Bind type: simple
      * Bind DN: cn=admin,dc=example,dc=org
      * Bind credentials: xNxICc74qG24x3GoW03n
-- Click on the "Test authentication" button => "Successfully connected to LDAP" message is displayed
+- Click the **Test authentication** button => "Successfully connected to LDAP" message is displayed
 
    * LDAP searching and updating
      * Edit mode: READ_ONLY
@@ -194,14 +204,14 @@ Where:
 
   - Click on the "Save" button
 
-  At this step, all openldap users have been imported. You can check it by clicking on the "Users" tab, put "*" in the Search user box and click on the search button.
+  At this step, all openldap users have been imported. You can check it by clicking on the **Users** tab, put "*" in the Search user box and click on the search button.
   You should see:
 
   ![OpenLdap Users Import](images/import_openldap_users.png)
 
-  Now, we will import groups.
+  Now let's import groups.
 
-  - Edit the "openldap" User federation
+  - In **User federation**, click **openldap**
   - Click on the "Mappers" tab
   - Click "Add mapper"
      * Name: groups
@@ -222,10 +232,10 @@ Where:
      * Drop non-existing groups during sync: Off
      * Groups Path: /
 
-  - Click the "Save" button
-  - Click on Action>Sync All users
+  - Click the **Save** button
+  - Click **Action > Sync All users**
 
-  Now you can check the openldap groups have been imported using the Groups tab. You should see :
+  Now you can check the openldap groups have been imported in the **Groups** tab. You should see :
 
   ![OpenLdap Groups Import](images/import_openldap_groups.png)
 
@@ -235,13 +245,13 @@ Where:
 ## Enable the SCIM Console Theme
 
   To access the SCIM Configuration User Interface, you have to change the Admin Console Theme.
-  If you are in the "odm" realm, you need to go back to the "master" realm before to do:
-  - Select the "Realm settings" Menu
-  - Select the "Themes" Tab
-  - Select "scim" for the "Admin console theme"
-  - Click the "Save" button => the "Realm sucessfully updated" message is displayed
+  If you are in the **odm** realm, you need to switch to the **master** realm beforehand. Then:
+  - Select the **Realm settings** Menu
+  - Select the **Themes** Tab
+  - Select **scim** for the **Admin console theme**
+  - Click the **Save** button => the "Realm successfully updated" message is displayed
   - Refresh the browser page => a "Page not found..." message is displayed
-  - Click on the "Go to the home page >>" hyperlink
+  - Click the "Go to the home page >>" hyperlink
 
   Now, the Admin console theme has changed and you should be able to access the SCIM Configuration tab :
 
@@ -249,14 +259,14 @@ Where:
 
 ## Configure the odm client application authorization
 
-  - Select the "Service Provider" tab
+  - Select the **Service Provider** tab
 
-   - Select "Settings"
-   - Set "SCIM enabled" to "ON"
-   - Click on the "Save" Button
+   - Select the **Settings** sub-tab
+   - Set **SCIM enabled** to **ON**
+   - Click the **Save** Button
 
-   - Select "Authorization"
-   - Select **odm** (clientId of the application) in the "Available Clients" list and click on "Add selected" to move it to the "Assigned Clients" list
+   - Select the **Authorization** sub-tab
+   - Select **odm** (clientId of the application) in the **Available Clients** list and click **Add selected >** to move it to the **Assigned Clients** list
 
 
   By default, the SCIM Groups and Users Endpoints require authentication.
@@ -264,21 +274,21 @@ Where:
 
   ![SCIM Resources Tab](images/scim_resources.png)
 
-  Now, we will configure these endpoints to authorize authenticated users that have the rtsAdministrators role. In the ODM client application, we will use the client_credentials flow using the "service-account-odm" service account having assigned the rtsAdministrators role. We just have to configure authorization for the "Get" endpoint as the ODM SCIM Import is a read only mode and doesn't need the other endpoints (Create, Update, Delete)
+  Now, let's configure these endpoints to authorize authenticated users that have the rtsAdministrators role. In the ODM client application, we will use the client_credentials flow using the "service-account-odm" service account having assigned the rtsAdministrators role. We just have to configure authorization for the "Get" endpoint as the ODM SCIM Import is a read only mode and doesn't need the other endpoints (Create, Update, Delete).
 
-  - Select the "Resource Type" tab
-    - Click on "Group" inside the table
-    - Click on the "Authorization" tab
-    - Expand "Common Roles", select "rtsAdministrators" in the "Available Roles" and click on "Add selected" to move it to the "Assigned Roles" list
-    - Expand "Roles for Get", select "rtsAdministrators" in the "Available Roles" and click on "Add selected" to move it to the "Assigned Roles" list
+  - Select the **Resource Type** tab
+    - Click **Group** inside the table
+    - Select the **Authorization** sub-tab
+    - Expand **Common Roles**, select **rtsAdministrators** in the **Available Roles** list and click **Add selected >** to move it to the **Assigned Roles** list
+    - Expand **Roles for Get**, select **rtsAdministrators** in the **Available Roles** list and click **Add selected >** to move it to the **Assigned Roles** list
 
   ![SCIM Group Authorization Tab](images/scim_groups_authorization.png)
 
- - Select the "Resource Type" tab again
-   - Click on "User" inside the table
-   - Click on the "Authorization" tab
-   - Expand "Common Roles", select "rtsAdministrators" in the "Available Roles" and click on "Add selected" to move it to the "Assigned Roles" list
-   - Expand "Roles for Get", select "rtsAdministrators" in the "Available Roles" and click on "Add selected" to move it to the "Assigned Roles" list
+ - Select the **Resource Type** tab again
+   - Click **User** inside the table
+   - Click the **Authorization** sub-tab
+   - Expand **Common Roles**, select **rtsAdministrators** in the **Available Roles** list and click **Add selected >** to move it to the **Assigned Roles** list
+   - Expand **Roles for Get**, select **rtsAdministrators** in the **Available Roles** list and click **Add selected >** to move it to the **Assigned Roles** list
 
   ![SCIM User Authorization Tab](images/scim_user_authorization.png)
 
@@ -290,33 +300,33 @@ Where:
   Request an access token using the Client-Credentials flow
 
   ```shell
-  $ ./get-client-credential-token.sh -i <CLIENT_ID> -x <CLIENT_SECRET> -n <KEYCLOAK_SERVER_URL>
+  ./get-client-credential-token.sh -i $CLIENT_ID -x $CLIENT_SECRET -n $KEYCLOAK_SERVER_URL
   ```
 
   Call the SCIM Group endpoint using this <ACCESS_TOKEN>
 
   ```shell
-  $ curl -k -H "Authorization: Bearer <ACCESS_TOKEN>" <KEYCLOAK_SERVER_URL>/scim/v2/Groups
+  curl -k -H "Authorization: Bearer $ACCESS_TOKEN" $KEYCLOAK_SERVER_URL/scim/v2/Groups
   ```
 
   Result should looks like :
 
   ```shell
-{"schemas":["urn:ietf:params:scim:api:messages:2.0:ListResponse"],"totalResults":10,"itemsPerPage":10,"startIndex":1,"Resources":[{"schemas":["urn:ietf:params:scim:schemas:core:2.0:Group"],"id":"ef20202e-20e3-44f3-8d70-b1cf2d2c2d7d","displayName":"ADPEnvironmentOwners","members":[{"value":"35560439-88a3-4a56-bb67-384f024bfd7a","$ref":"https://9.46.78.129:8443/realms/odm/scim/v2/Users/35560439-88a3-4a56-bb67-384f024bfd7a","type":"User"},{"value":"7d995178-294a-4175-91f4-43cd9f5906aa","$ref":"https://9.46.78.129:8443/realms/odm/scim/v2/Users/7d995178-294a-4175-91f4-43cd9f5906aa","type":"User"},{"value":"6c74e271-ae1c-4849-aa67-8351f1c816c5","$ref":"https://9.46.78.129:8443/realms/odm/scim/v2/Users/6c74e271-ae1c-4849-aa67-8351f1c816c5","type":"User"}],"meta":{"resourceType":"Group","created":"2023-08-09T13:09:44.164Z","lastModified":"2023-08-09T13:09:44.164Z","location":"https://9.46.78.129:8443/realms/odm/scim/v2/Groups/ef20202e-20e3-44f3-8d70-b1cf2d2c2d7d"}},{"schemas":["urn:ietf:params:scim:schemas:core:2.0:Group"],"id":"f671e618-ef45-41d4-bd0b-c134536edf45","displayName":"CE_EnvironmentOwners","members":[{"value":"35560439-88a3-4a56-bb67-384f024bfd7a","$ref":"https://9.46.78.129:8443/realms/odm/scim/v2/Users/35560439-88a3-4a56-bb67-384f024bfd7a","type":"User"}],"meta":{"resourceType":"Group","created":"2023-08-09T13:09:44.207Z","lastModified":"2023-08-09T13:09:44.207Z","location":"https://9.46.78.129:8443/realms/odm/scim/v2/Groups/f671e618-ef45-41d4-bd0b-c134536edf45"}},{"schemas":["urn:ietf:params:scim:schemas:core:2.0:Group"],"id":"7f767eac-0950-4e71-b2ec-b9e04a10be04","displayName":"GeneralUsers","members":[{"value":"88094536-a059-4383-8bf4-1dcb65457bb9","$ref":"https://9.46.78.129:8443/realms/odm/scim/v2/Users/88094536-a059-4383-8bf4-1dcb65457bb9","type":"User"},{"value":"94a6b972-04aa-4394-89b8-f16a875fe54d","$ref":"https://9.46.78.129:8443/realms/odm/scim/v2/Users/94a6b972-04aa-4394-89b8-f16a875fe54d","type":"User"},{"value":"9a37726a-2a69-4f97-a892-ef38d566c94f","$ref":"https://9.46.78.129:8443/realms/odm/scim/v2/Users/9a37726a-2a69-4f97-a892-ef38d566c94f","type":"User"},{"value":"35774b15-42bc-4c05-bcc9-145fbf075ace","$ref":"https://9.46.78.129:8443/realms/odm/scim/v2/Users/35774b15-42bc-4c05-bcc9-145fbf075ace","type":"User"},
-  ...
+  {"schemas":["urn:ietf:params:scim:api:messages:2.0:ListResponse"],"totalResults":10,"itemsPerPage":10,"startIndex":1,"Resources":[{"schemas":["urn:ietf:params:scim:schemas:core:2.0:Group"],"id":"ef20202e-20e3-44f3-8d70-b1cf2d2c2d7d","displayName":"ADPEnvironmentOwners","members":[{"value":"35560439-88a3-4a56-bb67-384f024bfd7a","$ref":"https://9.46.78.129:8443/realms/odm/scim/v2/Users/35560439-88a3-4a56-bb67-384f024bfd7a","type":"User"},{"value":"7d995178-294a-4175-91f4-43cd9f5906aa","$ref":"https://9.46.78.129:8443/realms/odm/scim/v2/Users/7d995178-294a-4175-91f4-43cd9f5906aa","type":"User"},{"value":"6c74e271-ae1c-4849-aa67-8351f1c816c5","$ref":"https://9.46.78.129:8443/realms/odm/scim/v2/Users/6c74e271-ae1c-4849-aa67-8351f1c816c5","type":"User"}],"meta":{"resourceType":"Group","created":"2023-08-09T13:09:44.164Z","lastModified":"2023-08-09T13:09:44.164Z","location":"https://9.46.78.129:8443/realms/odm/scim/v2/Groups/ef20202e-20e3-44f3-8d70-b1cf2d2c2d7d"}},{"schemas":["urn:ietf:params:scim:schemas:core:2.0:Group"],"id":"f671e618-ef45-41d4-bd0b-c134536edf45","displayName":"CE_EnvironmentOwners","members":[{"value":"35560439-88a3-4a56-bb67-384f024bfd7a","$ref":"https://9.46.78.129:8443/realms/odm/scim/v2/Users/35560439-88a3-4a56-bb67-384f024bfd7a","type":"User"}],"meta":{"resourceType":"Group","created":"2023-08-09T13:09:44.207Z","lastModified":"2023-08-09T13:09:44.207Z","location":"https://9.46.78.129:8443/realms/odm/scim/v2/Groups/f671e618-ef45-41d4-bd0b-c134536edf45"}},{"schemas":["urn:ietf:params:scim:schemas:core:2.0:Group"],"id":"7f767eac-0950-4e71-b2ec-b9e04a10be04","displayName":"GeneralUsers","members":[{"value":"88094536-a059-4383-8bf4-1dcb65457bb9","$ref":"https://9.46.78.129:8443/realms/odm/scim/v2/Users/88094536-a059-4383-8bf4-1dcb65457bb9","type":"User"},{"value":"94a6b972-04aa-4394-89b8-f16a875fe54d","$ref":"https://9.46.78.129:8443/realms/odm/scim/v2/Users/94a6b972-04aa-4394-89b8-f16a875fe54d","type":"User"},{"value":"9a37726a-2a69-4f97-a892-ef38d566c94f","$ref":"https://9.46.78.129:8443/realms/odm/scim/v2/Users/9a37726a-2a69-4f97-a892-ef38d566c94f","type":"User"},{"value":"35774b15-42bc-4c05-bcc9-145fbf075ace","$ref":"https://9.46.78.129:8443/realms/odm/scim/v2/Users/35774b15-42bc-4c05-bcc9-145fbf075ace","type":"User"},
+    ...
   ```
 
   Call the SCIM Group endpoint using this <ACCESS_TOKEN>
 
   ```shell
-  $ curl -k -H "Authorization: Bearer <ACCESS_TOKEN>" <KEYCLOAK_SERVER_URL>/scim/v2/Users
+  curl -k -H "Authorization: Bearer $ACCESS_TOKEN" $KEYCLOAK_SERVER_URL/scim/v2/Users
   ```
 
   Result should looks like :
 
   ```shell
-{"schemas":["urn:ietf:params:scim:api:messages:2.0:ListResponse"],"totalResults":23,"itemsPerPage":23,"startIndex":1,"Resources":[{"schemas":["urn:ietf:params:scim:schemas:core:2.0:User"],"id":"def4784e-7b1d-460b-86b3-8cf4d95e47e2","userName":"caserviceuser","name":{"familyName":"caServiceUser","givenName":"caServiceUser"},"active":true,"emails":[{"value":"caserviceuser@example.org","primary":true}],"meta":{"resourceType":"User","created":"2022-12-09T14:07:02.529Z","lastModified":"2022-12-09T14:07:02.529Z","location":"https://9.46.78.129:8443/realms/odm/scim/v2/Users/def4784e-7b1d-460b-86b3-8cf4d95e47e2"}},{"schemas":["urn:ietf:params:scim:schemas:core:2.0:User"],"id":"7d995178-294a-4175-91f4-43cd9f5906aa","userName":"cp4admin","name":{"familyName":"cp4admin","givenName":"cp4admin"},"active":true,"emails":[{"value":"cp4admin@example.org","primary":true}],"groups":[{"value":"da45f301-9b11-4367-be98-ecf63b677c45","display":"TaskAdmins","type":"direct"},{"value":"ef20202e-20e3-44f3-8d70-b1cf2d2c2d7d","display":"ADPEnvironmentOwners","type":"direct"},{"value":"8a0a6948-1c07-4c5c-8e17-c445a12572b8","display":"P8Administrators","type":"direct"},{"value":"ee18a23d-ba39-466a-a4f6-8d7ebc53825b","display":"TeamsAdmins","type":"direct"}],"meta":{"resourceType":"User","created":"2022-12-09T14:06:54.231Z","lastModified":"2022-12-09T14:06:54.231Z","location":"https://9.46.78.129:8443/realms/odm/scim/v2/Users/7d995178-294a-4175-91f4-43cd9f5906aa"}},{"schemas":["urn:ietf:params:scim:schemas:core:2.0:User"],"id":"35560439-88a3-4a56-bb67-384f024bfd7a","userName":"environmentowner","name":{"familyName":"environmentOwner","givenName":"environmentOwner"},"active":true,"emails":[{"value":"environmentowner@example.org","primary":true}],"groups":[{"value":"f671e618-ef45-41d4-bd0b-c134536edf45","display":"CE_EnvironmentOwners","type":"direct"},{"value":"ef20202e-20e3-44f3-8d70-b1cf2d2c2d7d","display":"ADPEnvironmentOwners","type":"direct"},
-  ...
+  {"schemas":["urn:ietf:params:scim:api:messages:2.0:ListResponse"],"totalResults":23,"itemsPerPage":23,"startIndex":1,"Resources":[{"schemas":["urn:ietf:params:scim:schemas:core:2.0:User"],"id":"def4784e-7b1d-460b-86b3-8cf4d95e47e2","userName":"caserviceuser","name":{"familyName":"caServiceUser","givenName":"caServiceUser"},"active":true,"emails":[{"value":"caserviceuser@example.org","primary":true}],"meta":{"resourceType":"User","created":"2022-12-09T14:07:02.529Z","lastModified":"2022-12-09T14:07:02.529Z","location":"https://9.46.78.129:8443/realms/odm/scim/v2/Users/def4784e-7b1d-460b-86b3-8cf4d95e47e2"}},{"schemas":["urn:ietf:params:scim:schemas:core:2.0:User"],"id":"7d995178-294a-4175-91f4-43cd9f5906aa","userName":"cp4admin","name":{"familyName":"cp4admin","givenName":"cp4admin"},"active":true,"emails":[{"value":"cp4admin@example.org","primary":true}],"groups":[{"value":"da45f301-9b11-4367-be98-ecf63b677c45","display":"TaskAdmins","type":"direct"},{"value":"ef20202e-20e3-44f3-8d70-b1cf2d2c2d7d","display":"ADPEnvironmentOwners","type":"direct"},{"value":"8a0a6948-1c07-4c5c-8e17-c445a12572b8","display":"P8Administrators","type":"direct"},{"value":"ee18a23d-ba39-466a-a4f6-8d7ebc53825b","display":"TeamsAdmins","type":"direct"}],"meta":{"resourceType":"User","created":"2022-12-09T14:06:54.231Z","lastModified":"2022-12-09T14:06:54.231Z","location":"https://9.46.78.129:8443/realms/odm/scim/v2/Users/7d995178-294a-4175-91f4-43cd9f5906aa"}},{"schemas":["urn:ietf:params:scim:schemas:core:2.0:User"],"id":"35560439-88a3-4a56-bb67-384f024bfd7a","userName":"environmentowner","name":{"familyName":"environmentOwner","givenName":"environmentOwner"},"active":true,"emails":[{"value":"environmentowner@example.org","primary":true}],"groups":[{"value":"f671e618-ef45-41d4-bd0b-c134536edf45","display":"CE_EnvironmentOwners","type":"direct"},{"value":"ef20202e-20e3-44f3-8d70-b1cf2d2c2d7d","display":"ADPEnvironmentOwners","type":"direct"},
+    ...
   ```
 
 # Deploy ODM on a container configured with Keycloak
@@ -325,13 +335,13 @@ Follow - [Deploy ODM on a container configured with Keycloak (Part 2)](README.md
 
 But replace the previous step "3. Create the Keycloak authentication secret" of the section [Create secrets to configure ODM with Keycloak](README.md#create-secrets-to-configure-odm-with-keycloak) by:
 
-    ```
-    kubectl create secret generic keycloak-auth-secret \
-        --from-file=ldap-configurations.xml=./output/ldap-configurations.xml \
-        --from-file=openIdParameters.properties=./output/openIdParameters.properties \
-        --from-file=openIdWebSecurity.xml=./output/openIdWebSecurity.xml \
-        --from-file=webSecurity.xml=./output/webSecurity.xml
-    ```
+  ```
+  kubectl create secret generic keycloak-auth-secret \
+      --from-file=ldap-configurations.xml=./output/ldap-configurations.xml \
+      --from-file=openIdParameters.properties=./output/openIdParameters.properties \
+      --from-file=openIdWebSecurity.xml=./output/openIdWebSecurity.xml \
+      --from-file=webSecurity.xml=./output/webSecurity.xml
+  ```
 Make sure that you finish [Complete post-deployment tasks](README.md#complete-post-deployment-tasks).
 
 # Manage Security on ODM Decision Service Project 
@@ -343,28 +353,32 @@ We will only provide access to the "Miniloan Service" project for users belongin
 
 ## Provide the relevant roles on groups
 
-The first step is to declare groups of users that will be Decision Center Administrators, having access to the Business Console Administration Tab.
+The first step is to declare the groups of users that will be Decision Center Administrators, and therefore have access to the Business Console Administration Tab.
 
-  - In Keycloak admin console of **odm** realm, select the `Manage>Groups` Tab
-  - Double-click on "TaskAdmins"
-  - Select the "Role Mappings" Tab
-  - Select all rts*** roles in the "Available Roles" list and click on "Add selected" to move it to the "Assigned Roles" list
+  - In Keycloak admin console, select the **odm** realm
+  - Select the **Manage > Groups** Tab
+  - Double-click **TaskAdmins**
+  - Select the **Role Mappings** Tab
+  - Select all rts*** roles in the **Available Roles** list and click **Add selected >** to move them to the **Assigned Roles** list
 
   ![Assign Admin Roles](images/assign_rtsadministrators_role.png)
 
-We also need to declare "TaskAuditors" and "TaskUsers" groups having rtsUSers roles. If you don't do this, users are not authorized to login into the Business Console.
+Let's also assign the **rtsUsers** role to the **TaskAuditors** and **TaskUsers** groups. If you do not do this, users are not authorized to login into the Business Console.
 
-  - Select the `Manage>Groups` Tab
-  - Double-click on "TaskAuditors"
-  - Select the "Role Mappings" Tab
-  - Select the "rtsUsers" role in the "Available Roles" list and click on "Add selected" to move it to the "Assigned Roles" list
-  - Repeat the same for the "TaskUsers" group
+  - Select the **Manage > Groups** Tab
+  - Double-click on **TaskAuditors**
+  - Select the **Role Mappings** Tab
+  - Select the **rtsUsers** role in the **Available Roles** list and click **Add selected >** to move it to the **Assigned Roles** list
+  - Repeat the same for the **TaskUsers** group
 
   ![Assign User Roles](images/assign_rtsusers_role.png)
 
 ## Load projects
 
-  For all the coming steps, the users' password can be found in the `ldap_user.ldif` file of the `openldap-customldif` secret.
+  For the next steps, the users password can be found in the `ldap_user.ldif` file of the `openldap-customldif` secret, by running the commmand:
+  ```
+  oc get secret openldap-customldif -o jsonpath={.data."ldap_user\.ldif"} | base64 -d
+  ```
 
   - Log into the ODM Decision Center Business Console using the `cp4admin` user
   - Select the **LIBRARY** tab
@@ -375,35 +389,35 @@ We also need to declare "TaskAuditors" and "TaskUsers" groups having rtsUSers ro
 ## Import Groups and Users
 
   - Select the **ADMINISTRATION** tab
-  - Select the "Connection Settings" sub-tab
+  - Select the **Connection Settings** sub-tab
   - Check the KEYCLOAK_SCIM connection status is green
-  - Select the "Groups" sub-tab
-  - Click the "Import Groups from directories" button
-  - Select the "TaskAuditors" and "TaskUsers" groups
-  - Click on the "Import groups and users" button
+  - Select the **Groups** sub-tab
+  - Click the **Import Groups from directories** button
+  - Select the **TaskAuditors** and **TaskUsers** groups
+  - Click on the **Import groups and users** button
 
   ![DC Import Groups and Users](images/dc_import_groups_users.png)
 
 ## Set the project security
 
-  - Select the "Project Security" sub-tab
-  - Click on the "Edit decision service security" of the "Loan Validation Service" project
-  - Below the Security section, select "Enforce Security"
-  - Below the Groups section, select the TaskAuditors group
-  - Click on the Done button
+  - Select the **Project Security** sub-tab
+  - Click on the **Edit decision service security** of the "Loan Validation Service" project
+  - Below the Security section, select **Enforce Security**
+  - Below the Groups section, select the **TaskAuditors** group
+  - Click the **Done** button
 
   ![Set Loan Validation Service Security](images/set_loan_validation_service_security.png)
 
-  - Click on the "Edit decision service security" of the "Miniloan Service" project
-  - Below the Security section, select "Enforce Security"
-  - Below the Groups section, select the TaskUsers group
-  - Click on the Done button
+  - Click the **Edit decision service security** of the "Miniloan Service" project
+  - Below the Security section, select **Enforce Security**
+  - Below the Groups section, select the **TaskUsers** group
+  - Click the **Done** button
 
   ![Security Results](images/security_results.png)
 
 ## Check the project security
 
-  - Click on top right "cp4admin" user
+  - Click on top right **cp4admin** user
   - Click the "Log out" link
   - Click the Keycloak Logout button
 

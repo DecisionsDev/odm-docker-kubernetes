@@ -28,10 +28,10 @@ Options:
 
 -g : AZUREAD ODM Group ID
 -i : Client ID
--n : AZUREAD domain (AZUREAD server name)
+-n : Tenant ID
 -x : Cient Secret
 -a : Allow others domains (Optional)
-Usage example: $0 -i AzureADClientId -x AzureADClientSecret -n <Application ID (GUID)> -g <GROUP ID (GUID)> [-a <domain name>]"
+Usage example: $0 -i AzureADClientId -x AzureADClientSecret -n AzureADTenantId -g <GROUP ID (GUID)> [-a <domain name>]"
 EOF
 }
 
@@ -39,7 +39,7 @@ while getopts "x:i:n:s:g:ha:" option; do
     case "${option}" in
         g) AZUREAD_ODM_GROUP_ID=${OPTARG};;
         i) AZUREAD_CLIENT_ID=${OPTARG};;
-        n) AZUREAD_SERVER_NAME=${OPTARG};;
+        n) AZUREAD_TENANT_ID=${OPTARG};;
         x) AZUREAD_CLIENT_SECRET=${OPTARG};;
         a) ALLOW_DOMAIN=${OPTARG};;
         h) usage; exit 0;;
@@ -55,8 +55,8 @@ if [[ -z ${AZUREAD_CLIENT_ID} ]]; then
   echo "AZUREAD_CLIENT_ID has to be provided, either as in environment or with -i."
   exit 1
 fi
-if [[ -z ${AZUREAD_SERVER_NAME} ]]; then
-  echo "AZUREAD_SERVER_NAME has to be provided, either as in environment or with -n."
+if [[ -z ${AZUREAD_TENANT_ID} ]]; then
+  echo "AZUREAD_TENANT_ID has to be provided, either as in environment or with -n."
   exit 1
 fi
 if [[ -z ${AZUREAD_CLIENT_SECRET} ]]; then
@@ -64,10 +64,10 @@ if [[ -z ${AZUREAD_CLIENT_SECRET} ]]; then
   exit 1
 fi
 
-if [[ ${AZUREAD_SERVER_NAME} != "https://.*" ]]; then
-  AZUREAD_SERVER_URL=https://login.microsoftonline.com/${AZUREAD_SERVER_NAME}
+if [[ ${AZUREAD_TENANT_ID} != "https://.*" ]]; then
+  AZUREAD_SERVER_URL=https://login.microsoftonline.com/${AZUREAD_TENANT_ID}
 else
-  AZUREAD_SERVER_URL=${AZUREAD_SERVER_NAME}
+  AZUREAD_SERVER_URL=${AZUREAD_TENANT_ID}
 fi
 
 mkdir -p $OUTPUT_DIR && cp $TEMPLATE_DIR/* $OUTPUT_DIR
@@ -76,6 +76,7 @@ sed -i.bak 's|AZUREAD_CLIENT_ID|'$AZUREAD_CLIENT_ID'|g' $OUTPUT_DIR/*
 sed -i.bak 's|AZUREAD_CLIENT_SECRET|'$AZUREAD_CLIENT_SECRET'|g' $OUTPUT_DIR/*
 sed -i.bak 's|AZUREAD_ODM_GROUP_ID|'$AZUREAD_ODM_GROUP_ID'|g' $OUTPUT_DIR/*
 sed -i.bak 's|AZUREAD_SERVER_URL|'$AZUREAD_SERVER_URL'|g' $OUTPUT_DIR/*
+sed -i.bak 's|AZUREAD_TENANT_ID|'$AZUREAD_TENANT_ID'|g' $OUTPUT_DIR/*
 # Claim replacement
 sed -i.bak 's|AZUREAD_CLAIM_GROUPS|'$AZUREAD_CLAIM_GROUPS'|g' $OUTPUT_DIR/*
 sed -i.bak 's|AZUREAD_CLAIM_LOGIN|'$AZUREAD_CLAIM_LOGIN'|g' $OUTPUT_DIR/*

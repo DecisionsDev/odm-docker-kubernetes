@@ -20,14 +20,12 @@ For installations on other platforms, refer to the [Jaeger documentation](https:
 
 ## Deploy the OpenTelemetry Collector
 
-We used the following [descriptor](https://github.com/open-telemetry/opentelemetry-go/blob/main/example/otel-collector/otel-collector.yaml) as the basis for the OTEL Collector deployment.
+We used the following [descriptor](https://github.com/open-telemetry/opentelemetry-go-contrib/blob/main/examples/otel-collector/otel-collector.yaml) as the basis for the OTEL Collector deployment.
 However, it's likely that you will encounter an error similar to:
 
  ```console
 2023-07-06T17:28:37.520Z        debug   jaegerexporter@v0.80.0/exporter.go:106  failed to push trace data to Jaeger     {"kind": "exporter", "data_type": "traces", "name": "jaeger", "error": "rpc error: code = Unimplemented desc = unknown service jaeger.api_v2.CollectorService"}
  ```
-
-A solution is provided in the following [article](https://cloudbyt.es/blog/switching-to-jaeger-otel-collector).
 
 You can also utilize the [otel-collector.yaml](./otel-collector.yaml) file we used for this tutorial by applying it with:
 
@@ -90,7 +88,7 @@ helm repo update
 ```bash
 $ helm search repo ibm-odm-prod
 NAME                             	CHART VERSION	APP VERSION	DESCRIPTION
-ibm-helm/ibm-odm-prod           	24.0.0       	9.0.0.0   	IBM Operational Decision Manager
+ibm-helm/ibm-odm-prod           	24.1.0       	9.0.0.1   	IBM Operational Decision Manager
 ```
 
 ### Install an IBM Operational Decision Manager release (10 min)
