@@ -4,24 +4,24 @@ usersPassword: "odmAdmin"
 image:
   repository: cp.icr.io/cp/cp4a/odm
   pullSecrets:
-  - <REGISTRY_SECRET>
+  - registrysecret
 
 service:
   enableTLS: false
   ingress:
     enabled: true
-    tlsSecretRef: mynicecompany-crt-secret
+    tlsSecretRef: mynicecompany-tls-secret
     host: mynicecompany.com
     tlsHosts:
     - mynicecompany.com
 
 externalDatabase:
   type: postgres
-  secretCredentials: <ODM_DB_SECRET>
+  secretCredentials: odmdbsecret
   port: 5432
   serverName: <DB_ENDPOINT>
-  databaseName: <DATABASE_NAME>
+  databaseName: postgres
   # You can get the last Google Cloud SQL PostgreSQL driver version
   # at https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory/releases
   driversUrl:
-  - https://storage.googleapis.com/cloud-sql-java-connector/v1.7.1/postgres-socket-factory-1.7.1-jar-with-driver-and-dependencies.jar
+  - https://storage.googleapis.com/cloud-sql-connectors-java/v1.13.1/postgres-socket-factory-1.13.1-jar-with-driver-and-dependencies.jar
