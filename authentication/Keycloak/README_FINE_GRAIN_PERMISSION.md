@@ -87,7 +87,7 @@ As the project [https://scim-for-keycloak.de/](https://scim-for-keycloak.de) wil
 
 ## Deploy Keycloak Service using the keycloak-scim image
 
-- Get the [keycloak.yaml](https://raw.githubusercontent.com/keycloak/keycloak-quickstarts/latest/openshift/keycloak.yaml) file
+- Get the [keycloak.yaml](https://raw.githubusercontent.com/keycloak/keycloak-quickstarts/refs/heads/main/openshift/keycloak.yaml) file
 - Replace the provided image: input using image-registry.openshift-image-registry.svc:5000/\<my-keycloak-project>/keycloak-scim:latest
 
   ```shell
