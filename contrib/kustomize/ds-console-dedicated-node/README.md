@@ -6,7 +6,7 @@ Use `kustomize` to scope the Decision Server Console to a dedicated node defined
 
 - [`kustomize`](https://kubectl.docs.kubernetes.io/installation/kustomize/) 3.5+ installed in your PATH
 - Helm 3.1
-- A running Kubernetes cluster with an annotated node. You can add a label to a node with the following command:
+- In a running Kubernetes cluster with an annotated node. You can add a label to a node with the following command:
   ```
   kubectl label nodes <your-node-name> <your-label>=<value>
   ```
