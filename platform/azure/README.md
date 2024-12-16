@@ -76,7 +76,7 @@ az account list-locations -o table
 Then, create the resource group:
 
 ```shell
-az group create --name <resourcegroup> --location <azurelocation> [--tags Owner=<email> Team=DBA Usage=demo Usage_desc="Azure customers support" Delete_date=2023-12-31]
+az group create --name <resourcegroup> --location <azurelocation>
 ```
 
 The following example output shows that the resource group has been created successfully:
@@ -106,12 +106,7 @@ az aks create --name <cluster> --resource-group <resourcegroup> --node-count 2 \
           --enable-cluster-autoscaler --min-count 2 --max-count 4 --generate-ssh-keys
 ```
 
-After a few minutes, the command completes and returns JSON-formatted information about the cluster.  Make a note of the newly-created Resource Group that is displayed in the JSON output (e.g. "nodeResourceGroup": "<noderesourcegroup>") if you have to tag it, for example:
-
-```shell
-az group update --name <noderesourcegroup> \
-    --tags Owner=<email> Team=DBA Usage=demo Usage_desc="Azure customers support" Delete_date=2024-12-31
-```
+After a few minutes, the command completes and returns JSON-formatted information about the cluster.
        
 ### Set up your environment to this cluster
 
