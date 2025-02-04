@@ -330,7 +330,7 @@ services:
     deploy:
       replicas: 1
       labels:
-        ecs.task.family: res,rts,test,runtime
+        ecs.task.family: rts,test,runtime
     healthcheck:
       test: ["CMD-SHELL", "./check-health.sh || exit 1"]
       interval: 30s

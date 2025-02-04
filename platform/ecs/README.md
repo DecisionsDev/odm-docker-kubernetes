@@ -5,7 +5,6 @@ This tutorial demonstrates how to deploy an IBM® Operational Decision Manager (
 <br><img src="images/ODM-ECS.png"/> <br>
 **Table of Contents**
 <!-- TOC -->
-
 - [Deploying IBM Operational Decision Manager on Amazon ECS Fargate BETA](#deploying-ibm-operational-decision-manager-on-amazon-ecs-fargate-beta)
     - [Pre-requisite](#1-pre-requisite)
     - [Prepare your environment for the ODM installation](#2-prepare-your-environment-for-the-odm-installation)
@@ -30,7 +29,6 @@ This tutorial demonstrates how to deploy an IBM® Operational Decision Manager (
     - [Cleaup AWS CloudFormation stack](#4-cleaup-aws-cloudformation-stack)
         - [AWS CloudFormation console:](#41-aws-cloudformation-console)
         - [AWS Cli command](#42-aws-cli-command)
-
 <!-- /TOC -->
 
 
@@ -252,7 +250,9 @@ volumes:
 
 ## 3. Deploy ODM to AWS ECS Fargate
 
-ODM can be deployed either in [HTTP](docker-compose-http.yaml) or [HTTPS](docker-compose-https.yaml) mode. Each of the ODM components are configured to be deployed as separate ECS task due to IBM licensing service which logs CPU usage per ECS task. The IBM Licensing service will be deployed to each ECS task for tracking purpose. Inspect the docker-compose file for more details.
+ODM can be deployed either in [HTTP](docker-compose-http.yaml) or [HTTPS](docker-compose-https.yaml) mode. Each of the ODM components are configured to be deployed as separate ECS task due to IBM licensing service which logs CPU usage per ECS task. The IBM Licensing service will be deployed to the ECS tasks of Decision Center, Decision Server Runtime and Decision Runner for tracking purpose. Inspect the docker-compose file for more details. 
+
+<br><img src="images/topology.png" width="80%"/>
 
 ### 3.1 Edit docker-compose file
 
