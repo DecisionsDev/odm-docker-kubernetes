@@ -13,7 +13,8 @@ This tutorial demonstrates how to deploy an IBM® Operational Decision Manager (
         - [Create a secret for the Entitled registry access](#23-create-a-secret-for-the-entitled-registry-access)
             - [Retrieve your entitled registry key](#231-retrieve-your-entitled-registry-key)
             - [Create a JSON file](#232-create-a-json-file)
-            - [Create the secret in ASW Secrets Manager:](#233-create-the-secret-in-asw-secrets-manager)
+            - [Create the secret in ASW Secrets Manager](#233-create-the-secret-in-asw-secrets-manager)
+            - [Create VPC endpoint to access ASW Secrets Manager service](#234-create-vpc-endpoint-to-access-asw-secrets-manager-service)
         - [Create S3 bucket and IAM policy for IBM licensing service](#24-create-s3-bucket-and-iam-policy-for-ibm-licensing-service)
         - [Add Outbound rule to Load balancer's security group](#25-add-outbound-rule-to-load-balancers-security-group)
         - [Initialize ECS Compose-X](#26-initialize-ecs-compose-x)
@@ -23,14 +24,13 @@ This tutorial demonstrates how to deploy an IBM® Operational Decision Manager (
             - [HTTP mode](#311-http-mode)
             - [HTTPS mode](#312-https-mode)
         - [Create the AWS CloudFormation stacks](#32-create-the-aws-cloudformation-stacks)
-        - [Configure inbound rule on RES security group:](#33-configure-inbound-rule-on-res-security-group)
+        - [Configure inbound rule on RES security group](#33-configure-inbound-rule-on-res-security-group)
         - [Access ODM services:](#34-access-odm-services)
         - [Edit Server configurations in Decision Center](#35-edit-server-configurations-in-decision-center)
     - [Cleaup AWS CloudFormation stack](#4-cleaup-aws-cloudformation-stack)
         - [AWS CloudFormation console:](#41-aws-cloudformation-console)
         - [AWS Cli command](#42-aws-cli-command)
 <!-- /TOC -->
-
 
 ## 1. Pre-requisite
 
@@ -41,7 +41,7 @@ To deploy ODM containers on AWS ECS Fargate from [docker-compose](docker-compose
    * Install python3.6+ and later version.
    * Ensure you have an [AWS Account](https://aws.amazon.com/getting-started/). 
    * Install [ECS Compose-x](https://github.com/compose-x/ecs_composex?tab=readme-ov-file#installation), preferably in a virtual environment.
-   * Ensure that you have an existing internet-facing Application Elastic Load balancer and a VPC with public subnets [setup](https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-manage-subnets.html) on Amazon Web Services(AWS).
+   * Ensure that you have an existing internet-facing Application Elastic Load balancer based on a VPC with public subnets [setup](https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-manage-subnets.html) on Amazon Web Services(AWS).
    * If you want to run ODM Decision services in HTTPS mode, you need to have an [ACM public certificate](https://console.aws.amazon.com/acm/home). 
 
 *Note*: The commands and tools have been tested on macOS.
@@ -138,6 +138,11 @@ For example:
     ...
 ```
 
+#### 2.3.4 Create VPC endpoint to access ASW Secrets Manager service
+
+Since the ECS tasks need to access to the secret from Secrets Manager service, you might need to create an AWS Secrets Manager VPC endpoint. This inteface endpoint should use the VPC that you plan to deploy ODM. Choose the subnets and security group of this VPC to setup the endpoint. For more information, see [Using an AWS Secrets Manager VPC endpoint](https://docs.aws.amazon.com/secretsmanager/latest/userguide/vpc-endpoint-overview.html).
+
+
 ### 2.4 Create S3 bucket and IAM policy for IBM licensing service
 
 In this tutorial, we have included IBM Licensing service for tracking license usage of ODM that is deployed on AWS ECS Fargate.
@@ -212,7 +217,7 @@ If you want to run ODM Decision services in HTTPS mode, it is required to provid
 - Rename the downloaded `AmazonRootCA1.pem` file to `AmazonRootCA1.crt`.
 - In the S3 bucket created by `ecs-compose-x init`, create a folder named `certificate`.
 - Upload this `AmazonRootCA1.crt` file into this folder. <br><img src="images/S3-certificate.png" width="80%"/>
-- Create a new file system name `odm-filesystem` in [Amazon EFS](https://console.aws.amazon.com/efs/home) using the same VPC where you plan to create ECS Fargate cluster with ODM services. This file system will be used as a volume for Decision Center. See :
+- Create a new file system name `odm-filesystem` in [Amazon EFS](https://console.aws.amazon.com/efs/home) using the *same VPC* where you plan to create ECS Fargate cluster with ODM services. This file system will be used as a volume for Decision Center. See :
 ```
 volumes:
   app:
@@ -250,7 +255,7 @@ volumes:
 
 ## 3. Deploy ODM to AWS ECS Fargate
 
-ODM can be deployed either in [HTTP](docker-compose-http.yaml) or [HTTPS](docker-compose-https.yaml) mode. Each of the ODM components are configured to be deployed as separate ECS task due to IBM licensing service which logs CPU usage per ECS task. The IBM Licensing service will be deployed to the ECS tasks of Decision Center, Decision Server Runtime and Decision Runner for tracking purpose. Inspect the docker-compose file for more details. 
+ODM can be deployed either in [HTTP](docker-compose-http.yaml) or [HTTPS](docker-compose-https.yaml) mode. Each of the ODM components are configured to be deployed as separate ECS task due to IBM licensing service which logs CPU usage per ECS task. The IBM Licensing service will be deployed to the ECS tasks of Decision Center, Decision Server Runtime and Decision Runner for tracking purpose. Inspect the docker-compose file for more details.
 
 <br><img src="images/topology.png" width="80%"/>
 
@@ -287,7 +292,6 @@ x-elbv2:
         SslPolicy: ELBSecurityPolicy-TLS13-1-2-2021-06
   ```
 - For the parameter `RES_URL` that is defined in `environment` section of `odm-decisionrunner` service, look for the DNS value of your [load balancer](https://console.aws.amazon.com/ec2/home?#LoadBalancers:) and assign it to the parameter as `https://your_loadbalancer_dns/res`. This is required for running `Testing and Simulation` in Decision Center.
-
 
 ### 3.2 Create the AWS CloudFormation stacks
 
