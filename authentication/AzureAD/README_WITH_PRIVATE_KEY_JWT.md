@@ -164,26 +164,7 @@ For additional information regarding the implement in Liberty, please refer to t
 
 ### Create secrets to configure ODM with Microsoft Entra ID
 
-1. Create a secret with the Microsoft Entra ID Server certificate.
-
-    To allow ODM services to access the Microsoft Entra ID Server, it is mandatory to provide the Microsoft Entra ID Server certificate.
-    You can create the secret as follows:
-
-    ```shell
-    keytool -printcert -sslserver login.microsoftonline.com -rfc > microsoft.crt
-    kubectl create secret generic ms-secret --from-file=tls.crt=microsoft.crt
-    ```
-
-    Introspecting the Microsoft Entra ID login.microsoftonline.com certificate, you can see it has been signed by the Digicert Root CA authorithy.
-
-    So we will also add the DigiCert Global Root CA from [this page](https://www.digicert.com/kb/digicert-root-certificates.htm):
-
-    ```shell
-    curl --silent --remote-name https://cacerts.digicert.com/DigiCertGlobalRootCA.crt.pem
-    kubectl create secret generic digicert-secret --from-file=tls.crt=DigiCertGlobalRootCA.crt.pem
-    ```
-
-2. Create a secret to provide the private and public certificate to manage the private_key_jwt authentication
+1. Create a secret to provide the private and public certificate to manage the private_key_jwt authentication
 
    To allow ODM containers to generate a client_assertion, you have to provide them the private and public certificates with the following **myodmcompany** secret. Don't change this name with this tutorial as this name is linked to the openidConnectClient **keyAliasName="myodmcompany"**  parameter of the private_key_jwt liberty configuration.
 
@@ -191,7 +172,7 @@ For additional information regarding the implement in Liberty, please refer to t
     kubectl create secret generic myodmcompany --from-file=tls.key=myodmcompany.key --from-file=tls.crt=myodmcompany.crt
     ```
 
-3. Generate the ODM configuration file for Microsoft Entra ID.
+1. Generate the ODM configuration file for Microsoft Entra ID.
 
     If you have not yet done so, download the [azuread-odm-script.zip](azuread-odm-script.zip) file to your machine. This archive contains the [script](generateTemplateForPrivateKeyJWT.sh) and the content of the [templates_for_privatekeyjwt](templates_for_privatekeyjwt) directory.
 
@@ -218,7 +199,7 @@ For additional information regarding the implement in Liberty, please refer to t
     - openIdParameters.properties configures several features like allowed domains, logout, and some internal ODM OpenId features
     - OdmOidcProviders.json configures the client-credentials OpenId provider used by the Decision Center server configuration to connect Decision Center to the Decision Server console and Decision Center to the Decision Runner
 
-4. Create the Microsoft Entra ID authentication secret.
+1. Create the Microsoft Entra ID authentication secret.
 
     ```shell
     kubectl create secret generic azuread-auth-secret \
@@ -259,7 +240,6 @@ You can now install the product. We will use the PostgreSQL internal database an
           --set oidc.enabled=true \
           --set license=true \
           --set internalDatabase.persistence.enabled=false \
-          --set customization.trustedCertificateList='{ms-secret,digicert-secret}' \
           --set customization.privateCertificateList='{myodmcompany}' \
           --set customization.authSecretRef=azuread-auth-secret \
           --set internalDatabase.runAsUser='' --set customization.runAsUser='' --set service.enableRoute=true
@@ -280,7 +260,6 @@ You can now install the product. We will use the PostgreSQL internal database an
           --set oidc.enabled=true \
           --set license=true \
           --set internalDatabase.persistence.enabled=false \
-          --set customization.trustedCertificateList='{ms-secret,digicert-secret}' \
           --set customization.privateCertificateList='{myodmcompany}' \
           --set customization.authSecretRef=azuread-auth-secret \
           --set service.ingress.enabled=true \
