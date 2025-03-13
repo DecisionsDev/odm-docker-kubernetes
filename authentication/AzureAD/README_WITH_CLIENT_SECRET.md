@@ -246,26 +246,7 @@
 
 ### Create secrets to configure ODM with Microsoft Entra ID
 
-1. Create a secret with the Microsoft Entra ID Server certificate.
-
-    To allow ODM services to access the Microsoft Entra ID Server, it is mandatory to provide the Microsoft Entra ID Server certificate.
-    You can create the secret as follows:
-
-    ```shell
-    keytool -printcert -sslserver login.microsoftonline.com -rfc > microsoft.crt
-    kubectl create secret generic ms-secret --from-file=tls.crt=microsoft.crt
-    ```
-
-    Introspecting the Microsoft Entra ID login.microsoftonline.com certificate, you can see it has been signed by the Digicert Root CA authorithy.
-
-    So we will also add the DigiCert Global Root CA from [this page](https://www.digicert.com/kb/digicert-root-certificates.htm):
-
-    ```shell
-    curl --silent --remote-name https://cacerts.digicert.com/DigiCertGlobalRootCA.crt.pem
-    kubectl create secret generic digicert-secret --from-file=tls.crt=DigiCertGlobalRootCA.crt.pem
-    ```
-
-2. Generate the ODM configuration file for Microsoft Entra ID.
+1. Generate the ODM configuration file for Microsoft Entra ID.
 
     If you have not yet done so, download the [azuread-odm-script.zip](azuread-odm-script.zip) file to your machine. This archive contains the [script](generateTemplate.sh) and the content of the [templates](templates) directory.
 
@@ -293,7 +274,7 @@
     - openIdParameters.properties configures several features like allowed domains, logout, and some internal ODM OpenId features
     - OdmOidcProviders.json configures the client-credentials OpenId provider used by the Decision Center server configuration to connect Decision Center to the Decision Server console and Decision Center to Decision Runner
 
-3. Create the Microsoft Entra ID authentication secret.
+2. Create the Microsoft Entra ID authentication secret.
 
     ```shell
     kubectl create secret generic azuread-auth-secret \
@@ -303,7 +284,7 @@
         --from-file=webSecurity.xml=./output/webSecurity.xml
     ```
 
-4. Create the secret allowing to synchronize Decision Center Users and Groups with Entra ID.
+3. Create the secret allowing to synchronize Decision Center Users and Groups with Entra ID.
 
     This section is optional.
 
@@ -364,7 +345,6 @@ You can now install the product. We will use the PostgreSQL internal database an
           --set oidc.enabled=true \
           --set license=true \
           --set internalDatabase.persistence.enabled=false \
-          --set customization.trustedCertificateList='{ms-secret,digicert-secret}' \
           --set customization.authSecretRef=azuread-auth-secret \
           --set internalDatabase.runAsUser='' --set customization.runAsUser='' --set service.enableRoute=true
   ```
@@ -389,7 +369,6 @@ You can now install the product. We will use the PostgreSQL internal database an
           --set oidc.enabled=true \
           --set license=true \
           --set internalDatabase.persistence.enabled=false \
-          --set customization.trustedCertificateList='{ms-secret,digicert-secret}' \
           --set customization.authSecretRef=azuread-auth-secret \
           --set service.ingress.enabled=true \
           --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"\,"nginx.ingress.kubernetes.io/backend-protocol: HTTPS"}
