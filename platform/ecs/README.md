@@ -43,6 +43,8 @@ To deploy ODM containers on AWS ECS Fargate from [docker-compose](docker-compose
    * Install [ECS Compose-x](https://github.com/compose-x/ecs_composex?tab=readme-ov-file#installation), preferably in a virtual environment.
    * Ensure that you have an existing internet-facing Application Elastic Load balancer based on a VPC with public subnets [setup](https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-manage-subnets.html) on Amazon Web Services(AWS).
    * If you want to run ODM Decision services in HTTPS mode, you need to have an [ACM public certificate](https://console.aws.amazon.com/acm/home). 
+   * Ensure that AWS S3 bucket is not secured by AWS KMS keys (SSE-KMS). This is not supported by IBM licensing service.
+
 
 *Note*: The commands and tools have been tested on macOS.
 
@@ -145,6 +147,9 @@ Since the ECS tasks need to access to the secret from Secrets Manager service, y
 
 ### 2.4 Create S3 bucket and IAM policy for IBM licensing service
 
+> **Disclaimer** - 
+> Make sure that AWS S3 is not secured by AWS KMS keys (SSE-KMS) as it is not supported by IBM Licensing service.
+
 In this tutorial, we have included IBM Licensing service for tracking license usage of ODM that is deployed on AWS ECS Fargate.
 
 The following steps are needed by IBM Licensing service:
@@ -176,7 +181,7 @@ The following steps are needed by IBM Licensing service:
       - arn:aws:iam::<aws_account_id>:policy/<policy_allow_access_S3_bucket>
 ```
 
-For more information, see [Tracking license usage on AWS ECS Fargate](https://www.ibm.com/docs/en/cloud-paks/foundational-services/3.23?topic=platforms-tracking-license-usage-aws-ecs-fargate).
+For more information, see [Tracking license usage on AWS ECS Fargate](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.9?topic=service-tracking-license-usage-aws-ecs-fargate).
 
 ### 2.5 Add Outbound rule to Load balancer's security group
 
