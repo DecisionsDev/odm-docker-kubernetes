@@ -33,38 +33,4 @@
 <variable name="odm.rtsAdministrators.user1" value="${user1}"/>
 <variable name="odm.resAdministrators.user1" value="${user1}"/>
 <variable name="odm.resExecutors.user1" value="${user1}"/>  
-
-<authFilter id="browserAuthFilter">
-        <requestHeader id="allowBasicAuth" matchType="notContain" name="Authorization" value="Basic" />
-        <requestUrl id="ds1" matchType="notContain" urlPattern="DecisionService/rest"/>
-        <!-- RES console -->
-        <requestUrl id="res1" matchType="notContain" urlPattern="/res/auth"/>
-        <requestUrl id="res2" matchType="notContain" urlPattern="/res/repositoryService"/>
-        <requestUrl id="res3" matchType="notContain" urlPattern="/res/api"/>
-        <!-- Enterprise console -->
-        <requestUrl id="ec1" matchType="notContain" urlPattern="/teamserver/rts-sync"/>
-        <requestUrl id="ec2" matchType="notContain" urlPattern="/teamserver/remoting"/>
-        <requestUrl id="ec3" matchType="notContain" urlPattern="/teamserver/servlet/SessionServlet"/>
-        <!-- Business console -->
-        <requestUrl id="bc1" matchType="notContain" urlPattern="/decisioncenter/rts-sync"/>
-        <requestUrl id="bc2" matchType="notContain" urlPattern="/decisioncenter/remoting"/>
-        <requestUrl id="bc3" matchType="notContain" urlPattern="/decisioncenter/servlet/SessionServlet"/>
-        <!-- Decision Center API -->
-        <requestUrl id="dcapi" matchType="notContain" urlPattern="/decisioncenter-api/v1/" />
-        <!-- Decision Runner -->
-        <requestUrl id="dr1" matchType="notContain" urlPattern="/DecisionRunner/api"/>
-        <requestUrl id="dr2" matchType="notContain" urlPattern="/DecisionRunner/apiauth"/>
-        <requestUrl id="dr3" matchType="notContain" urlPattern="/DecisionRunner/serverinfo"/>
-        <!-- SSP (DVS) -->
-        <requestUrl id="tg1" matchType="notContain" urlPattern="/testing/sspService"/>
-        <requestUrl id="tg2" matchType="notContain" urlPattern="/testing/serverinfo"/>
-</authFilter>
-
-<!-- Note: The apiAuthFilter should be complementary to the browserAuthFilter -->
-<authFilter id="apiAuthFilter">
-        <!-- This line is to support OIDC and BA by detecting the header -->
-        <requestHeader id="allowBasicAuth" matchType="contains" name="Authorization" value="Bearer" />
-        <requestUrl id="apiurl" matchType="contains" urlPattern="/DecisionService/rest|/res/api|/res/auth|/res/repositoryService|/teamserver/rts-sync|/teamserver/remoting|/teamserver/servlet/SessionServlet|/decisioncenter/rts-sync|/decisioncenter/remoting|/decisioncenter/servlet/SessionServlet|/decisioncenter-api/v1|/DecisionRunner/api|/DecisionRunner/apiauth|/DecisionRunner/serverinfo|/testing/sspService|/testing/serverinfo"/>
-</authFilter>
-  
 </server>
