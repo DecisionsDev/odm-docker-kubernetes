@@ -2,7 +2,7 @@
 license: true
 
 image:
-  repository: cp.stg.icr.io/cp/cp4a/odm/
+  repository: cp.icr.io/cp/cp4a/odm
   tag: 9.0.0.1
 ## Optionally specify an list of imagePullSecrets.
 ## Secrets must be manually created in the namespace.
