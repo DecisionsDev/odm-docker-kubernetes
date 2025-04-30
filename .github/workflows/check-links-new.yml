@@ -1,8 +1,6 @@
 
 name: 'Check Markdown Links with linkspector'
 on: push
-
-
 jobs:
   check-links:
     name: runner / linkspector
