@@ -1,6 +1,10 @@
 
-name: Linkspector
-on: push
+name: 'Check Markdown Links'
+on: 
+  push:
+    paths:
+      - "**/*.md"
+
 jobs:
   check-links:
     name: runner / linkspector
@@ -10,6 +14,7 @@ jobs:
       - name: Run linkspector
         uses: umbrelladocs/action-linkspector@v1
         with:
-          reporter: github-pr-check
-          fail_level: any
+          fail_on_error: true
+          filter_mode: nofilter
           show_stats: true
+
