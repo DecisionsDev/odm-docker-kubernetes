@@ -1,0 +1,11 @@
+files:
+  - README.md
+dirs:
+  - ./
+ignorePatterns:
+  - pattern: '^https://mynicecompany.com/.*$'
+  - pattern: '^https://odm.*$'
+  - pattern: '^https://localhost*$'
+  - pattern: '^https://dummyUrl$'
+
+useGitIgnore: true
