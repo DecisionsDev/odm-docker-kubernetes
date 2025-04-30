@@ -1,9 +1,7 @@
 
 name: 'Check Markdown Links with linkspector'
-on: 
-  push:
-    paths:
-      - "**/*.md"
+on: push
+
 
 jobs:
   check-links:
