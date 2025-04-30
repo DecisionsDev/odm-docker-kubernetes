@@ -1,5 +1,5 @@
 
-name: 'Check Markdown Links'
+name: 'Check Markdown Links with linkspector'
 on: 
   push:
     paths:
