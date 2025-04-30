@@ -16,7 +16,7 @@ Installing an NGINX Ingress controller allows you to access ODM components throu
 1. Use the official YAML manifest:
 
     ```shell
-    kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.12.0-beta.0/deploy/static/provider/cloud/deploy.yaml
+    kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.12.1/deploy/static/provider/cloud/deploy.yaml
     ```
 
 > [!NOTE]
@@ -54,11 +54,11 @@ You can now install the product.
   - `<password>` is the password to login with the basic registry users like `odmAmin`
 
 ```shell
-helm install <release> ibmcharts/ibm-odm-prod  --version 24.1.0 -f aks-nginx-values.yaml
+helm install <release> ibm-helm/ibm-odm-prod  --version 25.0.0 -f aks-nginx-values.yaml
 ```
 
 > [!NOTE]
-> By default, the NGINX Ingress controller does not enable sticky session. If you want to use sticky session to connect to DC, refer to [Using sticky session for Decision Center connection](../../contrib/sticky-session/README.md)
+> By default, the NGINX Ingress controller does not enable sticky session. If you want to use sticky session to connect to DC, refer to [Using sticky session for Decision Center connection](../../contrib/sticky-session/README.md#configuring-ingress-to-use-sticky-sessions)
 
 
 ### Edit the file /etc/hosts on your host
@@ -101,7 +101,7 @@ Where:
 
 This section explains how to track ODM usage with the IBM License Service.
 
-Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.9?topic=ils-installing-license-service-without-operator-lifecycle-manager-olm) documentation.
+Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.12.0?topic=ilsfpcr-installing-license-service-without-operator-lifecycle-manager-olm) documentation.
 
 ### Patch the IBM Licensing instance with Nginx configuration
 
@@ -140,7 +140,7 @@ Otherwise, you can also retrieve the licensing report .zip file by running:
 curl "http://${LICENSING_URL}/snapshot?token=${TOKEN}" --output report.zip
 ```
 
-If your IBM License Service instance is not running properly, refer to this [troubleshooting page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.9?topic=service-troubleshooting-license).
+If your IBM License Service instance is not running properly, refer to this [troubleshooting page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.12.0?topic=service-troubleshooting-license).
 
 ## Troubleshooting
 
