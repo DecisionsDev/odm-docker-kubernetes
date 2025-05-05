@@ -445,7 +445,7 @@ Wait a couple of minutes for the changes to be applied.
 You can find more information and use cases on [this page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.12.0?topic=configuring-kubernetes-ingress).
 
 > **Note**
-> If you choose to use the NGINX Ingress Controller, you must use the [licensing-instance-nginx.yaml](./licensing-instance-nginx.yaml) file. Refer to [Track ODM usage with the IBM License Service with NGINX Ingress Controller](README-NGINX.md#track-odm-usage-with-the-ibm-license-service-with-nginx-ingress-controller).
+> If you choose to use the NGINX Ingress Controller, you must use the [licensing-instance-nginx.yaml](./licensing-instance-nginx.yaml) file. Refer to [Deploying IBM Operational Decision Manager with NGINX Ingress Controller on Azure AKS](README-NGINX.md#install-the-ibm-license-service-and-retrieve-license-usage).
 
 ### Retrieve license usage
 
