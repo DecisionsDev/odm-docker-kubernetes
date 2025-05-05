@@ -368,7 +368,7 @@ You can now install the product.
   - `<postgresqlserver>` is your flexible postgres server name
   - `<odmdbsecret>` is the database credentials secret name
   - `<mynicecompanytlssecret>` is the container certificate
-  - `<password>` is the password to login with the basic registry users like `odmAmin`  
+  - `<password>` is the password to login with the basic registry users like `odmAdmin`  
 
 ```shell
 helm install <release> ibm-helm/ibm-odm-prod --version 25.0.0 -f aks-values.yaml
