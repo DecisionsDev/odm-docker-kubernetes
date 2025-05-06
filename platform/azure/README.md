@@ -29,10 +29,9 @@ First, install the following software on your machine:
 Then, [create an Azure account and pay as you go](https://azure.microsoft.com/en-us/pricing/purchase-options/pay-as-you-go/).
 
 > [!NOTE]
-> Prerequisites and software supported by ODM 9.0.0 are listed in [the Detailed System Requirements page](https://www.ibm.com/support/pages/ibm-operational-decision-manager-detailed-system-requirements).
+> Prerequisites and software supported by ODM 9.5.0 are listed in [the Detailed System Requirements page](https://www.ibm.com/support/pages/ibm-operational-decision-manager-detailed-system-requirements).
 
 ## Steps to deploy ODM on Kubernetes to Azure AKS
-
 <!-- TOC depthfrom:2 depthto:2 -->
 
 - [Included components](#included-components)
@@ -57,7 +56,7 @@ Source: https://docs.microsoft.com/en-us/azure/aks/kubernetes-walkthrough
 
 After installing the Azure CLI, use the following command line:
 
-```
+```shell
 az login [--tenant <name>.onmicrosoft.com]
 ```
 
@@ -65,7 +64,7 @@ A web browser opens where you can connect with your Azure credentials.
 
 ### Create a resource group
 
-An Azure resource group is a logical group in which Azure resources are deployed and managed. When you create a resource group, you are asked to specify a location. This location is where resource group metadata is stored. It is also where your resources run in Azure, if you do not specify another region during resource creation. Create a resource group by running the `az group create` command.
+An Azure resource group is a logical group in which Azure resources are deployed and managed. When you create a resource group, you will be prompted to specify a location. This location is where resource group metadata is stored. It is also where your resources run in Azure, if you do not specify another region during resource creation. 
 
 To get a list of available locations, run:
 
@@ -73,10 +72,10 @@ To get a list of available locations, run:
 az account list-locations -o table
 ```
 
-Then, create the resource group:
+Then, create a resource group by running the following command:
 
 ```shell
-az group create --name <resourcegroup> --location <azurelocation> [--tags Owner=<email> Team=DBA Usage=demo Usage_desc="Azure customers support" Delete_date=2023-12-31]
+az group create --name <resourcegroup> --location <azurelocation> --tags Owner=<email> Team=<team> Usage=demo Usage_desc="Azure customers support" Delete_date=2025-12-31
 ```
 
 The following example output shows that the resource group has been created successfully:
@@ -90,32 +89,40 @@ The following example output shows that the resource group has been created succ
   "properties": {
     "provisioningState": "Succeeded"
   },
-  "tags": null
+  "tags": {
+    "Delete_date": "2025-12-31",
+    "Owner": "<email>",
+    "Team": "<team>",
+    "Usage": "demo",
+    "Usage_desc": "Azure customers support"
+  },
+  "type": "Microsoft.Resources/resourceGroups"
 }
 ```
 
 ### Create an AKS cluster
 
-Use the `az aks create` command to create an AKS cluster. The following example creates a cluster named <cluster> with two nodes. Azure Monitor for containers is also enabled using the `--enable-addons monitoring` parameter.  The operation takes several minutes to complete.
-
-> [!NOTE]
-> During the creation of the AKS cluster, a second resource group is automatically created to store the AKS resources. For more information, see [Why are two resource groups created with AKS](https://docs.microsoft.com/en-us/azure/aks/faq#why-are-two-resource-groups-created-with-aks).
+Use the `az aks create` command to create an AKS cluster. The following example creates a cluster named <cluster> with two nodes. Azure Monitor for containers can also be enabled by using the `--enable-addons monitoring` parameter.  The operation takes several minutes to complete.
 
 ```shell
 az aks create --name <cluster> --resource-group <resourcegroup> --node-count 2 \
           --enable-cluster-autoscaler --min-count 2 --max-count 4 --generate-ssh-keys
 ```
+> [!NOTE]
+> During the creation of the AKS cluster, a second resource group is automatically created to store the AKS resources. For more information, see [Why are two resource groups created with AKS](https://docs.microsoft.com/en-us/azure/aks/faq#why-are-two-resource-groups-created-with-aks).
 
-After a few minutes, the command completes and returns JSON-formatted information about the cluster.  Make a note of the newly-created Resource Group that is displayed in the JSON output (e.g. "nodeResourceGroup": "<noderesourcegroup>") if you have to tag it, for example:
+After a few minutes, the command completes and returns JSON-formatted information about the cluster.  
+
+Make a note of the newly-created Resource Group that is displayed in the JSON output (e.g. `"nodeResourceGroup": "<noderesourcegroup>"`). You can update the resource with additional tags. For example:
 
 ```shell
 az group update --name <noderesourcegroup> \
-    --tags Owner=<email> Team=DBA Usage=demo Usage_desc="Azure customers support" Delete_date=2024-12-31
+    --tags Owner=<email> Team=<team> Usage=demo Usage_desc="Azure customers support" Delete_date=2025-12-31
 ```
        
 ### Set up your environment to this cluster
 
-To manage a Kubernetes cluster, use `kubectl`, the Kubernetes command-line client. If you use Azure Cloud Shell, kubectl is already installed. To install kubectl locally, use the `az aks install-cli` command:
+To manage a Kubernetes cluster, you will need to use `kubectl`, the Kubernetes command-line client. If you use `Azure Cloud Shell`, kubectl is already installed. Otherwise, to use `kubectl` locally, run the the following command to install the client:
 
 ```shell
 az aks install-cli
@@ -137,8 +144,8 @@ The following example output shows the single node created in the previous steps
 
 ```
 NAME                                STATUS   ROLES   AGE   VERSION
-aks-nodepool1-27504729-vmss000000   Ready    agent   21m   v1.29.9
-aks-nodepool1-27504729-vmss000001   Ready    agent   21m   v1.29.9
+aks-nodepool1-27504729-vmss000000   Ready    agent   21m   v1.31.7
+aks-nodepool1-27504729-vmss000001   Ready    agent   21m   v1.31.7
 ```
 
 ## Create the PostgreSQL Azure instance (10 min)
@@ -178,7 +185,7 @@ Result:
   "availabilityZone": "2",
   "backup": {
     "backupRetentionDays": 7,
-    "earliestRestoreDate": "2024-11-21T10:10:16.007641+00:00",
+    "earliestRestoreDate": "2025-04-29T09:37:34.208183+00:00",
     "geoRedundantBackup": "Disabled"
   },
   "cluster": null,
@@ -207,7 +214,7 @@ Result:
     "startHour": 0,
     "startMinute": 0
   },
-  "minorVersion": "8",
+  "minorVersion": "12",
   "name": "<postgresqlserver>",
   "network": {
     "delegatedSubnetResourceId": null,
@@ -241,7 +248,7 @@ Result:
     "type": ""
   },
   "systemData": {
-    "createdAt": "2024-11-21T10:05:19.405443+00:00",
+    "createdAt": "2025-04-29T09:31:58.093917+00:00",
     "createdBy": null,
     "createdByType": null,
     "lastModifiedAt": null,
@@ -254,7 +261,7 @@ Result:
 }
 ```
 
-Make a note of the server name that is displayed in the JSON output (e.g. "fullyQualifiedDomainName": "<postgresqlserver>.postgres.database.azure.com") as it will be used later to deploy ODM with `helm install`.
+Make a note of the server name that is displayed in the JSON output (e.g. `"fullyQualifiedDomainName": "<postgresqlserver>.postgres.database.azure.com"`) as it will be used later to deploy ODM with `helm install`.
 
 ###  Create a firewall rule that allows access from Azure services
 
@@ -292,7 +299,6 @@ $ kubectl create secret docker-registry <registrysecret> --docker-server=cp.icr.
                                                          --docker-password="<entitlementkey>" \
                                                          --docker-email=<email>
 ```
-
 Where:
 
 * \<registrysecret\> is the secret name
@@ -300,14 +306,15 @@ Where:
 * \<email\> is the email address associated with your IBMid.
 
 > [!NOTE]
-> The cp.icr.io value for the docker-server parameter is the only registry domain name that contains the images. You must set the docker-username to `cp` to use an entitlement key as docker-password.
+> The `cp.icr.io` value for the `docker-server` parameter is the only registry domain name that contains the images. You must set the `docker-username` to `cp` to use an entitlement key as docker-password.
 
-Make a note of the secret name so that you can set it for the image.pullSecrets parameter when you run a helm install of your containers.  The image.repository parameter will later be set to cp.icr.io/cp/cp4a/odm.
+Make a note of the secret name so that you can set it for the `image.pullSecrets` parameter when you run a helm install of your containers.  The `image.repository` parameter should be set to `cp.icr.io/cp/cp4a/odm`.
+
 
 Add the public IBM Helm charts repository:
 
 ```shell
-helm repo add ibmcharts https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm
+helm repo add ibm-helm https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm
 helm repo update
 ```
 
@@ -315,8 +322,8 @@ Check that you can access the ODM charts:
 
 ```shell
 helm search repo ibm-odm-prod
-NAME                        	CHART VERSION	APP VERSION	DESCRIPTION
-ibmcharts/ibm-odm-prod      	24.1.0       	9.0.0.1  	IBM Operational Decision Manager  License By in...
+NAME                        CHART VERSION	APP VERSION DESCRIPTION
+ibm-helm/ibm-odm-prod       25.0.0       	9.5.0.0     IBM Operational Decision Manager  License By in...
 ```
 
 ### Manage a digital certificate (10 min)
@@ -361,10 +368,10 @@ You can now install the product.
   - `<postgresqlserver>` is your flexible postgres server name
   - `<odmdbsecret>` is the database credentials secret name
   - `<mynicecompanytlssecret>` is the container certificate
-  - `<password>` is the password to login with the basic registry users like `odmAmin`  
+  - `<password>` is the password to login with the basic registry users like `odmAdmin`  
 
 ```shell
-helm install <release> ibmcharts/ibm-odm-prod  --version 24.1.0 -f aks-values.yaml
+helm install <release> ibm-helm/ibm-odm-prod --version 25.0.0 -f aks-values.yaml
 ```
 
 Where:
@@ -406,7 +413,7 @@ You can then open a browser on `https://xxx.xxx.xxx.xxx:9453` to access Decision
 
 This section explains how to track ODM usage with the IBM License Service.
 
-Follow the **Installation** section of the [Installation License Service without Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.9?topic=ils-installing-license-service-without-operator-lifecycle-manager-olm) documentation.
+Follow the **Installation** section of the [Installation License Service without Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.12.0?topic=ilsfpcr-installing-license-service-without-operator-lifecycle-manager-olm) documentation.
 
 #### a. Expose the licensing service using the AKS LoadBalancer
 
@@ -420,7 +427,7 @@ Wait a couple of minutes for the changes to be applied.
 Then, you should see an EXTERNAL-IP available for the exposed licensing service.
 
 ```shell
-oc get service -n ibm-licensing
+kubectl get service -n ibm-licensing
 NAME                                        TYPE           CLUSTER-IP     EXTERNAL-IP       PORT(S)          AGE
 ibm-licensing-service-instance              LoadBalancer   10.0.58.142    xxx.xxx.xxx.xxx   8080:32301/TCP   10m
 ```
@@ -435,14 +442,14 @@ kubectl patch IBMLicensing instance --type merge --patch-file licensing-instance
 
 Wait a couple of minutes for the changes to be applied. 
 
-You can find more information and use cases on [this page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.9?topic=configuration-configuring-kubernetes-ingress).
+You can find more information and use cases on [this page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.12.0?topic=configuring-kubernetes-ingress).
 
 > **Note**
-> If you choose to use the NGINX Ingress Controller, you must use the [licensing-instance-nginx.yaml](./licensing-instance-nginx.yaml) file. Refer to [Track ODM usage with the IBM License Service with NGINX Ingress Controller](README-NGINX.md#track-odm-usage-with-the-ibm-license-service-with-nginx-ingress-controller).
+> If you choose to use the NGINX Ingress Controller, you must use the [licensing-instance-nginx.yaml](./licensing-instance-nginx.yaml) file. Refer to [Deploying IBM Operational Decision Manager with NGINX Ingress Controller on Azure AKS](README-NGINX.md#install-the-ibm-license-service-and-retrieve-license-usage).
 
 ### Retrieve license usage
 
-You will be able to access the IBM License Service by retrieving the URL with this command:
+You will be able to access the IBM License Service by retrieving the URL and the required token with this command:
 
 ```bash
 export LICENSING_URL=$(kubectl get service ibm-licensing-service-instance -n ibm-licensing -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
@@ -450,7 +457,7 @@ export TOKEN=$(kubectl get secret ibm-licensing-token -n ibm-licensing -o jsonpa
 ```
 
 > **Note**
-> If `LICENSING_URL` is empty, take a look at the [troubleshooting](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.9?topic=service-troubleshooting-license) page.
+> If `LICENSING_URL` is empty, take a look at the [troubleshooting](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.12.0?topic=service-troubleshooting-license) page.
 
 You can access the `http://${LICENSING_URL}:8080/status?token=${TOKEN}` URL to view the licensing usage or retrieve the licensing report .zip file by running:
 
@@ -458,7 +465,7 @@ You can access the `http://${LICENSING_URL}:8080/status?token=${TOKEN}` URL to v
 curl "http://${LICENSING_URL}:8080/snapshot?token=${TOKEN}" --output report.zip
 ```
 
-If your IBM License Service instance is not running properly, refer to this [troubleshooting page](https://www.ibm.com/docs/en/cpfs?topic=software-troubleshooting).
+If your IBM License Service instance is not running properly, refer to this [troubleshooting page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.12.0?topic=service-troubleshooting-license).
 
 ## Troubleshooting
 
