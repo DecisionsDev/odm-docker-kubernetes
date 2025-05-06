@@ -215,7 +215,7 @@ You can create roles and grant these roles directly to an individual user, or ev
         * Click **Save**
       * Click the **Details** tab
       * Click **Save** 
-      * clicking **Save password** to confirm
+      * Click **Save password** to confirm
 
     (Optional) Every user is created with a predefined role named **default-roles-<CLIENT_ID>**.
     This role has no interest. So, here is the way to unassign this role.
@@ -228,7 +228,7 @@ You can create roles and grant these roles directly to an individual user, or ev
       ![Unassign default role](images/unassign_default_role.png)
 
       * Click the **Details** tab
-      * Make sure the toggle **Enabled** is on
+      * Make sure the toggle **Enabled** is On
       * Click **Save**
 
     Repeat those steps for each user you want to add.
@@ -603,7 +603,7 @@ Get hands-on experience with IBM Operational Decision Manager in a container env
 
 Log in the Business Console as John Doe (`johndoe@mynicecompany.com` / `johndoe`).
 
-Import the [Loan Validation Decision Service project](https://github.com/DecisionsDev/odm-for-container-getting-started/blob/master/Loan%20Validation%20Service.zip) if it is not already there.
+Import the Decision Service named [Loan Validation Service](https://github.com/DecisionsDev/odm-for-container-getting-started/blob/master/Loan%20Validation%20Service.zip) if it is not already there.
 
 ![Import project](images/import_project.png)
 
@@ -635,10 +635,10 @@ If you want to perform a bearer authentication ODM runtime call using the Client
 
  And use the retrieved access token in the following way:
 
-   ```
+  ```
   curl -H "Content-Type: application/json" -k --data @payload.json \
        -H "Authorization: Bearer <ACCESS_TOKEN>" \
-         https://<DS_RUNTIME_HOST>/DecisionService/rest/production_deployment/1.0/loan_validation_production/1.0
+       https://<DS_RUNTIME_HOST>/DecisionService/rest/production_deployment/1.0/loan_validation_production/1.0
   ```
 
 # Troubleshooting
