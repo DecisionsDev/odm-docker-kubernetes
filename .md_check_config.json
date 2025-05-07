@@ -9,7 +9,15 @@
       {
         "pattern": "^/LICENSE",
         "replacement": "{{BASEURL}}/LICENSE"
+      },
+      {
+        "pattern": "https://www.ibm.com/docs",
+        "replacement": "https://ibmdocs-test.dcs.ibm.com/docs"
       }
     ],
-    "timeout": "20s"
+
+    "timeout": "20s",
+    "retryOn429": true,
+    "retryCount": 5,
+    "fallbackRetryDelay": "30s"
   }

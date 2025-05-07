@@ -9,7 +9,7 @@ IBM Operational Decision Manager on Certified Kubernetes
 
 ##  Deploying IBM Operational Decision Manager on a Certified Kubernetes Cluster
 
-This repository centralizes materials to deploy [IBM® Operational Decision Manager](https://www.ibm.com/docs/en/odm/9.0.0) ODM on Certified Kubernetes. It is deployed in a clustered topology that uses WebSphere® Application Server Liberty on a Kubernetes cluster.
+This repository centralizes materials to deploy [IBM® Operational Decision Manager](https://www.ibm.com/docs/en/odm/9.5.0) ODM on Certified Kubernetes. It is deployed in a clustered topology that uses WebSphere® Application Server Liberty on a Kubernetes cluster.
 
 ODM is a decisioning platform to automate your business policies. Business rules are used at the heart of the platform to implement decision logic on a business vocabulary and run it as web decision services.
 
