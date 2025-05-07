@@ -7,7 +7,7 @@ entries:
     description: 'IBM Operational Decision Manager for Developers    License   By
       installing this product you accept the following license terms: https://www14.software.ibm.com/cgi-bin/weblap/lap.pl?li_formnum=L-RBPW-WQTC4A'
     digest: 8cf16813b48a51c168ad515f3272e8b3c4b116549c2f4b7d45efeec1d6b1defb
-    home: https://www.ibm.com/docs/en/odm/9.0.0?topic=kubernetes-installing-odm-developers
+    home: https://www.ibm.com/docs/en/odm/9.5.0?topic=kubernetes-installing-odm-developers
     icon: https://raw.githubusercontent.com/ODMDev/ruledesigner/master/icons/automation-decision.png
     keywords:
     - OperationalDecisionManager
@@ -171,7 +171,7 @@ entries:
     description: 'IBM Operational Decision Manager  License By installing this product
       you accept the following license terms: https://www14.software.ibm.com/cgi-bin/weblap/lap.pl?li_formnum=L-SJDA-MUA6UZ'
     digest: 6ab8415971373da4a91df0f2cbf31b5cb5ffeff621ceb15b17f8ae8bd2682f84
-    home: https://www.ibm.com/docs/en/odm/9.0.0?topic=production-installing-helm-release-odm
+    home: https://www.ibm.com/docs/en/odm/9.5.0?topic=production-installing-helm-release-odm
     icon: https://raw.githubusercontent.com/ODMDev/ruledesigner/master/icons/automation-decision.png
     keywords:
     - OperationalDecisionManager

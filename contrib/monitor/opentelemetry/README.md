@@ -150,7 +150,7 @@ Using **-Dotel.traces.exporter=otlp** JVM options, no OTEL traces are exported i
 
 After instantiating ODM by populating it with the sample data, we are ready to directly execute some Decision Server Runtime calls.
 
-Refer to [this documentation](https://www.ibm.com/docs/en/odm/9.0.0?topic=tasks-configuring-external-access) to retrieve the endpoints. 
+Refer to [this documentation](https://www.ibm.com/docs/en/odm/9.5.0?topic=tasks-configuring-external-access) to retrieve the endpoints. 
 
 For example, on OpenShift, you can obtain the route names and hosts with the following commands:
 
