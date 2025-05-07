@@ -48,13 +48,13 @@ Without the relevant billing level, some Google Cloud resources will not be crea
 
 <!-- TOC depthfrom:3 depthto:3 -->
 
-- [Prepare your GKE instance 30 min](#prepare-your-gke-instance-30-min)
-- [Create the Google Cloud SQL PostgreSQL instance 10 min](#create-the-google-cloud-sql-postgresql-instance-10-min)
-- [Prepare your environment for the ODM installation 10 min](#prepare-your-environment-for-the-odm-installation-10-min)
-- [Manage a digital certificate 2 min](#manage-a-digital-certificate-2-min)
-- [Install the ODM release 10 min](#install-the-odm-release-10-min)
-- [Access ODM services](#access-odm-services)
-- [Track ODM usage with the IBM License Service](#track-odm-usage-with-the-ibm-license-service)
+- [1. Prepare your GKE instance 30 min](#1-prepare-your-gke-instance-30-min)
+- [2. Create the Google Cloud SQL PostgreSQL instance 10 min](#2-create-the-google-cloud-sql-postgresql-instance-10-min)
+- [3. Prepare your environment for the ODM installation 10 min](#3-prepare-your-environment-for-the-odm-installation-10-min)
+- [4. Manage a digital certificate 2 min](#4-manage-a-digital-certificate-2-min)
+- [5. Install the ODM release 10 min](#5-install-the-odm-release-10-min)
+- [6. Access ODM services](#6-access-odm-services)
+- [7. Track ODM usage with the IBM License Service](#7-track-odm-usage-with-the-ibm-license-service)
 
 <!-- /TOC -->
 
