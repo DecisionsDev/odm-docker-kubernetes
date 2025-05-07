@@ -1,7 +1,8 @@
 {
   "ignorePatterns": [
     {
-      "pattern": "^http://localhost"
+      "pattern": "^http://localhost",
+      "pattern": "^https://jwt.io"
     }
   ],
   "replacementPatterns": [
@@ -14,6 +15,7 @@
         "replacement": "https://ibmdocs-test.dcs.ibm.com/docs"
       }
     ],
+
     "timeout": "20s",
     "retryOn429": true,
     "retryCount": 5,

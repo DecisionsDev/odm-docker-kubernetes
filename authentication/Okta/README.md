@@ -288,10 +288,10 @@ In this step, we augment the token with meta-information that is required by the
     ```
 
     Where:
-    - *OKTA_API_SCOPE* has been defined [above](#configure-the-default-authorization-server) (*odmapiusers*)
-    - *OKTA_SERVER_NAME* has been obtained from [previous step](#retrieve-okta-server-information)
     - Both *OKTA_CLIENT_ID* and *OKTA_CLIENT_SECRET* are listed in your ODM Application, section **Applications** / **Applications** / **ODM Application** / **General** / **Client Credentials**
+    - *OKTA_SERVER_NAME* has been obtained from [previous step](#retrieve-okta-server-information)
     - *OKTA_ODM_GROUP* is the ODM Admin group we created in a [previous step](#manage-group-and-user) (*odm-admin*)
+    - *OKTA_API_SCOPE* has been defined [above](#configure-the-default-authorization-server) (*odmapiusers*)
 
     The files are generated into the `output` directory.
 
@@ -321,7 +321,7 @@ In this step, we augment the token with meta-information that is required by the
     ```
     ```
     NAME                  	CHART VERSION	APP VERSION	DESCRIPTION
-    ibm-helm/ibm-odm-prod	24.1.0       	9.0.0.1   	IBM Operational Decision Manager
+    ibm-helm/ibm-odm-prod	25.0.0       	9.5.0.0   	IBM Operational Decision Manager
     ```
 
 3. Run the `helm install` command.
@@ -329,7 +329,7 @@ In this step, we augment the token with meta-information that is required by the
     You can now install the product. We will use the PostgreSQL internal database and disable the data persistence (`internalDatabase.persistence.enabled=false`) to avoid any platform complexity concerning persistent volume allocation.
 
     ```
-    helm install my-odm-release ibm-helm/ibm-odm-prod --version 24.1.0 \
+    helm install my-odm-release ibm-helm/ibm-odm-prod --version 25.0.0 \
           --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
           --set oidc.enabled=true \
           --set internalDatabase.persistence.enabled=false \
