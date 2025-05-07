@@ -2,7 +2,7 @@
 
 <!-- TOC -->
 
-- [Set up a Microsoft Entra ID application using a client secret](#set-up-an-microsoft-entra-id-application-using-a-client-secret)
+- [Set up a Microsoft Entra ID application using a client secret](#set-up-a-microsoft-entra-id-application-using-a-client-secret)
 - [Deploy ODM on a container configured with Microsoft Entra ID Part 2](#deploy-odm-on-a-container-configured-with-microsoft-entra-id-part-2)
     - [Prepare your environment for the ODM installation](#prepare-your-environment-for-the-odm-installation)
         - [Create a secret to use the Entitled Registry](#create-a-secret-to-use-the-entitled-registry)
@@ -377,7 +377,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 #### b. Installation using Ingress
 
   Refer to the following documentation to install an NGINX Ingress Controller on:
-  - [Microsoft Azure Kubernetes Service](../../platform/azure/README.md#create-a-nginx-ingress-controller)
+  - [Microsoft Azure Kubernetes Service](../../platform/azure/README-NGINX.md)
   - [Amazon Elastic Kubernetes Service](../../platform/eks/README-NGINX.md)
   - [Google Kubernetes Engine](../../platform/gcloud/README_NGINX.md)
 
@@ -552,7 +552,7 @@ curl -H "Content-Type: application/json" -k --data @payload.json \
 
 # Troubleshooting
 
-If you encounter any issue, have a look at the [common troubleshooting explanation](../README.md#Troubleshooting)
+If you encounter any issue, have a look at the [common troubleshooting explanation](../README.md#troubleshooting)
 
 # License
 

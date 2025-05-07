@@ -371,7 +371,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 
 ### Access the ODM services
 
-Well done!  You can now connect to ODM using the endpoints you got [earlier](#register-the-odm-redirect-url) and log in as an ODM admin with the account you created in ['manage groups and users' in the first article](README.md#manage-group-and-user).
+Well done!  You can now connect to ODM using the endpoints you got [earlier](#register-the-odm-redirect-urls) and log in as an ODM admin with the account you created in ['manage groups and users' in the first article](README.md#manage-group-and-user).
 
 ### Set up Rule Designer
 
@@ -466,7 +466,7 @@ curl -H "Content-Type: application/json" -k --data @payload.json \
 
 # Troubleshooting
 
-If you encounter any issue, have a look at the [common troubleshooting explanation](../README.md#Troubleshooting)
+If you encounter any issue, have a look at the [common troubleshooting explanation](../README.md#troubleshooting)
 
 # License
 
