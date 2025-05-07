@@ -307,7 +307,7 @@
 
     This section is optional.
 
-    ODM Decision Center allows to [manage users and groups from the Business console](https://www.ibm.com/docs/en/odm/9.0.0?topic=center-enabling-users-groups) in order to set access security on specific projects.
+    ODM Decision Center allows to [manage users and groups from the Business console](https://www.ibm.com/docs/en/odm/9.5.0?topic=center-enabling-users-groups) in order to set access security on specific projects.
     The Groups and Users import can be done using an LDAP connection.
     But, if the openId server also provides a SCIM server, then it can also be managed using a SCIM connection.
 
@@ -318,7 +318,7 @@
     - [for users](https://learn.microsoft.com/en-us/graph/api/resources/users?view=graph-rest-1.0&preserve-view=true)
     - [for groups](https://learn.microsoft.com/en-us/graph/api/resources/groups-overview?view=graph-rest-1.0&tabs=http)
 
-    Then, it will generate a [group-security-configurations.xml](https://www.ibm.com/docs/en/odm/9.0.0?topic=access-optional-user-liberty-configurations#reference_w1b_xhq_2rb__title__3) file that will be consumed using the [Decision Center rest-api](https://www.ibm.com/docs/en/odm/9.0.0?topic=mufdc-creating-users-groups-roles-by-using-rest-api) to populate Groups and Users in the Administration Tab.
+    Then, it will generate a [group-security-configurations.xml](https://www.ibm.com/docs/en/odm/9.5.0?topic=access-optional-user-liberty-configurations#reference_w1b_xhq_2rb__title__3) file that will be consumed using the [Decision Center rest-api](https://www.ibm.com/docs/en/odm/9.5.0?topic=mufdc-creating-users-groups-roles-by-using-rest-api) to populate Groups and Users in the Administration Tab.
 
     In a kubernetes context, this script can be called by a CRON job.
     Using the new ODM sidecar container mechanism, it can also be managed by the Decision Center pod himself.
@@ -356,7 +356,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 
 #### a. Installation on OpenShift using Routes
 
-  See the [Preparing to install](https://www.ibm.com/docs/en/odm/9.0.0?topic=production-preparing-install-operational-decision-manager) documentation for additional information.
+  See the [Preparing to install](https://www.ibm.com/docs/en/odm/9.5.0?topic=production-preparing-install-operational-decision-manager) documentation for additional information.
 
   ```shell
   helm install my-odm-release ibm-helm/ibm-odm-prod --version 24.1.0 \
@@ -409,7 +409,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 
 1. Get the ODM endpoints.
 
-    Refer to the [documentation](https://www.ibm.com/docs/en/odm/9.0.0?topic=tasks-configuring-external-access) to retrieve the endpoints.
+    Refer to the [documentation](https://www.ibm.com/docs/en/odm/9.5.0?topic=tasks-configuring-external-access) to retrieve the endpoints.
     For example, on OpenShift you can get the route names and hosts with:
 
     ```shell
@@ -502,7 +502,7 @@ To be able to securely connect your Rule Designer to the Decision Server and Dec
 
 4. Restart Rule Designer.
 
-For more information, refer to the [documentation](https://www.ibm.com/docs/en/odm/9.0.0?topic=designer-importing-security-certificate-in-rule).
+For more information, refer to the [documentation](https://www.ibm.com/docs/en/odm/9.5.0?topic=designer-importing-security-certificate-in-rule).
 
 ### Getting Started with IBM Operational Decision Manager for Containers
 
@@ -522,7 +522,7 @@ Deploy the **Loan Validation Service** production_deployment ruleapps using the 
 
 You can retrieve the payload.json from the ODM Decision Server Console or use [the provided payload](payload.json).
 
-As explained in the ODM on Certified Kubernetes documentation [Configuring user access with OpenID](https://www.ibm.com/docs/en/odm/9.0.0?topic=access-configuring-user-openid), we advise to use basic authentication for the ODM runtime call for performance reasons and to avoid the issue of token expiration and revocation.
+As explained in the ODM on Certified Kubernetes documentation [Configuring user access with OpenID](https://www.ibm.com/docs/en/odm/9.5.0?topic=access-configuring-user-openid), we advise to use basic authentication for the ODM runtime call for performance reasons and to avoid the issue of token expiration and revocation.
 
 You can realize a basic authentication ODM runtime call the following way:
 
