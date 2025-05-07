@@ -381,9 +381,9 @@ Let us also assign the **rtsUsers** role to the **TaskAuditors** and **TaskUsers
   oc get secret openldap-customldif -o jsonpath={.data."ldap_user\.ldif"} | base64 -d
   ```
 
-  - Log into the ODM Decision Center Business Console using the `cp4admin` user
+  - Log in to the ODM Decision Center Business Console as the `cp4admin` user
   - Select the **LIBRARY** tab
-  - Import the [Loan Validation Service](https://github.com/DecisionsDev/odm-for-container-getting-started/blob/master/Loan%20Validation%20Service.zip) and [Miniloan Service](https://github.com/DecisionsDev/odm-for-container-getting-started/blob/master/Miniloan%20Service.zip) projects if there are not already there.
+  - Import the [Loan Validation Service](https://github.com/DecisionsDev/odm-for-container-getting-started/blob/master/Loan%20Validation%20Service.zip) and [Miniloan Service](https://github.com/DecisionsDev/odm-for-container-getting-started/blob/master/Miniloan%20Service.zip) projects if they are not already there.
 
   ![Load Projects](images/load_projects.png)
 
@@ -422,7 +422,7 @@ Let us also assign the **rtsUsers** role to the **TaskAuditors** and **TaskUsers
   - Click the "Log out" link
   - Click the Keycloak Logout button
 
-  - Log in with `user1`. Check that the **ADMINISTRATION** tab is not available
+  - Log in as `user1`. Check that the **ADMINISTRATION** tab is not available
   - Click on **LIBRARY** tab, only the "Miniloan Service" project must be available
   - Click on top-right `user1` link
   - Select "Profile" link
@@ -430,7 +430,7 @@ Let us also assign the **rtsUsers** role to the **TaskAuditors** and **TaskUsers
 
   ![User1 Check](images/user1_check.png)
 
-  - Login with `user6`. Check that the **ADMINISTRATION** tab is not available
+  - Log in as `user6`. Check that the **ADMINISTRATION** tab is not available
   - Click on **LIBRARY** tab, only the "Loan Validation Service" project must be available
   - Click on top-right `user6` link
   - Select "Profile" link
