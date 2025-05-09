@@ -34,7 +34,7 @@
 
     ![New Web Application](images/RegisterApp.png)
 
-2. Retrieve Tenant and Client information.
+2. Retrieve Tenant and Client information
 
     In **Microsoft Entra Id** / **Manage** / **App Registration**, select **ODM Application** and click **Overview**:
 

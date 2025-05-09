@@ -40,7 +40,7 @@ For additional information regarding the implement in Liberty, please refer to t
 
     ![New Web Application](images/RegisterApp.png)
 
-2. Retrieve Tenant and Client information.
+2. Retrieve Tenant and Client information
 
     In **Microsoft Entra Id** / **Manage** / **App Registration**, select **ODM Application** and click **Overview**:
 
@@ -204,7 +204,7 @@ For additional information regarding the implement in Liberty, please refer to t
 
     Where:
     - *TENANT_ID* and *CLIENT_ID* have been obtained from [previous step](#retrieve-tenant-and-client-information)
-    - *GROUP_ID* is the identifier of the ODM Admin group created in [Manage groups and users](README.md#manage-group-and-user) (*ID of `odm-admin`*)
+    - *GROUP_ID* is the identifier of the ODM Admin group created in [Manage groups and users](README.md#manage-groups-and-users) (*ID of `odm-admin`*)
     - *SSO_DOMAIN* is the domain name of your SSO. If your AzureAD is connected to another SSO, you should add the SSO domain name in this parameter. If your user has been declared as explained in step **Create at least one user that belongs to this new group**, you can omit this parameter.
 
     The following four files are generated into the `outputPKeyJWT` directory:
@@ -268,7 +268,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 #### b. Installation using Ingress
 
   Refer to the following documentation to install an NGINX Ingress Controller on:
-  - [Microsoft Azure Kubernetes Service](../../platform/azure/README.md#create-a-nginx-ingress-controller)
+  - [Microsoft Azure Kubernetes Service](../../platform/azure/README-NGINX.md)
   - [Amazon Elastic Kubernetes Service](../../platform/eks/README-NGINX.md)
   - [Google Kubernetes Engine](../../platform/gcloud/README_NGINX.md)
 
@@ -371,7 +371,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 
 ### Access the ODM services
 
-Well done!  You can now connect to ODM using the endpoints you got [earlier](#register-the-odm-redirect-urls) and log in as an ODM admin with the account you created in ['manage groups and users' in the first article](README.md#manage-group-and-user).
+Well done!  You can now connect to ODM using the endpoints you got [earlier](#register-the-odm-redirect-urls) and log in as an ODM admin with the account you created in ['manage groups and users' in the first article](README.md#manage-groups-and-users).
 
 ### Set up Rule Designer
 
