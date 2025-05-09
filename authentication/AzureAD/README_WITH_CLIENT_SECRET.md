@@ -279,7 +279,7 @@
     Where:
     - *TENANT_ID* and *CLIENT_ID* have been obtained from [previous step](#retrieve-tenant-and-client-information)
     - *CLIENT_SECRET* is listed in your ODM Application, section **General** / **Client Credentials**
-    - *GROUP_ID* is the identifier of the ODM Admin group created in a [previous step](#manage-group-and-user) (ID of the group named *odm-admin*)
+    - *GROUP_ID* is the identifier of the ODM Admin group created in a [previous step](README.md#manage-groups-and-users) (ID of the group named *odm-admin*)
     - *SSO_DOMAIN* is the domain name of your SSO. If your AzureAD is connected to another SSO, you should add the SSO domain name in this parameter. If your user has been declared as explained in step **Create at least one user that belongs to this new group**, you can omit this parameter.
 
     The following four files are generated into the `output` directory:
@@ -472,7 +472,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 
 ### Access the ODM services
 
-Well done!  You can now connect to ODM using the endpoints you got [earlier](#register-the-odm-redirect-url) and log in as an ODM admin with the account you created in [the first step](#manage-group-and-user).
+Well done!  You can now connect to ODM using the endpoints you got [earlier](#register-the-odm-redirect-urls) and log in as an ODM admin with the account you created in [the first step](README.md#manage-groups-and-users).
 
 ### Set up Rule Designer
 
