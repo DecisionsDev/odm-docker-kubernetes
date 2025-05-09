@@ -30,7 +30,7 @@ For additional information regarding the implement in Liberty, please refer to t
 
 <!-- /TOC -->
 
-1. Create the *ODM application*.
+## 1. Create the *ODM application*.
 
     In **Microsoft Entra Id** / **Manage** / **App registration**, click **New Registration**:
 
@@ -40,7 +40,7 @@ For additional information regarding the implement in Liberty, please refer to t
 
     ![New Web Application](images/RegisterApp.png)
 
-2. Retrieve Tenant and Client information
+## 2. Retrieve Tenant and Client information
 
     In **Microsoft Entra Id** / **Manage** / **App Registration**, select **ODM Application** and click **Overview**:
 
@@ -49,7 +49,7 @@ For additional information regarding the implement in Liberty, please refer to t
 
     ![Tenant ID](images/GetTenantID.png)
 
-3. Register a public certificate.
+## 3. Register a public certificate.
 
   To manage private key JWT authentication, you need a private certificate (.key file) and a public certificate (.crt file), which should be registered on the ODM client side (RP) application. On the Microsoft Entra ID (OP) side, you are required to register the public certificate.
 
@@ -71,7 +71,7 @@ For additional information regarding the implement in Liberty, please refer to t
     * Description: `For ODM integration`
     * Click **Add**
 
-4. Add Claims.
+## 4. Add Claims.
 
     In **Microsoft Entra Id** / **Manage** / **App registrations**, select **ODM Application**, and in **Manage / Token Configuration**:
 
@@ -96,7 +96,7 @@ For additional information regarding the implement in Liberty, please refer to t
     * Check **Security Groups**
     * Click **Add**
 
-5. Create a custom claim named "identity"
+## 5. Create a custom claim named "identity"
 
    To enable the ODM REST API to use both the 'Password Credentials' flow with email as the user identifier and the 'Client Credentials' flow with client_id as the user identifier, we must establish a new claim named "identity" that will dynamically capture the appropriate value based on the chosen flow:
    In **Microsoft Entra Id** / **Manage** / **Enterprise applications**, select **ODM Application**, and in **Manage / Single sign-on**:
@@ -108,13 +108,13 @@ For additional information regarding the implement in Liberty, please refer to t
         1. User Type: Any / Scoped Groups: 0 / Source: Attribute / Value: <CLIENT_ID>
         2. User Type: Members / Scoped Groups: 0 / Source: Attribute / Value: user.mail
 
-6. API Permissions.
+## 6. API Permissions.
 
     In **Microsoft Entra Id** / **Manage** / **App Registration**, select **ODM Application**, and then click **API Permissions**.
 
     * Click **Grant Admin Consent for <Directory name>**
 
-7. Manifest change.
+## 7. Manifest change.
 
     In **Microsoft Entra Id** / **Manage** / **App Registration**, select **ODM Application**, and then click **Manifest**.
 
@@ -203,7 +203,7 @@ For additional information regarding the implement in Liberty, please refer to t
     ```
 
     Where:
-    - *TENANT_ID* and *CLIENT_ID* have been obtained from [previous step](#retrieve-tenant-and-client-information)
+    - *TENANT_ID* and *CLIENT_ID* have been obtained from [previous step](#2-retrieve-tenant-and-client-information)
     - *GROUP_ID* is the identifier of the ODM Admin group created in [Manage groups and users](README.md#manage-groups-and-users) (*ID of `odm-admin`*)
     - *SSO_DOMAIN* is the domain name of your SSO. If your AzureAD is connected to another SSO, you should add the SSO domain name in this parameter. If your user has been declared as explained in step **Create at least one user that belongs to this new group**, you can omit this parameter.
 
