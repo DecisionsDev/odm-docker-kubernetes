@@ -41,7 +41,7 @@ To install ODM with the AWS RDS PostgreSQL database created in [step 2](README.m
   - `<RDS_DATABASE_NAME>`: the initial database name defined when creating the RDS database
 
 ```bash
-helm install mycompany ibm-helm/ibm-odm-prod --version 24.1.0 -f eks-rds-nginx-values.yaml
+helm install mycompany ibm-helm/ibm-odm-prod --version 25.0.0 -f eks-rds-nginx-values.yaml
 ```
 
 > **Note**
@@ -53,7 +53,7 @@ helm install mycompany ibm-helm/ibm-odm-prod --version 24.1.0 -f eks-rds-nginx-v
 > - Get the [eks-nginx-values.yaml](./eks-nginx-values.yaml) file:
 >
 > ```bash
-> helm install mycompany ibm-helm/ibm-odm-prod --version 24.1.0 -f eks-nginx-values.yaml
+> helm install mycompany ibm-helm/ibm-odm-prod --version 25.0.0 -f eks-nginx-values.yaml
 > ```
 
 
@@ -98,4 +98,4 @@ Otherwise, you can also retrieve the licensing report .zip file by running:
 curl "http://${LICENSING_URL}/snapshot?token=${TOKEN}" --output report.zip
 ```
 
-If your IBM License Service instance is not running properly, refer to this [troubleshooting page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.9?topic=service-troubleshooting-license).
+If your IBM License Service instance is not running properly, refer to this [troubleshooting page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.12.0?topic=service-troubleshooting-license).
