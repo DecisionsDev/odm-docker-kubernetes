@@ -2,7 +2,7 @@
 
 This section explains how to expose the ODM services to Internet connectivity with a NGINX Ingress controller instead of the standard Google Cloud load balancer.
 
-For reference, see the Google Cloud documentation https://cloud.google.com/community/tutorials/nginx-ingress-gke
+For reference, see the [Google Cloud documentation](https://cloud.google.com/community/tutorials/nginx-ingress-gke).
 
 ## Table of Contents
 
