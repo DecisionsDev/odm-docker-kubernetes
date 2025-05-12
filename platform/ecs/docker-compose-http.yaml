@@ -68,7 +68,7 @@ x-elbv2:
       res:odm-decisionserverconsole:
         port: 9080
         protocol: HTTP
-        healthcheck: 9080:HTTP:/res/login.jsf:200
+        healthcheck: 9080:HTTP:/res/login.jsp:200
       rts:odm-decisioncenter:
         port: 9060
         protocol: HTTP
@@ -90,7 +90,7 @@ x-elbv2:
 
 services:
   odm-decisionserverconsole:
-    image: cp.icr.io/cp/cp4a/odm/odm-decisionserverconsole:9.0.0.1-amd64
+    image: cp.icr.io/cp/cp4a/odm/odm-decisionserverconsole:9.5.0.0-amd64
     x-aws-pull_credentials:  "arn:aws:secretsmanager:<aws_deployment_region>:<aws_account_id>:secret:IBMCPSecret-XXXXXX"
     # Optional: Set to true, to enable execute command and access the container
     x-ecs:
@@ -123,7 +123,7 @@ services:
     labels:
       - productName=IBM Operational Decision Manager
       - productID=e32af5770e06427faae142993c691048
-      - productVersion=9.0.0.1
+      - productVersion=9.5.0.0
       - productMetric=FREE
       - productChargedContainers=decisionserverconsole
     logging:
@@ -141,14 +141,14 @@ services:
       labels:
         ecs.task.family: res
     healthcheck:
-      test: ["CMD", "curl", "-k", "-f", "http://localhost:9080/res/login.jsf"]
+      test: ["CMD", "curl", "-k", "-f", "http://localhost:9080/res/login.jsp"]
       interval: 30s
       timeout: 5s
       retries: 5
       start_period: 50s
 
   odm-decisionserverruntime:
-    image: cp.icr.io/cp/cp4a/odm/odm-decisionserverruntime:9.0.0.1-amd64
+    image: cp.icr.io/cp/cp4a/odm/odm-decisionserverruntime:9.5.0.0-amd64
     x-aws-pull_credentials: "arn:aws:secretsmanager:<aws_deployment_region>:<aws_account_id>:secret:IBMCPSecret-XXXXXX"
     x-ecs:
       EnableExecuteCommand: true
@@ -173,7 +173,7 @@ services:
     labels:
       - productName=IBM Operational Decision Manager
       - productID=b1a07d4dc0364452aa6206bb6584061d
-      - productVersion=9.0.0.1
+      - productVersion=9.5.0.0
       - productMetric=PROCESSOR_VALUE_UNIT
       - productChargedContainers=decisionserverruntime 
     logging:
@@ -201,7 +201,7 @@ services:
       start_period: 50s
 
   odm-decisioncenter:
-    image: cp.icr.io/cp/cp4a/odm/odm-decisioncenter:9.0.0.1-amd64
+    image: cp.icr.io/cp/cp4a/odm/odm-decisioncenter:9.5.0.0-amd64
     x-aws-pull_credentials: "arn:aws:secretsmanager:<aws_deployment_region>:<aws_account_id>:secret:IBMCPSecret-XXXXXX"  
     x-ecs:
       EnableExecuteCommand: true
@@ -228,7 +228,7 @@ services:
     labels:
       - productName=IBM Operational Decision Manager
       - productID=b1a07d4dc0364452aa6206bb6584061d
-      - productVersion=9.0.0.1
+      - productVersion=9.5.0.0
       - productMetric=PROCESSOR_VALUE_UNIT
       - productChargedContainers=decisioncenter
     deploy:
@@ -250,7 +250,7 @@ services:
       start_period: 50s
 
   odm-decisionrunner:
-    image: cp.icr.io/cp/cp4a/odm/odm-decisionrunner:9.0.0.1-amd64
+    image: cp.icr.io/cp/cp4a/odm/odm-decisionrunner:9.5.0.0-amd64
     x-aws-pull_credentials: "arn:aws:secretsmanager:<aws_deployment_region>:<aws_account_id>:secret:IBMCPSecret-XXXXXX"
     x-ecs:
       EnableExecuteCommand: true     
@@ -260,7 +260,7 @@ services:
     labels:
       - productName=IBM Operational Decision Manager - Non Prod
       - productID=e32af5770e06427faae142993c691048
-      - productVersion=9.0.0.1
+      - productVersion=9.5.0.0
       - productMetric=PROCESSOR_VALUE_UNIT
       - productChargedContainers=decisionrunner
     environment:

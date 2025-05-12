@@ -71,7 +71,7 @@ aws rds create-db-instance \
   --db-instance-identifier "odm-rds" \
   --db-name "odmdb" \
   --engine 'postgres' \
-  --engine-version '13' \
+  --engine-version '15' \
   --auto-minor-version-upgrade \
   --allocated-storage 50 \
   --max-allocated-storage 100 \
@@ -131,11 +131,11 @@ aws secretsmanager create-secret \
 For example:
 ```
   odm-decisioncenter:
-    image: cp.icr.io/cp/cp4a/odm/odm-decisioncenter:9.0.0.1-amd64
+    image: cp.icr.io/cp/cp4a/odm/odm-decisioncenter:9.5.0.0-amd64
     x-aws-pull_credentials: "arn:aws:secretsmanager:<aws_deployment_region>:<aws_account_id>:secret:IBMCPSecret-YYYYY"
     ...
   odm-decisionserverruntime:
-    image: cp.icr.io/cp/cp4a/odm/odm-decisionserverruntime:9.0.0.1-amd64
+    image: cp.icr.io/cp/cp4a/odm/odm-decisionserverruntime:9.5.0.0-amd64
     x-aws-pull_credentials: "arn:aws:secretsmanager:<aws_deployment_region>:<aws_account_id>:secret:IBMCPSecret-YYYYY"
     ...
 ```
@@ -232,7 +232,7 @@ volumes:
           Name: odm-filesystem
 ...
   odm-decisioncenter:
-    image: cp.icr.io/cp/cp4a/odm/odm-decisioncenter:9.0.0.1-amd64
+    image: cp.icr.io/cp/cp4a/odm/odm-decisioncenter:9.5.0.0-amd64
     x-aws-pull_credentials: "arn:aws:secretsmanager:<aws_deployment_region>:<aws_account_id>:secret:IBMCPSecret-XXXXXX"
     volumes:
       - app:/config/security/trusted-cert-volume
@@ -332,7 +332,7 @@ As Decision Server Console and Decision Server Runtime are deployed as separate 
 
 After saving the inbound rules, wait for all the services to be `Active` and that their respective tasks are in running state. Check the logs of the `odm-decisionserverruntime` containers. If the following exception persists, restart the Decision Server Runtime `odm-stack-runtime-YYY` service to be sure that the changes to the security rules are well taken into account.
 
-```
+```console
 com.ibm.rules.res.notificationserver.internal.ClientConnectionHandler$1 operationComplete GBRXX0102W: Rule Execution Server console : Client 66325de3-3537-4f56-8cc4-ede3460d6427 was unable to perform handshake with the notification server. It will disconnect and then try to reconnect. For details, see the exception trace....
 ```
 
@@ -347,7 +347,7 @@ Follow these steps to restart:
 
 - When the deployment is complete, verify in the runtime log that the client is connected to the notification server:
 
-```
+```console
 [10/7/24, 17:17:49:451 CEST] 00000040 mbean I com.ibm.rules.res.notificationserver.internal.DefaultNotificationServerClient$1 serviceActivated GBRXX0119I: Rule Execution Server console : Client d6bcf2c5-26e3-4373-9e3f-3e33baf36b52 is connected to server odm-decisionserverconsole:1883.
 ...
 
