@@ -207,7 +207,7 @@ helm repo update
 ```shell
 helm search repo ibm-odm-prod
 NAME                  CHART VERSION   APP VERSION     DESCRIPTION
-ibm-helm/ibm-odm-prod 24.1.0          9.0.0.1         IBM Operational Decision Manager
+ibm-helm/ibm-odm-prod 25.0.0          9.5.0.0         IBM Operational Decision Manager
 ```
 
 ### Manage a digital certificate (2 min)
@@ -248,7 +248,7 @@ It automatically creates an HTTPS GKE load balancer. We will disable the ODM int
 - Install the chart from IBM's public Helm charts repository:
 
   ```shell
-  helm install <release> ibm-helm/ibm-odm-prod --version 24.1.0 -f gcp-values.yaml
+  helm install <release> ibm-helm/ibm-odm-prod -f gcp-values.yaml
   ```
 
 > [!NOTE]
@@ -351,7 +351,7 @@ This section explains how to track ODM usage with the IBM License Service.
 
 #### Install the IBM License Service
 
-Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.10?topic=ils-installing-license-service-without-operator-lifecycle-manager-olm) and stop before it asks you to update the License Service instance. It will be done in the next paragraph.
+Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.12.0?topic=ilsfpcr-installing-license-service-without-operator-lifecycle-manager-olm) and stop before it asks you to update the License Service instance. It will be done in the next paragraph.
 
 #### Create the IBM Licensing instance
 
