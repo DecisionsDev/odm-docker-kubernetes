@@ -155,7 +155,7 @@ Client credentials are used in the context of authentication in systems that uti
 
 In summary, the main difference between client credentials with a private key and a client secret is the method of authentication and the level of security. Client certificates use a public-private key pair for authentication and are generally considered more secure, while client secrets use a shared secret and are less secure but simpler to configure. The choice between them depends on the security requirements and the specific use case of the client application.
 
-If you are unsure about which option to choose, take the time to read [this article explaining the comparison](https://www.ubisecure.com/access-management/private_key_jwt-or-client_secret) .
+If you are unsure about which option to choose, take the time to read [this article explaining the comparison](https://www.ubisecure.com/access-management/private_key_jwt-or-client_secret/) .
 
 
 # License
