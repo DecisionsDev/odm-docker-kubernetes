@@ -21,7 +21,3 @@ externalDatabase:
   port: 5432
   serverName: <DB_ENDPOINT>
   databaseName: postgres
-  # You can get the last Google Cloud SQL PostgreSQL driver version
-  # at https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory/releases
-  driversUrl:
-  - https://storage.googleapis.com/cloud-sql-connectors-java/v1.13.1/postgres-socket-factory-1.13.1-jar-with-driver-and-dependencies.jar
