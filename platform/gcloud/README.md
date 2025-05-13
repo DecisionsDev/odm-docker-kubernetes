@@ -362,7 +362,7 @@ kubectl apply -f licensing-instance.yaml -n ibm-licensing
 ```
 
 > [!NOTE]
-> You can find more information and use cases on [this page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.10?topic=service-configuration).
+> You can find more information and use cases on [this page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.12.0?topic=service-configuring).
 
 #### Modify GKE Load Balancer settings
 
@@ -395,7 +395,7 @@ You can access the `http://${LICENSING_URL}/status?token=${TOKEN}` URL to view t
 curl -v "http://${LICENSING_URL}/snapshot?token=${TOKEN}" --output report.zip
 ```
 
-If your IBM License Service instance is not running properly, refer to this [troubleshooting page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.10?topic=service-troubleshooting-license).
+If your IBM License Service instance is not running properly, refer to this [troubleshooting page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.12.0?topic=service-troubleshooting-license).
 
 ## Troubleshooting
 
