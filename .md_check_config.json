@@ -1,12 +1,4 @@
 {
-  "httpHeaders": [
-    {
-      "urls": ["https://www.ubisecure.com/access-management/private_key_jwt-or-client_secret/"],
-      "headers": {
-        "Accept-Encoding": "zstd, br, gzip, deflate"
-      }
-    }
-  ],
   "ignorePatterns": [
     {
       "pattern": "^http://localhost",
