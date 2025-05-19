@@ -58,7 +58,7 @@ Without the relevant billing level, some Google Cloud resources will not be crea
 
 <!-- /TOC -->
 
-### Prepare your GKE instance (30 min)
+### 1. Prepare your GKE instance (30 min)
 
 Refer to the [GKE quickstart](https://cloud.google.com/kubernetes-engine/docs/quickstart) for more information.
 
@@ -129,7 +129,7 @@ Regions and zones (used below) can be listed respectively with `gcloud compute r
   kubectl cluster-info
   ```
 
-### Create the Google Cloud SQL PostgreSQL instance (10 min)
+### 2. Create the Google Cloud SQL PostgreSQL instance (10 min)
 
 #### Create the database instance
 
@@ -165,7 +165,7 @@ Where:
 
 - `<PASSWORD>` is the database password (PASSWORD set during the PostgreSQL instance creation above)
 
-### Prepare your environment for the ODM installation (10 min)
+### 3.Prepare your environment for the ODM installation (10 min)
 
 To get access to the ODM material, you need an IBM entitlement key to pull the images from the IBM Entitled Registry.
 
@@ -210,7 +210,7 @@ NAME                  CHART VERSION   APP VERSION     DESCRIPTION
 ibm-helm/ibm-odm-prod 25.0.0          9.5.0.0         IBM Operational Decision Manager
 ```
 
-### Manage a digital certificate (2 min)
+### 4. Manage a digital certificate (2 min)
 
 #### (Optional) Generate a self-signed certificate
 
@@ -231,7 +231,7 @@ kubectl create secret tls mynicecompany-tls-secret --key mynicecompany.key --cer
 
 The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://www.ibm.com/docs/en/odm/9.5.0?topic=servers-server-certificates) and [Working with certificates and SSL](https://docs.oracle.com/cd/E19830-01/819-4712/ablqw/index.html).
 
-### Install the ODM release (10 min)
+### 5. Install the ODM release (10 min)
 
 #### Install an ODM Helm release
 
@@ -310,7 +310,7 @@ A configuration that uses [BackendConfig](https://cloud.google.com/kubernetes-en
 
   ![DecisionCenter session affinity](images/dc_sessionaffinity.png)
 
-### Access ODM services
+### 6. Access ODM services
 
 In a real enterprise use case, to access the mynicecompany.com domain name, you have to deal with [Google Managed Certificate](https://cloud.google.com/load-balancing/docs/ssl-certificates/google-managed-certs) and [Google Cloud DNS](https://cloud.google.com/dns).
 
@@ -345,7 +345,7 @@ We only have to manage a configuration to simulate the mynicecompany.com access.
 > You can also click the Ingress frontends accessible from the Google Cloud console under the [Kubernetes Engine/Services & Ingress Details Panel](https://console.cloud.google.com/kubernetes/ingresses).
 > ![Ingress routes](images/ingress_routes.png)
 
-### Track ODM usage with the IBM License Service
+### 7. Track ODM usage with the IBM License Service
 
 This section explains how to track ODM usage with the IBM License Service.
 
