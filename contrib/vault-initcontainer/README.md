@@ -58,7 +58,7 @@ The diagram visually represents the secure flow of secrets data from the central
    * [Vault client](https://developer.hashicorp.com/vault/install)
    * [Helm v3](https://helm.sh/docs/intro/install/)
    * [Kustomize](https://github.com/kubernetes-sigs/kustomize/releases)
-   * Operational Decision Manager on Container 9.0.0.1
+   * Operational Decision Manager on Container 9.5
 
 > Note: This documentation has been tested with a HashiCorp evaluation instance. We assume that the procedure will remain the same for the commercial product.
 
@@ -177,7 +177,7 @@ helm repo update
 ```
 helm search repo ibm-odm-prod
 NAME                  	CHART VERSION   APP VERSION     DESCRIPTION
-ibm-helm/ibm-odm-prod	24.0.0          9.0.0.0        IBM Operational Decision Manager
+ibm-helm/ibm-odm-prod	25.0.0          9.5.0.0        IBM Operational Decision Manager
 ```
 
 
