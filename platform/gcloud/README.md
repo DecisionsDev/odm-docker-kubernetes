@@ -165,7 +165,7 @@ Where:
 
 - `<PASSWORD>` is the database password (PASSWORD set during the PostgreSQL instance creation above)
 
-### 3.Prepare your environment for the ODM installation (10 min)
+### 3. Prepare your environment for the ODM installation (10 min)
 
 To get access to the ODM material, you need an IBM entitlement key to pull the images from the IBM Entitled Registry.
 
