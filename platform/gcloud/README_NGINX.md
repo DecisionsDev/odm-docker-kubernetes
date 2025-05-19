@@ -42,11 +42,11 @@ helm install mycompany ibm-helm/ibm-odm-prod -f gcp-values.yaml \
 
 ### Check the deployment and access ODM services
 
-Refer to the [the main README](README.md#b-check-the-topology) to check the deployment and access the ODM services.
+Refer to the [the main README](README.md#check-the-topology) to check the deployment and access the ODM services.
 
 ### Deploy and check IBM Licensing Service
 
-Refer to [the main README](README.md#b-check-the-topology) to install IBM Licensing Service, except that you have to apply this updated IBMLicensing instance instead:
+Refer to [the main README](README.md#check-the-topology) to install IBM Licensing Service, except that you have to apply this updated IBMLicensing instance instead:
 
 ```shell
 kubectl apply -f licensing-instance-NGINX.yaml -n ibm-licensing

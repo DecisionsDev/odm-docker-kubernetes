@@ -2,6 +2,7 @@
 
 <!-- TOC -->
 
+- [Configuration of ODM with Amazon Cognito](#configuration-of-odm-with-amazon-cognito)
 - [Introduction](#introduction)
     - [What is Amazon Cognito?](#what-is-amazon-cognito)
     - [About this task](#about-this-task)
@@ -13,18 +14,19 @@
     - [Create an ODM Admin Group](#create-an-odm-admin-group)
     - [Add the created user to the odm-admin group](#add-the-created-user-to-the-odm-admin-group)
     - [Create a dedicated App client for the client-credentials flow](#create-a-dedicated-app-client-for-the-client-credentials-flow)
-    - [Create A custom claim](#create-a-custom-claim)
+    - [Create a custom claim](#create-a-custom-claim)
 - [Deploy ODM on a container configured with Cognito Part 2](#deploy-odm-on-a-container-configured-with-cognito-part-2)
-    - [Create a secret to use the Entitled Registry](#create-a-secret-to-use-the-entitled-registry)
-    - [Create secrets to configure ODM with Cognito](#create-secrets-to-configure-odm-with-cognito)
+    - [Prepare your environment for the ODM installation](#prepare-your-environment-for-the-odm-installation)
+        - [Create a secret to use the Entitled Registry](#create-a-secret-to-use-the-entitled-registry)
+        - [Create secrets to configure ODM with Cognito](#create-secrets-to-configure-odm-with-cognito)
     - [Install your ODM Helm release](#install-your-odm-helm-release)
-        - [Add the public IBM Helm charts repository](#add-the-public-ibm-helm-charts-repository)
-        - [Check that you can access the ODM chart](#check-that-you-can-access-the-odm-chart)
-        - [Run the helm install command](#run-the-helm-install-command)
+        - [Add the public IBM Helm charts repository](#1-add-the-public-ibm-helm-charts-repository)
+        - [Check that you can access the ODM chart](#2-check-that-you-can-access-the-odm-chart)
+        - [Run the helm install command](#3-run-the-helm-install-command)
             - [a. Installation on OpenShift using Routes](#a-installation-on-openshift-using-routes)
             - [b. Installation using Ingress](#b-installation-using-ingress)
     - [Complete post-deployment tasks](#complete-post-deployment-tasks)
-        - [Register the ODM redirect URLs](#register-the-odm-redirect-urls)
+        - [Register the ODM redirect URL](#register-the-odm-redirect-url)
         - [Access the ODM services](#access-the-odm-services)
         - [Set up Rule Designer](#set-up-rule-designer)
         - [Getting Started with IBM Operational Decision Manager for Containers](#getting-started-with-ibm-operational-decision-manager-for-containers)
@@ -492,7 +494,6 @@ In the **Container software library** tile, verify your entitlement on the **Vie
 
 
 ## Install your ODM Helm release
-
 ### 1. Add the public IBM Helm charts repository
 
   ```shell
@@ -529,7 +530,7 @@ In the **Container software library** tile, verify your entitlement on the **Vie
 #### b. Installation using Ingress
 
   Refer to the following documentation to install an NGINX Ingress Controller on:
-  - [Microsoft Azure Kubernetes Service](../../platform/azure/README.md#create-a-nginx-ingress-controller)
+  - [Microsoft Azure Kubernetes Service](../../platform/azure/README-NGINX.md)
   - [Amazon Elastic Kubernetes Service](../../platform/eks/README-NGINX.md)
   - [Google Kubernetes Engine](../../platform/gcloud/README_NGINX.md)
 
@@ -686,7 +687,7 @@ curl -k --data @payload.json \
 
 # Troubleshooting
 
-If you encounter any issue, have a look at the [common troubleshooting explanation](../README.md#Troubleshooting)
+If you encounter any issue, have a look at the [common troubleshooting explanation](../README.md#troubleshooting)
 
 
 # License

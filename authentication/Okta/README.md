@@ -262,12 +262,12 @@ In this step, we augment the token with meta-information that is required by the
 
 ### Create secrets to configure ODM with Okta
 
-1. Retrieve Okta Server information.
+#### 1. Retrieve Okta Server information.
 
     From the Okta console, in **Security** / **API** / **default** / **Settings** :
     - Note the *OKTA_SERVER_NAME* which is the **Okta domain** in the **Issuer** (similar to *\<shortname\>.okta.com*).
 
-2. Create a secret with the Okta Server certificate.
+#### 2. Create a secret with the Okta Server certificate.
 
     To allow ODM services to access the Okta Server, it is mandatory to provide the Okta Server certificate.
     You can create the secret as follows:
@@ -277,7 +277,7 @@ In this step, we augment the token with meta-information that is required by the
     kubectl create secret generic okta-secret --from-file=tls.crt=okta.crt
     ```
 
-3. Generate the ODM configuration file for Okta.
+#### 3. Generate the ODM configuration file for Okta.
 
     The [script](generateTemplate.sh) allows you to generate the necessary configuration files.
     You can download the [okta-odm-script.zip](okta-odm-script.zip) .zip file to your machine. This .zip file contains the [script](generateTemplate.sh) and the content of the [templates](templates) directory.
@@ -289,13 +289,14 @@ In this step, we augment the token with meta-information that is required by the
 
     Where:
     - Both *OKTA_CLIENT_ID* and *OKTA_CLIENT_SECRET* are listed in your ODM Application, section **Applications** / **Applications** / **ODM Application** / **General** / **Client Credentials**
-    - *OKTA_SERVER_NAME* has been obtained from [previous step](#retrieve-okta-server-information)
-    - *OKTA_ODM_GROUP* is the ODM Admin group we created in a [previous step](#manage-group-and-user) (*odm-admin*)
+    - *OKTA_SERVER_NAME* has been obtained from [previous step](#1-retrieve-okta-server-information)
+    - *OKTA_ODM_GROUP* is the ODM Admin group we created in a [previous step](#manage-groups-and-users) (*odm-admin*)
     - *OKTA_API_SCOPE* has been defined [above](#configure-the-default-authorization-server) (*odmapiusers*)
+
 
     The files are generated into the `output` directory.
 
-4. Create the Okta authentication secret.
+#### 4. Create the Okta authentication secret.
 
     ```
     kubectl create secret generic okta-auth-secret \
@@ -462,7 +463,7 @@ But if you want to execute a bearer authentication ODM runtime call using the Cl
 
 # Troubleshooting
 
-If you encounter any issue, have a look at the [common troubleshooting explanation](../README.md#Troubleshooting)
+If you encounter any issue, have a look at the [common troubleshooting explanation](../README.md#troubleshooting)
 
 # License
 

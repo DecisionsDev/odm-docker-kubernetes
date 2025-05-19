@@ -2,7 +2,7 @@
 
 <!-- TOC -->
 
-- [Set up a Microsoft Entra ID application using a client secret](#set-up-an-microsoft-entra-id-application-using-a-client-secret)
+- [Set up a Microsoft Entra ID application using a client secret](#set-up-a-microsoft-entra-id-application-using-a-client-secret)
 - [Deploy ODM on a container configured with Microsoft Entra ID Part 2](#deploy-odm-on-a-container-configured-with-microsoft-entra-id-part-2)
     - [Prepare your environment for the ODM installation](#prepare-your-environment-for-the-odm-installation)
         - [Create a secret to use the Entitled Registry](#create-a-secret-to-use-the-entitled-registry)
@@ -24,7 +24,7 @@
 
 <!-- /TOC -->
 
-1. Create the *ODM application*.
+## 1. Create the *ODM application*.
 
     In **Microsoft Entra Id** / **Manage** / **App registration**, click **New Registration**:
 
@@ -34,7 +34,7 @@
 
     ![New Web Application](images/RegisterApp.png)
 
-2. Retrieve Tenant and Client information.
+## 2. Retrieve Tenant and Client information
 
     In **Microsoft Entra Id** / **Manage** / **App Registration**, select **ODM Application** and click **Overview**:
 
@@ -43,7 +43,7 @@
 
     ![Tenant ID](images/GetTenantID.png)
 
-3. Generate an OpenID client secret.
+## 3. Generate an OpenID client secret.
 
     In **Microsoft Entra Id** / **Manage** / **App registrations**, select **ODM Application**:
 
@@ -56,7 +56,7 @@
 
    >Important: This client secret can not be revealed later. If you forgot to take note of it, you'll have to create another one.
 
-4. Add Claims.
+## 4. Add Claims.
 
     In **Microsoft Entra Id** / **Manage** / **App registrations**, select **ODM Application**, and in **Manage / Token Configuration**:
 
@@ -81,7 +81,7 @@
     * Check Security Groups
     * Click Add
 
-5. Create a custom claim named "identity"
+## 5. Create a custom claim named "identity"
 
    To allow ODM rest-api to use the password flow with email as user identifier and the client-credentials flow with client_id as user identifier, we need to create a new claim named "identity" that will take the relevant value according to the flow:
 
@@ -95,7 +95,7 @@
         2. User Type: Members / Scoped Groups: 0 / Source: Attribute / Value: user.mail
     * Click Save
 
-6. API Permissions.
+## 6. API Permissions.
 
     In **Microsoft Entra Id** / **Manage** / **App Registration**, select **ODM Application**, and then click **API Permissions**.
 
@@ -107,7 +107,7 @@
     * Don't forget to **Grant Admin Consent for Default Directory** on these API permissions 
     
 
-7. Manifest change.
+## 7. Manifest change.
 
     In **Microsoft Entra Id** / **Manage** / **App Registration**, select **ODM Application**, and then click **Manifest**.
 
@@ -126,7 +126,7 @@
 
    Then, click Save.
 
-8. Check the configuration.
+## 8. Check the configuration.
 
     Download the [azuread-odm-script.zip](azuread-odm-script.zip) file to your machine and unzip it in your working directory. This .zip file contains scripts and templates to verify and set up ODM.
 
@@ -277,9 +277,9 @@
     ```
 
     Where:
-    - *TENANT_ID* and *CLIENT_ID* have been obtained from [previous step](#retrieve-tenant-and-client-information)
+    - *TENANT_ID* and *CLIENT_ID* have been obtained from [previous step](#2-retrieve-tenant-and-client-information)
     - *CLIENT_SECRET* is listed in your ODM Application, section **General** / **Client Credentials**
-    - *GROUP_ID* is the identifier of the ODM Admin group created in a [previous step](#manage-group-and-user) (ID of the group named *odm-admin*)
+    - *GROUP_ID* is the identifier of the ODM Admin group created in a [previous step](README.md#manage-groups-and-users) (ID of the group named *odm-admin*)
     - *SSO_DOMAIN* is the domain name of your SSO. If your AzureAD is connected to another SSO, you should add the SSO domain name in this parameter. If your user has been declared as explained in step **Create at least one user that belongs to this new group**, you can omit this parameter.
 
     The following four files are generated into the `output` directory:
@@ -377,7 +377,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 #### b. Installation using Ingress
 
   Refer to the following documentation to install an NGINX Ingress Controller on:
-  - [Microsoft Azure Kubernetes Service](../../platform/azure/README.md#create-a-nginx-ingress-controller)
+  - [Microsoft Azure Kubernetes Service](../../platform/azure/README-NGINX.md)
   - [Amazon Elastic Kubernetes Service](../../platform/eks/README-NGINX.md)
   - [Google Kubernetes Engine](../../platform/gcloud/README_NGINX.md)
 
@@ -472,7 +472,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 
 ### Access the ODM services
 
-Well done!  You can now connect to ODM using the endpoints you got [earlier](#register-the-odm-redirect-url) and log in as an ODM admin with the account you created in [the first step](#manage-group-and-user).
+Well done!  You can now connect to ODM using the endpoints you got [earlier](#register-the-odm-redirect-urls) and log in as an ODM admin with the account you created in [the first step](README.md#manage-groups-and-users).
 
 ### Set up Rule Designer
 
@@ -552,7 +552,7 @@ curl -H "Content-Type: application/json" -k --data @payload.json \
 
 # Troubleshooting
 
-If you encounter any issue, have a look at the [common troubleshooting explanation](../README.md#Troubleshooting)
+If you encounter any issue, have a look at the [common troubleshooting explanation](../README.md#troubleshooting)
 
 # License
 
