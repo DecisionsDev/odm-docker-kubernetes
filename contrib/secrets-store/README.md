@@ -60,7 +60,7 @@ HashiCorp Vault must be up and running. An [on-prem installation description](RE
 - [Secrets Store CSI Driver](https://secrets-store-csi-driver.sigs.k8s.io/) already installed.
 - [HashiCorp Vault provider driver](https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-secret-store-driver) already installed
 - [Helm](https://helm.sh/docs/intro/install/)
-- Access to Operational Decision Manager on Container 9.0.0.1 images
+- Access to Operational Decision Manager on Container 9.5.0.0 images
 
 > Note: The first and second steps are described in the [companion document](README-External_Vault.md) when you use OCP.
 
@@ -159,8 +159,8 @@ Check that you can access ODM charts:
 
 ```bash
 helm search repo ibm-odm-prod
-NAME                  	CHART VERSION   APP VERSION     DESCRIPTION
-ibm-helm/ibm-odm-prod   24.1.0       	  9.0.0.1         IBM Operational Decision Manager
+NAME                    CHART VERSION   APP VERSION     DESCRIPTION
+ibm-helm/ibm-odm-prod   25.0.0          9.5.0.0         IBM Operational Decision Manager
 ```
 
 #### Data to be injected in the pods
