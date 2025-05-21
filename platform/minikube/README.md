@@ -34,13 +34,13 @@ This tutorial was tested on macOS and Linux.
 #### a. Start Minikube with sufficient resources
 
 ```shell
-minikube start --cpus 6 --memory 8GB --kubernetes-version=v1.28.15
+minikube start --cpus 6 --memory 8GB --kubernetes-version=v1.31.9
 ```
 
 The kubectl context is automatically set to point to the created Minikube cluster.
 
 > [!NOTE]
-> This installation guide has been tested with the Kubernetes version v1.28.0 onwards
+> This installation guide has been tested with Kubernetes version v1.28.0 onwards
 
 #### b. Check your environment
 
