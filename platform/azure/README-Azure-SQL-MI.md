@@ -66,8 +66,21 @@ You can now install the product.
 > Make sure that you have created the registry secret and also the container certificate secret as explained in [Prepare your environment for the ODM installation](README.md#prepare-your-environment-for-the-odm-installation).
 
 ```shell
-helm install <release> ibm-helm/ibm-odm-prod  --version 25.0.0 -f aks-sqlmi-values.yaml
+helm install <release> ibm-helm/ibm-odm-prod -f aks-sqlmi-values.yaml
 ```
+> **Note:**  
+> This command installs the **latest available version** of the chart.  
+> If you want to install a **specific version**, add the `--version` option:
+>
+> ```bash
+> helm install <release> ibm-helm/ibm-odm-prod --version <version> -f aks-sqlmi-values.yaml
+> ```
+>
+> You can list all available versions using:
+>
+> ```bash
+> helm search repo ibm-helm/ibm-odm-prod -l
+> ```
 
 Other deployment options (especially using NGINX) and IBM License Service usage are explained in the [NGINX README](README-NGINX.md).
 

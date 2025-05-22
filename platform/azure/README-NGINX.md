@@ -54,11 +54,23 @@ You can now install the product.
   - `<password>` is the password to login with the basic registry users like `odmAdmin`
 
 ```shell
-helm install <release> ibm-helm/ibm-odm-prod  --version 25.0.0 -f aks-nginx-values.yaml
+helm install <release> ibm-helm/ibm-odm-prod -f aks-nginx-values.yaml
 ```
 
 > [!NOTE]
-> By default, the NGINX Ingress controller does not enable sticky session. If you want to use sticky session to connect to DC, refer to [Using sticky session for Decision Center connection](../../contrib/sticky-session/README.md#configuring-ingress-to-use-sticky-sessions)
+> - By default, the NGINX Ingress controller does not enable sticky session. If you want to use sticky session to connect to DC, refer to [Using sticky session for Decision Center connection](../../contrib/sticky-session/README.md#configuring-ingress-to-use-sticky-sessions)
+>
+> - This command installs the **latest available version** of the chart. If you want to install a **specific version**, add the `--version` option:
+>
+> ```bash
+> helm install <release> ibm-helm/ibm-odm-prod --version <version> -f aks-nginx-values.yaml
+> ```
+>
+> - You can list all available versions using:
+>
+> ```bash
+> helm search repo ibm-helm/ibm-odm-prod -l
+> ```
 
 
 ### Edit the file /etc/hosts on your host

@@ -104,8 +104,22 @@ ibmcharts/ibm-odm-prod            25.0.0        9.5.0.0     IBM Operational Deci
 Get the [minikube-values.yaml](./minikube-values.yaml) file and run the following command:
 
 ```shell
-helm install my-odm-release ibmcharts/ibm-odm-prod --version 25.0.0 -f minikube-values.yaml
+helm install my-odm-release ibmcharts/ibm-odm-prod -f minikube-values.yaml
 ```
+
+> **Note:**  
+> This command installs the **latest available version** of the chart.  
+> If you want to install a **specific version**, add the `--version` option:
+>
+> ```bash
+> helm install my-odm-release ibm-helm/ibm-odm-prod --version <version> -f minikube-values.yaml
+> ```
+>
+> You can list all available versions using:
+>
+> ```bash
+> helm search repo ibm-helm/ibm-odm-prod -l
+> ```
 
 #### b. Check the topology
 

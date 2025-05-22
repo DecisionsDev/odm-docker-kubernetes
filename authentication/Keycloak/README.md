@@ -461,13 +461,27 @@ You can create roles and grant these roles directly to an individual user, or ev
 
 You can now install the product. We will use the PostgreSQL internal database and disable data persistence (`internalDatabase.persistence.enabled=false`) to avoid any platform complexity with persistent volume allocation.
 
+> **Note:**  
+> The following command installs the **latest available version** of the chart.  
+> If you want to install a **specific version**, add the `--version` option:
+>
+> ```bash
+> helm install my-odm-release ibm-helm/ibm-odm-prod --version <version> \
+>     --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret ...
+> ```
+>
+> You can list all available versions using:
+>
+> ```bash
+> helm search repo ibm-helm/ibm-odm-prod -l
+> ```
+
 #### a. Installation on OpenShift using Routes
 
   See the [Preparing to install](https://www.ibm.com/docs/en/odm/9.5.0?topic=production-preparing-install-operational-decision-manager) documentation for more information.
 
   ```shell
   helm install my-odm-release ibm-helm/ibm-odm-prod \
-      --version 25.0.0 \
       --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
       --set oidc.enabled=true \
       --set license=true \
@@ -490,7 +504,6 @@ You can now install the product. We will use the PostgreSQL internal database an
 
   ```shell
   helm install my-odm-release ibm-helm/ibm-odm-prod \
-      --version 25.0.0 \
       --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
       --set oidc.enabled=true \
       --set license=true \
