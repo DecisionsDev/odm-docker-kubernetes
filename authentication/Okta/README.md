@@ -321,8 +321,8 @@ In this step, we augment the token with meta-information that is required by the
     helm search repo ibm-odm-prod
     ```
     ```
-    NAME                  	CHART VERSION	APP VERSION	DESCRIPTION
-    ibm-helm/ibm-odm-prod	25.0.0       	9.5.0.0   	IBM Operational Decision Manager
+    NAME                    CHART VERSION APP VERSION DESCRIPTION
+    ibm-helm/ibm-odm-prod   25.0.0        9.5.0.0     IBM Operational Decision Manager
     ```
 
 3. Run the `helm install` command.
@@ -330,7 +330,7 @@ In this step, we augment the token with meta-information that is required by the
     You can now install the product. We will use the PostgreSQL internal database and disable the data persistence (`internalDatabase.persistence.enabled=false`) to avoid any platform complexity concerning persistent volume allocation.
 
     ```
-    helm install my-odm-release ibm-helm/ibm-odm-prod --version 25.0.0 \
+    helm install my-odm-release ibm-helm/ibm-odm-prod \
           --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
           --set oidc.enabled=true \
           --set internalDatabase.persistence.enabled=false \
@@ -340,11 +340,26 @@ In this step, we augment the token with meta-information that is required by the
           --set license=true
     ```
 
-    > Note: On OpenShift, you have to add the following parameters due to security context constraints.
+    > Note: 
+    > - On OpenShift, you have to add the following parameters due to security context constraints.
     > ```
     > --set internalDatabase.runAsUser='' --set customization.runAsUser='' --set service.enableRoute=true
     > ```
-    > See [Preparing to install](https://www.ibm.com/docs/en/odm/9.5.0?topic=production-preparing-install-operational-decision-manager) documentation for additional information.
+    > - See [Preparing to install](https://www.ibm.com/docs/en/odm/9.5.0?topic=production-preparing-install-operational-decision-manager) documentation for additional information.
+    > 
+    > - The above command installs the **latest available version** of the chart.  
+    > If you want to install a **specific version**, add the `--version` option:
+    >
+    > ```bash
+    > helm install my-odm-release ibm-helm/ibm-odm-prod --version <version> \
+    >     --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret ...
+    > ```
+    >
+    > - You can list all available versions using:
+    >
+    > ```bash
+    > helm search repo ibm-helm/ibm-odm-prod -l
+    > ```
 
 ## Complete post-deployment tasks
 
