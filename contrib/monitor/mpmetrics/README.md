@@ -30,7 +30,7 @@ The MicroProfile mpMetrics Liberty feature provides a /metrics endpoint from whi
 2. Create a pull secret by running a `kubectl create secret` command.
 
     ```
-    $ kubectl create secret docker-registry icregistry-secret \
+    kubectl create secret docker-registry icregistry-secret \
         --docker-server=cp.icr.io \
         --docker-username=cp \
         --docker-password="<API_KEY_GENERATED>" \
@@ -70,7 +70,7 @@ Create the monitor-secret
   ```shell
   helm search repo ibm-odm-prod
   NAME                  	CHART VERSION	APP VERSION	DESCRIPTION
-  ibm-helm/ibm-odm-prod	  24.1.0       	9.0.0.1   	IBM Operational Decision Manager
+  ibm-helm/ibm-odm-prod	  25.0.0       	9.5.0.0   	IBM Operational Decision Manager
   ```
 
 ### 3. Run the `helm install` command
@@ -91,6 +91,18 @@ helm install my-odm-release ibm-helm/ibm-odm-prod \
 > [!NOTE]
 > **customization.monitorRef** is installing /metrics endpoint on all components. 
 > If you would like to install /metrics on a specific component, you can replace usage of **customization.monitorRef** by **decisionCenter.monitorRef** , **decisionServerConsole.monitorRef** , **decisionRunner.monitorRef** or **decisionServerRuntime.monitorRef**
+> This command installs the **latest available version** of the chart.  
+> If you want to install a **specific version**, add the `--version` option:
+>
+> ```bash
+> helm install roks-tuto ibm-helm/ibm-odm-prod --version <version> -f roks-values.yaml
+> ```
+>
+> You can list all available versions using:
+>
+> ```bash
+> helm search repo ibm-helm/ibm-odm-prod -l
+> ```
 
 ### 4. Check the /metrics endpoints
 
@@ -122,14 +134,14 @@ curl -k https://<DS_RUNTIME_HOST>/metrics
 You should get a view of all Liberty metrics that will be accessible in Prometheus:
     
 ```
-# TYPE base_gc_total counter
-# HELP base_gc_total Displays the total number of collections that have occurred. This attribute lists -1 if the collection count is undefined for this collector.
-base_gc_total{name="global"} 30
-base_gc_total{name="scavenge"} 157
+# HELP gc_total Displays the total number of collections that have occurred. This attribute lists -1 if the collection count is undefined for this collector.
+# TYPE gc_total counter
+gc_total{mp_scope="base",name="global",} 377.0
+gc_total{mp_scope="base",name="scavenge",} 312.0
 ...
-# TYPE vendor_connectionpool_waitTime_total_seconds gauge
-# HELP vendor_connectionpool_waitTime_total_seconds The total wait time on all connection requests since the start of the server.
-vendor_connectionpool_waitTime_total_seconds{datasource="jdbc_ilogDataSource"} 0.0
+# HELP connectionpool_waitTime_total_seconds The total wait time on all connection requests since the start of the server.
+# TYPE connectionpool_waitTime_total_seconds gauge
+connectionpool_waitTime_total_seconds{datasource="jdbc_ilogDataSource",mp_scope="vendor",} 0.0
 ```
 
 ## Expose metrics in OCP
@@ -159,11 +171,11 @@ You should see the 4 ODM metrics endpoints
 Drill at Observe > metrics.
 
 You can now use any kind of available metrics using a query.
-For example put **base_gc_total** in the **Expression** field and click on the **Run queries** button.
+For example put **gc_total** in the **Expression** field and click on the **Run queries** button.
 
 ![Queries](./images/queries.png)
 
-If you are interested in servlet requests managed by the runtime, you can use the query **vendor_servlet_request_total{servlet="DecisionService_RESTDecisionService"}**
+If you are interested in servlet requests managed by the runtime, you can use the query **servlet_request_total{mp_scope="vendor",servlet="DecisionService_RESTDecisionService"}**
 For example, by monitoring this metrics, you can check the behaviour of the load balancer is correct if all Decision Server Runtime replicas are receiving almost the same number of requests like in the following screenshot.
  
 ![Runtime Servlet Request](./images/RuntimeRequest.png)
