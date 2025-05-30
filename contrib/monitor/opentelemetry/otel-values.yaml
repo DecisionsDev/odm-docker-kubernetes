@@ -6,9 +6,8 @@ decisionServerRuntime:
   jvmOptionsRef: otel-runtime-jvm-options-configmap
   monitorRef: runtime-monitor-configuration
 image:
-  repository: docker-eu.artifactory.swg-devops.com/hyc-odm-docker
-# repository: cp.icr.io/cp/cp4a/odm
-# pullSecret: icregistry-secret
+  repository: cp.icr.io/cp/cp4a/odm
+  pullSecret: icregistry-secret
 internalDatabase:
   persistence:
     enabled: false
