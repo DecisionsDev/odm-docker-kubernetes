@@ -8,6 +8,7 @@ data:
     -Dcom.ibm.jsse2.overrideDefaultTLS=true
     -javaagent:/config/download/opentelemetry-javaagent.jar
     -Dotel.sdk.disabled=false
+    -Dotel.exporter.otlp.protocol=grpc
     -Dotel.exporter.otlp.endpoint=http://otel-collector.otel.svc.cluster.local:4317
     -Dotel.service.name=odm
     -Dotel.traces.exporter=otlp

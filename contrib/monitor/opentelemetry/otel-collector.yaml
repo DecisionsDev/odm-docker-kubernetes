@@ -8,8 +8,6 @@ metadata:
 data:
   otel-collector-config: |
     receivers:
-      # Make sure to add the otlp receiver.
-      # This will open up the receiver on port 4317
       otlp:
         protocols:
           grpc:
@@ -19,7 +17,7 @@ data:
       health_check: {}
     exporters:
       otlp/jaeger:
-        endpoint: "simplest-collector.otel.svc.cluster.local:4317"
+        endpoint: "jaeger-all-in-one-inmemory-collector.tracing-system.svc.cluster.local:4317"
         insecure: true
       logging:
 
@@ -44,7 +42,7 @@ spec:
       protocol: TCP
       port: 4317
       targetPort: 4317
-   - name: metrics
+    - name: metrics
       protocol: TCP
       port: 9092
       targetPort: 9092

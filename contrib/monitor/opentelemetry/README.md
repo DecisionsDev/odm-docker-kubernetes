@@ -20,6 +20,15 @@ For installations on other platforms, refer to the [Jaeger documentation](https:
 
 ## Deploy the OpenTelemetry Collector
 
+We will install the OpenTelemetry Collector near the ODM Instance in a project named **otel**
+So, f you are on OCP, create the **otel** project:
+
+ ```bash
+oc new-project otel
+ ```
+
+If you change the 
+
 We used the following [descriptor](https://github.com/open-telemetry/opentelemetry-go-contrib/blob/main/examples/otel-collector/otel-collector.yaml) as the basis for the OTEL Collector deployment.
 However, it's likely that you will encounter an error similar to:
 
@@ -28,6 +37,8 @@ However, it's likely that you will encounter an error similar to:
  ```
 
 You can also utilize the [otel-collector.yaml](./otel-collector.yaml) file we used for this tutorial by applying it with:
+The OpenShift documentation is installing Jaeger in the **tracing-system** project.
+If you install Jaeger elsewhere, don't forget to adapt the [Jaeger endpoint](https://github.com/DecisionsDev/odm-docker-kubernetes/blob/monitoring-review/contrib/monitor/opentelemetry/otel-collector.yaml#L22)
 
  ```bash
 kubectl apply -f otel-collector.yaml
@@ -48,6 +59,8 @@ You should get the message :
 ## Install ODM with the Open Telemetry agent
 
 In this tutorial, we will inject the OpenTelemetry java agent inside the Decision Server Runtime and configure it to communicate with the OTEL Collector using JVM options. Then, we will manage some execution to generate traces and inspect them with the Jaeger UI.
+The OpenShift documentation is installing Jaeger in the **tracing-system** project.
+
 
 ### Prepare your environment for the ODM installation (5 min)
 
@@ -88,14 +101,14 @@ helm repo update
 ```bash
 $ helm search repo ibm-odm-prod
 NAME                             	CHART VERSION	APP VERSION	DESCRIPTION
-ibm-helm/ibm-odm-prod           	24.1.0       	9.0.0.1   	IBM Operational Decision Manager
+ibm-helm/ibm-odm-prod           	25.0.0       	9.5.0.0   	IBM Operational Decision Manager
 ```
 
 ### Install an IBM Operational Decision Manager release (10 min)
 
 Install a Kubernetes release with the default configuration named `otel-odm-release`, injecting the OTEL Java agent with the relevant JVM configuration.
 
-We'll use the **decisionServerRuntime.downloadUrl** parameter to download the [OTEL Java agent](https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v1.32.1/opentelemetry-javaagent.jar), which will be injected into the container at the `/config/download/opentelemetry-javaagent.jar` path.
+We'll use the **decisionServerRuntime.downloadUrl** parameter to download the [OTEL Java agent](https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases), which will be injected into the container at the `/config/download/opentelemetry-javaagent.jar` path.
 
 To configure the OTEL Java agent, we need to set up some JVM options, such as:
 
@@ -109,32 +122,43 @@ To configure the OTEL Java agent, we need to set up some JVM options, such as:
     -Dotel.metrics.exporter=none
 ```
 
+> [!NOTE]
+> If you are installing in a different project than the **otel** project, don't forget to adapt the otltp endpoint 
+
 To do this, create the **otel-runtime-jvm-options-configmap** configmap that will be associated to the **decisionServerRuntime.jvmOptionsRef** parameter :
 
 ```bash
 kubectl create -f otel-runtime-jvm-options-configmap.yaml
 ```
 
-We will also add a parameter to add some liberty configurations that could be increase some traces using the **decisionServerRuntime.libertyHookRef** parameter. 
-Create the following secret using the libertyHookEnd.xml file :
+We will also add a parameter to add some liberty configurations that could be increase some traces using the **decisionServerRuntime.monitorRef** parameter.
+You can find more details about how to configure the [monitor.xml file](https://www.ibm.com/docs/en/was-liberty/core?topic=environment-monitoring-monitor-10). 
+Create the following secret using the monitor.xml file :
 
 ```bash
-kubectl create secret generic runtime-liberty-configuration --from-file=libertyHookEnd.xml
+kubectl create secret generic runtime-monitor-configuration --from-file=monitor.xml
 ```
 
 
 Then, install the ODM release :
 
 ```bash
-helm install otel-odm-release ibm-helm/ibm-odm-prod \
-        --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
-        --set license=true --set usersPassword=odmAdmin \
-        --set internalDatabase.persistence.enabled=false --set internalDatabase.populateSampleData=true \
-        --set internalDatabase.runAsUser='' --set customization.runAsUser='' --set service.enableRoute=true \
-        --set decisionServerRuntime.downloadUrl='{https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v1.32.1/opentelemetry-javaagent.jar}' \
-        --set decisionServerRuntime.jvmOptionsRef=otel-runtime-jvm-options-configmap \
-        --set decisionServerRuntime.libertyHookRef=runtime-liberty-configuration
+helm install otel-odm-release ibm-helm/ibm-odm-prod -f otel-values.yaml
 ```
+
+> [!NOTE]
+> This command installs the **latest available version** of the chart.  
+> If you want to install a **specific version**, add the `--version` option:
+>
+> ```bash
+> helm install otel-odm-release ibm-helm/ibm-odm-prod --version <version> -f otel-values.yaml 
+> ```
+>
+> You can list all available versions using:
+>
+> ```bash
+> helm search repo ibm-helm/ibm-odm-prod -l
+> ```
 
 Having a look at the Decision Server Runtime pod logs, you should see : 
 
@@ -189,40 +213,3 @@ By clicking on a **odm:POST /DecisionService/rest/** result, you can access deta
 
 ![Traces Details](./images/traces_details.png)
 
-To gain more insights into span details, you can add additional Liberty features. 
-Edit the `runtime-liberty-configuration` secret and uncomment the lines that incorporate Liberty OpenTelemetry features:
-
-
- ```xml
-<server>
-    <featureManager>
-        <feature>servlet-4.0</feature>
-        <feature>appSecurity-3.0</feature>
-        <feature>jsp-2.3</feature>
-        <feature>jdbc-4.1</feature>
-        <feature>ldapRegistry-3.0</feature>
-        <feature>openidConnectClient-1.0</feature>
-        <feature>transportSecurity-1.0</feature>
-        <feature>monitor-1.0</feature>
-        <feature>mpOpenAPI-2.0</feature>
-        <feature>mpOpenTracing-2.0</feature>
-        <feature>microProfile-4.0</feature>
-    </featureManager>
-</server>
- ```
-
-The Decision Server Runtime logs must show :
-
- ```console
-[4/3/24, 18:36:23:612 CEST] 0000003b FeatureManage A CWWKF1037I: The server added the [jaxrs-2.1, jaxrsClient-2.1, jsonb-1.0, jsonp-1.1, jwt-1.0, microProfile-4.0, mpConfig-2.0, mpFaultTolerance-3.0, mpHealth-3.0, mpJwt-1.2, mpMetrics-3.0, mpOpenAPI-2.0, mpOpenTracing-2.0, mpRestClient-2.0, opentracing-2.0] features to the existing feature set.
-[4/3/24, 18:36:23:613 CEST] 0000003b FeatureManage A CWWKF0012I: The server installed the following features: [appSecurity-2.0, appSecurity-3.0, cdi-2.0, distributedMap-1.0, el-3.0, federatedRegistry-1.0, jaxrs-2.1, jaxrsClient-2.1, jdbc-4.1, jndi-1.0, json-1.0, jsonb-1.0, jsonp-1.1, jsp-2.3, jwt-1.0, ldapRegistry-3.0, microProfile-4.0, monitor-1.0, mpConfig-2.0, mpFaultTolerance-3.0, mpHealth-3.0, mpJwt-1.2, mpMetrics-3.0, mpOpenAPI-2.0, mpOpenTracing-2.0, mpRestClient-2.0, oauth-2.0, openidConnectClient-1.0, opentracing-2.0, servlet-4.0, ssl-1.0, transportSecurity-1.0].
-[4/3/24, 18:36:23:614 CEST] 0000003b FeatureManage A CWWKF0008I: Feature update completed in 2.964 seconds.
- ```
-
-Now, when running new Runtime Execution, you should see more managed span in Jaegger UI :
-
-![Traces Details](./images/more_spans.png)
-
-If you want to add more span in the java code to observe code behaviour, have a look at the [liberty tutorial](https://openliberty.io/guides/microprofile-telemetry-jaeger.html)
-
- 
