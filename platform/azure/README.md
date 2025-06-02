@@ -371,12 +371,25 @@ You can now install the product.
   - `<password>` is the password to login with the basic registry users like `odmAdmin`  
 
 ```shell
-helm install <release> ibm-helm/ibm-odm-prod --version 25.0.0 -f aks-values.yaml
+helm install <release> ibm-helm/ibm-odm-prod -f aks-values.yaml
 ```
 
 Where:
-
 * \<password\> is the password that will be used for standard users odmAdmin, resAdmin, and rtsAdmin.
+
+> **Note:**  
+> The above command installs the **latest available version** of the chart.  
+> If you want to install a **specific version**, add the `--version` option:
+>
+> ```bash
+> helm install <release> ibm-helm/ibm-odm-prod --version <version> -f aks-values.yaml
+> ```
+>
+> You can list all available versions using:
+>
+> ```bash
+> helm search repo ibm-helm/ibm-odm-prod -l
+> ```
 
 ### Check the topology
 

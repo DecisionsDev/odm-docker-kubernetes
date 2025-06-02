@@ -107,7 +107,20 @@ Get the [roks-values.yaml](./roks-values.yaml) file and install your ODM instanc
 helm install roks-tuto ibm-helm/ibm-odm-prod -f roks-values.yaml
 ```
 
-> This configuration will deployed ODM with a sample database. You should used your own database such as [IBM Cloud Databases for PostgreSQL](https://www.ibm.com/products/databases-for-postgresql) for production.
+> **Note:**  
+> - This command installs the **latest available version** of the chart. If you want to install a **specific version**, add the `--version` option:
+>
+> ```bash
+> helm install roks-tuto ibm-helm/ibm-odm-prod --version <version> -f roks-values.yaml
+> ```
+>
+> You can list all available versions using:
+>
+> ```bash
+> helm search repo ibm-helm/ibm-odm-prod -l
+> ```
+> 
+> - This configuration will deployed ODM with a sample database. You should used your own database such as [IBM Cloud Databases for PostgreSQL](https://www.ibm.com/products/databases-for-postgresql) for production.
 
 #### Check the topology
 

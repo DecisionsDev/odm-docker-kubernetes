@@ -154,9 +154,9 @@ The related instructions in the online documentation are:
 
 - Find the Helm Chart version related to your CASE version:
 
-    For instance, if you choose the CASE version `1.9.0`, then the Helm chart version should be `24.1.0` and you should set:
+    For instance, if you choose the CASE version `2.0.0`, then the Helm chart version should be `25.0.0` and you should set:
     ```bash
-    export CHART_VERSION=24.1.0
+    export CHART_VERSION=25.0.0
     ```
 
     You can find the Helm chart version related to a given CASE version:
@@ -165,19 +165,19 @@ The related instructions in the online documentation are:
 
     - For an interim fix: click the link for your version of ODM in the page [Operational Decision Manager Interim Fixes](https://www.ibm.com/support/pages/operational-decision-manager-interim-fixes) and then check the table "Interim fix for ODM on Certified Kubernetes".
 
-    - Alternatively, you can also run the command `tree  ~/.ibm-pak/data/cases/ibm-odm-prod/` (on the bastion host), and you can find the chart version number corresponding to the file `ibm-odm-prod-<CHART_VERSION>.tgz`. Below is an example for CASE version `1.9.0` that corresponds to Helm chart version `24.1.0` :
+    - Alternatively, you can also run the command `tree  ~/.ibm-pak/data/cases/ibm-odm-prod/` (on the bastion host), and you can find the chart version number corresponding to the file `ibm-odm-prod-<CHART_VERSION>.tgz`. Below is an example for CASE version `2.0.0` that corresponds to Helm chart version `25.0.0` :
 
       ```bash
       /home/user/.ibm-pak/data/cases/ibm-odm-prod/
-      └── 1.9.0
+      └── 2.0.0
           ├── caseDependencyMapping.csv
           ├── charts
-          │   └── ibm-odm-prod-24.1.0.tgz
+          │   └── ibm-odm-prod-25.0.0.tgz
           ├── component-set-config.yaml
-          ├── ibm-odm-prod-1.9.0-airgap-metadata.yaml
-          ├── ibm-odm-prod-1.9.0-charts.csv
-          ├── ibm-odm-prod-1.9.0-images.csv
-          ├── ibm-odm-prod-1.9.0.tgz
+          ├── ibm-odm-prod-2.0.0-airgap-metadata.yaml
+          ├── ibm-odm-prod-2.0.0-charts.csv
+          ├── ibm-odm-prod-2.0.0-images.csv
+          ├── ibm-odm-prod-2.0.0.tgz
           └── resourceIndexes
               └── ibm-odm-prod-resourcesIndex.yaml
       ```
