@@ -95,98 +95,105 @@ The first step to integrate ODM with Cognito is to create a [Cognito User Pool](
 
 To create the Cognito User Pool dedicated to ODM, we followed the [getting started](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-as-user-directory.html) by applying the following settings. It doesn't mean that with your production or demo application, you cannot apply different settings. But, for this tutorial, it's preferable to keep the name that we propose.
 
-1. Configure sign-in experience
+1. Create an Amazon Cognito User pool
 
-    In **Authentication providers**:
-      * **Provider types**:
-        * Select **Cognito user pool**
-      * **Cognito user pool sign-in options**: 
-        * Select **Email**
+    * In **All services**, click the **Cognito** link (under the section "Security, Identity, & Compliance")
+    * In the new page, Select the **User pools** tab, then click the **Create user pool** button
+      * Select *Applicaton Type* = **Traditional web application**
+      * Set *Name your application* = **odm**
+      * Select *Options for sign-in identifiers* = **Email**
+      * Click the **Create user directory** button
+    * Scroll down the new page and click the **Go to overview** button
 
-2. Configure security requirements
+2. Rename the new Cognito user pool
 
-    In **Password policy**:
-      * **Password policy mode**:
-        * Select **Cognito defaults**
+    * Click the **Rename** button
+    * Enter *User pool name* = **odmuserpool**
 
-    In **Multi-factor authentication**:
-      * **MFA enforcement**:
-          * Select **Require MFA-Recommended**
-      * **MFA methods**:
-          * Select **Authenticator apps**
+3. Authentication > Authentication methods
 
-    In **User account recovery**:
-      * **Self-service account recovery**
-          * Select **Enable self-service account recovery - Recommended**
+    * Select **Authentication methods** under **Authentication** in the left pane
 
-3. Configure sign-up experience
+    ![Authentication methods](images/authentication-methods.png)
 
-    In **Self-service sign-up**:
-      * **Self-registration**:
-        * Select **Enable self-registration**
-        
-    In **Attribute verification and user account confirmation**:
-      * **Cognito-assisted verification and confirmation**:
-        * Select *Allow cognito to automatically send messages to verify and confirm - Recommended*
-      * **Attributes to verify**:
-          * Select *Send SMS message, verify phone number*
-      * **Verifying attribute changes**:
-        * Select *Keep original attribute value active when an update is pending - Recommended*
-      * **Active attribute values when an update is pending**:
-          * Select *Phone number*
+    * Click **Edit** in the **Email** pane
 
-4. Configure message delivery
+      * Select *Email provider* = **Send email with Cognito**
+      * In *FROM email address*, keep default **no-reply@verificationemail.com**
+      * Click the **Save changes** button
 
-    In **Email**:
-      * **Email provider**:
-        * Select *Send email with Cognito*
-      * **SES Region**:
-        * Select your region
-      * **FROM email address**:
-        * Keep default **no-reply@verificationemail.com**
+    * (optionally) Click **Edit** in the **SMS** pane
 
-    In **SMS**:
-      * **IAM role**:
-        * Select *Create a new IAM role*
-      * **IAM role name**:
-        * Enter **odmsmsrole**
-      * **SNS Region**:
-        * Select your region
+      * Select *IAM role* = **Create a new IAM role**
+      * Enter *IAM role name* = **odmsmsrole**
+      * Click the **Save changes** button
 
     We are not using SMS in this tutorial. So, there is no need to  "Configure AWS service dependencies to complete your SMS message setup" section.
 
-5. Integrate your app
+    * Click **Edit** in the **Password policy** pane
 
-    In **User pool name**:
-      * **User pool name**:
-        * Enter **odmuserpool**
+      * Select *Password policy mode* = **Cognito defaults**
 
-    In **Hosted authentication pages**:
-      * Select **Use the Cognito Hosted UI**
+4. Authentication > Sign-in
 
-    In **Domain**:
-      * **Domain type**:
-        * Select **Use a Cognito Domain**
-      * **Cognito domain**:
-        * Enter your cognito domain name, for example **https://odm** <!-- markdown-link-check-disable-line -->
+    * Select **Sign-in** under **Authentication** in the left pane
 
-    In **Initial app client**:
-      * **App type**:
-        * Select **Confidential client**
-      * **App client name**:
-        * Enter **odm**
-      * **Client secret**:
-        * Select **Generate a client secret**
-      * **Allowed callbacks URLs**:
-        * We will fill this section later when the ODM on k8s helm application will be instanciated as currently we don't know these URLs. As at least one is requested, you can put **https://dummyUrl** for example  <!-- markdown-link-check-disable-line -->
+    ![Sign-in](images/sign-in.png)
 
-    In **Advanced app client settings**, let all the default values as it is.
+    * Click **Edit** in the **Multi-factor authentication** pane
 
-    In **Attribute read and write permissions**, let all the default values as it is. 
+      * Select *MFA enforcement* = **Require MFA - Recommended**
+      * As *MFA methods*, select **Authenticator apps** and (optionally) **SMS message**
+      * Click the **Save changes** button
 
-6. Review and create
+    * Click **Edit** in the **User account recovery** pane
 
-   If you are satisfied with all the values, then click on **Create user pool**
+      * Select **Enable self-service account recovery - Recommended**
+      * Click the **Save changes** button
+
+5. Authentication > Sign-up
+
+    * Select **Sign-up** under **Authentication** in the left pane
+
+    ![Sign-up](images/sign-up.png)
+
+    * Click **Edit** in the **Attribute verification and user account confirmation** pane
+
+      * Select *Automatically send* = **Allow cognito to automatically send messages to verify and confirm - Recommended** under *Cognito-assisted verification and confirmation*
+      * Select *Attributes to verify* = **Send email message, verify email address**
+      * Enable **Keep original attribute value active when an update is pending - Recommended** under *Verifying attribute changes*
+      * Select *Active attribute values when an update is pending* = **Email address**
+      * Click the **Save changes** button
+
+    * Click **Edit** in the **Self-service sign-up** pane
+
+      * Select **Enable self-registration**
+        
+6. Applications > App clients
+
+    * Select **App clients** under **Applications** in the left pane
+
+      * Under App clients, click **odm**
+
+        * in the *App client information* pane
+          * take a note of the **Client ID** and **Client secret**
+          * click **Edit**
+            * Select the following *Authentication flows*:
+              * **Sign in with username and password: ALLOW_USER_PASSWORD_AUTH**
+              * **Sign in with secure remote password (SRP): ALLOW_USER_SRP_AUTH**
+              * **Get new user tokens from existing authenticated sessions: ALLOW_REFRESH_TOKEN_AUTH**
+            * Click the **Save changes** button
+        
+        * Under the **Login pages** tab
+
+          * click **Edit** in the *Managed login pages configuration* pane
+            * *Allowed callback URLs* : to be filled up once ODM is deployed and the redirect URI are known
+            * *Identity providers* = **Cognito user pool**
+            * *OAuth 2.0 grant types* = **Authorization code grant**
+            * *OpenID Connect Scopes* = **Email** **OpenID** **Phone**
+
+        * Under the **Attribute permissions** tab
+          * leave the default values as it in the **Attribute read and write permissions** pane 
 
 ## Create A User
 
@@ -232,13 +239,13 @@ To create the Cognito User Pool dedicated to ODM, we followed the [getting start
 
 ## Create a dedicated App client for the client-credentials flow
 
-With Cognito, it's not possible to create an application client that is managing both the Authorization code grant flow and the Client-Credentials flow.
-So, we will create a dedicated client application for the client-credentials flow inside the same Cognito User Pool.
-The client-credentials flow will be used for M2M (Machine to Machine) communication. 
+Cognito does not currently enable an application client to provide both the Authorization code grant flow and the Client-credentials flow.
+So an additional application client must be created (within the same Cognito User Pool) to provide the Client-credentials flow.
+The Client-credentials flow will be used for M2M (Machine to Machine) communication. 
 It will enable communication between Decision Center and the Decision Server Console for ruleapp deployment. 
 It will also enable the communication between Decision Center and Decision Runner for tests and simulation.
 
-Usage of client-credentials flow needs custom scopes that will be hosted by a Resource Server. A scope is a level of access that an app can request to a resource.
+Usage of the client-credentials flow needs custom scopes that will be hosted by a Resource Server. A scope is a level of access that an app can request to a resource.
 To get more details about scope and resource server, you can read [OAuth 2.0 scopes and API authorization with resource servers](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-define-resource-servers.html?icmpid=docs_cognito_console_help_panel)
 
 
@@ -506,7 +513,7 @@ In the **Container software library** tile, verify your entitlement on the **Vie
   ```shell
   helm search repo ibm-odm-prod
   NAME                          CHART VERSION   APP VERSION     DESCRIPTION
-  ibm-helm/ibm-odm-prod         24.1.0          9.0.0.1        IBM Operational Decision Manager
+  ibm-helm/ibm-odm-prod         25.0.0          9.5.0.0        IBM Operational Decision Manager
   ```
 
 ### 3. Run the `helm install` command
@@ -517,7 +524,7 @@ In the **Container software library** tile, verify your entitlement on the **Vie
   See the [Preparing to install](https://www.ibm.com/docs/en/odm/9.5.0?topic=production-preparing-install-operational-decision-manager) documentation for more information.
 
   ```shell
-  helm install my-odm-release ibm-helm/ibm-odm-prod --version 24.1.0 \
+  helm install my-odm-release ibm-helm/ibm-odm-prod \
           --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
           --set oidc.enabled=true \
           --set license=true \
@@ -526,6 +533,11 @@ In the **Container software library** tile, verify your entitlement on the **Vie
           --set customization.authSecretRef=cognito-auth-secret \
           --set internalDatabase.runAsUser='' --set customization.runAsUser='' --set service.enableRoute=true
   ```
+
+> **Note:**  
+> This command installs the **latest available version** of the chart.  
+> If you want to install a **specific version**, add the `--version <CHART_VERSION>` option, eg. `--version 25.0.0`
+>
 
 #### b. Installation using Ingress
 
