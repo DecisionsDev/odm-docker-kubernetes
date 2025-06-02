@@ -90,7 +90,7 @@ helm install my-odm-release ibm-helm/ibm-odm-prod -f monitor-values.yaml
 > If you want to install a **specific version**, add the `--version` option:
 >
 > ```bash
-> helm install roks-tuto ibm-helm/ibm-odm-prod --version <version> -f monitor-values.yaml
+> helm install my-odm-release ibm-helm/ibm-odm-prod --version <version> -f monitor-values.yaml
 > ```
 >
 > You can list all available versions using:
