@@ -195,13 +195,17 @@ You perform a basic authentication ODM runtime call in the following way:
  curl -H "Content-Type: application/json" -k --data @payload.json \
       -H "Authorization: Basic b2RtQWRtaW46b2RtQWRtaW4=" \
       https://<DS_RUNTIME_HOST>/DecisionService/rest/production_deployment/1.0/loan_validation_production/1.0
-  ```
+ ```
 
   Where `b2RtQWRtaW46b2RtQWRtaW4=` is the base64 encoding of the current username:password odmAdmin:odmAdmin
 
 ### Observe the collected traces on the Jaegger UI
 
-If you followed the standard Jaeger installation using the OpenShift Operator, the Jaeger all-in-one instance should be accessible via a route named `<jaeger-all-in-one.XXX>`.
+If you followed the standard Jaeger installation using the OpenShift Operator, the Jaeger all-in-one instance should be accessible via a route named `<jaeger-all-in-one-inmemory-tracing-system.XXX>` in the **tracing-system** project.
+
+ ```bash
+ oc get route -n tracing-system
+ ```
 
 To observe Decision Server Runtime executions in the Jaeger UI, navigate to this route, click on the "Search" menu, and retrieve information about the previous executions.
 You will need to select or enter **odm** as the Service name and select **POST /DecisionService/rest/* ** as the Operation. Then, click on the **Find Traces** button.
