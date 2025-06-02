@@ -80,12 +80,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 See the [Preparing to install](https://www.ibm.com/docs/en/odm/9.5.0?topic=production-preparing-install-operational-decision-manager) documentation for more information.
 
 ```shell
-helm install my-odm-release ibm-helm/ibm-odm-prod \
-        --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
-        --set license=true --set usersPassword=odmAdmin \
-        --set internalDatabase.persistence.enabled=false \
-        --set customization.monitorRef=monitor-secret \
-        --set internalDatabase.runAsUser='' --set customization.runAsUser='' --set service.enableRoute=true
+helm install my-odm-release ibm-helm/ibm-odm-prod -f monitor-values.yaml
 ```
 
 > [!NOTE]
@@ -95,7 +90,7 @@ helm install my-odm-release ibm-helm/ibm-odm-prod \
 > If you want to install a **specific version**, add the `--version` option:
 >
 > ```bash
-> helm install roks-tuto ibm-helm/ibm-odm-prod --version <version> -f roks-values.yaml
+> helm install roks-tuto ibm-helm/ibm-odm-prod --version <version> -f monitor-values.yaml
 > ```
 >
 > You can list all available versions using:
