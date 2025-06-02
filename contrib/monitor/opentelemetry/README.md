@@ -20,34 +20,32 @@ For installations on other platforms, refer to the [Jaeger documentation](https:
 
 ## Deploy the OpenTelemetry Collector
 
-We will install the OpenTelemetry Collector near the ODM Instance in a project named **otel**
-So, f you are on OCP, create the **otel** project:
+We will install the OpenTelemetry Collector near the ODM Instance in a project named **otel**.
+On OCP, create the **otel** project:
 
- ```bash
+```bash
 oc new-project otel
- ```
+```
 
-If you change the 
+Install the [OpenTelemetry Collector Helm Chart](https://opentelemetry.io/docs/platforms/kubernetes/helm/collector/):
 
-We used the following [descriptor](https://github.com/open-telemetry/opentelemetry-go-contrib/blob/main/examples/otel-collector/otel-collector.yaml) as the basis for the OTEL Collector deployment.
-However, it's likely that you will encounter an error similar to:
+```bash
+helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+helm repo update
+```
 
- ```console
-2023-07-06T17:28:37.520Z        debug   jaegerexporter@v0.80.0/exporter.go:106  failed to push trace data to Jaeger     {"kind": "exporter", "data_type": "traces", "name": "jaeger", "error": "rpc error: code = Unimplemented desc = unknown service jaeger.api_v2.CollectorService"}
- ```
+Install the Collector instance using [otel-collector-values.yaml](./otel-collector-values.yaml)
 
-You can also utilize the [otel-collector.yaml](./otel-collector.yaml) file we used for this tutorial by applying it with:
-The OpenShift documentation is installing Jaeger in the **tracing-system** project.
-If you install Jaeger elsewhere, don't forget to adapt the [Jaeger endpoint](https://github.com/DecisionsDev/odm-docker-kubernetes/blob/monitoring-review/contrib/monitor/opentelemetry/otel-collector.yaml#L22)
-
- ```bash
-kubectl apply -f otel-collector.yaml
- ```
+```bash
+helm install my-opentelemetry-collector open-telemetry/opentelemetry-collector \    
+	--set image.repository="otel/opentelemetry-collector-k8s" \
+	-f otel-collector-values.yaml
+```
 
 Verify that the OpenTelemetry Collector is up and running by executing:
 
  ```bash
-kubectl logs deployment/otel-collector
+kubectl logs deployment/my-opentelemetry-collector
  ```
 
 You should get the message :
@@ -115,7 +113,8 @@ To configure the OTEL Java agent, we need to set up some JVM options, such as:
 ```bash
     -javaagent:/config/download/opentelemetry-javaagent.jar
     -Dotel.sdk.disabled=false
-    -Dotel.exporter.otlp.endpoint=http://otel-collector.otel.svc.cluster.local:4317
+    -Dotel.exporter.otlp.protocol=grpc
+    -Dotel.exporter.otlp.endpoint=http://my-opentelemetry-collector.otel.svc.cluster.local:4317
     -Dotel.service.name=odm
     -Dotel.traces.exporter=otlp
     -Dotel.logs.exporter=none
@@ -163,7 +162,7 @@ helm install otel-odm-release ibm-helm/ibm-odm-prod -f otel-values.yaml
 Having a look at the Decision Server Runtime pod logs, you should see : 
 
 ```console
-[otel.javaagent 2024-04-03 18:03:27:166 +0200] [main] INFO io.opentelemetry.javaagent.tooling.VersionLogger - opentelemetry-javaagent - version: 1.32.1
+[otel.javaagent 2024-04-03 18:03:27:166 +0200] [main] INFO io.opentelemetry.javaagent.tooling.VersionLogger - opentelemetry-javaagent - version: 2.16.0
 ```
 
 Using **-Dotel.traces.exporter=otlp** JVM options, no OTEL traces are exported in the log files. So, that's normal to see nothing here. If you need to display them, you can replace it by **-Dotel.traces.exporter=logging**
