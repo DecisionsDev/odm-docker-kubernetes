@@ -173,7 +173,7 @@ To create the Cognito User Pool dedicated to ODM, we followed the [getting start
 
     * Select **App clients** under **Applications** in the left pane
 
-      * Under App clients, click **odm**
+      * Under *App clients*, click **odm**
 
         * in the *App client information* pane
           * take a note of the **Client ID** and **Client secret**
@@ -187,18 +187,18 @@ To create the Cognito User Pool dedicated to ODM, we followed the [getting start
         * Under the **Login pages** tab
 
           * click **Edit** in the *Managed login pages configuration* pane
-            * *Allowed callback URLs* : to be filled up once ODM is deployed and the redirect URI are known
+            * *Allowed callback URLs* : to be filled up once ODM is deployed and the redirect URIs are known
             * *Identity providers* = **Cognito user pool**
             * *OAuth 2.0 grant types* = **Authorization code grant**
-            * *OpenID Connect Scopes* = **Email** **OpenID** **Phone**
+            * *OpenID Connect Scopes* = **Email**, **OpenID**, **Phone**
 
         * Under the **Attribute permissions** tab
-          * leave the default values as it in the **Attribute read and write permissions** pane 
+          * leave the default read and write permissions 
 
 ## Create A User
 
 * Select the **odmuserpool** User Pool:
-  * Select the **Users** tab:
+  * Select **Users** under *User Management* in the left-hand pane:
     * Click on **Create user**
 
     In **User information**:
@@ -213,7 +213,7 @@ To create the Cognito User Pool dedicated to ODM, we followed the [getting start
 ## Create an ODM Admin Group
 
 * Select the **odmuserpool** User Pool:
-  * Select the **Groups** tab:
+  * Select **Groups** under *User Management* in the left-hand pane:
     * Click on **Create group**      
 
    In **Group information**:
@@ -245,60 +245,48 @@ The Client-credentials flow will be used for M2M (Machine to Machine) communicat
 It will enable communication between Decision Center and the Decision Server Console for ruleapp deployment. 
 It will also enable the communication between Decision Center and Decision Runner for tests and simulation.
 
-Usage of the client-credentials flow needs custom scopes that will be hosted by a Resource Server. A scope is a level of access that an app can request to a resource.
-To get more details about scope and resource server, you can read [OAuth 2.0 scopes and API authorization with resource servers](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-define-resource-servers.html?icmpid=docs_cognito_console_help_panel)
+A Resource Server needs to be created to use the client-credentials flow and some custom scopes need to be configured. A scope is a level of access that an app can request to a resource.
+To get more details about scopes and resource server, you can read [OAuth 2.0 scopes and API authorization with resource servers](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-define-resource-servers.html?icmpid=docs_cognito_console_help_panel)
 
 
-1. Create an **ODMClientCredentialsServer** Resource Server
+1. Create a Resource Server
 
 Select the **odmuserpool** User Pool:
-  * Select the **App Integration** tab:
-    * On **Resource servers** section:
-      * Click on **create resource server** button
+  * Click **Domain** under *Branding* in the left-hand pane
+    * In the **Resource servers** pane, click the **Create resource server** button
 
     In **Resource server**:
-      * **Resource server name**:
-        * Enter the **ODMClientCredentialsServer** name
-      * **Resource server identifier**:
-        * Enter **odmcc**
+      * Set *Resource server name* = **ODMClientCredentialsServer**
+      * Set *Resource server identifier* = **odmcc**
 
-    In **Custom scopes**:
-      * Click the **Add custom scopes** button
-
-    Create the 2 following scopes:
-      * Enter the **Scope name** : read
-        with **Description**: for GET requests
-        Click the **Add another** button
-      * Enter the **Scope name** : write
-        with **Description**: for POST requests
+    In **Custom scopes**, create 2 scopes:
+      * Click the **Add custom scope** button
+      * Set *Scope name* = **read**
+      * Set *Description* = **for GET requests**
+      * Click the **Add another** button
+      * Set *Scope name* = **write**
+      * Set *Description* = **for POST requests**
 
     Click the **create resource server** button 
 
 ![Create Resource Server](images/CreateResourceServer.png)
 
-2. Create an **odmclientcredentials** client application
+2. Create a new client application
 
 Select the **odmuserpool** User Pool:
-  * Select the **App Integration** tab:
-    * On **App clients and analytics**:
-      * Click on the **Create app client** button
+  * Click **App clients** under *Application* in the left-hand pane
+    * Click the **Create app client** button in the **App clients** pane
 
-    In **App client**:
-      * App type:
-        * Select **Confidential client**
+    * Select *Application type* = **Machine-to-machine application**
+    * Enter *App client name* = **odmclientcredentials**
+    * Click the **Create app client** button
 
-      * For **App client name**:
-        * Enter **odmclientcredentials**
-
-    In **Hosted UI settings**:
-      * For **URL**
-        * Enter a dummy URL: https://localhost  <!-- markdown-link-check-disable-line -->
-      * For **OAuth 2.0 grant types**:
-        * Select **Client credentials**
-      * For **Custom scopes**:
-        * Select : odmcc/read and odmcc/write
-
-    Click on **Create app client** button 
+    * Click the **Login pages** tab and then the **Edit** button in the *Managed login pages configuration* pane
+      * Click the **Add callback URL** button and Enter a dummy URL such as **https://localhost**  <!-- markdown-link-check-disable-line -->
+      * Keep *Identity providers* = **Cognito user pool**
+      * Keep *OAuth 2.0 grant types* = **Client credentials**
+      * Select *Custom scopes* = **odmcc/read** and **odmcc/write**
+      * Click the **Save changes** button
 
 ![Client-Credentials App](images/ClientCredentialsApp.png)
     
