@@ -26,57 +26,57 @@
 
 ## 1. Create the *ODM application*.
 
-    In **Microsoft Entra Id** / **Manage** / **App registration**, click **New Registration**:
+In **Microsoft Entra Id** / **Manage** / **App registration**, click **New Registration**:
 
-    * Name: **ODM Application**
-    * Supported account types / Who can use this application or access this API?: select `Accounts in this organizational directory only (Default Directory only - Single tenant)`
-    * Click **Register**
+* Name: **ODM Application**
+* Supported account types / Who can use this application or access this API?: select `Accounts in this organizational directory only (Default Directory only - Single tenant)`
+* Click **Register**
 
-    ![New Web Application](images/RegisterApp.png)
+![New Web Application](images/RegisterApp.png)
 
 ## 2. Retrieve Tenant and Client information
 
-    In **Microsoft Entra Id** / **Manage** / **App Registration**, select **ODM Application** and click **Overview**:
+In **Microsoft Entra Id** / **Manage** / **App Registration**, select **ODM Application** and click **Overview**:
 
-    * Application (client) ID: **Client ID**. It will be referenced as `CLIENT_ID` in the next steps.
-    * Directory (tenant) ID: **Your Tenant ID**. It will be referenced as `TENANT_ID` in the next steps.
+* Application (client) ID: **Client ID**. It will be referenced as `CLIENT_ID` in the next steps.
+* Directory (tenant) ID: **Your Tenant ID**. It will be referenced as `TENANT_ID` in the next steps.
 
-    ![Tenant ID](images/GetTenantID.png)
+![Tenant ID](images/GetTenantID.png)
 
 ## 3. Generate an OpenID client secret.
 
-    In **Microsoft Entra Id** / **Manage** / **App registrations**, select **ODM Application**:
+In **Microsoft Entra Id** / **Manage** / **App registrations**, select **ODM Application**:
 
-    * From the Overview page, click on the link Client credentials: **Add a certificate or secret** or on the **Manage / Certificates & secrets** tab
-    * Click + New Client Secret
-      * Description: `For ODM integration`
-      * Click Add
+* From the Overview page, click on the link Client credentials: **Add a certificate or secret** or on the **Manage / Certificates & secrets** tab
+* Click + New Client Secret
+* Description: `For ODM integration`
+* Click Add
 
-   * Take note of the **Value**. It will be referenced as `CLIENT_SECRET` in the next steps.
+* Take note of the **Value**. It will be referenced as `CLIENT_SECRET` in the next steps.
 
-   >Important: This client secret can not be revealed later. If you forgot to take note of it, you'll have to create another one.
+>Important: This client secret can not be revealed later. If you forgot to take note of it, you'll have to create another one.
 
 ## 4. Add Claims.
 
-    In **Microsoft Entra Id** / **Manage** / **App registrations**, select **ODM Application**, and in **Manage / Token Configuration**:
+In **Microsoft Entra Id** / **Manage** / **App registrations**, select **ODM Application**, and in **Manage / Token Configuration**:
 
-  * Add Optional **email** ID Claim
+* Add Optional **email** ID Claim
     * Click +Add optional claim
     * Select ID
     * Check **email**
     * Click Add
 
-    * Turn on Microsoft Graph email permission
+* Turn on Microsoft Graph email permission
       * Check Turn on the Microsoft Graph email permission
       * Click Add
 
-  * Add Optional **email** Access Claim
+* Add Optional **email** Access Claim
     * Click +Add optional claim
     * Select Access
     * Check **email**
     * Click Add
 
-  * Add Group Claim
+* Add Group Claim
     * Click +Add groups claim
     * Check Security Groups
     * Click Add
@@ -97,123 +97,123 @@
 
 ## 6. API Permissions.
 
-    In **Microsoft Entra Id** / **Manage** / **App Registration**, select **ODM Application**, and then click **API Permissions**.
+In **Microsoft Entra Id** / **Manage** / **App Registration**, select **ODM Application**, and then click **API Permissions**.
 
-    * Click Grant Admin Consent for Default Directory
+* Click Grant Admin Consent for Default Directory
 
-    [Optional] If you are interested by the groups and users synchronization in the Business Console, you have to add some specific permission to allow Microsoft Graph Rest API Usage like :
+[Optional] If you are interested by the groups and users synchronization in the Business Console, you have to add some specific permission to allow Microsoft Graph Rest API Usage like :
 
-    * Click on **Add a permission**, select **Application permissions** and choose **Group.Read.All**, **User.Read.All**
-    * Don't forget to **Grant Admin Consent for Default Directory** on these API permissions 
+* Click on **Add a permission**, select **Application permissions** and choose **Group.Read.All**, **User.Read.All**
+* Don't forget to **Grant Admin Consent for Default Directory** on these API permissions 
     
 
 ## 7. Manifest change.
 
-    In **Microsoft Entra Id** / **Manage** / **App Registration**, select **ODM Application**, and then click **Manifest**.
+In **Microsoft Entra Id** / **Manage** / **App Registration**, select **ODM Application**, and then click **Manifest**.
 
-    The Manifest feature (a JSON representation of an app registration) is currently in transition.
-    [**AAD Graph app manifest**](https://learn.microsoft.com/en-us/entra/identity-platform/azure-active-directory-graph-app-manifest-deprecation) will be deprecated soon and not editable anymore starting 12/2/2024. It will be replaced by the **Microsoft Graph App Manifest**
+The Manifest feature (a JSON representation of an app registration) is currently in transition.
+[**AAD Graph app manifest**](https://learn.microsoft.com/en-us/entra/identity-platform/azure-active-directory-graph-app-manifest-deprecation) will be deprecated soon and not editable anymore starting 12/2/2024. It will be replaced by the **Microsoft Graph App Manifest**
 
-    As explained in [accessTokenAcceptedVersion attribute explanation](https://docs.microsoft.com/en-us/azure/active-directory/develop/reference-app-manifest#accesstokenacceptedversion-attribute), change the value to 2.
+As explained in [accessTokenAcceptedVersion attribute explanation](https://docs.microsoft.com/en-us/azure/active-directory/develop/reference-app-manifest#accesstokenacceptedversion-attribute), change the value to 2.
 
-    ODM OpenID Liberty configuration needs version 2.0 for the issuerIdentifier. See the [openIdWebSecurity.xml](templates/openIdWebSecurity.xml) file.
+ODM OpenID Liberty configuration needs version 2.0 for the issuerIdentifier. See the [openIdWebSecurity.xml](templates/openIdWebSecurity.xml) file.
 
-    It is also necessary to set **acceptMappedClaims** to true to manage claims. Without this setting, you get the exception **AADSTS50146: This application is required to be configured with an application-specific signing key. It is either not configured with one, or the key has expired or is not yet valid.** when requesting a token.
+It is also necessary to set **acceptMappedClaims** to true to manage claims. Without this setting, you get the exception **AADSTS50146: This application is required to be configured with an application-specific signing key. It is either not configured with one, or the key has expired or is not yet valid.** when requesting a token.
 
-    With **Microsoft Graph App Manifest**:
+With **Microsoft Graph App Manifest**:
     *  **acceptMappedClaims** is relocated as a property of the **api** attribute
     *  **accessTokenAcceptedVersion** is relocated as a property of the **api** attribute and renamed **requestedAccessTokenVersion**
 
-   Then, click Save.
+Then, click Save.
 
 ## 8. Check the configuration.
 
-    Download the [azuread-odm-script.zip](azuread-odm-script.zip) file to your machine and unzip it in your working directory. This .zip file contains scripts and templates to verify and set up ODM.
+Download the [azuread-odm-script.zip](azuread-odm-script.zip) file to your machine and unzip it in your working directory. This .zip file contains scripts and templates to verify and set up ODM.
 
-    8.1 Verify the token issued using the 'Client Credentials' flow
+### 8.1 Verify the token issued using the 'Client Credentials' flow
 
-    You can request an access token using the Client-Credentials flow to verify the token format.
-    This token is used for the deployment between Decision Center and the Decision Server console:
+You can request an access token using the Client-Credentials flow to verify the token format.
+This token is used for the deployment between Decision Center and the Decision Server console:
 
-    ```shell
-    $ ./get-client-credential-token.sh -i <CLIENT_ID> -x <CLIENT_SECRET> -n <TENANT_ID>
-    ```
+```shell
+./get-client-credential-token.sh -i <CLIENT_ID> -x <CLIENT_SECRET> -n <TENANT_ID>
+```
 
-    Where:
+Where:
 
-    - *TENANT_ID* and *CLIENT_ID* have been obtained from 'Retrieve Tenant and Client information' section.
-    - *CLIENT_SECRET* is listed in your ODM Application, section **General** / **Client Credentials**
+- *TENANT_ID* and *CLIENT_ID* have been obtained from 'Retrieve Tenant and Client information' section.
+- *CLIENT_SECRET* is listed in your ODM Application, section **General** / **Client Credentials**
 
-    You should get a token and by introspecting its value with [this online tool](https://jwt.ms) or with some [JWT cli](https://github.com/mike-engel/jwt-cli) you should get:
+You should get a token and by introspecting its value with [this online tool](https://jwt.ms) or with some [JWT cli](https://github.com/mike-engel/jwt-cli) you should get:
 
-    **Token header**
-    ```json
-    {
-      "typ": "JWT",
-      "alg": "RS256",
-      "kid": "-KI3Q9nNR7bRofxmeZoXqbHZGew"
-    }
-    ```
+**Token header**
+```json
+{
+"typ": "JWT",
+"alg": "RS256",
+"kid": "-KI3Q9nNR7bRofxmeZoXqbHZGew"
+}
+```
 
-    **Token claims**
-    ```json
-    {
-      "aud": "<CLIENT_ID>",
-      "identity": "<CLIENT_ID>",
-      ...
-      "iss": "https://login.microsoftonline.com/<TENANT_ID>/v2.0",
-      ...
-      "ver": "2.0"
-    }
-    ```
+**Token claims**
+```json
+{
+"aud": "<CLIENT_ID>",
+"identity": "<CLIENT_ID>",
+...
+"iss": "https://login.microsoftonline.com/<TENANT_ID>/v2.0",
+...
+"ver": "2.0"
+}
+```
 
-    - *aud*: should be your CLIENT_ID
-    - *identity*: should be your CLIENT_ID
-    - *iss*: should end with 2.0. otherwise you should verify the previous step **Manifest change**
-    - *ver*: should be 2.0. otherwise you should verify the previous step **Manifest change**
+- *aud*: should be your CLIENT_ID
+- *identity*: should be your CLIENT_ID
+- *iss*: should end with 2.0. otherwise you should verify the previous step **Manifest change**
+- *ver*: should be 2.0. otherwise you should verify the previous step **Manifest change**
 
-    8.2 Verify the token issued using the 'Password Credentials' flow
+### 8.2 Verify the token issued using the 'Password Credentials' flow
 
-   To check that it has been correctly taken into account, you can request an ID token using the Password Credentials flow.
+To check that it has been correctly taken into account, you can request an ID token using the Password Credentials flow.
 
-   This token is used for the invocation of the ODM components like Decision Center, Decision Servcer console, and the invocation of the Decision Server Runtime REST API.
+This token is used for the invocation of the ODM components like Decision Center, Decision Servcer console, and the invocation of the Decision Server Runtime REST API.
 
-    ```shell
-    $ ./get-user-password-token.sh -i <CLIENT_ID> -x <CLIENT_SECRET> -n <TENANT_ID> -u <USERNAME> -p <PASSWORD>
-    ```
+```shell
+./get-user-password-token.sh -i <CLIENT_ID> -x <CLIENT_SECRET> -n <TENANT_ID> -u <USERNAME> -p <PASSWORD>
+```
 
-   Where:
+Where:
 
-    - *TENANT_ID* and *CLIENT_ID* have been obtained from 'Retrieve Tenant and Client information' section.
-    - *CLIENT_SECRET* is listed in your ODM Application, section **General** / **Client Credentials**
-    - *USERNAME* and *PASSWORD* have been created from 'Create at least one user that belongs to this new group.' section.
+- *TENANT_ID* and *CLIENT_ID* have been obtained from 'Retrieve Tenant and Client information' section.
+- *CLIENT_SECRET* is listed in your ODM Application, section **General** / **Client Credentials**
+- *USERNAME* and *PASSWORD* have been created from 'Create at least one user that belongs to this new group.' section.
 
-     By introspecting the token value with this online tool [https://jwt.ms](https://jwt.ms), you should get:
+By introspecting the token value with this online tool [https://jwt.ms](https://jwt.ms), you should get:
 
-    ```json
-    {
-      "aud": "<CLIENT_ID>",
-      "iss": "https://login.microsoftonline.com/<TENANT_ID>/v2.0",
-      ...
-      "email": "<USERNAME>",
-      "groups": [
-        "<GROUP>"
-      ],
-      ...
-      "ver": "2.0",
-      "identity": "<USERNAME>"
-    }
-    ```
+```json
+{
+"aud": "<CLIENT_ID>",
+"iss": "https://login.microsoftonline.com/<TENANT_ID>/v2.0",
+...
+"email": "<USERNAME>",
+"groups": [
+"<GROUP>"
+],
+...
+"ver": "2.0",
+"identity": "<USERNAME>"
+}
+```
 
-    Verify:
-    - *aud*: should be your CLIENT_ID
-    - *iss*: should end with 2.0. Otherwise you should verify the previous step **Manifest change**
-    - *email*: should be present. Otherwise you should verify the creation of your user and fill the Email field.
-    - *groups*: should contain your GROUP_ID
-    - *ver*: should be 2.0. Otherwise you should verify the previous step **Manifest change**
-    - *identity*: should be the user's email/username
+Verify:
+- *aud*: should be your CLIENT_ID
+- *iss*: should end with 2.0. Otherwise you should verify the previous step **Manifest change**
+- *email*: should be present. Otherwise you should verify the creation of your user and fill the Email field.
+- *groups*: should contain your GROUP_ID
+- *ver*: should be 2.0. Otherwise you should verify the previous step **Manifest change**
+- *identity*: should be the user's email/username
 
-  > If this command failed, try to log in to the [Azure portal](https://portal.azure.com/). You may have to enable 2FA and/or change the password for the first time.
+> If this command failed, try to log in to the [Azure portal](https://portal.azure.com/). You may have to enable 2FA and/or change the password for the first time.
 
 # Deploy ODM on a container configured with Microsoft Entra ID (Part 2)
 
