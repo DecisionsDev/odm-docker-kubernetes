@@ -85,12 +85,13 @@ In this section, we explain how to:
 ## Log into the Microsoft Entra ID instance
 
 After activating your account by email, you should have access to your Microsoft Entra ID instance. [Sign in to Azure](https://portal.azure.com/#home).
+Click on the **Microsoft Entra ID** service.
 
 ## Manage groups and users
 
 1. Create a group for ODM administrators.
 
-    In **Azure Active Directory** / **Groups**:
+    In **Manage** / **Groups**:
       * Click **New Group**
         * Group type: Security
         * Group name: *odm-admin*
@@ -100,13 +101,13 @@ After activating your account by email, you should have access to your Microsoft
 
     ![Add Group](images/NewGroup.png)
 
-    In **Azure Active Directory** / **Groups** take note of the Object ID. It will be referenced as ``GROUP_ID`` later in this tutorial.
+    In **Manage** / **Groups** / **All groups** take note of the Object ID. It will be referenced as ``GROUP_ID`` later in this tutorial.
 
     ![GroupID](images/GroupID.png)
 
 2. Create at least one user that belongs to this new group.
 
-    In **Azure Active Directory** / **Users**:
+    In **Manage** / **Users**:
 
       * Click **New User** and in Basics fill in:
         * User principal name: *myodmuser*@YOURDOMAIN
