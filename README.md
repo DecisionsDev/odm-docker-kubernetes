@@ -23,7 +23,8 @@ This repository provides materials for the following versions of IBM ODM:
 
 | ODM Version      |
 |--------------|
-| **[9.0.0.1 (Latest)](README.md)**    |
+| **[9.5 (Latest)](README.md)**    |
+| **[9.0.0.1](https://github.com/DecisionsDev/odm-docker-kubernetes/tree/9.0.0.1)**  |
 | **[8.12.0.1](https://github.com/DecisionsDev/odm-docker-kubernetes/tree/8.12.0.1)**                               |
 | **[8.11.0.1](https://github.com/DecisionsDev/odm-docker-kubernetes/tree/8.11.0.1)**                               |
 

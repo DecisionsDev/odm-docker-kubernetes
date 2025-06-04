@@ -42,7 +42,7 @@ Then, perform the following tasks:
 Without the relevant billing level, some Google Cloud resources will not be created.
 
 > [!NOTE]
-> Prerequisites and software supported by ODM 9.0.0 are listed on [the Detailed System Requirements page](https://www.ibm.com/support/pages/ibm-operational-decision-manager-detailed-system-requirements).
+> Prerequisites and software supported by ODM 9.5.0 are listed on [the Detailed System Requirements page](https://www.ibm.com/support/pages/ibm-operational-decision-manager-detailed-system-requirements).
 
 ## Steps to deploy ODM on Kubernetes from Google GKE
 
