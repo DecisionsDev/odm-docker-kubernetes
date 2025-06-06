@@ -6,6 +6,8 @@ customization:
   trustedCertificateList:
   - ms-secret
   - digicert-secret
+  privateCertificateList:
+  - myodmcompany
 image:
   repository: cp.icr.io/cp/cp4a/odm
   pullSecret: icregistry-secret
@@ -17,7 +19,3 @@ internalDatabase:
 license: true
 service:
   enableRoute: true
-#decisionCenter:
-#  sidecar:
-#    enabled: true
-#    confSecretRef: users-groups-synchro-secret

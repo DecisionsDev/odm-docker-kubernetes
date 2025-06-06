@@ -246,7 +246,7 @@ Then, click Save.
   ```shell
   helm search repo ibm-odm-prod
   NAME                  	CHART VERSION	APP VERSION	DESCRIPTION
-  ibm-helm/ibm-odm-prod	24.1.0       	9.0.0.1   	IBM Operational Decision Manager
+  ibm-helm/ibm-odm-prod	25.0.0       	9.5.0.0   	IBM Operational Decision Manager
   ```
 
 ### Run the `helm install` command
@@ -256,18 +256,24 @@ You can now install the product. We will use the PostgreSQL internal database an
 #### a. Installation on OpenShift using Routes
 
   See the [Preparing to install](https://www.ibm.com/docs/en/odm/9.5.0?topic=production-preparing-install-operational-decision-manager) documentation for additional information.
+  Get the [entraid-pkjwt-ocp-values.yaml](./entraid-pkjwt-ocp-values.yaml) file and run the command:
 
   ```shell
-  helm install my-odm-release ibm-helm/ibm-odm-prod --version 24.1.0 \
-          --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
-          --set oidc.enabled=true \
-          --set license=true \
-          --set internalDatabase.persistence.enabled=false \
-          --set customization.trustedCertificateList='{ms-secret,digicert-secret}' \
-          --set customization.privateCertificateList='{myodmcompany}' \
-          --set customization.authSecretRef=azuread-auth-secret \
-          --set internalDatabase.runAsUser='' --set customization.runAsUser='' --set service.enableRoute=true
+  helm install my-odm-release ibm-helm/ibm-odm-prod -f entraid-pkjwt-ocp-values.yaml
   ```
+> **Note**
+> This command installs the **latest available version** of the chart.  
+> If you want to install a **specific version**, add the `--version` option:
+>
+> ```bash
+> helm install my-odm-release ibm-helm/ibm-odm-prod --version <version> -f entraid-pkjwt-ocp-values.yaml
+> ```
+>
+> You can list all available versions using:
+>
+> ```bash
+> helm search repo ibm-helm/ibm-odm-prod -l
+> ```
 
 #### b. Installation using Ingress
 
@@ -276,23 +282,28 @@ You can now install the product. We will use the PostgreSQL internal database an
   - [Amazon Elastic Kubernetes Service](../../platform/eks/README-NGINX.md)
   - [Google Kubernetes Engine](../../platform/gcloud/README_NGINX.md)
 
-  When the NGINX Ingress Controller is ready, you can install the ODM release with:
+  When the NGINX Ingress Controller is ready, get the [entraid-pkjwt-nginx-values.yaml](./entraid-pkjwt-nginx-values.yaml) file and run the command:
 
   ```
-  helm install my-odm-release ibm-helm/ibm-odm-prod --version 24.1.0 \
-          --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
-          --set oidc.enabled=true \
-          --set license=true \
-          --set internalDatabase.persistence.enabled=false \
-          --set customization.trustedCertificateList='{ms-secret,digicert-secret}' \
-          --set customization.privateCertificateList='{myodmcompany}' \
-          --set customization.authSecretRef=azuread-auth-secret \
-          --set service.ingress.enabled=true \
-          --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"\,"nginx.ingress.kubernetes.io/backend-protocol: HTTPS"}
+  helm install my-odm-release ibm-helm/ibm-odm-prod -f entraid-pkjwt-nginx-values.yaml
   ```
 
 > **Note**
 > By default, NGINX does not enable sticky session. If you want to use sticky session to connect to DC, refer to [Using sticky session for Decision Center connection](../../contrib/sticky-session/README.md)
+
+> **Note**
+> This command installs the **latest available version** of the chart.
+> If you want to install a **specific version**, add the `--version` option:
+>
+> ```bash
+> helm install my-odm-release ibm-helm/ibm-odm-prod --version <version> -f entraid-pkjwt-nginx-values.yaml
+> ```
+>
+> You can list all available versions using:
+>
+> ```bash
+> helm search repo ibm-helm/ibm-odm-prod -l
+> ```
 
 ## Complete post-deployment tasks
 

@@ -11,7 +11,7 @@ image:
 internalDatabase:
   persistence:
     enabled: false
-  populateSampleData: true
+#  populateSampleData: true
 license: true
 service:
   ingress:

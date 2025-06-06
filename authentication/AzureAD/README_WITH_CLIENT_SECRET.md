@@ -360,6 +360,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 #### a. Installation on OpenShift using Routes
 
   See the [Preparing to install](https://www.ibm.com/docs/en/odm/9.5.0?topic=production-preparing-install-operational-decision-manager) documentation for additional information.
+  Get the [entraid-ocp-values.yaml](./entraid-ocp-values.yaml) file and run the command:
 
   ```shell
   helm install my-odm-release ibm-helm/ibm-odm-prod -f entraid-ocp-values.yaml
@@ -389,7 +390,7 @@ You can now install the product. We will use the PostgreSQL internal database an
   - [Amazon Elastic Kubernetes Service](../../platform/eks/README-NGINX.md)
   - [Google Kubernetes Engine](../../platform/gcloud/README_NGINX.md)
 
-  When the NGINX Ingress Controller is ready, you can install the ODM release with:
+  When the NGINX Ingress Controller is ready, get the [entraid-nginx-values.yaml](./entraid-nginx-values.yaml) file and run the command:
 
   ```
   helm install my-odm-release ibm-helm/ibm-odm-prod -f entraid-nginx-values.yaml
