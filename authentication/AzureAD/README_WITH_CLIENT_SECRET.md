@@ -366,12 +366,7 @@ You can now install the product. We will use the PostgreSQL internal database an
   ```
 
 > **Note**
-> If you want the optional synchronization of groups and users with Entra ID, uncomment the decisionCenter section in the [entraid-ocp-values.yaml](./entraid-ocp-values.yaml) :
-> 
-> #decisionCenter:
-> #  sidecar:
-> #    enabled: true
-> #    confSecretRef: users-groups-synchro-secret 
+> If you want the optional synchronization of groups and users with Entra ID, uncomment the decisionCenter section in the [entraid-ocp-values.yaml](./entraid-ocp-values.yaml).
 
 > **Note**
 > This command installs the **latest available version** of the chart.  
@@ -404,12 +399,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 > By default, NGINX does not enable sticky session. If you want to use sticky session to connect to DC, refer to [Using sticky session for Decision Center connection](../../contrib/sticky-session/README.md)
 
 > **Note**
-> If you want the optional synchronization of groups and users with Entra ID, uncomment the decisionCenter section in the [entraid-nginx-values.yaml](./entraid-nginx-values.yaml) :
->
-> #decisionCenter:
-> #  sidecar:
-> #    enabled: true
-> #    confSecretRef: users-groups-synchro-secret
+> If you want the optional synchronization of groups and users with Entra ID, uncomment the decisionCenter section in the [entraid-nginx-values.yaml](./entraid-nginx-values.yaml).
 
 > **Note**
 > This command installs the **latest available version** of the chart.  
