@@ -106,6 +106,7 @@ In **Microsoft Entra Id** / **Manage** / **App Registration**, select **ODM Appl
 * Click on **Add a permission**, select **Application permissions** and choose **Group.Read.All**, **User.Read.All**
 * Don't forget to **Grant Admin Consent for Default Directory** on these API permissions 
     
+![Permissions](images/Permissions.png)
 
 ## 7. Manifest change.
 
@@ -125,6 +126,8 @@ With **Microsoft Graph App Manifest**:
     *  **accessTokenAcceptedVersion** is relocated as a property of the **api** attribute and renamed **requestedAccessTokenVersion**
 
 Then, click Save.
+
+![Manifest](images/Manifest.png)
 
 ## 8. Check the configuration.
 
@@ -347,7 +350,7 @@ Verify:
   ```shell
   helm search repo ibm-odm-prod
   NAME                  	CHART VERSION	APP VERSION	DESCRIPTION
-  ibm-helm/ibm-odm-prod   24.1.0          9.0.0.1   	IBM Operational Decision Manager
+  ibm-helm/ibm-odm-prod   25.0.0          9.5.0.0   	IBM Operational Decision Manager
   ```
 
 ### Run the `helm install` command
@@ -359,20 +362,30 @@ You can now install the product. We will use the PostgreSQL internal database an
   See the [Preparing to install](https://www.ibm.com/docs/en/odm/9.5.0?topic=production-preparing-install-operational-decision-manager) documentation for additional information.
 
   ```shell
-  helm install my-odm-release ibm-helm/ibm-odm-prod --version 24.1.0 \
-          --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
-          --set oidc.enabled=true \
-          --set license=true \
-          --set internalDatabase.persistence.enabled=false \
-          --set customization.trustedCertificateList='{ms-secret,digicert-secret}' \
-          --set customization.authSecretRef=azuread-auth-secret \
-          --set internalDatabase.runAsUser='' --set customization.runAsUser='' --set service.enableRoute=true
+  helm install my-odm-release ibm-helm/ibm-odm-prod -f entraid-ocp-values.yaml
   ```
 
 > **Note**
-> If you want the optional synchronization of groups and users with Entra ID, you have to add to the helm install command:
+> If you want the optional synchronization of groups and users with Entra ID, uncomment the decisionCenter section in the [entraid-ocp-values.yaml](./entraid-ocp-values.yaml) :
 > 
-> --set decisionCenter.sidecar.enabled=true --set decisionCenter.sidecar.confSecretRef=users-groups-synchro-secret
+> #decisionCenter:
+> #  sidecar:
+> #    enabled: true
+> #    confSecretRef: users-groups-synchro-secret 
+
+> **Note**
+> This command installs the **latest available version** of the chart.  
+> If you want to install a **specific version**, add the `--version` option:
+>
+> ```bash
+> helm install my-odm-release ibm-helm/ibm-odm-prod --version <version> -f entraid-ocp-values.yaml
+> ```
+>
+> You can list all available versions using:
+>
+> ```bash
+> helm search repo ibm-helm/ibm-odm-prod -l
+> ```
 
 #### b. Installation using Ingress
 
@@ -384,24 +397,33 @@ You can now install the product. We will use the PostgreSQL internal database an
   When the NGINX Ingress Controller is ready, you can install the ODM release with:
 
   ```
-  helm install my-odm-release ibm-helm/ibm-odm-prod --version 24.1.0 \
-          --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
-          --set oidc.enabled=true \
-          --set license=true \
-          --set internalDatabase.persistence.enabled=false \
-          --set customization.trustedCertificateList='{ms-secret,digicert-secret}' \
-          --set customization.authSecretRef=azuread-auth-secret \
-          --set service.ingress.enabled=true \
-          --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"\,"nginx.ingress.kubernetes.io/backend-protocol: HTTPS"}
+  helm install my-odm-release ibm-helm/ibm-odm-prod -f entraid-nginx-values.yaml
   ```
 
 > **Note**
 > By default, NGINX does not enable sticky session. If you want to use sticky session to connect to DC, refer to [Using sticky session for Decision Center connection](../../contrib/sticky-session/README.md)
 
 > **Note**
-> If you want the optional synchronization of groups and users with Entra ID, you have to add to the helm install command:
-> 
-> --set decisionCenter.sidecar.enabled=true --set decisionCenter.sidecar.confSecretRef=users-groups-synchro-secret
+> If you want the optional synchronization of groups and users with Entra ID, uncomment the decisionCenter section in the [entraid-nginx-values.yaml](./entraid-nginx-values.yaml) :
+>
+> #decisionCenter:
+> #  sidecar:
+> #    enabled: true
+> #    confSecretRef: users-groups-synchro-secret
+
+> **Note**
+> This command installs the **latest available version** of the chart.  
+> If you want to install a **specific version**, add the `--version` option:
+>
+> ```bash
+> helm install my-odm-release ibm-helm/ibm-odm-prod --version <version> -f entraid-nginx-values.yaml
+> ```
+>
+> You can list all available versions using:
+>
+> ```bash
+> helm search repo ibm-helm/ibm-odm-prod -l
+> ```
 
 ## Complete post-deployment tasks
 
