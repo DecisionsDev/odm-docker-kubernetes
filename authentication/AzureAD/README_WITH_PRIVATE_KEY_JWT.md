@@ -32,106 +32,110 @@ For additional information regarding the implement in Liberty, please refer to t
 
 ## 1. Create the *ODM application*.
 
-    In **Microsoft Entra Id** / **Manage** / **App registration**, click **New Registration**:
+In **Microsoft Entra Id** / **Manage** / **App registration**, click **New Registration**:
 
-    * Name: **ODM Application**
-    * Supported account types / Who can use this application or access this API?: select `Accounts in this organizational directory only (Default Directory only - Single tenant)`
-    * Click **Register**
+* Name: **ODM Application**
+* Supported account types / Who can use this application or access this API?: select `Accounts in this organizational directory only (Default Directory only - Single tenant)`
+* Click **Register**
 
-    ![New Web Application](images/RegisterApp.png)
+![New Web Application](images/RegisterApp.png)
 
 ## 2. Retrieve Tenant and Client information
 
-    In **Microsoft Entra Id** / **Manage** / **App Registration**, select **ODM Application** and click **Overview**:
+In **Microsoft Entra Id** / **Manage** / **App Registration**, select **ODM Application** and click **Overview**:
 
-    * Application (client) ID: **Client ID**. It will be referenced as `CLIENT_ID` in the next steps.
-    * Directory (tenant) ID: **Your Tenant ID**. It will be referenced as `TENANT_ID` in the next steps.
+* Application (client) ID: **Client ID**. It will be referenced as `CLIENT_ID` in the next steps.
+* Directory (tenant) ID: **Your Tenant ID**. It will be referenced as `TENANT_ID` in the next steps.
 
-    ![Tenant ID](images/GetTenantID.png)
+![Tenant ID](images/GetTenantID.png)
 
 ## 3. Register a public certificate.
 
-  To manage private key JWT authentication, you need a private certificate (.key file) and a public certificate (.crt file), which should be registered on the ODM client side (RP) application. On the Microsoft Entra ID (OP) side, you are required to register the public certificate.
+To manage private key JWT authentication, you need a private certificate (.key file) and a public certificate (.crt file), which should be registered on the ODM client side (RP) application. On the Microsoft Entra ID (OP) side, you are required to register the public certificate.
 
-  If you don't have a trusted certificate, you can utilize OpenSSL and other cryptography and certificate management libraries to generate a certificate file and a private key, define the domain name, and set the expiration date. The following command will create a self-signed certificate (.crt file) and a private key (.key file) that will accept the domain name myodmcompany.com.
-  The expiration is set to 1000 days:
+If you don't have a trusted certificate, you can utilize OpenSSL and other cryptography and certificate management libraries to generate a certificate file and a private key, define the domain name, and set the expiration date. The following command will create a self-signed certificate (.crt file) and a private key (.key file) that will accept the domain name myodmcompany.com.
+The expiration is set to 1000 days:
 
-  ```shell
+```shell
     openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout myodmcompany.key \
-        -out myodmcompany.crt -subj "/CN=myodmcompany.com/OU=it/O=myodmcompany/L=Paris/C=FR" \
-        -addext "subjectAltName = DNS:myodmcompany.com"
-  ```
+    -out myodmcompany.crt -subj "/CN=myodmcompany.com/OU=it/O=myodmcompany/L=Paris/C=FR" \
+    -addext "subjectAltName = DNS:myodmcompany.com"
+```
 
-  In **Microsoft Entra Id** / **Manage** / **App registrations**, select **ODM Application**:
+In **Microsoft Entra Id** / **Manage** / **App registrations**, select **ODM Application**:
 
-  * From the Overview page, click on the link Client credentials: **Add a certificate or secret** or on the **Manage / Certificates & secrets** tab
-  * Select the **Certificates** tab
-  * Click **Upload certificate**
-    * Select the `myodmcompany.crt` or your own public file
-    * Description: `For ODM integration`
-    * Click **Add**
+* From the Overview page, click on the link Client credentials: **Add a certificate or secret** or on the **Manage / Certificates & secrets** tab
+* Select the **Certificates** tab
+* Click **Upload certificate**
+  * Select the `myodmcompany.crt` or your own public file
+  * Description: `For ODM integration`
+  * Click **Add**
 
 ## 4. Add Claims.
 
-    In **Microsoft Entra Id** / **Manage** / **App registrations**, select **ODM Application**, and in **Manage / Token Configuration**:
+In **Microsoft Entra Id** / **Manage** / **App registrations**, select **ODM Application**, and in **Manage / Token Configuration**:
 
-  * Add Optional **email** ID Claim
-    * Click **+ Add optional claim**
-    * Select **ID**
-    * Check **email**
+* Add Optional **email** ID Claim
+  * Click **+ Add optional claim**
+  * Select **ID**
+  * Check **email**
+  * Click **Add**
+
+  * Turn on Microsoft Graph email permission
+    * Check **Turn on the Microsoft Graph email permission**
     * Click **Add**
 
-    * Turn on Microsoft Graph email permission
-      * Check **Turn on the Microsoft Graph email permission**
-      * Click **Add**
+* Add Optional **email** Access Claim
+  * Click **+ Add optional claim**
+  * Select **Access**
+  * Check **email**
+  * Click **Add**
 
-  * Add Optional **email** Access Claim
-    * Click **+ Add optional claim**
-    * Select **Access**
-    * Check **email**
-    * Click **Add**
-
-  * Add Group Claim
-    * Click **+ Add groups claim**
-    * Check **Security Groups**
-    * Click **Add**
+* Add Group Claim
+  * Click **+ Add groups claim**
+  * Check **Security Groups**
+  * Click **Add**
 
 ## 5. Create a custom claim named "identity"
 
-   To enable the ODM REST API to use both the 'Password Credentials' flow with email as the user identifier and the 'Client Credentials' flow with client_id as the user identifier, we must establish a new claim named "identity" that will dynamically capture the appropriate value based on the chosen flow:
-   In **Microsoft Entra Id** / **Manage** / **Enterprise applications**, select **ODM Application**, and in **Manage / Single sign-on**:
+To enable the ODM REST API to use both the 'Password Credentials' flow with email as the user identifier and the 'Client Credentials' flow with client_id as the user identifier, we must establish a new claim named "identity" that will dynamically capture the appropriate value based on the chosen flow:
+In **Microsoft Entra Id** / **Manage** / **Enterprise applications**, select **ODM Application**, and in **Manage / Single sign-on**:
 
-  * Click on Edit of the "Attributes & Claims" section
-    * Click **+ Add new claim**
-      * Name: `identity`
-      * Fill 2 Claim conditions in the exact following order:
-        1. User Type: Any / Scoped Groups: 0 / Source: Attribute / Value: <CLIENT_ID>
-        2. User Type: Members / Scoped Groups: 0 / Source: Attribute / Value: user.mail
+* Click on Edit of the "Attributes & Claims" section
+  * Click **+ Add new claim**
+    * Name: `identity`
+    * Fill 2 Claim conditions in the exact following order:
+      1. User Type: Any / Scoped Groups: 0 / Source: Attribute / Value: <CLIENT_ID>
+      2. User Type: Members / Scoped Groups: 0 / Source: Attribute / Value: user.mail
 
 ## 6. API Permissions.
 
-    In **Microsoft Entra Id** / **Manage** / **App Registration**, select **ODM Application**, and then click **API Permissions**.
+In **Microsoft Entra Id** / **Manage** / **App Registration**, select **ODM Application**, and then click **API Permissions**.
 
-    * Click **Grant Admin Consent for <Directory name>**
+* Click **Grant Admin Consent for <Directory name>**
+
+![Permissions](images/Permissions.png)
 
 ## 7. Manifest change.
 
-    In **Microsoft Entra Id** / **Manage** / **App Registration**, select **ODM Application**, and then click **Manifest**.
+In **Microsoft Entra Id** / **Manage** / **App Registration**, select **ODM Application**, and then click **Manifest**.
 
-    The Manifest feature (a JSON representation of an app registration) is currently in transition.
-    [**AAD Graph app manifest**](https://learn.microsoft.com/en-us/entra/identity-platform/azure-active-directory-graph-app-manifest-deprecation) will be deprecated soon and not editable anymore starting 12/2/2024. It will be replaced by the **Microsoft Graph App Manifest**
+The Manifest feature (a JSON representation of an app registration) is currently in transition.
+[**AAD Graph app manifest**](https://learn.microsoft.com/en-us/entra/identity-platform/azure-active-directory-graph-app-manifest-deprecation) will be deprecated soon and not editable anymore starting 12/2/2024. It will be replaced by the **Microsoft Graph App Manifest**
 
-    As explained in [accessTokenAcceptedVersion attribute explanation](https://docs.microsoft.com/en-us/azure/active-directory/develop/reference-app-manifest#accesstokenacceptedversion-attribute), change the value to 2.
+As explained in [accessTokenAcceptedVersion attribute explanation](https://docs.microsoft.com/en-us/azure/active-directory/develop/reference-app-manifest#accesstokenacceptedversion-attribute), change the value to 2.
 
-    ODM OpenID Liberty configuration needs version 2.0 for the issuerIdentifier. See the [openIdWebSecurity.xml](templates/openIdWebSecurity.xml) file.
+ODM OpenID Liberty configuration needs version 2.0 for the issuerIdentifier. See the [openIdWebSecurity.xml](templates/openIdWebSecurity.xml) file.
 
-    It is also necessary to set **acceptMappedClaims** to true to manage claims. Without this setting, you get the exception **AADSTS50146: This application is required to be configured with an application-specific signing key. It is either not configured with one, or the key has expired or is not yet valid.** when requesting a token.
+It is also necessary to set **acceptMappedClaims** to true to manage claims. Without this setting, you get the exception **AADSTS50146: This application is required to be configured with an application-specific signing key. It is either not configured with one, or the key has expired or is not yet valid.** when requesting a token.
 
-    With **Microsoft Graph App Manifest**:
-    *  **acceptMappedClaims** is relocated as a property of the **api** attribute
-    *  **accessTokenAcceptedVersion** is relocated as a property of the **api** attribute and renamed **requestedAccessTokenVersion**
+With **Microsoft Graph App Manifest**:
+  *  **acceptMappedClaims** is relocated as a property of the **api** attribute
+  *  **accessTokenAcceptedVersion** is relocated as a property of the **api** attribute and renamed **requestedAccessTokenVersion**
 
-    Then, click Save.
+Then, click Save.
+
+![Manifest](images/Manifest.png)
 
 # Deploy ODM on a container configured with Microsoft Entra ID (Part 2)
 
