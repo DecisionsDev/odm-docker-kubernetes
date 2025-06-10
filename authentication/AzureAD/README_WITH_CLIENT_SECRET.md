@@ -154,7 +154,7 @@ You should get a token and by introspecting its value with [this online tool](ht
 {
 "typ": "JWT",
 "alg": "RS256",
-"kid": "-KI3Q9nNR7bRofxmeZoXqbHZGew"
+"kid": "XXXXXXXXXXXXXXXXXXXX"
 }
 ```
 
