@@ -305,6 +305,13 @@ Here are the details about the [Pre token generation Lambda trigger flow](https:
 
 ![Pre Token Generation](images/pre-token-generation.png)
 
+> [!WARNING]
+> The customization of the access token claims is not possible with the Lite plan. It's possible to manage it with the Essentials or Plus plan.
+> You can change of plan using the Settings tab
+
+![Cognito Plan](images/CognitoPlan.png) 
+
+
 1. Add a Pre token generation Lambda trigger
 
 We will use the pre token generation lambda trigger feature to the **identity** claim in in id_token by pushing the user email value.
