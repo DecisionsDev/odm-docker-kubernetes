@@ -230,21 +230,30 @@ To install ODM with the AWS RDS PostgreSQL database created in [step 2](#2-creat
   - `<RDS_DATABASE_NAME>` is the initial database name defined when creating the RDS database
 
 ```bash
-helm install mycompany ibm-helm/ibm-odm-prod --version 25.0.0 -f eks-rds-values.yaml
+helm install mycompany ibm-helm/ibm-odm-prod -f eks-rds-values.yaml
 ```
 
 > **Note**
-> If you prefer to install ODM to prototype (not for production purpose) with the ODM PostgreSQL internal database:
+> - The above command installs the **latest available version** of the chart. If you want to install a **specific version**, add the `--version` option:
 >
-> - Get the [eks-values.yaml](./eks-values.yaml) file and replace the following key:
+> ```bash
+> helm install mycompany ibm-helm/ibm-odm-prod --version <version> -f eks-rds-values.yaml
+> ```
+>
+> - You can list all available versions using:
+>
+> ```bash
+> helm search repo ibm-helm/ibm-odm-prod -l
+> ```
+>
+> - If you prefer to install ODM to prototype (not for production purpose) with the ODM PostgreSQL internal database. Get the [eks-values.yaml](./eks-values.yaml) file and replace the following key:
 >   - `<AWS-AccountId>` is your AWS Account Id
 >
 >```bash
->helm install mycompany ibm-helm/ibm-odm-prod --version 25.0.0 -f eks-values.yaml
+>helm install mycompany ibm-helm/ibm-odm-prod -f eks-values.yaml
 >```
-
-> **Note**
-> If you choose to use the NGINX Ingress Controller, refer to [Install an ODM release with NGINX Ingress Controller](README-NGINX.md#install-an-odm-release-with-nginx-ingress-controller).
+>
+> - If you choose to use the NGINX Ingress Controller, refer to [Install an ODM release with NGINX Ingress Controller](README-NGINX.md#install-an-odm-release-with-nginx-ingress-controller).
 
 
 #### Check the topology

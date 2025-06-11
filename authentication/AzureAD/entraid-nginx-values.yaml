@@ -1,0 +1,24 @@
+oidc:
+  enabled: true
+customization:
+  authSecretRef: azuread-auth-secret
+  trustedCertificateList:
+  - ms-secret
+  - digicert-secret
+image:
+  repository: cp.icr.io/cp/cp4a/odm
+  pullSecret: icregistry-secret
+internalDatabase:
+  persistence:
+    enabled: false
+#  populateSampleData: true
+license: true
+service:
+  ingress:
+    annotations:
+    - "kubernetes.io/ingress.class: nginx"
+    - "nginx.ingress.kubernetes.io/backend-protocol: HTTPS"
+#decisionCenter:
+#  sidecar:
+#    enabled: true
+#    confSecretRef: users-groups-synchro-secret

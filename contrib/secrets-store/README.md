@@ -309,6 +309,19 @@ spec:
 ```bash
 helm install odm-vault-spc ibm-helm/ibm-odm-prod -f values-default-vault.yaml
 ```
+> **Note:**  
+> This command installs the **latest available version** of the chart.  
+> If you want to install a **specific version**, add the `--version` option:
+>
+> ```bash
+> helm install odm-vault-spc ibm-helm/ibm-odm-prod --version <version> -f values-default-vault.yaml
+> ```
+>
+> You can list all available versions using:
+>
+> ```bash
+> helm search repo ibm-helm/ibm-odm-prod -l
+> ```
 
 After a few minutes, ODM should be up and running without using any secrets for installation.
 
