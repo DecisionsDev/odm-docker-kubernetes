@@ -6,11 +6,11 @@
                        clientId="COGNITO_APP_CLIENT_ID" clientSecret="COGNITO_APP_CLIENT_SECRET"
                        signatureAlgorithm="RS256" inboundPropagation="supported" tokenReuse="true"
                        discoveryEndpointUrl="https://cognito-idp.COGNITO_REGION.amazonaws.com/COGNITO_USER_POOL_ID/.well-known/openid-configuration"
-                       userIdentifier="email" groupIdentifier="cognito:groups" audiences="ALL_AUDIENCES"/>
+                       userIdentifier="identity" groupIdentifier="cognito:groups" audiences="ALL_AUDIENCES"/>
 
   <!-- Client with inbound propagation set to required -->
   <openidConnectClient authFilterRef="apiAuthFilter2" id="odmapi" scope="openid"
                        signatureAlgorithm="RS256" inboundPropagation="required" tokenReuse="true"
                        discoveryEndpointUrl="https://cognito-idp.COGNITO_REGION.amazonaws.com/COGNITO_USER_POOL_ID/.well-known/openid-configuration"
-                       userIdentifier="client_id" groupIdentifier="cognito:groups" audiences="ALL_AUDIENCES"/>
+                       userIdentifier="identity" groupIdentifier="cognito:groups" audiences="ALL_AUDIENCES"/>
 </server>
