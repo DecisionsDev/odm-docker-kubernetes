@@ -296,29 +296,31 @@ A custom claim needs to be added to both:
 
 Indeed, the existing **sub** claim is not be suitable because its value is an automatically generated unique identifier and we would rather have the user's name or email address displayed in ODM consoles UI instead. 
 
-We would like to manage it the same way we do it with Azure AD creating an [**identity** custom claim](https://github.com/DecisionsDev/odm-docker-kubernetes/blob/master/authentication/AzureAD/README_WITH_CLIENT_SECRET.md#set-up-an-microsoft-entra-id-application-using-a-client-secret). Unfortunately, even if Cognito recently added a support for [custom claim in access token](https://aws.amazon.com/about-aws/whats-new/2023/12/amazon-cognito-user-pools-customize-access-tokens/), it is still [not supported for access_token dealing with the client-credentials flow](https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-lambda-pre-token-generation.html).
-So, the following way to manage this is a workaround until this feature is available.
+We will manage it the same way we do it with Azure AD creating an [**identity** custom claim](https://github.com/DecisionsDev/odm-docker-kubernetes/blob/master/authentication/AzureAD/README_WITH_CLIENT_SECRET.md#set-up-an-microsoft-entra-id-application-using-a-client-secret).
 
-As we cannot add a custom claim inside the client-credentials access_token, we will add a claim inside the id_token that is already present inside the access_token.       
-There is a **client_id** claim inside the access_token, that is not present by default inside the id_token.
-We will use the [pre token generation lambda trigger](https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-lambda-pre-token-generation.html) to add the **client_id** claim inside the id_token that will take the **email** value.
+[Since 2025](https://aws.amazon.com/blogs/security/how-to-customize-access-tokens-in-amazon-cognito-user-pools/), it is now possible to add custom claims to the Cognito access_token using the client-credentials flow.
+
+We will use the [pre token generation lambda trigger](https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-lambda-pre-token-generation.html) to add the **identity** claim inside the id_token that will take the **email** value when a user is connecting to an UI (Decision Center or RES Console)  using the authentication flow, and inside the access_token using the client-credentials flow.
+Here are the details about the [Pre token generation Lambda trigger flow](https://aws.amazon.com/blogs/security/how-to-customize-access-tokens-in-amazon-cognito-user-pools/).
+
+![Pre Token Generation](images/pre-token-generation.png)
 
 1. Add a Pre token generation Lambda trigger
 
-We will use the pre token generation lambda trigger feature to the **client_id** claim in in id_token by pushing the user email value.
+We will use the pre token generation lambda trigger feature to the **identity** claim in in id_token by pushing the user email value.
 
-  * Select the **odmuserpool** User Pool
+Select the **odmuserpool** User Pool:
   * Select the **User pool properties** tab:
-    * Click **Extensions** Under *Authentication* in the left-hand pane
-    * Click the **Add Lambda trigger** button in the *Lambda triggers* pane
+    * On the **Lambda triggers** section:
+      * Click the **Add Lambda trigger** button
 
 In **Lambda triggers**:
-      * Select *Trigger type* =
-       **Authentication**
+  * Select **Authentication**
     In **Authentication**:
       * Select **Pre token generation trigger** (Modify claims in ID and access tokens.)
     In **Trigger event version**
-      * Select **Basic features** (due to the previously explained Cognito limitation about client-credentials access-token customization)
+      * Select **Basic features + access token customization for user and machine identities - Recommended** (Your user pool sends a version 3 event to your Lambda function. You can customize access tokens for M2M.
+)
 
 In **Lambda function**:
     * Click on the **Create Lambda function** button
@@ -343,25 +345,42 @@ In the **Code>Code source** section:
   * Replace the default index.jms code with the code below
 
 ```
-const handler = async (event) => {
-  // Allow to get debug information in the Amazon CloudWatch Logs.
+export const handler = function(event, context) {
+  console.debug("enter in ODM lambda");
+  // Allow to get debug information in the Watcher
+  console.debug("context");
+  console.debug(context);
+  
+  console.debug("event");
+  console.debug(event);
+
+  console.debug("get clientId");
+  console.debug(event.callerContext.clientId);
+  
+
   console.debug(event.request.userAttributes);
   // Get User email value
   var user_email = event.request.userAttributes.email;
   console.debug(user_email);
   event.response = {
-    claimsOverrideDetails: {
-      claimsToAddOrOverride: {
-        // Add a client_id claim with email value
-        client_id: user_email,
+    "claimsAndScopeOverrideDetails": {
+      "idTokenGeneration": {
+        "claimsToAddOrOverride": {
+          "family_name": "Doe",
+          "identity": user_email
+    }
       },
-    },
+      "accessTokenGeneration": {
+        "claimsToAddOrOverride": {
+          "family_name": "Doe",
+          "identity": event.callerContext.clientId
+    }
+      },
+    }
   };
-
-  return event;
+  // Return to Amazon Cognito
+  context.done(null, event);
 };
-
-export { handler };
 ```
 > [!WARNING]
 > Do not forget to click on the **Deploy** button !
