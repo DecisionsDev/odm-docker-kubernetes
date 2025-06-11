@@ -355,10 +355,6 @@ In the **Code>Code source** section:
 export const handler = function(event, context) {
   console.debug("enter in ODM lambda");
   // Allow to get debug information in the Watcher
-  console.debug("context");
-  console.debug(context);
-  
-  console.debug("event");
   console.debug(event);
 
   console.debug("get clientId");
@@ -373,13 +369,11 @@ export const handler = function(event, context) {
     "claimsAndScopeOverrideDetails": {
       "idTokenGeneration": {
         "claimsToAddOrOverride": {
-          "family_name": "Doe",
           "identity": user_email
     }
       },
       "accessTokenGeneration": {
         "claimsToAddOrOverride": {
-          "family_name": "Doe",
           "identity": event.callerContext.clientId
     }
       },
