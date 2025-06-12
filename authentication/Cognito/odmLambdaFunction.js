@@ -14,10 +14,10 @@ export const handler = function(event, context) {
 
   var identity_for_access_token = event.callerContext.clientId;
   if (event.request.userAttributes.email != undefined) {
-    console.debug("user email is defined. Use user email as claim identity for the access_token");
+    console.debug("user email is defined. Use user email as claim identity for the access_token - Rule Designer Context");
     identity_for_access_token = event.request.userAttributes.email 
   } else {
-    console.debug("user email is undefined. Use clienId as claim identity for the access_token");
+    console.debug("user email is undefined. Use clienId as claim identity for the access_token - M2M Context with client-credentials");
   }
   console.debug(identity_for_access_token);
   event.response = {
