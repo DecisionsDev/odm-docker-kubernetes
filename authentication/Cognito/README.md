@@ -355,26 +355,35 @@ In the **Code>Code source** section:
 export const handler = function(event, context) {
   console.debug("enter in ODM lambda");
   // Allow to get debug information in the Watcher
-  console.debug(event);
-
-  console.debug("get clientId");
-  console.debug(event.callerContext.clientId);
+  console.debug("context");
+  console.debug(context);
   
+  console.debug("event");
+  console.debug(event);
+  console.debug("clientId");
+  console.debug(event.callerContext.clientId);
 
+  console.debug("userAttributes");
   console.debug(event.request.userAttributes);
-  // Get User email value
-  var user_email = event.request.userAttributes.email;
-  console.debug(user_email);
+
+  var identity_for_access_token = event.callerContext.clientId;
+  if (event.request.userAttributes.email != undefined) {
+    console.debug("user email is defined. Use user email as claim identity for the access_token");
+    identity_for_access_token = event.request.userAttributes.email 
+  } else {
+    console.debug("user email is undefined. Use clienId as claim identity for the access_token");
+  }
+  console.debug(identity_for_access_token);
   event.response = {
     "claimsAndScopeOverrideDetails": {
       "idTokenGeneration": {
         "claimsToAddOrOverride": {
-          "identity": user_email
+          "identity": event.request.userAttributes.email
     }
       },
       "accessTokenGeneration": {
         "claimsToAddOrOverride": {
-          "identity": event.callerContext.clientId
+          "identity": identity_for_access_token
     }
       },
     }
@@ -637,19 +646,21 @@ In the **Container software library** tile, verify your entitlement on the **Vie
 
 1. Get the following configuration files.
     * `https://<DC_HOST>/decisioncenter/assets/truststore.jks`
-    * `https://<DC_HOST>/odm/decisioncenter/assets/OdmOidcProvidersRD.json`
       where *DC_HOST* is the Decision Center endpoint.
+    * ./output/OdmOidcProvidersRD.json
+      generated previously by the [generateTemplate.sh](generateTemplate.sh) script
 
 2. Copy the `truststore.jks` and `OdmOidcProvidersRD.json` files to your Rule Designer installation directory next to the `eclipse.ini` file.
 
 3. Edit your `eclipse.ini` file and add the following lines at the end.
     ```
-    -Djavax.net.ssl.trustStore=truststore.jks
+    -Djavax.net.ssl.trustStore=<ABSOLUTE_PATH>/truststore.jks
     -Djavax.net.ssl.trustStorePassword=changeme
-    -Dcom.ibm.rules.authentication.oidcconfig=OdmOidcProvidersRD.json
+    -Dcom.ibm.rules.authentication.oidcconfig=<ABSOLUTE_PATH>/OdmOidcProvidersRD.json
     ```
     Where:
-    - *changeme* is the fixed password to be used for the default truststore.jks file.
+    - *changeme* is the fixed password to be used for the default truststore.jks file
+    - replace with your <ABSOLUTE_PATH> to access the `eclipse.ini` file.
 
 4. Restart Rule Designer.
 
