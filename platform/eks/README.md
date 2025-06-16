@@ -55,11 +55,11 @@ Where you provide your `AWS Access Key ID`, `AWS Secret Access Key` and the `Def
 #### b. Create an EKS cluster (20 min)
 
 ```bash
-eksctl create cluster <CLUSTER_NAME> --version 1.31 --alb-ingress-access
+eksctl create cluster <CLUSTER_NAME> --version 1.32 --alb-ingress-access
 ```
 
 > **Note**
-> The tutorial has been tested with the Kubernetes version 1.31. Check the supported kubernetes version in the [system requirement](https://www.ibm.com/support/pages/ibm-operational-decision-manager-detailed-system-requirements) page.
+> The tutorial has been tested with the Kubernetes version 1.32. Check the supported kubernetes version in the [system requirement](https://www.ibm.com/support/pages/ibm-operational-decision-manager-detailed-system-requirements) page.
 
 > **Warning**
 > If you prefer to use the NGINX Ingress Controller instead of the ALB Load Balancer to expose ODM services, don't use the --alb-ingress-access option during the creation of the cluster !
