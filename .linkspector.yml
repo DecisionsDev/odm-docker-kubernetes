@@ -1,0 +1,18 @@
+files:
+  - README.md
+dirs:
+  - ./
+ignorePatterns:
+  - pattern: '^https://mynicecompany.com/.*$'
+  - pattern: '^https://odm.*$'
+  - pattern: '^https://localhost*$'
+  - pattern: '^https://dummyUrl$'
+  - pattern: '^https://cognito-idp.COGNITO_REGION.amazonaws.com/COGNITO_USER_POOL_ID/.*$'
+replacementPatterns:
+  - pattern: "https://www.ibm.com/docs"
+    replacement: 'https://ibmdocs-test.dcs.ibm.com/docs'
+aliveStatusCodes:
+  - 200
+  - 206
+  - 429
+useGitIgnore: true

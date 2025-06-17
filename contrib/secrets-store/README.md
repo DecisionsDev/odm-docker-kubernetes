@@ -60,7 +60,7 @@ HashiCorp Vault must be up and running. An [on-prem installation description](RE
 - [Secrets Store CSI Driver](https://secrets-store-csi-driver.sigs.k8s.io/) already installed.
 - [HashiCorp Vault provider driver](https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-secret-store-driver) already installed
 - [Helm](https://helm.sh/docs/intro/install/)
-- Access to Operational Decision Manager on Container 9.0.0.1 images
+- Access to Operational Decision Manager on Container 9.5.0.0 images
 
 > Note: The first and second steps are described in the [companion document](README-External_Vault.md) when you use OCP.
 
@@ -159,8 +159,8 @@ Check that you can access ODM charts:
 
 ```bash
 helm search repo ibm-odm-prod
-NAME                  	CHART VERSION   APP VERSION     DESCRIPTION
-ibm-helm/ibm-odm-prod   24.1.0       	  9.0.0.1         IBM Operational Decision Manager
+NAME                    CHART VERSION   APP VERSION     DESCRIPTION
+ibm-helm/ibm-odm-prod   25.0.0          9.5.0.0         IBM Operational Decision Manager
 ```
 
 #### Data to be injected in the pods
@@ -271,7 +271,7 @@ It replaces the K8s secret that would have been created with (again, don't do th
 kubectl create secret generic mynicecompanytlssecret --from-file=tls.crt=mynicecompany.crt --from-file=tls.key=mynicecompany.key
 ```
 
-The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://www.ibm.com/docs/en/odm/9.0.0?topic=servers-server-certificates).
+The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://www.ibm.com/docs/en/odm/9.5.0?topic=servers-server-certificates).
 
 We also would like to create a Basic Registry configuration to be used as authSecretRef (refer to both accompanying files group-security-configurations.xml and webSecurity.xml). It will allow some "mat" guy to connect to ODM components. First upload their contents to HashiCorp Vault:
 
@@ -309,6 +309,19 @@ spec:
 ```bash
 helm install odm-vault-spc ibm-helm/ibm-odm-prod -f values-default-vault.yaml
 ```
+> **Note:**  
+> This command installs the **latest available version** of the chart.  
+> If you want to install a **specific version**, add the `--version` option:
+>
+> ```bash
+> helm install odm-vault-spc ibm-helm/ibm-odm-prod --version <version> -f values-default-vault.yaml
+> ```
+>
+> You can list all available versions using:
+>
+> ```bash
+> helm search repo ibm-helm/ibm-odm-prod -l
+> ```
 
 After a few minutes, ODM should be up and running without using any secrets for installation.
 

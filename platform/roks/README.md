@@ -14,7 +14,7 @@ The ODM on Kubernetes Docker images are available in the [IBM Cloud Container Re
 
 The project uses the following components:
 
-- [IBM Operational Decision Manager](https://ibmdocs-test.dcs.ibm.com/docs/en/odm/9.0.0?topic=operational-decision-manager-certified-kubernetes-900)
+- [IBM Operational Decision Manager](https://ibmdocs-test.dcs.ibm.com/docs/en/odm/9.5.0?topic=operational-decision-manager-certified-kubernetes-950)
 - [IBM Cloud](https://cloud.ibm.com/login)
 
 ## Tested environment
@@ -30,14 +30,14 @@ First, install the following software on your machine:
 Then, create an [IBM Cloud Account](https://cloud.ibm.com/registration).
 
 ## Steps to deploy ODM on Kubernetes from ROKS
-<!-- TOC depthfrom:3 depthto:3 withlinks:false updateonsave:false orderedlist:false -->
+<!-- TOC depthFrom:3 depthTo:3 withLinks:1 updateOnSave:1 orderedList:0 -->
 
-- Prepare your environment (20 min)
-- Prepare your environment for the ODM installation (5 min)
-- Install an IBM Operational Decision Manager release (10 min)
-- Access the ODM services
-- Track ODM usage with the IBM License Service
-- Deploy ODM to support sticky session on ROKS
+- [Prepare your environment (20 min)](#1-prepare-your-environment-20-min)
+- [Prepare your environment for the ODM installation (5 min)](#2-prepare-your-environment-for-the-odm-installation-5-min)
+- [Install an IBM Operational Decision Manager release (10 min)](#3-install-an-ibm-operational-decision-manager-release-10-min)
+- [Access the ODM services](#4-access-the-odm-services)
+- [Track ODM usage with the IBM License Service](#5-track-odm-usage-with-the-ibm-license-service)
+- [Deploy ODM to support sticky session on ROKS](#6-deploy-odm-to-support-sticky-session-on-roks)
 
 <!-- /TOC -->
 
@@ -82,7 +82,7 @@ Where:
 > **Note**
 > The `cp.icr.io` value for the docker-server parameter is the only registry domain name that contains the images. You must set the docker-username to `cp` to use the entitlement key as the docker-password.
 
-The my-odm-docker-registry secret name is already used for the `image.pullSecrets` parameter when you run a Helm install of your containers. The `image.repository` parameter is also set by default to `cp.icr.io/cp/cp4a/odm`.
+The `my-odm-docker-registry` secret name will be used for the `image.pullSecrets` parameter when you run a Helm install of your containers. The `image.repository` parameter is also set by default to `cp.icr.io/cp/cp4a/odm`.
 
 #### c. Add the public IBM Helm charts repository
 
@@ -96,7 +96,7 @@ helm repo update
 ```bash
 $ helm search repo ibm-odm-prod
 NAME                    CHART VERSION APP VERSION DESCRIPTION
-ibm-helm/ibm-odm-prod   24.1.0        9.0.0.1     IBM Operational Decision Manager
+ibm-helm/ibm-odm-prod   25.0.0        9.5.0.0     IBM Operational Decision Manager
 ```
 
 ### 3. Install an IBM Operational Decision Manager release (10 min)
@@ -104,10 +104,23 @@ ibm-helm/ibm-odm-prod   24.1.0        9.0.0.1     IBM Operational Decision Manag
 Get the [roks-values.yaml](./roks-values.yaml) file and install your ODM instance:
 
 ```bash
-helm install roks-tuto ibm-helm/ibm-odm-prod --version 24.1.0 -f roks-values.yaml
+helm install roks-tuto ibm-helm/ibm-odm-prod -f roks-values.yaml
 ```
 
-> This configuration will deployed ODM with a sample database. You should used your own database such as [IBM Cloud Databases for PostgreSQL](https://www.ibm.com/products/databases-for-postgresql) for production.
+> **Note:**  
+> - This command installs the **latest available version** of the chart. If you want to install a **specific version**, add the `--version` option:
+>
+> ```bash
+> helm install roks-tuto ibm-helm/ibm-odm-prod --version <version> -f roks-values.yaml
+> ```
+>
+> You can list all available versions using:
+>
+> ```bash
+> helm search repo ibm-helm/ibm-odm-prod -l
+> ```
+> 
+> - This configuration will deployed ODM with a sample database. You should used your own database such as [IBM Cloud Databases for PostgreSQL](https://www.ibm.com/products/databases-for-postgresql) for production.
 
 #### Check the topology
 
@@ -127,7 +140,7 @@ oc get pods
 
 ### 4. Access the ODM services  
 
-Refer to [this documentation](https://www.ibm.com/docs/en/odm/9.0.0?topic=tasks-configuring-external-access) to retrieve the endpoints.
+Refer to [this documentation](https://www.ibm.com/docs/en/odm/9.5.0?topic=tasks-configuring-external-access) to retrieve the endpoints.
 For example, on OpenShift you can get the route names and hosts with:
 
 ```bash
@@ -145,7 +158,7 @@ roks-tuto-odm-ds-runtime-route   <DS_RUNTIME_HOST>
 
 ### 5. Track ODM usage with the IBM License Service
 
-Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.9?topic=ils-installing-license-service-without-operator-lifecycle-manager-olm) documentation.
+Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.12.0?topic=ilsfpcr-installing-license-service-without-operator-lifecycle-manager-olm) documentation.
 
 ### 6. Deploy ODM to support sticky session on ROKS
 
@@ -173,7 +186,7 @@ oc create secret tls default-ingress-cert --cert=./tls.crt --key=./tls.key -n od
 - Get the [roks-sticky-values.yaml](./roks-sticky-values.yaml) file and launch your ODM instance :
 
 ```bash
-helm install roks-sticky-tuto ibm-helm/ibm-odm-prod --version 24.1.0 -f roks-sticky-values.yaml
+helm install roks-sticky-tuto ibm-helm/ibm-odm-prod -f roks-sticky-values.yaml
 ```
 
 The ODM containers will embed the ROKS domain certificates. Additionally, two Decision Center pods will be launched to verify the sticky session behavior.

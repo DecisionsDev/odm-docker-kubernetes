@@ -28,4 +28,13 @@
 <variable name="odm.resDeployers.user1" value="${user1}"/>
 <variable name="odm.resExecutors.user1" value="${user1}"/>
 
+
+<authFilter id="browserAuthFilter">
+    <requestHeader id="authorizationHeader" matchType="notContain" name="Authorization" />
+</authFilter>
+
+<authFilter id="apiAuthFilter2">
+    <requestHeader id="authorizationHeader" matchType="contains"   name="Authorization" />
+</authFilter>
+
 </server>

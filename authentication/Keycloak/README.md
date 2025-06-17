@@ -172,7 +172,7 @@ You can create roles and grant these roles directly to an individual user, or ev
       * resDeployers
       * resExecutors
 
-    For more information about ODM groups and roles, refer to the [ODM on Kubernetes documentation](https://www.ibm.com/docs/en/odm/9.0.0?topic=access-user-roles-groups).
+    For more information about ODM groups and roles, refer to the [ODM on Kubernetes documentation](https://www.ibm.com/docs/en/odm/9.5.0?topic=access-user-roles-groups).
 
 
 2. Create a group for ODM administrators.
@@ -184,7 +184,7 @@ You can create roles and grant these roles directly to an individual user, or ev
     ![Create Group](images/create_group.png)
 
     In Menu **Manage** / **Groups**:
-      * Click **Create odm-admin**
+      * Click **odm-admin** to edit the new group
       * Click the **Role mapping** tab
         * Click **Assign role**
           * Select "Filter by realm roles"
@@ -196,13 +196,12 @@ You can create roles and grant these roles directly to an individual user, or ev
 3. Create at least one user that belongs to this new group.
 
     In Menu **Manage** / **Users**:
-      * Click **Create new user**
+      * Click **Add user**
+        * Email verified: On
         * Username: ``johndoe@mynicecompany.com``
         * Email: ``johndoe@mynicecompany.com``
-        * Email Verified: On
         * First name: ``John``
         * Last name: ``Doe``
-        * Enabled: On
         * Required user actions: nothing
         * Groups : Click **Join Groups** , select ***odm-admin***, and click **Join**
         * Click **Create**
@@ -213,9 +212,10 @@ You can create roles and grant these roles directly to an individual user, or ev
       * Click **Set password**
         * Fill the Password and Password confirmation  fields with **johndoe**
         * Temporary: Off
-        * Click *Save Password*
+        * Click **Save**
       * Click the **Details** tab
-      * Click **Save**
+      * Click **Save** 
+      * Click **Save password** to confirm
 
     (Optional) Every user is created with a predefined role named **default-roles-<CLIENT_ID>**.
     This role has no interest. So, here is the way to unassign this role.
@@ -223,11 +223,13 @@ You can create roles and grant these roles directly to an individual user, or ev
       * In User Details, select the **Role mapping** tab
         * Select **default-roles-<CLIENT_ID>**
         * Click **Unassign**
-        * Click **Remove**
-      * Click the **Details** tab
-      * Click **Save**
+        * Click **Remove** to confirm
 
       ![Unassign default role](images/unassign_default_role.png)
+
+      * Click the **Details** tab
+      * Make sure the toggle **Enabled** is On
+      * Click **Save**
 
     Repeat those steps for each user you want to add.
 
@@ -239,7 +241,7 @@ You can create roles and grant these roles directly to an individual user, or ev
     * Client type: **OpenID Connect**
     * Client ID: **odm**
     * Name: **ODM Application**
-    * Always display in console: On
+    * Always display in UI: On
     * Click **Next**
 
     ![Create Client 1](images/create_client_1.png)
@@ -259,7 +261,7 @@ You can create roles and grant these roles directly to an individual user, or ev
 
     ![Get Client Secret](images/client_secret.png)
 
-    * Click the **Service account roles** tab
+    * Click the **Service accounts roles** tab
     * Click the **Assign role** button. 
     * Select **Filter by realm roles** 
     * Select all res* and rts* roles in the list and click the **Assign** button.
@@ -270,12 +272,13 @@ You can create roles and grant these roles directly to an individual user, or ev
 2. Add the GROUPS predefined mapper on the ROLES client scope
 
     * Select the **Manage** / **Client scopes** menu
+      * Search for the scope : **roles**
       * click the **roles** scope
     * Select the **Mappers** tab
     * Click **Add mapper>From predefined mappers**
       * Search for mapper : **groups**
       * Select **groups**
-      * Click *Add*
+      * Click **Add**
 
     ![Add group mapper](images/add_group_mapper_to_role_scope.png)
 
@@ -293,7 +296,7 @@ You can create roles and grant these roles directly to an individual user, or ev
     4.1 Verify the Client Credentials Token
 
      You can request an access token using the Client-Credentials flow to verify the format of the token.
-     This token is used for the deployment between Decision Center and the Decision Server Console:
+     This token is used for the deployment of rulesets from the Business Console:
 
     ```shell
     ./get-client-credential-token.sh -i $CLIENT_ID -x $CLIENT_SECRET -n $KEYCLOAK_SERVER_URL
@@ -305,7 +308,7 @@ You can create roles and grant these roles directly to an individual user, or ev
     - *CLIENT_SECRET* is listed in your ODM Application, in the **Credentials** tab
     - *KEYCLOAK_SERVER_URL* is the issuer that can be retrieved using the **OpenID Endpoint Configuration** link of the **General** tab in the **Configure**/**Realm settings** menu
 
-     By introspecting the access_token value with the online tool [https://jwt.io](https://jwt.io), you should get:
+     By introspecting the access_token value with a JWT decoder tool, you should get:
 
     ```
     {
@@ -324,16 +327,16 @@ You can create roles and grant these roles directly to an individual user, or ev
    This token is used for the invocation of the ODM components like the Decision Center, Decision Server console, and the invocation of the Decision Server Runtime REST API.
 
    ```shell
-   ./get-user-password-token.sh -i $CLIENT_ID -x $CLIENT_SECRET -n $KEYCLOAK_SERVER_URL -u <USERNAME> -p <PASSWORD>
+   ./get-user-password-token.sh -i $CLIENT_ID -x $CLIENT_SECRET -n $KEYCLOAK_SERVER_URL -u johndoe@mynicecompany.com -p johndoe
    ```
 
    Where:
     - *CLIENT_ID* is your ODM Application, default is odm, can be retrieved in the **Manage** / **Clients** menu
     - *CLIENT_SECRET* is listed in your ODM Application, in the **Credentials** tab
     - *KEYCLOAK_SERVER_URL* is the issuer that can be retrieved using the **OpenID Endpoint Configuration** link of the **General** tab in the **Configure**/**Realm settings** menu
-    - *USERNAME* and *PASSWORD* have been created from 'Create at least one user that belongs to this new group.' section.
+    - The credentials used are from 'Create at least one user that belongs to this new group.' section.
 
-   By introspecting the id_token value with the online tool [https://jwt.io](https://jwt.io), you should get:
+   By introspecting the id_token value with a JWT decoder tool, you should get:
 
     ```
     {
@@ -419,8 +422,8 @@ You can create roles and grant these roles directly to an individual user, or ev
     - `webSecurity.xml` contains the mapping between Liberty J2EE ODM roles and Keycloak groups and users:
       * rtsAdministrators/resAdministrators/resExecutors ODM roles are given to the CLIENT_ID (which is seen as a user) to manage the client-credentials flow
     - `openIdWebSecurity.xml` contains two openIdConnectClient Liberty configurations:
-      * for web access to Decision Center and Decision Server consoles using userIdentifier="preferred_username" with the Authorization Code flow
-      * for the rest-api call using userIdentifier="preferred_username" with the client-credentials flow
+      * the first for web access to Decision Center and Decision Server consoles with the Authorization Code flow
+      * the second for the rest-api calls with the client-credentials flow
     - `openIdParameters.properties` configures several features like allowed domains, logout, and some internal ODM openid features
     - `ldap-configurations.xml` contains LDAP configuration for [How to import Keycloak Groups and Users using SCIM](README_FINE_GRAIN_PERMISSION.md)
 
@@ -451,16 +454,31 @@ You can create roles and grant these roles directly to an individual user, or ev
   The output should look like:
   ```shell
   NAME                  	CHART VERSION	APP VERSION	DESCRIPTION
-  ibm-helm/ibm-odm-prod	     24.1.0       	9.0.0.1   	IBM Operational Decision Manager
+  ibm-helm/ibm-odm-prod	     25.0.0       	9.5.0.0   	IBM Operational Decision Manager
   ```
 
 ### 3. Run the `helm install` command
 
 You can now install the product. We will use the PostgreSQL internal database and disable data persistence (`internalDatabase.persistence.enabled=false`) to avoid any platform complexity with persistent volume allocation.
 
+> **Note:**  
+> The following command installs the **latest available version** of the chart.  
+> If you want to install a **specific version**, add the `--version` option:
+>
+> ```bash
+> helm install my-odm-release ibm-helm/ibm-odm-prod --version <version> \
+>     --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret ...
+> ```
+>
+> You can list all available versions using:
+>
+> ```bash
+> helm search repo ibm-helm/ibm-odm-prod -l
+> ```
+
 #### a. Installation on OpenShift using Routes
 
-  See the [Preparing to install](https://www.ibm.com/docs/en/odm/9.0.0?topic=production-preparing-install-operational-decision-manager) documentation for more information.
+  See the [Preparing to install](https://www.ibm.com/docs/en/odm/9.5.0?topic=production-preparing-install-operational-decision-manager) documentation for more information.
 
   ```shell
   helm install my-odm-release ibm-helm/ibm-odm-prod \
@@ -478,7 +496,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 #### b. Installation using Ingress
 
   Refer to the following documentation to install an NGINX Ingress Controller on:
-  - [Microsoft Azure Kubernetes Service](../../platform/azure/README.md#create-a-nginx-ingress-controller)
+  - [Microsoft Azure Kubernetes Service](../../platform/azure/README-NGINX.md)
   - [Amazon Elastic Kubernetes Service](../../platform/eks/README-NGINX.md)
   - [Google Kubernetes Engine](../../platform/gcloud/README_NGINX.md)
 
@@ -504,7 +522,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 
 
 1. Get the ODM endpoints.
-    Refer to [this documentation](https://www.ibm.com/docs/en/odm/9.0.0?topic=tasks-configuring-external-access) to retrieve the endpoints.
+    Refer to [this documentation](https://www.ibm.com/docs/en/odm/9.5.0?topic=tasks-configuring-external-access) to retrieve the endpoints.
     For example, on OpenShift you can get the route names and hosts with:
 
     ```shell
@@ -561,9 +579,11 @@ You can now install the product. We will use the PostgreSQL internal database an
 
 ### Access the ODM services
 
-Well done!  You can now connect to ODM using the endpoints you got [earlier](#register-the-odm-redirect-url) and log in as an ODM admin with the account you created in [the first step](#create-a-dedicated-odm-realm) (e.g. johndoe@mycompany.com/johndoe).
+Well done!  You can now connect to ODM using the endpoints you got [earlier](#register-the-odm-redirect-url) and log in as an ODM admin with the account you created in [the first step](#create-a-dedicated-odm-realm) (e.g. `johndoe@mynicecompany.com` / `johndoe`).
 
 ### Set up Rule Designer
+
+First set up Rule Designer following [these instructions](https://www.ibm.com/docs/en/odm/9.5.0?topic=designer-installing-rule-online).
 
 To be able to securely connect your Rule Designer to the Decision Server and Decision Center services that are running in Certified Kubernetes, you need to establish a TLS connection through a security certificate in addition to the OpenID configuration.
 
@@ -582,11 +602,11 @@ To be able to securely connect your Rule Designer to the Decision Server and Dec
     ```
     Where:
     - *changeme* is the fixed password to be used for the default truststore.jks file.
-    - *ECLIPSEINITDIR* is the Rule Designer installation directory next to the eclipse.ini file.
+    - *ECLIPSEINITDIR* is the Rule Designer installation directory where the eclipse.ini file is.
 
 4. Restart Rule Designer.
 
-For more information, refer to [this documentation](https://www.ibm.com/docs/en/odm/9.0.0?topic=designer-importing-security-certificate-in-rule).
+For more information, refer to [this documentation](https://www.ibm.com/docs/en/odm/9.5.0?topic=designer-importing-security-certificate-in-rule).
 
 ### Getting Started with IBM Operational Decision Manager for Containers
 
@@ -594,19 +614,19 @@ Get hands-on experience with IBM Operational Decision Manager in a container env
 
 ### Calling the ODM Runtime Service
 
-To manage ODM runtime calls, we use the [Loan Validation Decision Service project](https://github.com/DecisionsDev/odm-for-container-getting-started/blob/master/Loan%20Validation%20Service.zip)
+Log in the Business Console as John Doe (`johndoe@mynicecompany.com` / `johndoe`).
 
-Import the **Loan Validation Service** in Decision Center connected as John Doe.
+Import the Decision Service named [Loan Validation Service](https://github.com/DecisionsDev/odm-for-container-getting-started/blob/master/Loan%20Validation%20Service.zip) if it is not already there.
 
 ![Import project](images/import_project.png)
 
-Deploy the **Loan Validation Service** production_deployment ruleapps using the **production deployment** deployment configuration in the Deployments>Configurations tab.
+Deploy the **Loan Validation Service** production_deployment ruleapp using the **production deployment** deployment configuration in the Deployments>Configurations tab.
 
 ![Deploy project](images/deploy_project.png)
 
 You can retrieve the payload.json from the ODM Decision Server Console or use [the provided payload](payload.json).
 
-As explained in the ODM on Certified Kubernetes documentation [Configuring user access with OpenID](https://www.ibm.com/docs/en/odm/9.0.0?topic=access-configuring-user-openid), we advise you to use basic authentication for the ODM runtime call for better performance and to avoid token expiration and revocation.
+As explained in the ODM on Certified Kubernetes documentation [Configuring user access with OpenID](https://www.ibm.com/docs/en/odm/9.5.0?topic=access-configuring-user-openid), we advise you to use basic authentication for the ODM runtime call for better performance and to avoid token expiration and revocation.
 
 You perform a basic authentication ODM runtime call in the following way:
 
@@ -622,21 +642,21 @@ If you want to perform a bearer authentication ODM runtime call using the Client
 
   ```
   curl -k -X POST -H "Content-Type: application/x-www-form-urlencoded" \
-      -d 'client_id=<CLIENT_ID>&scope=openid&client_secret=<CLIENT_SECRET>&grant_type=client_credentials' \
-      '<KEYCLOAK_SERVER_URL>/protocol/openid-connect/token'
+       -d "client_id=${CLIENT_ID}&scope=openid&client_secret=${CLIENT_SECRET}&grant_type=client_credentials" \
+       "${KEYCLOAK_SERVER_URL}/protocol/openid-connect/token"
   ```
 
  And use the retrieved access token in the following way:
 
-   ```
+  ```
   curl -H "Content-Type: application/json" -k --data @payload.json \
-         -H "Authorization: Bearer <ACCESS_TOKEN>" \
-         https://<DS_RUNTIME_HOST>/DecisionService/rest/production_deployment/1.0/loan_validation_production/1.0
+       -H "Authorization: Bearer <ACCESS_TOKEN>" \
+       https://<DS_RUNTIME_HOST>/DecisionService/rest/production_deployment/1.0/loan_validation_production/1.0
   ```
 
 # Troubleshooting
 
-If you encounter any issue, have a look at the [common troubleshooting explanation](../README.md#Troubleshooting)
+If you encounter any issue, have a look at the [common troubleshooting explanation](../README.md#troubleshooting)
 
 # License
 

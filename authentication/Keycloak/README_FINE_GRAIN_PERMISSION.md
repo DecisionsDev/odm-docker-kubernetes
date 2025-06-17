@@ -3,9 +3,9 @@
 ## Table of Contents
 <!-- TOC depthfrom:1 depthto:6 withlinks:false updateonsave:false orderedlist:false -->
 - [Introduction](#introduction)
-- [Deploy on OpenShift a custom Keycloak service with a SCIM Server](#deploy-on-openShift-a-custom-keycloak-service-with-a-scim-server)
+- [Deploy on OpenShift a custom Keycloak service with a SCIM Server](#deploy-on-openshift-a-custom-keycloak-service-with-a-scim-server)
   - [Build the Keycloak docker image embedding the open source SCIM plug-in](#build-the-keycloak-docker-image-embedding-the-open-source-scim-plug-in)
-  - [Push the image on the OpenShift Cluster](#push-the-image-on-the-openShift-cluster)
+  - [Push the image on the OpenShift Cluster](#push-the-image-on-the-openshift-cluster)
   - [Deploy Keycloak Service using the keycloak-scim image](#deploy-keycloak-service-using-the-keycloak-scim-image)
 - [Configure an ODM Application with Keycloak dashboard](#configure-an-odm-application-with-keycloak-dashboard)
 - [Deploy an Open LDAP Service](#deploy-an-open-ldap-service)
@@ -27,11 +27,11 @@
 
 # Introduction
 
-ODM Decision Center allows to [manage users and groups from the Business console](https://www.ibm.com/docs/en/odm/9.0.0?topic=center-managing-users-groups-from-business-console) in order to set access security on specific projects.
+ODM Decision Center allows to [manage users and groups from the Business console](https://www.ibm.com/docs/en/odm/9.5.0?topic=center-managing-users-groups-from-business-console) in order to set access security on specific projects.
 The Groups and Users import can be done using an LDAP connection.
 But, if the openId server also provides a SCIM server, then it can also be managed using a SCIM connection.
 
-Keycloak server doesn't provide a SCIM server by default. But, it's possible to manage it using the following opensource contribution [https://github.com/Captain-P-Goldfish/scim-for-keycloak](https://github.com/Captain-P-Goldfish/scim-for-keycloak).
+Keycloak does not provide a SCIM server off the shelf. But this feature can be added using the following open-source contribution: [https://github.com/Captain-P-Goldfish/scim-for-keycloak](https://github.com/Captain-P-Goldfish/scim-for-keycloak).
 As the project [https://scim-for-keycloak.de/](https://scim-for-keycloak.de) will become Enterprise ready soon, this tutorial was performed using the last available open source version : kc-20-b1 for Keycloak 20.0.5.
 
 # Deploy on OpenShift a custom Keycloak service with a SCIM Server
@@ -101,6 +101,8 @@ As the project [https://scim-for-keycloak.de/](https://scim-for-keycloak.de) wil
                   value: '${KEYCLOAK_ADMIN_PASSWORD}'
                 - name: KC_PROXY
                   value: 'edge'
+                - name: KC_PROXY_HEADERS
+                  value: 'forwarded'
               image: image-registry.openshift-image-registry.svc:5000/<my-keycloak-project>/keycloak-scim:latest
    ...
   ```
@@ -165,7 +167,7 @@ Where:
      * Vendor: "Red Hat Directory Server"
 
    * Connection and authentication settings
-     * Connection URL should be:  ldap://ldap-service.\<OPENLDAP_PROJECT>.svc:389 (when OPENLDAP_PROJECT is the project in which OpenLdap has been deployed)
+     * Connection URL should be:  ldap://ldap-service.\<OPENLDAP_PROJECT>.svc:389 (where OPENLDAP_PROJECT is the project in which OpenLdap has been deployed)
      * Bind type: simple
      * Bind DN: cn=admin,dc=example,dc=org
      * Bind credentials: xNxICc74qG24x3GoW03n
@@ -209,7 +211,7 @@ Where:
 
   ![OpenLdap Users Import](images/import_openldap_users.png)
 
-  Now let's import groups.
+  Now let us import groups.
 
   - In **User federation**, click **openldap**
   - Click on the "Mappers" tab
@@ -271,10 +273,9 @@ Where:
 
   By default, the SCIM Groups and Users Endpoints require authentication.
 
+  Now, let us configure these endpoints to authorize authenticated users that have the rtsAdministrators role. In the ODM client application, we will use the client_credentials flow using the "service-account-odm" service account having assigned the rtsAdministrators role. We just have to configure authorization for the "Get" endpoint as the ODM SCIM Import is a read only mode and doesn't need the other endpoints (Create, Update, Delete).
 
   ![SCIM Resources Tab](images/scim_resources.png)
-
-  Now, let's configure these endpoints to authorize authenticated users that have the rtsAdministrators role. In the ODM client application, we will use the client_credentials flow using the "service-account-odm" service account having assigned the rtsAdministrators role. We just have to configure authorization for the "Get" endpoint as the ODM SCIM Import is a read only mode and doesn't need the other endpoints (Create, Update, Delete).
 
   - Select the **Resource Type** tab
     - Click **Group** inside the table
@@ -346,7 +347,7 @@ Make sure that you finish [Complete post-deployment tasks](README.md#complete-po
 
 # Manage Security on ODM Decision Service Project 
 
-ODM Decision Center allows to [manage users and groups from the Business console](https://www.ibm.com/docs/en/odm/9.0.0?topic=center-managing-users-groups-from-business-console) in order to set access security on specific projects.
+ODM Decision Center allows to [manage users and groups from the Business console](https://www.ibm.com/docs/en/odm/9.5.0?topic=center-managing-users-groups-from-business-console) in order to set access security on specific projects.
 Now, we will manage the following scenario. We will load the "Loan Validation Service" and "Miniloan Service" projects that are available at the getting started repository.
 We will only provide access to the "Loan Validation Service" project for users belonging at the "TaskAuditors" group.
 We will only provide access to the "Miniloan Service" project for users belonging at the "TaskUsers" group.
@@ -363,7 +364,7 @@ The first step is to declare the groups of users that will be Decision Center Ad
 
   ![Assign Admin Roles](images/assign_rtsadministrators_role.png)
 
-Let's also assign the **rtsUsers** role to the **TaskAuditors** and **TaskUsers** groups. If you do not do this, users are not authorized to login into the Business Console.
+Let us also assign the **rtsUsers** role to the **TaskAuditors** and **TaskUsers** groups. If you do not do this, users are not authorized to login into the Business Console.
 
   - Select the **Manage > Groups** Tab
   - Double-click on **TaskAuditors**
@@ -380,9 +381,9 @@ Let's also assign the **rtsUsers** role to the **TaskAuditors** and **TaskUsers*
   oc get secret openldap-customldif -o jsonpath={.data."ldap_user\.ldif"} | base64 -d
   ```
 
-  - Log into the ODM Decision Center Business Console using the `cp4admin` user
+  - Log in to the ODM Decision Center Business Console as the `cp4admin` user
   - Select the **LIBRARY** tab
-  - Import the [Loan Validation Service](https://github.com/DecisionsDev/odm-for-container-getting-started/blob/master/Loan%20Validation%20Service.zip) and [Miniloan Service](https://github.com/DecisionsDev/odm-for-container-getting-started/blob/master/Miniloan%20Service.zip) projects
+  - Import the [Loan Validation Service](https://github.com/DecisionsDev/odm-for-container-getting-started/blob/master/Loan%20Validation%20Service.zip) and [Miniloan Service](https://github.com/DecisionsDev/odm-for-container-getting-started/blob/master/Miniloan%20Service.zip) projects if they are not already there.
 
   ![Load Projects](images/load_projects.png)
 
@@ -392,7 +393,7 @@ Let's also assign the **rtsUsers** role to the **TaskAuditors** and **TaskUsers*
   - Select the **Connection Settings** sub-tab
   - Check the KEYCLOAK_SCIM connection status is green
   - Select the **Groups** sub-tab
-  - Click the **Import Groups from directories** button
+  - Click the **Import Groups from directories** icon button
   - Select the **TaskAuditors** and **TaskUsers** groups
   - Click on the **Import groups and users** button
 
@@ -401,14 +402,14 @@ Let's also assign the **rtsUsers** role to the **TaskAuditors** and **TaskUsers*
 ## Set the project security
 
   - Select the **Project Security** sub-tab
-  - Click on the **Edit decision service security** of the "Loan Validation Service" project
+  - Click on the pen icon next to the "Loan Validation Service" project (the text **Edit decision service security** gets displayed when hovering the mouse pointer over the icon)
   - Below the Security section, select **Enforce Security**
   - Below the Groups section, select the **TaskAuditors** group
   - Click the **Done** button
 
   ![Set Loan Validation Service Security](images/set_loan_validation_service_security.png)
 
-  - Click the **Edit decision service security** of the "Miniloan Service" project
+  - Click the the pen icon next to the "Miniloan Service" project (the text **Edit decision service security** gets displayed when hovering the mouse pointer over the icon)
   - Below the Security section, select **Enforce Security**
   - Below the Groups section, select the **TaskUsers** group
   - Click the **Done** button
@@ -421,7 +422,7 @@ Let's also assign the **rtsUsers** role to the **TaskAuditors** and **TaskUsers*
   - Click the "Log out" link
   - Click the Keycloak Logout button
 
-  - Login with `user1`. Check that the **ADMINISTRATION** tab is not available
+  - Log in as `user1`. Check that the **ADMINISTRATION** tab is not available
   - Click on **LIBRARY** tab, only the "Miniloan Service" project must be available
   - Click on top-right `user1` link
   - Select "Profile" link
@@ -429,7 +430,7 @@ Let's also assign the **rtsUsers** role to the **TaskAuditors** and **TaskUsers*
 
   ![User1 Check](images/user1_check.png)
 
-  - Login with `user6`. Check that the **ADMINISTRATION** tab is not available
+  - Log in as `user6`. Check that the **ADMINISTRATION** tab is not available
   - Click on **LIBRARY** tab, only the "Loan Validation Service" project must be available
   - Click on top-right `user6` link
   - Select "Profile" link
@@ -439,13 +440,11 @@ Let's also assign the **rtsUsers** role to the **TaskAuditors** and **TaskUsers*
 
 # Synchronize Decision Center when updating Keycloak
 
-  During the life of a project, common situation can happen like :
-  - a user is moving from a group to an other.
-  - a new user join a group
-  - a user left a group
-  - a user change of group
-  - ...
+  During the life of a project, the following can happen :
+  - a user moves from a group to an other,
+  - a user leaves a group,
+  - a new user joins a group, ...
 
-  All these operations are done using the Keycloak dashboard and are reflected on Decision Center. It can be done manually using the Decision Center Synchronize button or using the automatic synchronization happening by default every 2 hours. 
-  
-  You can change the frequency using the Decision Center JVM option: `-Dcom.ibm.rules.decisioncenter.ldap.sync.refresh.period=60000`. The value is expressed in milliseconds.
+  All these changes are performed using the Keycloak dashboard and then reflected inside Decision Center, either manually using the Decision Center Synchronize button or using the automatic synchronization (scheduled every 2 hours by default).
+
+  You can read more about configuring the automatic synchronization in the documentation page [Importing users and groups from LDAP directories](https://www.ibm.com/docs/en/odm/9.5.0?topic=ldap-importing-users-groups-from-directories).

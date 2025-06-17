@@ -5,7 +5,7 @@
 
   <!-- Open ID Connect -->
   <!-- Client with inbound propagation set to supported -->
-  <openidConnectClient authFilterRef="browserAuthFilter" id="odm" scope="openid" accessTokenInLtpaCookie="true"
+  <openidConnectClient authFilterRef="browserAuthFilter" id="odm" scope="openid"
                        clientId="AZUREAD_CLIENT_ID" tokenEndpointAuthMethod="private_key_jwt" keyAliasName="myodmcompany" sslRef="odmDefaultSSLConfig"
                        signatureAlgorithm="RS256" inboundPropagation="supported"
                        jwkEndpointUrl="${ServerHost}/discovery/v2.0/keys"

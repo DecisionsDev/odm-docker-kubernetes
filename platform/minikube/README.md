@@ -10,7 +10,7 @@ The ODM on Kubernetes Docker images are available in the [IBM Entitled Registry]
 
 ## Included Components
 
-- [IBM Operational Decision Manager](https://www.ibm.com/docs/en/odm/9.0.0?topic=operational-decision-manager-certified-kubernetes-900)
+- [IBM Operational Decision Manager](https://www.ibm.com/docs/en/odm/9.5.0?topic=operational-decision-manager-certified-kubernetes-950)
 - [Kubernetes Minikube](https://minikube.sigs.k8s.io/docs/)
 
 ## Test environment
@@ -34,13 +34,13 @@ This tutorial was tested on macOS and Linux.
 #### a. Start Minikube with sufficient resources
 
 ```shell
-minikube start --cpus 6 --memory 8GB --kubernetes-version=v1.25.16
+minikube start --cpus 6 --memory 8GB --kubernetes-version=v1.31.9
 ```
 
 The kubectl context is automatically set to point to the created Minikube cluster.
 
 > [!NOTE]
-> This installation guide has been tested with the Kubernetes version v1.25.0 onwards
+> This installation guide has been tested with Kubernetes version v1.28.0 onwards
 
 #### b. Check your environment
 
@@ -94,7 +94,7 @@ helm repo update
 ```shell
 $ helm search repo ibm-odm-prod
 NAME                              CHART VERSION APP VERSION DESCRIPTION
-ibmcharts/ibm-odm-prod            24.1.0        9.0.0.1     IBM Operational Decision Manager
+ibmcharts/ibm-odm-prod            25.0.0        9.5.0.0     IBM Operational Decision Manager
 ```
 
 ### 3. Install an IBM Operational Decision Manager release
@@ -104,8 +104,22 @@ ibmcharts/ibm-odm-prod            24.1.0        9.0.0.1     IBM Operational Deci
 Get the [minikube-values.yaml](./minikube-values.yaml) file and run the following command:
 
 ```shell
-helm install my-odm-release ibmcharts/ibm-odm-prod --version 24.1.0 -f minikube-values.yaml
+helm install my-odm-release ibmcharts/ibm-odm-prod -f minikube-values.yaml
 ```
+
+> **Note:**  
+> This command installs the **latest available version** of the chart.  
+> If you want to install a **specific version**, add the `--version` option:
+>
+> ```bash
+> helm install my-odm-release ibm-helm/ibm-odm-prod --version <version> -f minikube-values.yaml
+> ```
+>
+> You can list all available versions using:
+>
+> ```bash
+> helm search repo ibm-helm/ibm-odm-prod -l
+> ```
 
 #### b. Check the topology
 
@@ -133,14 +147,15 @@ $ minikube service list
 | *NAMESPACE* | *NAME* | *TARGET PORT* | *URL* |
 |---|---|---|---|
 | default | my-odm-release-dbserver | No node port | |
-| default | my-odm-release-odm-decisioncenter | decisioncenter/9453 | http://`<CLUSTER-IP>`:30108 |
-| default | my-odm-release-odm-decisionrunner | decisionrunner/9443 | http://`<CLUSTER-IP>`:32215 |
-| default | my-odm-release-odm-decisionserverconsole | decisionserverconsole/9443 | http://`<CLUSTER-IP>`:32040 |
+| default | my-odm-release-odm-decisioncenter | decisioncenter-https/9453 | http://`<CLUSTER-IP>`:30108 |
+| default | my-odm-release-odm-decisionrunner | decisionrunner-https/9443 | http://`<CLUSTER-IP>`:32215 |
+| default | my-odm-release-odm-decisionserverconsole | decisionserverconsole-https/9443 | http://`<CLUSTER-IP>`:32040 |
 | default | my-odm-release-odm-decisionserverconsole-notif | No node port | |
-| default | my-odm-release-odm-decisionserverruntime | decisionserverruntime/9443  | http://`<CLUSTER-IP>`:32346 |
+| default | my-odm-release-odm-decisionserverruntime | decisionserverruntime-https/9443  | http://`<CLUSTER-IP>`:32346 |
 
 > [!WARNING]
-> The URLs are prefixed with **http**. You must replace the prefix with **https** to access the services.
+> - The URLs are prefixed with **http**. You must replace the prefix with **https** to access the services.
+> - The port numbers may differ from the ones listed above (30108, 32215,...)
 
 You can directly open the URL corresponding to a component in a new browser tab with the following command:
 
@@ -148,7 +163,7 @@ You can directly open the URL corresponding to a component in a new browser tab 
 minikube service my-odm-release-odm-decisioncenter --https
 ```
 
-You can access the ODM components with the username / password : odmAdmin/odmAdmin
+You can access the ODM components with the username / password : `odmAdmin` / `odmAdmin`
 
 ## Troubleshooting
 

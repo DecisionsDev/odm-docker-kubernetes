@@ -85,12 +85,13 @@ In this section, we explain how to:
 ## Log into the Microsoft Entra ID instance
 
 After activating your account by email, you should have access to your Microsoft Entra ID instance. [Sign in to Azure](https://portal.azure.com/#home).
+Click on the **Microsoft Entra ID** service.
 
 ## Manage groups and users
 
 1. Create a group for ODM administrators.
 
-    In **Azure Active Directory** / **Groups**:
+    In **Manage** / **Groups**:
       * Click **New Group**
         * Group type: Security
         * Group name: *odm-admin*
@@ -100,13 +101,13 @@ After activating your account by email, you should have access to your Microsoft
 
     ![Add Group](images/NewGroup.png)
 
-    In **Azure Active Directory** / **Groups** take note of the Object ID. It will be referenced as ``GROUP_ID`` later in this tutorial.
+    In **Manage** / **Groups** / **All groups** take note of the Object ID. It will be referenced as ``GROUP_ID`` later in this tutorial.
 
     ![GroupID](images/GroupID.png)
 
 2. Create at least one user that belongs to this new group.
 
-    In **Azure Active Directory** / **Users**:
+    In **Manage** / **Users**:
 
       * Click **New User** and in Basics fill in:
         * User principal name: *myodmuser*@YOURDOMAIN
@@ -155,7 +156,7 @@ Client credentials are used in the context of authentication in systems that uti
 
 In summary, the main difference between client credentials with a private key and a client secret is the method of authentication and the level of security. Client certificates use a public-private key pair for authentication and are generally considered more secure, while client secrets use a shared secret and are less secure but simpler to configure. The choice between them depends on the security requirements and the specific use case of the client application.
 
-If you are unsure about which option to choose, take the time to read [this article explaining the comparison](https://www.ubisecure.com/access-management/private_key_jwt-or-client_secret) .
+If you are unsure about which option to choose, take the time to read [this article explaining the comparison](https://www.ubisecure.com/access-management/private_key_jwt-or-client_secret/) .
 
 
 # License

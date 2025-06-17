@@ -1,19 +1,39 @@
-const handler = async (event) => {
-  // Allow to get debug information in the Watcher 
+export const handler = function(event, context) {
+  console.debug("enter in ODM lambda");
+  // Allow to get debug information in the Watcher
+  console.debug("context");
+  console.debug(context);
+  
+  console.debug("event");
+  console.debug(event);
+  console.debug("clientId");
+  console.debug(event.callerContext.clientId);
+
+  console.debug("userAttributes");
   console.debug(event.request.userAttributes);
-  // Get User email value
-  var user_email = event.request.userAttributes.email;
-  console.debug(user_email);
+
+  var identity_for_access_token = event.callerContext.clientId;
+  if (event.request.userAttributes.email != undefined) {
+    console.debug("user email is defined. Use user email as claim identity for the access_token - Rule Designer Context");
+    identity_for_access_token = event.request.userAttributes.email 
+  } else {
+    console.debug("user email is undefined. Use clienId as claim identity for the access_token - M2M Context with client-credentials");
+  }
+  console.debug(identity_for_access_token);
   event.response = {
-    claimsOverrideDetails: {
-      claimsToAddOrOverride: {
-        // Add a client_id claim with email value
-        client_id: user_email,
+    "claimsAndScopeOverrideDetails": {
+      "idTokenGeneration": {
+        "claimsToAddOrOverride": {
+          "identity": event.request.userAttributes.email
+    }
       },
-    },
+      "accessTokenGeneration": {
+        "claimsToAddOrOverride": {
+          "identity": identity_for_access_token
+    }
+      },
+    }
   };
-
-  return event;
+  // Return to Amazon Cognito
+  context.done(null, event);
 };
-
-export { handler };

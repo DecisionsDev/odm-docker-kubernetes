@@ -262,12 +262,12 @@ In this step, we augment the token with meta-information that is required by the
 
 ### Create secrets to configure ODM with Okta
 
-1. Retrieve Okta Server information.
+#### 1. Retrieve Okta Server information.
 
     From the Okta console, in **Security** / **API** / **default** / **Settings** :
     - Note the *OKTA_SERVER_NAME* which is the **Okta domain** in the **Issuer** (similar to *\<shortname\>.okta.com*).
 
-2. Create a secret with the Okta Server certificate.
+#### 2. Create a secret with the Okta Server certificate.
 
     To allow ODM services to access the Okta Server, it is mandatory to provide the Okta Server certificate.
     You can create the secret as follows:
@@ -277,7 +277,7 @@ In this step, we augment the token with meta-information that is required by the
     kubectl create secret generic okta-secret --from-file=tls.crt=okta.crt
     ```
 
-3. Generate the ODM configuration file for Okta.
+#### 3. Generate the ODM configuration file for Okta.
 
     The [script](generateTemplate.sh) allows you to generate the necessary configuration files.
     You can download the [okta-odm-script.zip](okta-odm-script.zip) .zip file to your machine. This .zip file contains the [script](generateTemplate.sh) and the content of the [templates](templates) directory.
@@ -288,14 +288,15 @@ In this step, we augment the token with meta-information that is required by the
     ```
 
     Where:
-    - *OKTA_API_SCOPE* has been defined [above](#configure-the-default-authorization-server) (*odmapiusers*)
-    - *OKTA_SERVER_NAME* has been obtained from [previous step](#retrieve-okta-server-information)
     - Both *OKTA_CLIENT_ID* and *OKTA_CLIENT_SECRET* are listed in your ODM Application, section **Applications** / **Applications** / **ODM Application** / **General** / **Client Credentials**
-    - *OKTA_ODM_GROUP* is the ODM Admin group we created in a [previous step](#manage-group-and-user) (*odm-admin*)
+    - *OKTA_SERVER_NAME* has been obtained from [previous step](#1-retrieve-okta-server-information)
+    - *OKTA_ODM_GROUP* is the ODM Admin group we created in a [previous step](#manage-groups-and-users) (*odm-admin*)
+    - *OKTA_API_SCOPE* has been defined [above](#configure-the-default-authorization-server) (*odmapiusers*)
+
 
     The files are generated into the `output` directory.
 
-4. Create the Okta authentication secret.
+#### 4. Create the Okta authentication secret.
 
     ```
     kubectl create secret generic okta-auth-secret \
@@ -320,8 +321,8 @@ In this step, we augment the token with meta-information that is required by the
     helm search repo ibm-odm-prod
     ```
     ```
-    NAME                  	CHART VERSION	APP VERSION	DESCRIPTION
-    ibm-helm/ibm-odm-prod	24.1.0       	9.0.0.1   	IBM Operational Decision Manager
+    NAME                    CHART VERSION APP VERSION DESCRIPTION
+    ibm-helm/ibm-odm-prod   25.0.0        9.5.0.0     IBM Operational Decision Manager
     ```
 
 3. Run the `helm install` command.
@@ -329,7 +330,7 @@ In this step, we augment the token with meta-information that is required by the
     You can now install the product. We will use the PostgreSQL internal database and disable the data persistence (`internalDatabase.persistence.enabled=false`) to avoid any platform complexity concerning persistent volume allocation.
 
     ```
-    helm install my-odm-release ibm-helm/ibm-odm-prod --version 24.1.0 \
+    helm install my-odm-release ibm-helm/ibm-odm-prod \
           --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
           --set oidc.enabled=true \
           --set internalDatabase.persistence.enabled=false \
@@ -339,18 +340,33 @@ In this step, we augment the token with meta-information that is required by the
           --set license=true
     ```
 
-    > Note: On OpenShift, you have to add the following parameters due to security context constraints.
+    > Note: 
+    > - On OpenShift, you have to add the following parameters due to security context constraints.
     > ```
     > --set internalDatabase.runAsUser='' --set customization.runAsUser='' --set service.enableRoute=true
     > ```
-    > See [Preparing to install](https://www.ibm.com/docs/en/odm/9.0.0?topic=production-preparing-install-operational-decision-manager) documentation for additional information.
+    > - See [Preparing to install](https://www.ibm.com/docs/en/odm/9.5.0?topic=production-preparing-install-operational-decision-manager) documentation for additional information.
+    > 
+    > - The above command installs the **latest available version** of the chart.  
+    > If you want to install a **specific version**, add the `--version` option:
+    >
+    > ```bash
+    > helm install my-odm-release ibm-helm/ibm-odm-prod --version <version> \
+    >     --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret ...
+    > ```
+    >
+    > - You can list all available versions using:
+    >
+    > ```bash
+    > helm search repo ibm-helm/ibm-odm-prod -l
+    > ```
 
 ## Complete post-deployment tasks
 
 ### Register the ODM redirect URLs
 
 1. Get the ODM endpoints.
-    You can refer to the [documentation](https://www.ibm.com/docs/en/odm/9.0.0?topic=tasks-configuring-external-access) to retrieve the ODM endpoints.
+    You can refer to the [documentation](https://www.ibm.com/docs/en/odm/9.5.0?topic=tasks-configuring-external-access) to retrieve the ODM endpoints.
     For example, on OpenShift you can get the route names and hosts with:
 
     ```
@@ -411,7 +427,7 @@ To be able to securely connect your Rule Designer to the Decision Server and Dec
 
 4. Restart Rule Designer.
 
-For more information, refer to the [documentation](https://www.ibm.com/docs/en/odm/9.0.0?topic=designer-importing-security-certificate-in-rule).
+For more information, refer to the [documentation](https://www.ibm.com/docs/en/odm/9.5.0?topic=designer-importing-security-certificate-in-rule).
 
 ### Getting Started with IBM Operational Decision Manager for Containers
 
@@ -432,7 +448,7 @@ Deploy the **Loan Validation Service** production_deployment ruleapps using the 
 
 You can retrieve the payload.json from the ODM Decision Server Console or use [the provided payload](payload.json)
 
-As explained in the ODM on Certified Kubernetes documentation [Configuring user access with OpenID](https://www.ibm.com/docs/en/odm/9.0.0?topic=access-configuring-user-openid), we advise to use basic authentication for the ODM runtime call for performance reasons and to avoid the issue of token expiration and revocation.
+As explained in the ODM on Certified Kubernetes documentation [Configuring user access with OpenID](https://www.ibm.com/docs/en/odm/9.5.0?topic=access-configuring-user-openid), we advise to use basic authentication for the ODM runtime call for performance reasons and to avoid the issue of token expiration and revocation.
 
 You can realize a basic authentication ODM runtime call in the following way:
 
@@ -462,7 +478,7 @@ But if you want to execute a bearer authentication ODM runtime call using the Cl
 
 # Troubleshooting
 
-If you encounter any issue, have a look at the [common troubleshooting explanation](../README.md#Troubleshooting)
+If you encounter any issue, have a look at the [common troubleshooting explanation](../README.md#troubleshooting)
 
 # License
 

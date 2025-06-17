@@ -23,8 +23,22 @@ To install ODM without Ingress:
 - Run the helm install command:
 
 ```
-helm install mycompany ibm-helm/ibm-odm-prod --version 23.1.0 -f my-nginx-values.yaml
+helm install mycompany ibm-helm/ibm-odm-prod -f my-nginx-values.yaml
 ```
+
+> **Note:**  
+> This command installs the **latest available version** of the chart.  
+> If you want to install a **specific version**, add the `--version` option:
+>
+> ```bash
+> helm install mycompany ibm-helm/ibm-odm-prod --version <version> -f my-nginx-values.yaml
+> ```
+>
+> You can list all available versions using:
+>
+> ```bash
+> helm search repo ibm-helm/ibm-odm-prod -l
+> ```
 
 ## Configuring Ingress to use sticky sessions
 

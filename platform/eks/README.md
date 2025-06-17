@@ -9,7 +9,7 @@ The ODM on Kubernetes Docker images are available in the [IBM Cloud Container Re
 
 ## Included components
 The project uses the following components:
-- [IBM Operational Decision Manager](https://www.ibm.com/docs/en/odm/9.0.0?topic=operational-decision-manager-certified-kubernetes-900)
+- [IBM Operational Decision Manager](https://www.ibm.com/docs/en/odm/9.5.0?topic=operational-decision-manager-certified-kubernetes-950)
 - [Amazon Elastic Kubernetes Service (Amazon EKS)](https://aws.amazon.com/eks/)
 - [Amazon Relational Database Service (Amazon RDS)](https://aws.amazon.com/rds/)
 - [AWS Application Load Balancer (ALB)](https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html)
@@ -55,11 +55,11 @@ Where you provide your `AWS Access Key ID`, `AWS Secret Access Key` and the `Def
 #### b. Create an EKS cluster (20 min)
 
 ```bash
-eksctl create cluster <CLUSTER_NAME> --version 1.30 --alb-ingress-access
+eksctl create cluster <CLUSTER_NAME> --version 1.32 --alb-ingress-access
 ```
 
 > **Note**
-> The tutorial has been tested with the Kubernetes version 1.30. Check the supported kubernetes version in the [system requirement](https://www.ibm.com/support/pages/ibm-operational-decision-manager-detailed-system-requirements) page.
+> The tutorial has been tested with the Kubernetes version 1.32. Check the supported kubernetes version in the [system requirement](https://www.ibm.com/support/pages/ibm-operational-decision-manager-detailed-system-requirements) page.
 
 > **Warning**
 > If you prefer to use the NGINX Ingress Controller instead of the ALB Load Balancer to expose ODM services, don't use the --alb-ingress-access option during the creation of the cluster !
@@ -164,7 +164,7 @@ Where:
 > **Note**
 > The `cp.icr.io` value for the docker-server parameter is the only registry domain name that contains the images. You must set the docker-username to `cp` to use an entitlement key as docker-password.
 
-The my-odm-docker-registry secret name is already used for the `image.pullSecrets` parameter when you run a helm install of your containers. The `image.repository` parameter is also set by default to `cp.icr.io/cp/cp4a/odm`.
+The `my-odm-docker-registry` secret name is used for the `image.pullSecrets` parameter when you run a helm install of your containers. The `image.repository` parameter is also set by default to `cp.icr.io/cp/cp4a/odm`.
 
 #### c. Add the public IBM Helm charts repository
 
@@ -178,7 +178,7 @@ helm repo update
 ```bash
 $ helm search repo ibm-odm-prod
 NAME                             	CHART VERSION	APP VERSION	DESCRIPTION
-ibm-helm/ibm-odm-prod           	24.1.0       	9.0.0.1   	IBM Operational Decision Manager
+ibm-helm/ibm-odm-prod           	25.0.0       	9.5.0.0   	IBM Operational Decision Manager
 ```
 
 ### 4. Manage a  digital certificate (10 min)
@@ -230,21 +230,30 @@ To install ODM with the AWS RDS PostgreSQL database created in [step 2](#2-creat
   - `<RDS_DATABASE_NAME>` is the initial database name defined when creating the RDS database
 
 ```bash
-helm install mycompany ibm-helm/ibm-odm-prod --version 24.1.0 -f eks-rds-values.yaml
+helm install mycompany ibm-helm/ibm-odm-prod -f eks-rds-values.yaml
 ```
 
 > **Note**
-> If you prefer to install ODM to prototype (not for production purpose) with the ODM PostgreSQL internal database:
+> - The above command installs the **latest available version** of the chart. If you want to install a **specific version**, add the `--version` option:
 >
-> - Get the [eks-values.yaml](./eks-values.yaml) file and replace the following key:
+> ```bash
+> helm install mycompany ibm-helm/ibm-odm-prod --version <version> -f eks-rds-values.yaml
+> ```
+>
+> - You can list all available versions using:
+>
+> ```bash
+> helm search repo ibm-helm/ibm-odm-prod -l
+> ```
+>
+> - If you prefer to install ODM to prototype (not for production purpose) with the ODM PostgreSQL internal database. Get the [eks-values.yaml](./eks-values.yaml) file and replace the following key:
 >   - `<AWS-AccountId>` is your AWS Account Id
 >
 >```bash
->helm install mycompany ibm-helm/ibm-odm-prod --version 24.1.0 -f eks-values.yaml
+>helm install mycompany ibm-helm/ibm-odm-prod -f eks-values.yaml
 >```
-
-> **Note**
-> If you choose to use the NGINX Ingress Controller, refer to [Install an ODM release with NGINX Ingress Controller](README-NGINX.md#install-an-odm-release-with-nginx-ingress-controller).
+>
+> - If you choose to use the NGINX Ingress Controller, refer to [Install an ODM release with NGINX Ingress Controller](README-NGINX.md#install-an-odm-release-with-nginx-ingress-controller).
 
 
 #### Check the topology
@@ -290,7 +299,7 @@ The ODM services are accessible from the following URLs:
 
 #### a. Install the IBM License Service
 
-Follow the **Installation** section of the [Installation License Service without Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.9?topic=ils-installing-license-service-without-operator-lifecycle-manager-olm) documentation.
+Follow the **Installation** section of the [Installation License Service without Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.12.0?topic=ilsfpcr-installing-license-service-without-operator-lifecycle-manager-olm) documentation.
 
 #### b. Patch the IBM Licensing instance
 
@@ -313,7 +322,7 @@ You should be able to see the address and other details about `ibm-licensing-ser
 NAME                             CLASS   HOSTS   ADDRESS                                                                 PORTS   AGE
 ibm-licensing-service-instance   alb     *       k8s-ibmlicen-ibmlicen-xxxxxxxx-yyyyyyy.<aws-region>.elb.amazonaws.com   80      44m
 ```
-You can find more information and use cases on [this page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.9?topic=configuration-configuring-kubernetes-ingress).
+You can find more information and use cases on [this page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.12.0?topic=configuring-kubernetes-ingress).
 
 > **Note**
 > If you choose to use the NGINX Ingress Controller, you must use the [licensing-instance-nginx.yaml](./licensing-instance-nginx.yaml) file. Refer to [Track ODM usage with the IBM License Service with NGINX Ingress Controller](README-NGINX.md#track-odm-usage-with-the-ibm-license-service-with-nginx-ingress-controller).

@@ -30,108 +30,112 @@ For additional information regarding the implement in Liberty, please refer to t
 
 <!-- /TOC -->
 
-1. Create the *ODM application*.
+## 1. Create the *ODM application*.
 
-    In **Microsoft Entra Id** / **Manage** / **App registration**, click **New Registration**:
+In **Microsoft Entra Id** / **Manage** / **App registration**, click **New Registration**:
 
-    * Name: **ODM Application**
-    * Supported account types / Who can use this application or access this API?: select `Accounts in this organizational directory only (Default Directory only - Single tenant)`
-    * Click **Register**
+* Name: **ODM Application**
+* Supported account types / Who can use this application or access this API?: select `Accounts in this organizational directory only (Default Directory only - Single tenant)`
+* Click **Register**
 
-    ![New Web Application](images/RegisterApp.png)
+![New Web Application](images/RegisterApp.png)
 
-2. Retrieve Tenant and Client information.
+## 2. Retrieve Tenant and Client information
 
-    In **Microsoft Entra Id** / **Manage** / **App Registration**, select **ODM Application** and click **Overview**:
+In **Microsoft Entra Id** / **Manage** / **App Registration**, select **ODM Application** and click **Overview**:
 
-    * Application (client) ID: **Client ID**. It will be referenced as `CLIENT_ID` in the next steps.
-    * Directory (tenant) ID: **Your Tenant ID**. It will be referenced as `TENANT_ID` in the next steps.
+* Application (client) ID: **Client ID**. It will be referenced as `CLIENT_ID` in the next steps.
+* Directory (tenant) ID: **Your Tenant ID**. It will be referenced as `TENANT_ID` in the next steps.
 
-    ![Tenant ID](images/GetTenantID.png)
+![Tenant ID](images/GetTenantID.png)
 
-3. Register a public certificate.
+## 3. Register a public certificate.
 
-  To manage private key JWT authentication, you need a private certificate (.key file) and a public certificate (.crt file), which should be registered on the ODM client side (RP) application. On the Microsoft Entra ID (OP) side, you are required to register the public certificate.
+To manage private key JWT authentication, you need a private certificate (.key file) and a public certificate (.crt file), which should be registered on the ODM client side (RP) application. On the Microsoft Entra ID (OP) side, you are required to register the public certificate.
 
-  If you don't have a trusted certificate, you can utilize OpenSSL and other cryptography and certificate management libraries to generate a certificate file and a private key, define the domain name, and set the expiration date. The following command will create a self-signed certificate (.crt file) and a private key (.key file) that will accept the domain name myodmcompany.com.
-  The expiration is set to 1000 days:
+If you don't have a trusted certificate, you can utilize OpenSSL and other cryptography and certificate management libraries to generate a certificate file and a private key, define the domain name, and set the expiration date. The following command will create a self-signed certificate (.crt file) and a private key (.key file) that will accept the domain name myodmcompany.com.
+The expiration is set to 1000 days:
 
-  ```shell
+```shell
     openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout myodmcompany.key \
-        -out myodmcompany.crt -subj "/CN=myodmcompany.com/OU=it/O=myodmcompany/L=Paris/C=FR" \
-        -addext "subjectAltName = DNS:myodmcompany.com"
-  ```
+    -out myodmcompany.crt -subj "/CN=myodmcompany.com/OU=it/O=myodmcompany/L=Paris/C=FR" \
+    -addext "subjectAltName = DNS:myodmcompany.com"
+```
 
-  In **Microsoft Entra Id** / **Manage** / **App registrations**, select **ODM Application**:
+In **Microsoft Entra Id** / **Manage** / **App registrations**, select **ODM Application**:
 
-  * From the Overview page, click on the link Client credentials: **Add a certificate or secret** or on the **Manage / Certificates & secrets** tab
-  * Select the **Certificates** tab
-  * Click **Upload certificate**
-    * Select the `myodmcompany.crt` or your own public file
-    * Description: `For ODM integration`
+* From the Overview page, click on the link Client credentials: **Add a certificate or secret** or on the **Manage / Certificates & secrets** tab
+* Select the **Certificates** tab
+* Click **Upload certificate**
+  * Select the `myodmcompany.crt` or your own public file
+  * Description: `For ODM integration`
+  * Click **Add**
+
+## 4. Add Claims.
+
+In **Microsoft Entra Id** / **Manage** / **App registrations**, select **ODM Application**, and in **Manage / Token Configuration**:
+
+* Add Optional **email** ID Claim
+  * Click **+ Add optional claim**
+  * Select **ID**
+  * Check **email**
+  * Click **Add**
+
+  * Turn on Microsoft Graph email permission
+    * Check **Turn on the Microsoft Graph email permission**
     * Click **Add**
 
-4. Add Claims.
+* Add Optional **email** Access Claim
+  * Click **+ Add optional claim**
+  * Select **Access**
+  * Check **email**
+  * Click **Add**
 
-    In **Microsoft Entra Id** / **Manage** / **App registrations**, select **ODM Application**, and in **Manage / Token Configuration**:
+* Add Group Claim
+  * Click **+ Add groups claim**
+  * Check **Security Groups**
+  * Click **Add**
 
-  * Add Optional **email** ID Claim
-    * Click **+ Add optional claim**
-    * Select **ID**
-    * Check **email**
-    * Click **Add**
+## 5. Create a custom claim named "identity"
 
-    * Turn on Microsoft Graph email permission
-      * Check **Turn on the Microsoft Graph email permission**
-      * Click **Add**
+To enable the ODM REST API to use both the 'Password Credentials' flow with email as the user identifier and the 'Client Credentials' flow with client_id as the user identifier, we must establish a new claim named "identity" that will dynamically capture the appropriate value based on the chosen flow:
+In **Microsoft Entra Id** / **Manage** / **Enterprise applications**, select **ODM Application**, and in **Manage / Single sign-on**:
 
-  * Add Optional **email** Access Claim
-    * Click **+ Add optional claim**
-    * Select **Access**
-    * Check **email**
-    * Click **Add**
+* Click on Edit of the "Attributes & Claims" section
+  * Click **+ Add new claim**
+    * Name: `identity`
+    * Fill 2 Claim conditions in the exact following order:
+      1. User Type: Any / Scoped Groups: 0 / Source: Attribute / Value: <CLIENT_ID>
+      2. User Type: Members / Scoped Groups: 0 / Source: Attribute / Value: user.mail
 
-  * Add Group Claim
-    * Click **+ Add groups claim**
-    * Check **Security Groups**
-    * Click **Add**
+## 6. API Permissions.
 
-5. Create a custom claim named "identity"
+In **Microsoft Entra Id** / **Manage** / **App Registration**, select **ODM Application**, and then click **API Permissions**.
 
-   To enable the ODM REST API to use both the 'Password Credentials' flow with email as the user identifier and the 'Client Credentials' flow with client_id as the user identifier, we must establish a new claim named "identity" that will dynamically capture the appropriate value based on the chosen flow:
-   In **Microsoft Entra Id** / **Manage** / **Enterprise applications**, select **ODM Application**, and in **Manage / Single sign-on**:
+* Click **Grant Admin Consent for <Directory name>**
 
-  * Click on Edit of the "Attributes & Claims" section
-    * Click **+ Add new claim**
-      * Name: `identity`
-      * Fill 2 Claim conditions in the exact following order:
-        1. User Type: Any / Scoped Groups: 0 / Source: Attribute / Value: <CLIENT_ID>
-        2. User Type: Members / Scoped Groups: 0 / Source: Attribute / Value: user.mail
+![Permissions](images/Permissions.png)
 
-6. API Permissions.
+## 7. Manifest change.
 
-    In **Microsoft Entra Id** / **Manage** / **App Registration**, select **ODM Application**, and then click **API Permissions**.
+In **Microsoft Entra Id** / **Manage** / **App Registration**, select **ODM Application**, and then click **Manifest**.
 
-    * Click **Grant Admin Consent for <Directory name>**
+The Manifest feature (a JSON representation of an app registration) is currently in transition.
+[**AAD Graph app manifest**](https://learn.microsoft.com/en-us/entra/identity-platform/azure-active-directory-graph-app-manifest-deprecation) will be deprecated soon and not editable anymore starting 12/2/2024. It will be replaced by the **Microsoft Graph App Manifest**
 
-7. Manifest change.
+As explained in [accessTokenAcceptedVersion attribute explanation](https://docs.microsoft.com/en-us/azure/active-directory/develop/reference-app-manifest#accesstokenacceptedversion-attribute), change the value to 2.
 
-    In **Microsoft Entra Id** / **Manage** / **App Registration**, select **ODM Application**, and then click **Manifest**.
+ODM OpenID Liberty configuration needs version 2.0 for the issuerIdentifier. See the [openIdWebSecurity.xml](templates/openIdWebSecurity.xml) file.
 
-    The Manifest feature (a JSON representation of an app registration) is currently in transition.
-    [**AAD Graph app manifest**](https://learn.microsoft.com/en-us/entra/identity-platform/azure-active-directory-graph-app-manifest-deprecation) will be deprecated soon and not editable anymore starting 12/2/2024. It will be replaced by the **Microsoft Graph App Manifest**
+It is also necessary to set **acceptMappedClaims** to true to manage claims. Without this setting, you get the exception **AADSTS50146: This application is required to be configured with an application-specific signing key. It is either not configured with one, or the key has expired or is not yet valid.** when requesting a token.
 
-    As explained in [accessTokenAcceptedVersion attribute explanation](https://docs.microsoft.com/en-us/azure/active-directory/develop/reference-app-manifest#accesstokenacceptedversion-attribute), change the value to 2.
+With **Microsoft Graph App Manifest**:
+  *  **acceptMappedClaims** is relocated as a property of the **api** attribute
+  *  **accessTokenAcceptedVersion** is relocated as a property of the **api** attribute and renamed **requestedAccessTokenVersion**
 
-    ODM OpenID Liberty configuration needs version 2.0 for the issuerIdentifier. See the [openIdWebSecurity.xml](templates/openIdWebSecurity.xml) file.
+Then, click Save.
 
-    It is also necessary to set **acceptMappedClaims** to true to manage claims. Without this setting, you get the exception **AADSTS50146: This application is required to be configured with an application-specific signing key. It is either not configured with one, or the key has expired or is not yet valid.** when requesting a token.
-
-    With **Microsoft Graph App Manifest**:
-    *  **acceptMappedClaims** is relocated as a property of the **api** attribute
-    *  **accessTokenAcceptedVersion** is relocated as a property of the **api** attribute and renamed **requestedAccessTokenVersion**
-
-    Then, click Save.
+![Manifest](images/Manifest.png)
 
 # Deploy ODM on a container configured with Microsoft Entra ID (Part 2)
 
@@ -203,8 +207,8 @@ For additional information regarding the implement in Liberty, please refer to t
     ```
 
     Where:
-    - *TENANT_ID* and *CLIENT_ID* have been obtained from [previous step](#retrieve-tenant-and-client-information)
-    - *GROUP_ID* is the identifier of the ODM Admin group created in [Manage groups and users](README.md#manage-group-and-user) (*ID of `odm-admin`*)
+    - *TENANT_ID* and *CLIENT_ID* have been obtained from [previous step](#2-retrieve-tenant-and-client-information)
+    - *GROUP_ID* is the identifier of the ODM Admin group created in [Manage groups and users](README.md#manage-groups-and-users) (*ID of `odm-admin`*)
     - *SSO_DOMAIN* is the domain name of your SSO. If your AzureAD is connected to another SSO, you should add the SSO domain name in this parameter. If your user has been declared as explained in step **Create at least one user that belongs to this new group**, you can omit this parameter.
 
     The following four files are generated into the `outputPKeyJWT` directory:
@@ -242,7 +246,7 @@ For additional information regarding the implement in Liberty, please refer to t
   ```shell
   helm search repo ibm-odm-prod
   NAME                  	CHART VERSION	APP VERSION	DESCRIPTION
-  ibm-helm/ibm-odm-prod	24.1.0       	9.0.0.1   	IBM Operational Decision Manager
+  ibm-helm/ibm-odm-prod	25.0.0       	9.5.0.0   	IBM Operational Decision Manager
   ```
 
 ### Run the `helm install` command
@@ -251,44 +255,55 @@ You can now install the product. We will use the PostgreSQL internal database an
 
 #### a. Installation on OpenShift using Routes
 
-  See the [Preparing to install](https://www.ibm.com/docs/en/odm/9.0.0?topic=production-preparing-install-operational-decision-manager) documentation for additional information.
+  See the [Preparing to install](https://www.ibm.com/docs/en/odm/9.5.0?topic=production-preparing-install-operational-decision-manager) documentation for additional information.
+  Get the [entraid-pkjwt-ocp-values.yaml](./entraid-pkjwt-ocp-values.yaml) file and run the command:
 
   ```shell
-  helm install my-odm-release ibm-helm/ibm-odm-prod --version 24.1.0 \
-          --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
-          --set oidc.enabled=true \
-          --set license=true \
-          --set internalDatabase.persistence.enabled=false \
-          --set customization.trustedCertificateList='{ms-secret,digicert-secret}' \
-          --set customization.privateCertificateList='{myodmcompany}' \
-          --set customization.authSecretRef=azuread-auth-secret \
-          --set internalDatabase.runAsUser='' --set customization.runAsUser='' --set service.enableRoute=true
+  helm install my-odm-release ibm-helm/ibm-odm-prod -f entraid-pkjwt-ocp-values.yaml
   ```
+> **Note**
+> This command installs the **latest available version** of the chart.  
+> If you want to install a **specific version**, add the `--version` option:
+>
+> ```bash
+> helm install my-odm-release ibm-helm/ibm-odm-prod --version <version> -f entraid-pkjwt-ocp-values.yaml
+> ```
+>
+> You can list all available versions using:
+>
+> ```bash
+> helm search repo ibm-helm/ibm-odm-prod -l
+> ```
 
 #### b. Installation using Ingress
 
   Refer to the following documentation to install an NGINX Ingress Controller on:
-  - [Microsoft Azure Kubernetes Service](../../platform/azure/README.md#create-a-nginx-ingress-controller)
+  - [Microsoft Azure Kubernetes Service](../../platform/azure/README-NGINX.md)
   - [Amazon Elastic Kubernetes Service](../../platform/eks/README-NGINX.md)
   - [Google Kubernetes Engine](../../platform/gcloud/README_NGINX.md)
 
-  When the NGINX Ingress Controller is ready, you can install the ODM release with:
+  When the NGINX Ingress Controller is ready, get the [entraid-pkjwt-nginx-values.yaml](./entraid-pkjwt-nginx-values.yaml) file and run the command:
 
   ```
-  helm install my-odm-release ibm-helm/ibm-odm-prod --version 24.1.0 \
-          --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
-          --set oidc.enabled=true \
-          --set license=true \
-          --set internalDatabase.persistence.enabled=false \
-          --set customization.trustedCertificateList='{ms-secret,digicert-secret}' \
-          --set customization.privateCertificateList='{myodmcompany}' \
-          --set customization.authSecretRef=azuread-auth-secret \
-          --set service.ingress.enabled=true \
-          --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"\,"nginx.ingress.kubernetes.io/backend-protocol: HTTPS"}
+  helm install my-odm-release ibm-helm/ibm-odm-prod -f entraid-pkjwt-nginx-values.yaml
   ```
 
 > **Note**
 > By default, NGINX does not enable sticky session. If you want to use sticky session to connect to DC, refer to [Using sticky session for Decision Center connection](../../contrib/sticky-session/README.md)
+
+> **Note**
+> This command installs the **latest available version** of the chart.
+> If you want to install a **specific version**, add the `--version` option:
+>
+> ```bash
+> helm install my-odm-release ibm-helm/ibm-odm-prod --version <version> -f entraid-pkjwt-nginx-values.yaml
+> ```
+>
+> You can list all available versions using:
+>
+> ```bash
+> helm search repo ibm-helm/ibm-odm-prod -l
+> ```
 
 ## Complete post-deployment tasks
 
@@ -296,7 +311,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 
 1. Get the ODM endpoints.
 
-    Refer to the [documentation](https://www.ibm.com/docs/en/odm/9.0.0?topic=tasks-configuring-external-access) to retrieve the endpoints.
+    Refer to the [documentation](https://www.ibm.com/docs/en/odm/9.5.0?topic=tasks-configuring-external-access) to retrieve the endpoints.
     For example, on OpenShift you can get the route names and hosts with:
 
     ```shell
@@ -371,7 +386,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 
 ### Access the ODM services
 
-Well done!  You can now connect to ODM using the endpoints you got [earlier](#register-the-odm-redirect-url) and log in as an ODM admin with the account you created in ['manage groups and users' in the first article](README.md#manage-group-and-user).
+Well done!  You can now connect to ODM using the endpoints you got [earlier](#register-the-odm-redirect-urls) and log in as an ODM admin with the account you created in ['manage groups and users' in the first article](README.md#manage-groups-and-users).
 
 ### Set up Rule Designer
 
@@ -401,7 +416,7 @@ To be able to securely connect your Rule Designer to the Decision Server and Dec
 
 4. Restart Rule Designer.
 
-For more information, refer to the [documentation](https://www.ibm.com/docs/en/odm/9.0.0?topic=designer-importing-security-certificate-in-rule).
+For more information, refer to the [documentation](https://www.ibm.com/docs/en/odm/9.5.0?topic=designer-importing-security-certificate-in-rule).
 
 ### Getting Started with IBM Operational Decision Manager for Containers
 
@@ -421,7 +436,7 @@ Deploy the **Loan Validation Service** production_deployment ruleapps using the 
 
 You can retrieve the payload.json from the ODM Decision Server Console or use [the provided payload](payload.json).
 
-As explained in the ODM on Certified Kubernetes documentation [Configuring user access with OpenID](https://www.ibm.com/docs/en/odm/9.0.0?topic=access-configuring-user-openid), we advise to use basic authentication for the ODM runtime call for performance reasons and to avoid the issue of token expiration and revocation.
+As explained in the ODM on Certified Kubernetes documentation [Configuring user access with OpenID](https://www.ibm.com/docs/en/odm/9.5.0?topic=access-configuring-user-openid), we advise to use basic authentication for the ODM runtime call for performance reasons and to avoid the issue of token expiration and revocation.
 
 You can realize a basic authentication ODM runtime call the following way:
 
@@ -442,7 +457,7 @@ openssl pkcs12 -export -out myodmcompany.p12 -inkey myodmcompany.key -in myodmco
 keytool -importkeystore -srckeystore myodmcompany.p12 -srcstoretype pkcs12 -srcalias 1 -srcstorepass changeme -destkeystore myodmcompany.jks -deststoretype jks -deststorepass changeme -destalias myalias
 ```
 
-Now you can generate the client_assertion following the [ODM documentation](https://www.ibm.com/docs/en/odm/9.0.0?topic=900-generating-json-web-token-client-assertion).
+Now you can generate the client_assertion following the [ODM documentation](https://www.ibm.com/docs/en/odm/9.5.0?topic=950-generating-json-web-token-client-assertion).
 
 ```shell
 java -cp $DCLIB/jrules-teamserver.jar:$DCLIB/jose4j-0.9.5.jar:$DCLIB/slf4j-api-1.7.25.jar com.ibm.rules.oauth.ClientAssertionHelper -clientId <CLIENT_ID> -tokenEndpoint https://login.microsoftonline.com/<TENANT_ID>/oauth2/v2.0/token -keyAliasName myalias -keyStorePwd changeme -keyStoreLocation ./myodmcompany.jks
@@ -466,7 +481,7 @@ curl -H "Content-Type: application/json" -k --data @payload.json \
 
 # Troubleshooting
 
-If you encounter any issue, have a look at the [common troubleshooting explanation](../README.md#Troubleshooting)
+If you encounter any issue, have a look at the [common troubleshooting explanation](../README.md#troubleshooting)
 
 # License
 
