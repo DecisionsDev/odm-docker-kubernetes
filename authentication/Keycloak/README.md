@@ -478,19 +478,10 @@ You can now install the product. We will use the PostgreSQL internal database an
 
 #### a. Installation on OpenShift using Routes
 
-  See the [Preparing to install](https://www.ibm.com/docs/en/odm/9.5.0?topic=production-preparing-install-operational-decision-manager) documentation for more information.
+  See the [Preparing to install](https://www.ibm.com/docs/en/odm/9.5.0?topic=production-preparing-install-operational-decision-manager) documentation for more information. Inspect [keycloak-values.yaml](keycloak-values.yaml) for the parameters that have been defined for this installation.
 
   ```shell
-  helm install my-odm-release ibm-helm/ibm-odm-prod \
-      --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
-      --set oidc.enabled=true \
-      --set license=true \
-      --set internalDatabase.persistence.enabled=false \
-      --set internalDatabase.populateSampleData=true \
-      --set decisionCenter.disableAllAuthenticatedUser=true \
-      --set customization.trustedCertificateList={"keycloak-secret"} \
-      --set customization.authSecretRef=keycloak-auth-secret \
-      --set internalDatabase.runAsUser='' --set customization.runAsUser='' --set service.enableRoute=true
+  helm install my-odm-release ibm-helm/ibm-odm-prod -f keycloak-values.yaml
   ```
 
 #### b. Installation using Ingress
@@ -500,20 +491,10 @@ You can now install the product. We will use the PostgreSQL internal database an
   - [Amazon Elastic Kubernetes Service](../../platform/eks/README-NGINX.md)
   - [Google Kubernetes Engine](../../platform/gcloud/README_NGINX.md)
 
-  When the NGINX Ingress Controller is ready, you can install the ODM release with:
+  When the NGINX Ingress Controller is ready, you can install the ODM release using [keycloak-nginx-values.yaml](keycloak-nginx-values.yaml). Take note of the `service.ingress.annotations` values that have been defined in this file.
 
   ```shell
-  helm install my-odm-release ibm-helm/ibm-odm-prod \
-      --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
-      --set oidc.enabled=true \
-      --set license=true \
-      --set internalDatabase.persistence.enabled=false \
-      --set internalDatabase.populateSampleData=true \
-      --set customization.trustedCertificateList={"keycloak-secret"} \
-      --set customization.authSecretRef=keycloak-auth-secret \
-      --set service.ingress.enabled=true \
-      --set decisionCenter.disableAllAuthenticatedUser=true \
-      --set service.ingress.annotations={"kubernetes.io/ingress.class: nginx"\,"nginx.ingress.kubernetes.io/backend-protocol: HTTPS"\,"nginx.ingress.kubernetes.io/affinity: cookie"}
+  helm install my-odm-release ibm-helm/ibm-odm-prod -f keycloak-nginx-values.yaml
   ```
 
 ## Complete post-deployment tasks
