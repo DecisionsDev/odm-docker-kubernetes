@@ -1,0 +1,34 @@
+license: true
+
+image:
+  repository: cp.icr.io/cp/cp4a/odm
+  pullSecrets:
+  - icregistry-secret
+
+internalDatabase:
+  persistence:
+    enabled: false
+  populateSampleData: true
+  runAsUser: ''
+
+decisionCenter:
+  disableAllAuthenticatedUser: true
+
+customization:
+  authSecretRef: cognito-auth-secret
+  trustedCertificateList:
+  - cognito-idp-cert-secret
+  - cognito-domain-cert-secret
+  runAsUser: ''
+
+oidc:
+  enabled: true
+
+service:
+  enableRoute: true
+  ingress:
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+      nginx.ingress.kubernetes.io/affinity: "cookie"
+    enabled: true
