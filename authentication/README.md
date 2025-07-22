@@ -302,7 +302,7 @@ export HTTPS_PROXY="http://userName:yourPassword@yourProxyURL:port"
 The solution is to define the hostname, port, username and password of the proxy as JVM parameters:
 ```
 -Dhttps.proxyHost=<hostname>
--Dhttps.proxyPort=<<port>>
+-Dhttps.proxyPort=<port>
 -Dhttps.proxyUser=<username>
 -Dhttps.proxyPassword=<password>
 ```
