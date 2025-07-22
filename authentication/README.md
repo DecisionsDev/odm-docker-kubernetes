@@ -156,7 +156,7 @@ If needed, add other domains (eg. the enterprise portal). `OPENID_ALLOWED_DOMAIN
 
 ### 4.2) Causes
 
-Such symptoms indicate that the role of users is not processed accordingly:
+Such symptoms indicate that the role of users is not processed correctly:
 - either because the mapping between groups and roles is missing in ODM,
 - or the information in a token that tells which group the user belongs to (aka 'claim'), is missing or might have a different name than expected.
 
