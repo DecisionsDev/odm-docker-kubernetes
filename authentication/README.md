@@ -1,42 +1,109 @@
-<!-- TOC depthfrom:1 depthto:6 withlinks:false updateonsave:false orderedlist:false -->
+# Troubleshooting
 
-- Troubleshooting
-    - Missing or invalid redirect
-    - Missing or invalid OpenID Server Certificate
-    - Missing or Invalid Allowed Domain List
-    - Authorization issue
+<!-- TOC -->
+
+- [Tips](#tips)
+    - [Reviewing the configuration files](#1-reviewing-the-configuration-files)
+    - [Enabling detailed traces](#2-enabling-detailed-traces)
+- [Common issues](#common-issues)
+    - [Missing or invalid redirect](#1-missing-or-invalid-redirect)
+    - [Missing or invalid OpenID Server Certificate](#2-missing-or-invalid-openid-server-certificate)
+    - [Missing or Invalid Allowed Domain List](#3-missing-or-invalid-allowed-domain-list)
+    - [Authorization issue](#4-authorization-issue)
+    - [Proxy](#5-proxy)
 
 <!-- /TOC -->
 
-# Troubleshooting
+It is best to follow our OpenID tutorial suitable for your OpenID Connect Provider: either [EntraID](AzureAD/README.md), [Cognito](Cognito/README.md), [Keycloak](Keycloak/README.md) or [OKTA](Okta/README.md).
 
-You should not encounter any issue with the delivered OpenID tutorials because we generate the major configuration files.
-However, you might encounter an issue when manually configuring IBM Operational Decision Manager (ODM) with OpenID.
-We provide here the most common issues and how to solve them.
+Each tutorial walks you through the steps of configuring your OpenID Connect Provider, and provides a script to generate the ODM configuration files and instructions to deploy ODM.
 
-The list is obviously not exhaustive.
-Do not hesitate to contact us if you face a specific issue that you think needs to be reported.
+Should you encounter any issue, this page will help you with some troubleshooting tips and solutions to the most common issues.
 
-## Missing or invalid redirect
+Feel free to reach the support if you have any suggestion to improve this page.
 
-This error prevents you from accessing the login page.
-When you try to access an ODM console, according to the OpenID Application Flow, the OpenID ODM application tries to reach a valid redirect URI.
-As explained in the documentation, the redirects are:
-  * https://<Decision_Center_URL>/decisioncenter/openid/redirect/odm for the Decision Center
-  * https://<Decision_Server_Console_URL>/res/openid/redirect/odm for the Decision Server Console
+## Tips
+### 1) Reviewing the configuration files
 
-If you forgot to provide a redirect URI or if you provide an invalid redirect URI, an error like **Invalid parameter: redirect_uri** is displayed in the browser.
+Start by reviewing the configuration files as most errors come from inaccurate or inconsistent information in:
+- the Helm chart parameters
+- the ODM configuration files stored in the secret referenced by `customization.authSecretRef`:
+  - OdmOidcProviders.json
+  - openIdParameters.properties
+  - openIdWebSecurity.xml
+  - webSecurity.xml, ...
 
-## Missing or invalid OpenID Server Certificate
+Also check that the `OdmOidcProviders.json` and `openIdParameters.properties` files do not contain any comment.
 
-For almost all OpenID servers, the communication between ODM and the OpenID Server is secured with HTTPS.
+If you contact the support, please provide those files along with the logs (see the [ODM on kubernetes MustGather technote](https://www.ibm.com/support/pages/node/6404292?view=full) which can help to collect the logs from all the pods).
 
-If you forgot to provide a valid certificate, you get an exception in the browser like:
+### 2) Enabling detailed traces
 
+#### 2.1) Useful loggers
+
+If the logs from the ODM pods (and the OpenID Connect Provider) are too terse, more detailed traces can be recorded in the ODM logs by enabling additional loggers.
+
+- Start with the two loggers below:
+
+| Logger | Level |
+| ------ | ----- |
+| com.ibm.ws.security.*  | all    |
+| com.ibm.ws.webcontainer.security.* | all     |
+
+- and enable the loggers below as well if needed:
+
+| Logger | Level |
+| ------ | ----- |
+| com.ibm.oauth.*  | all    |
+| com.ibm.wsspi.security.oauth20.* | all     |
+| org.openid4java.* | all     |
+
+#### 2.2) How to change the trace specification
+
+Each ODM component (Decision Center, Decision Runner, Decision Server Console and Decision Server Runtime) has its own trace specification, stored in a ConfigMap.
+
+A default ConfigMap for each ODM component is automatically generated if no custom trace specification is specified in the Helm chart parameters.
+
+To change the trace specification of an ODM component, it is easiest to modify this default ConfigMap as explained in the [documentation](https://www.ibm.com/docs/en/odm/9.5.0?topic=kubernetes-customizing-log-levels), 
+
+For instance add `com.ibm.ws.security.*=all:com.ibm.ws.webcontainer.security.*=all` to the value for the `traceSpecification` parameter of the `logging` element, eg. (for Decision Center):
+
+```yaml
+apiVersion: v1
+data:
+  dc-logging: "<server>\n\t<logging hideMessage=\"SRVE9967W\" traceFileName=\"stdout\"
+    traceFormat=\"BASIC\" traceSpecification=\"*=audit:org.apache.solr.*=warning:com.ibm.rules.bdsl.search.solr.*=warning:com.ibm.ws.security.*=all:com.ibm.ws.webcontainer.security.*=all\"
+    consoleLogLevel=\"INFO\"/>\n\t<!-- Uncomment to get access logs \n\t<httpAccessLogging
+    filepath=\"/logs/access.log\" id=\"accessLogging\"/>\n\t-->\n</server>"
+...
+```
+
+## Common issues:
+
+## #1 Missing or invalid redirect
+### 1.1) Symptoms
+The consoles login page is not displayed, and an error like `Invalid parameter: redirect_uri` is displayed instead.
+
+### 1.2) Cause
+If the user needs to be authenticated, ODM sends a request to the OpenID Connect provider with the URI that the response (with the token) should be sent to.
+
+The OpenID Connect provider ignores requests whose redirect URI is not registered for security reasons, in case the requester is malicious.
+This ensures that the recipient of a token is trusted.
+
+### 1.3) Solution
+Follow the tutorial to register (or modify) the redirect URIs for each ODM application.
+
+For the consoles, the redirect URIs are:
+  * https://<Decision_Center_URL>/decisioncenter/openid/redirect/odm
+  * https://<Decision_Server_Console_URL>/res/openid/redirect/odm
+
+## #2 Missing or invalid OpenID Server Certificate
+### 2.1) Symptoms
+The browser displays the error:
 ```json
 {"error_description":"OpenID Connect client returned with status: SEND_401","error":401}
 ```
-And in the ODM pod logs, you see:
+and the ODM pod logs contains the error:
 
 ```
 CWPKI0823E: SSL HANDSHAKE FAILURE:  A signer with SubjectDN [CN=*.<OPENID_SERVER_DOMAIN>] was sent from the host [<OPENID_SERVER_URL>:443].
@@ -44,127 +111,221 @@ The signer   might need to be added to local trust store [/config/security/trust
 The extended  error message from the SSL handshake exception is: [unable to find valid certification path to requested target].
 ```
 
-Pay attention, for some OpenID servers like Azure AD, you also have to provide a root Certificate Authority (CA). For Azure AD, the root CA currently is [Digicert](https://www.digicert.com/).
+### 2.2) Cause
+The communication between ODM and the OpenID Connect Provider is usually secured with HTTPS.
 
-## Missing or Invalid Allowed Domain List
+A connection cannot be made if the certificate of OpenID Connect Provider is not trusted by ODM.
 
-ODM uses a check referer mechanism to prevent [CSRF attack](https://portswigger.net/web-security/csrf).
-So, you have to provide the allowed domains for ODM by using the property OPENID_ALLOWED_DOMAINS that is included in the openIdParameters.properties file.
-In general, an allowed domain corresponds to the OpenID server name. However, in some contexts like Azure AD, the OpenID server redirects to an enterprise portal.
-So, you must also provide the enterprise portal URL with the list of allowed domains. OPENID_ALLOWED_DOMAINS is a list of comma-separated values. Wildcard * is not accepted.
-Here is how to identify this issue:
+### 2.3) Solution
+Follow the tutorial instructions to retrieve the certificate and let ODM trust it.
 
-* Decision Center is not accessible and you see the following message in the pod logs:
+As explained in Entra ID tutorial, you might need to let ODM trust the root Certificate Authority (CA) too. Entra ID currently uses [Digicert](https://www.digicert.com/) as root CA.
+
+## #3 Missing or Invalid Allowed Domain List
+### 3.1) Symptoms
+The console is not accessible with an error code `HTTP 400`,
+and the ODM log contains the following errors:
+  - Decision Center
+    ```
+    com.ibm.rules.decisioncenter.web.core.filters.SecurityCheckPointFilter isRefererHeaderValid Invalid request [Referer - https://<external-idp-domain-name>/]{"method":"GET","URL":"https:\/\/<Decision_Center_URL>:443\/odm\/decisioncenter"}**
+    ```
+  - Decision Server Console
+    ```
+    console       W   An unauthorized access has been detected from <ORIGIN> because the security token is incorrect or the request contains an invalid referer header. The console is potentially under a Cross-site request forgery attack.
+    ```
+
+### 3.2) Cause
+ODM features a referrer check that ignores requests whose origin is unexpected to prevent [CSRF attacks](https://portswigger.net/web-security/csrf).
+
+To ensure a normal behaviour, the OpenID server domain must be configured as trusted to prevent ODM from ignoring requests redirected from it.
+
+Some OpenID Connect Providers (such as Entra ID) may send requests from an enterprise portal, and that domain must be trusted as well.
+
+### 3.3) Solution
+Set the property `OPENID_ALLOWED_DOMAINS` to the OpenID server domain in the `openIdParameters.properties` file.
+
+If needed, add other domains (eg. the enterprise portal). `OPENID_ALLOWED_DOMAINS` expects a comma-separated value, and wildcards (such as '*') are not accepted.
+
+
+## #4 Authorization issue
+### 4.1) Symptoms
+
+- You have the `rtcAdministrator` role but the `Administration` tab is not displayed in the Business Console,
+- or you cannot log in the Business Console at all (if the Helm chart parameter `decisionCenter.disableAllAuthenticatedUser` is set to `true`),
+- or you have at least the `rtsMonitor` role, but you are unable to log in the RES console.
+
+### 4.2) Causes
+
+Such symptoms indicate that the role of users is not processed accordingly:
+- either because the mapping between groups and roles is missing in ODM,
+- or the information in a token that tells which group the user belongs to (aka 'claim'), is missing or might have a different name than expected.
+
+### 4.3) Solution
+
+1) Check the role mappings in `webSecurity.xml`.
+
+    You should find lines such as the one below that specifies which group is granted an ODM role:
+
+    ```xml
+    <variable name="odm.rtsAdministrators.group1" value="group:<OPENID_SERVER_URL_TO_REACH_THE_DEDICATED_GROUP>"/>
+    ```
+
+    The syntax to identify a group varies depending on the OpenID Connect Provider.
+
+1) Check the name of the 'claim' in `openIdWebSecurity.xml`
+
+    In the example below, ODM is configured to expect that the access tokens contain a claim named `groups` that lists all the groups that the authenticated user belongs to:
+
+    ```
+    <openidConnectClient authFilterRef="browserAuthFilter" id="odm" scope="openid"
+                         groupIdentifier="groups"
+                         ...
+    />
+    <openidConnectClient authFilterRef=apiAuthFilter" id="odmapi" scope="openid"
+                         groupIdentifier="groups"
+                         ...
+    />
+    ```
+
+1) Check the token contains the expected claim and that its value is the list of groups that the user actually belongs to.
+
+    You can check the content of a token either in the OpenId Connect Provider portal, or by:
+    - retrieving an access token (by sending a request to the 'token' endpoint),
+    - and decrypting the access token (using a JWT decoder tool).
+
+    Our tutorials provide scripts enabling to retrieve an access token.
+
+    Here is an example of a token containing a claim named `groups`:
+    ```json
+    {
+      "exp": 1669040783,
+      "iat": 1669040483,
+      "auth_time": 1669040482,
+      "jti": "4b49e91d-e80d-42a0-a51b-8c68779025e2",
+      "iss": "https://keycloak-mattest.apps.ocp-psit-ado.cp.fyre.ibm.com/realms/odm",
+      "aud": "odm",
+      "sub": "1418ff49-8258-43f2-839b-5f2e11357827",
+      "typ": "ID",
+      "azp": "odm",
+      "session_state": "d0625094-b449-41ab-ae03-3af800c6564a",
+      "at_hash": "ygL3LNBshUa2mXl9ljKxYQ",
+      "acr": "1",
+      "sid": "d0625094-b449-41ab-ae03-3af800c6564a",
+      "email_verified": true,
+      "name": "John Doe",
+      "groups": [
+        "rtsConfigManagers",
+        "resAdministrators",
+        "resMonitors",
+        "rtsAdministrators",
+        "rtsInstallers",
+        "resDeployers",
+        "rtsUsers",
+        "resExecutors"
+      ],
+      "preferred_username": "johndoe@mycompany.com",
+      "given_name": "John",
+      "family_name": "Doe",
+      "email": "johndoe@mycompany.com"
+    }
+    ```
+
+1) If needed, enable detailed traces (see [Enabling detailed traces](#2-enabling-detailed-traces))
+
+    For instance, to troubleshoot an Authorization issue is Decision Center:
+
+    * Modify the `traceSpecification` for Decision Center by adding `com.ibm.ws.security.*=all:com.ibm.ws.webcontainer.security.*=all` and apply the change,
+    * Wait for the decisioncenter pod to take into account the change and have a look at the pod logs,
+    * Try authenticating in the Business Console,
+    * Redirect the Decision Center logs to a file by running `kubectl logs <DC_POD_NAME> > dc.log` because the Liberty logs are very verbose and hard to analyze  on the fly.
+    * In the `dc.log` file, search for the pattern **groupIds=[**
+    It should list all the groups the authenticated user belongs to.
+    One of these groups must be granted a suitable ODM role according to the role mapping in the `webSecurity.xml`.
+
+      Here is an example of a trace when the user John Doe authenticates (from the [Keycloak tutorial](./Keycloak/README.md)):
+
+      ```
+      Public Credential: com.ibm.ws.security.credentials.wscred.WSCredentialImpl@151c2134,
+        realmName=KEYCLOAK_SERVER_URL,securityName=johndoe@mycompany.com,
+          realmSecurityName=KEYCLOAK_SERVER_URL/johndoe@mycompany.com,
+          uniqueSecurityName=johndoe@mycompany.com,primaryGroupId=null,
+          accessId=user:KEYCLOAK_SERVER_URL/johndoe@mycompany.com,
+          groupIds=[group:KEYCLOAK_SERVER_URL/rtsAdministrators,
+          group:KEYCLOAK_SERVER_URL/rtsConfigManagers,
+          group:KEYCLOAK_SERVER_URL/resAdministrators,
+          group:KEYCLOAK_SERVER_URL/resMonitors,
+          group:KEYCLOAK_SERVER_URL/rtsInstallers,
+          group:KEYCLOAK_SERVER_URL/resDeployers,
+          group:KEYCLOAK_SERVER_URL/rtsUsers,
+          group:KEYCLOAK_SERVER_URL/resExecutors]
+      ```
+
+## #5 Proxy
+### 5.1) Symptoms
+The consoles are not accessible with an error code `HTTP 401` or display an error message such as:
 ```
-com.ibm.rules.decisioncenter.web.core.filters.SecurityCheckPointFilter isRefererHeaderValid Invalid request [Referer - https://<external-idp-domain-name>/]{"method":"GET","URL":"https:\/\/<Decision_Center_URL>:443\/odm\/decisioncenter"}**
-```
-* Decision Server Console is not accessible
-
-## Authorization issue
-
-If you do not use the Helm chart property **decisionCenter.disableAllAuthenticatedUser=true**, you only need to be authenticated with the OpenID server to access Decision Center as rtsUser.
-However, if you want to have access to the Administration tab in Decision Center, you must be authorized by Liberty to belong to the rtsAdministrators group.
-This can be done through a mapping mechanism in the webSecurity.xml file:
-
-```xml
-<variable name="odm.rtsAdministrators.group1" value="group:<OPENID_SERVER_URL_TO_REACH_THE_DEDICATED_GROUP>"/>
+server IP address could not be found.
+Try:
+  Checking the connection
+  Checking the proxy, firewall, and DNS configuration
 ```
 
-The URL that provides the dedicated OpenID Server syntax group depends on the OpenID Server but also on the openIdConnectClient groupId property that you use with this OpenID Server. Azure AD uses ObjectId. For Keycloak, we advise to use roles.
-If you encounter issues to be authorized, follow this advice:
-* To debug the Liberty authorization mechanism when accessing Decision Center, choose one of the following options:
-    * Edit the Decision Center logging configmap of the current release by adding:
-        **com.ibm.ws.security.\*=all:com.ibm.ws.webcontainer.security.\*=all** to the Liberty logging.
-    * Create the **my-dc-logging-configmap** Decision Center configmap using [dc-logging.yaml](./dc-logging.yaml) with the command:
-            **kubectl apply -f dc-logging.xml**
-      and attach it to the Helm deployment using
-            **-set decisionCenter.loggingRef=my-dc-logging-configmap**
-* To debug the Liberty authorization mechanism when accessing Decision Server Console, choose one of the following options:
-    * Edit the Decision Server Console logging configmap of the current release by adding:
-        **com.ibm.ws.security.\*=all:com.ibm.ws.webcontainer.security.\*=all** to the Liberty logging.
-    * Create the **my-dsc-logging-configmap** Decision Server configmap using [dsc-logging.yaml](./dsc-logging.yaml) with the command:
-            **kubectl apply -f dsc-logging.xml**
-      and attach it to the Helm deployment using
-            **-set decisionServerConsole.loggingRef=my-dsc-logging-configmap**
-* Wait for the pod to take into account the change and have a look at the pod logs.
-* Try authenticating with the Decision Server URL.
-* Redirect the Decision Center logs to a file with kubectl logs <DC_POD_NAME> > dc.logs because the Liberty logs are very verbose and impossible to analyze  on the fly.
-* In the dc.logs file, search for the pattern **groupIds=[**
-It should list all the group names to which the logged user belongs.
-The mapping in the webSecurity.xml file must precisely use one of these group names.
-
-Here is an example from the [Keycloak tutorial](./Keycloak/README.md) that illustrates a John Doe authentication:
+and the ODM logs contains an error `CWWKS1708E` such as:
 
 ```
-Public Credential: com.ibm.ws.security.credentials.wscred.WSCredentialImpl@151c2134,
-  realmName=KEYCLOAK_SERVER_URL,securityName=johndoe@mycompany.com,
-    realmSecurityName=KEYCLOAK_SERVER_URL/johndoe@mycompany.com,
-    uniqueSecurityName=johndoe@mycompany.com,primaryGroupId=null,
-    accessId=user:KEYCLOAK_SERVER_URL/johndoe@mycompany.com,
-    groupIds=[group:KEYCLOAK_SERVER_URL/rtsAdministrators,
-    group:KEYCLOAK_SERVER_URL/rtsConfigManagers,
-    group:KEYCLOAK_SERVER_URL/resAdministrators,
-    group:KEYCLOAK_SERVER_URL/resMonitors,
-    group:KEYCLOAK_SERVER_URL/rtsInstallers,
-    group:KEYCLOAK_SERVER_URL/resDeployers,
-    group:KEYCLOAK_SERVER_URL/rtsUsers,
-    group:KEYCLOAK_SERVER_URL/resExecutors]
+CWWKS1708E: The OpenID Connect client [odm] is unable to
+The OpenID Connect agent [...] is unable to contact the OpenID Connect provider at [.../token]
+to receive an ID token due to [...: Name or service not known].
+```
+or
+```
+CWWKS1708E: The OpenID Connect client [odm] is unable to contact the OpenID Connect provider at [.../token] 
+to receive an ID token due to [Failed to reach endpoint .../token because of the following error: <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html><head>
+<title>404 Not Found</title>
+</head><body>
+<h1>Not Found</h1>
+<p>The requested URL .../token was not found on this server.</p>
+</body></html>].
+````
+### 5.2) Cause
+A proxy is preventing to connect to the OpenId Connect Provider.
+
+To confirm it, you can try sending a request to the OpenId Connect Provider using `curl` from a shell within the pod.
+And if it fails, try again after defining environment variables enabling to pass the proxy to confirm that it solves the problem, ie:
+```
+export HTTP_PROXY="http://userName:yourPassword@yourProxyURL:port"
+export HTTPS_PROXY="http://userName:yourPassword@yourProxyURL:port"
 ```
 
-We used:
-
-```xml
-<variable name="odm.rtsAdministrators.group1" value="group:KEYCLOAK_SERVER_URL/rtsAdministrators"/>
+### 5.3) Solution
+The solution is to define the hostname, port, username and password of the proxy as JVM parameters:
 ```
-
-If the list is empty, it means that Liberty did not find any group in the **id_token** provided by the openIdConnectClient **groupId** property in the openIdWebSecurity.xml file.
-Check that:
-* You used the relevant property name (e.g. groupId="groups").
-* The **id_token** found in the Liberty logs contains the expected **groups** names.
-
-For example, you can find in the logs:
-
+-Dhttps.proxyHost=<hostname>
+-Dhttps.proxyPort=<<port>>
+-Dhttps.proxyUser=<username>
+-Dhttps.proxyPassword=<password>
 ```
-Private Credential: {com.ibm.wsspi.security.cred.cacheKey=aSU1t4UsE/P1t6P2LEqhSNC5g7gxaQUYPoTr6XRuL6M=,
-token_type=Bearer,
-access_token=eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJVMVZadVY1S18zbWNGclprVnJFSGFnQWxDaWV2S0ZjOTNoLWVMQ2lMR2hrIn0.eyJleHAiOjE2NjkwNDA3ODMsImlhdCI6MTY2OTA0MDQ4MywiYXV0aF90aW1lIjoxNjY5MDQwNDgyLCJqdGkiOiI4OTgzNTAzZi0wMzMxLTQxMmUtYWI5MS0zZWE2Yjc0Nzc3ZTMiLCJpc3MiOiJodHRwczovL2tleWNsb2FrLW1hdHRlc3QuYXBwcy5vY3AtcHNpdC1hZG8uY3AuZnlyZS5pYm0uY29tL3JlYWxtcy9vZG0iLCJzdWIiOiIxNDE4ZmY0OS04MjU4LTQzZjItODM5Yi01ZjJlMTEzNTc4MjciLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJvZG0iLCJzZXNzaW9uX3N0YXRlIjoiZDA2MjUwOTQtYjQ0OS00MWFiLWFlMDMtM2FmODAwYzY1NjRhIiwiYWNyIjoiMSIsInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJydHNDb25maWdNYW5hZ2VycyIsInJlc0FkbWluaXN0cmF0b3JzIiwicmVzTW9uaXRvcnMiLCJydHNBZG1pbmlzdHJhdG9ycyIsInJ0c0luc3RhbGxlcnMiLCJyZXNEZXBsb3llcnMiLCJydHNVc2VycyIsInJlc0V4ZWN1dG9ycyJdfSwic2NvcGUiOiJvcGVuaWQgZW1haWwgcHJvZmlsZSIsInNpZCI6ImQwNjI1MDk0LWI0NDktNDFhYi1hZTAzLTNhZjgwMGM2NTY0YSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJuYW1lIjoiSm9obiBEb2UiLCJncm91cHMiOlsicnRzQ29uZmlnTWFuYWdlcnMiLCJyZXNBZG1pbmlzdHJhdG9ycyIsInJlc01vbml0b3JzIiwicnRzQWRtaW5pc3RyYXRvcnMiLCJydHNJbnN0YWxsZXJzIiwicmVzRGVwbG95ZXJzIiwicnRzVXNlcnMiLCJyZXNFeGVjdXRvcnMiXSwicHJlZmVycmVkX3VzZXJuYW1lIjoiam9obmRvZUBteWNvbXBhbnkuY29tIiwiZ2l2ZW5fbmFtZSI6IkpvaG4iLCJmYW1pbHlfbmFtZSI6IkRvZSIsImVtYWlsIjoiam9obmRvZUBteWNvbXBhbnkuY29tIn0.HlgkXl5lrqBSxUwbvvPxE4gjmXk2jt1R5WLSUfwUtJSjrJNfkAScteTlvXf0uR4gGtdqeVznGCuwr0F88zKTXimKp1sIbCWIzsVzKrvPSG_VzlvJs-AHstXOGmfQSds2igQiXJWBXyaxnGV74cAlrrIZ7nwFRoeDmLgMhjFgcQ8aaF0-oZKZEye3DR7a0cqboSpYj1qD2ro9DGXeNTeB6-naPquWm83TLKBIlfXPY7Izf4DyZLqNoKhMp7xGX7D8fe6ozfYKJ3EwLLvEA9mOldJC-xomvcGwvMeeUCIE4m_9P0s-crVnUgecvdwM4wR0lCX83rnSwqCZWQUHwl8mtg,
-com.ibm.ws.authentication.internal.assertion=true,
-com.ibm.wssi.security.oidc.client.credential.storing.utc.time.milliseconds=1669040483111,
-id_token=eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJVMVZadVY1S18zbWNGclprVnJFSGFnQWxDaWV2S0ZjOTNoLWVMQ2lMR2hrIn0.eyJleHAiOjE2NjkwNDA3ODMsImlhdCI6MTY2OTA0MDQ4MywiYXV0aF90aW1lIjoxNjY5MDQwNDgyLCJqdGkiOiI0YjQ5ZTkxZC1lODBkLTQyYTAtYTUxYi04YzY4Nzc5MDI1ZTIiLCJpc3MiOiJodHRwczovL2tleWNsb2FrLW1hdHRlc3QuYXBwcy5vY3AtcHNpdC1hZG8uY3AuZnlyZS5pYm0uY29tL3JlYWxtcy9vZG0iLCJhdWQiOiJvZG0iLCJzdWIiOiIxNDE4ZmY0OS04MjU4LTQzZjItODM5Yi01ZjJlMTEzNTc4MjciLCJ0eXAiOiJJRCIsImF6cCI6Im9kbSIsInNlc3Npb25fc3RhdGUiOiJkMDYyNTA5NC1iNDQ5LTQxYWItYWUwMy0zYWY4MDBjNjU2NGEiLCJhdF9oYXNoIjoieWdMM0xOQnNoVWEybVhsOWxqS3hZUSIsImFjciI6IjEiLCJzaWQiOiJkMDYyNTA5NC1iNDQ5LTQxYWItYWUwMy0zYWY4MDBjNjU2NGEiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwibmFtZSI6IkpvaG4gRG9lIiwiZ3JvdXBzIjpbInJ0c0NvbmZpZ01hbmFnZXJzIiwicmVzQWRtaW5pc3RyYXRvcnMiLCJyZXNNb25pdG9ycyIsInJ0c0FkbWluaXN0cmF0b3JzIiwicnRzSW5zdGFsbGVycyIsInJlc0RlcGxveWVycyIsInJ0c1VzZXJzIiwicmVzRXhlY3V0b3JzIl0sInByZWZlcnJlZF91c2VybmFtZSI6ImpvaG5kb2VAbXljb21wYW55LmNvbSIsImdpdmVuX25hbWUiOiJKb2huIiwiZmFtaWx5X25hbWUiOiJEb2UiLCJlbWFpbCI6ImpvaG5kb2VAbXljb21wYW55LmNvbSJ9.NBbZPp6Mymve3mLVyE0zKgW-yN1VZvZ5FnmpP93ImMDtMc2yYRw9wxZzQ_eZLsAulyR-SlkxIWhMESKcoIKW8Scm23rJembUgyfJ82btGBGAOIXAQDtN7rnGq4_6U6gUaUA7OIswErii4zG3GmXSLu3COBsAIYRaIPtGc_X1OM-bfc9jeGI8H2yK8y9MnlsvTTRaNT6YRNja-yuQKcVe3dukDb7hL5FvBCAWjWnZ0bocQobeYuXp3xV8I8j4z3hC-HAPmvSrgHOEJhokPNKlBfnACE4-1TFzu5fJQztbb8MfzCwVzvpLTmkTdTe3NMk7UDnrUYLfGtiGarGuOOAUYw, ...
-```
+This needs to be done for each ODM component as the JVM parameters are individually defined for each ODM component.
 
-Introspecting the **id_token** with [https://jwt.io](https://jwt.io), you should get:
+For each ODM component:
 
-```json
-{
-  "exp": 1669040783,
-  "iat": 1669040483,
-  "auth_time": 1669040482,
-  "jti": "4b49e91d-e80d-42a0-a51b-8c68779025e2",
-  "iss": "https://keycloak-mattest.apps.ocp-psit-ado.cp.fyre.ibm.com/realms/odm",
-  "aud": "odm",
-  "sub": "1418ff49-8258-43f2-839b-5f2e11357827",
-  "typ": "ID",
-  "azp": "odm",
-  "session_state": "d0625094-b449-41ab-ae03-3af800c6564a",
-  "at_hash": "ygL3LNBshUa2mXl9ljKxYQ",
-  "acr": "1",
-  "sid": "d0625094-b449-41ab-ae03-3af800c6564a",
-  "email_verified": true,
-  "name": "John Doe",
-  "groups": [
-    "rtsConfigManagers",
-    "resAdministrators",
-    "resMonitors",
-    "rtsAdministrators",
-    "rtsInstallers",
-    "resDeployers",
-    "rtsUsers",
-    "resExecutors"
-  ],
-  "preferred_username": "johndoe@mycompany.com",
-  "given_name": "John",
-  "family_name": "Doe",
-  "email": "johndoe@mycompany.com"
-}
-```
+1. Retrieve the default JVM parameters from the ConfigMap automatically created and named `<RELEASE_NAME>-odm-<COMPONENT>-jvm-options-configmap` where `<COMPONENT>` is either `dc`, `dr`, `ds-console` or `ds-runtime`:
+    ```
+    kubectl get configmap <RELEASE_NAME>-odm-<COMPONENT>-jvm-options-configmap -o yaml > <COMPONENT>-jvm-options.yaml
+    ```
+
+1. Edit the .yaml file to add the new JVM parameters above, and change its name to `my-odm-<COMPONENT>-jvm-options-configmap` for instance:
+    ```
+    kubectl apply -f <COMPONENT>-jvm-options.yaml
+    ```
+
+1. Set the Helm chart parameter `jvmOptionsRef` for the ODM component:
+
+    For instance, for Decision Center:
+    ```
+    decisionCenter:
+      jvmOptionsRef: my-odm-dc-jvm-options-configmap
+    ```
+
+Then redeploy the chart.
