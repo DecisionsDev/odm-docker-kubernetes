@@ -150,7 +150,7 @@ If needed, add other domains (eg. the enterprise portal). `OPENID_ALLOWED_DOMAIN
 ## #4 Authorization issue
 ### 4.1) Symptoms
 
-- You have the `rtcAdministrator` role but the `Administration` tab is not displayed in the Business Console,
+- You have the `rtsAdministrator` role but the `Administration` tab is not displayed in the Business Console,
 - or you cannot log in the Business Console at all (if the Helm chart parameter `decisionCenter.disableAllAuthenticatedUser` is set to `true`),
 - or you have at least the `rtsMonitor` role, but you are unable to log in the RES console.
 
@@ -308,24 +308,26 @@ The solution is to define the hostname, port, username and password of the proxy
 ```
 This needs to be done for each ODM component as the JVM parameters are individually defined for each ODM component.
 
-For each ODM component:
+- For each ODM component:
 
-1. Retrieve the default JVM parameters from the ConfigMap automatically created and named `<RELEASE_NAME>-odm-<COMPONENT>-jvm-options-configmap` where `<COMPONENT>` is either `dc`, `dr`, `ds-console` or `ds-runtime`:
-    ```
-    kubectl get configmap <RELEASE_NAME>-odm-<COMPONENT>-jvm-options-configmap -o yaml > <COMPONENT>-jvm-options.yaml
-    ```
+  1. Retrieve the default JVM parameters from the ConfigMap automatically created and named `<RELEASE_NAME>-odm-<COMPONENT>-jvm-options-configmap` where `<COMPONENT>` is either `dc`, `dr`, `ds-console` or `ds-runtime`:
+      ```
+      kubectl get configmap <RELEASE_NAME>-odm-<COMPONENT>-jvm-options-configmap -o yaml > <COMPONENT>-jvm-options.yaml
+      ```
 
-1. Edit the .yaml file to add the new JVM parameters above, and change its name to `my-odm-<COMPONENT>-jvm-options-configmap` for instance:
-    ```
-    kubectl apply -f <COMPONENT>-jvm-options.yaml
-    ```
+  1. Edit the .yaml file to add the new JVM parameters above, and change its name to `my-odm-<COMPONENT>-jvm-options-configmap` for instance:
+      ```
+      kubectl apply -f <COMPONENT>-jvm-options.yaml
+      ```
 
-1. Set the Helm chart parameter `jvmOptionsRef` for the ODM component:
+  1. Set the Helm chart parameter `jvmOptionsRef` for the ODM component:
 
-    For instance, for Decision Center:
-    ```
-    decisionCenter:
-      jvmOptionsRef: my-odm-dc-jvm-options-configmap
-    ```
+      For instance, for Decision Center:
+      ```
+      decisionCenter:
+        jvmOptionsRef: my-odm-dc-jvm-options-configmap
+      ```
 
-Then redeploy the chart.
+- Add `useSystemPropertiesForHttpClientConnections="true"` in `openIdWebSecurity.xml` and update the secret that contains that file.
+
+- Then redeploy the chart.
