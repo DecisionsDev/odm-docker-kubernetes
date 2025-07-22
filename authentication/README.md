@@ -328,6 +328,6 @@ This needs to be done for each ODM component as the JVM parameters are individua
         jvmOptionsRef: my-odm-dc-jvm-options-configmap
       ```
 
-- Add `useSystemPropertiesForHttpClientConnections="true"` in `openIdWebSecurity.xml` and update the secret that contains that file.
+- Add the parameter `useSystemPropertiesForHttpClientConnections="true"` in both openIdConnectClient elements in `openIdWebSecurity.xml` and update the secret that contains that file.
 
 - Then redeploy the chart.
