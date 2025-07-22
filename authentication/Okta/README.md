@@ -264,13 +264,13 @@ In this step, we augment the token with meta-information that is required by the
 
 #### 1. Retrieve Okta Server information.
 
-    From the Okta console, in **Security** / **API** / **default** / **Settings** :
-    - Note the *OKTA_SERVER_NAME* which is the **Okta domain** in the **Issuer** (similar to *\<shortname\>.okta.com*).
+  - From the Okta console, in **Security** / **API** / **default** / **Settings** :
+  - Note the *OKTA_SERVER_NAME* which is the **Okta domain** in the **Issuer** (similar to *\<shortname\>.okta.com*).
 
 #### 2. Create a secret with the Okta Server certificate.
 
-    To allow ODM services to access the Okta Server, it is mandatory to provide the Okta Server certificate.
-    You can create the secret as follows:
+  - To allow ODM services to access the Okta Server, it is mandatory to provide the Okta Server certificate.
+  You can create the secret as follows:
 
     ```
     keytool -printcert -sslserver <OKTA_SERVER_NAME> -rfc > okta.crt
@@ -279,10 +279,9 @@ In this step, we augment the token with meta-information that is required by the
 
 #### 3. Generate the ODM configuration file for Okta.
 
-    The [script](generateTemplate.sh) allows you to generate the necessary configuration files.
-    You can download the [okta-odm-script.zip](okta-odm-script.zip) .zip file to your machine. This .zip file contains the [script](generateTemplate.sh) and the content of the [templates](templates) directory.
+  - Download the [okta-odm-script.zip](okta-odm-script.zip) .zip file to your machine
+  - and run the script [`generateTemplate.sh`](generateTemplate.sh) to generate the ODM configuration files (using [templates](templates)) :
 
-    Generate the files with the following command:
     ```
     ./generateTemplate.sh -i <OKTA_CLIENT_ID> -x <OKTA_CLIENT_SECRET> -n <OKTA_SERVER_NAME> -g <OKTA_ODM_GROUP> -s <OKTA_API_SCOPE>
     ```
@@ -294,10 +293,11 @@ In this step, we augment the token with meta-information that is required by the
     - *OKTA_API_SCOPE* has been defined [above](#configure-the-default-authorization-server) (*odmapiusers*)
 
 
-    The files are generated into the `output` directory.
+    The files are generated into a directory named `output`.
 
 #### 4. Create the Okta authentication secret.
 
+  - run the command below to create a secret containing the configuration files generated at the previous step:
     ```
     kubectl create secret generic okta-auth-secret \
         --from-file=OdmOidcProviders.json=./output/OdmOidcProviders.json \
