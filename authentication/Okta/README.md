@@ -327,17 +327,10 @@ In this step, we augment the token with meta-information that is required by the
 
 3. Run the `helm install` command.
 
-    You can now install the product. We will use the PostgreSQL internal database and disable the data persistence (`internalDatabase.persistence.enabled=false`) to avoid any platform complexity concerning persistent volume allocation.
+    You can now install the product. We will use the PostgreSQL internal database and disable the data persistence (`internalDatabase.persistence.enabled=false`) to avoid any platform complexity concerning persistent volume allocation. Inspect [okta-values.yaml](okta-values.yaml) for the parameters that have been defined for this installation.
 
     ```
-    helm install my-odm-release ibm-helm/ibm-odm-prod \
-          --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
-          --set oidc.enabled=true \
-          --set internalDatabase.persistence.enabled=false \
-          --set internalDatabase.populateSampleData=true \
-          --set customization.trustedCertificateList={"okta-secret"} \
-          --set customization.authSecretRef=okta-auth-secret \
-          --set license=true
+    helm install my-odm-release ibm-helm/ibm-odm-prod -f okta-values.yaml
     ```
 
     > Note: 
@@ -351,8 +344,7 @@ In this step, we augment the token with meta-information that is required by the
     > If you want to install a **specific version**, add the `--version` option:
     >
     > ```bash
-    > helm install my-odm-release ibm-helm/ibm-odm-prod --version <version> \
-    >     --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret ...
+    > helm install my-odm-release ibm-helm/ibm-odm-prod --version <version> -f okta-values.yaml
     > ```
     >
     > - You can list all available versions using:
