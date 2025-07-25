@@ -19,7 +19,7 @@ customization:
   trustedCertificateList:
   - keycloak-secret
   runAsUser: ''
-  
+
 oidc:
   enabled: true
 
