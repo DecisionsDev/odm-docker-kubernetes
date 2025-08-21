@@ -372,8 +372,10 @@ test() {
             --trustStoreFormat   '${TRUST_TYPE:-}'" 
     fi
     trace "$CMD"
-    echo ""
-    eval $CMD
+    if ! eval $CMD ; then
+        # an error occured. Catch this error here to prevent from aborting the script
+        echo "" # dummy instruction
+    fi
 }
 
 #
