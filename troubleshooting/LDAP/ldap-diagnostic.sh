@@ -435,7 +435,10 @@ test_with_params_file() {
         CMD="kubectl exec -it -n ${NAMESPACE} ldap-sdk-tools -- ldapsearch --propertiesFilePath /tmp/$(basename ${PARAMS_FILE})"
         trace "$CMD"
         echo ""
-        eval $CMD
+        if ! eval $CMD ; then
+            # an error occured. Catch this error here to prevent from aborting the script
+            echo "" # dummy instruction
+        fi
     fi
 
     stop_pod
