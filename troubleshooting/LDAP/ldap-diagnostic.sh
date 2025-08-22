@@ -393,8 +393,8 @@ test_with_params_file() {
         eval  "local ${key}=\${value}"
     done < "${PARAMS_FILE}"
 
+    TEMP_PARAMS_FILE=$(mktemp)
     if [ -n "${trustStorePath:-}" ]; then
-        TEMP_PARAMS_FILE=$(mktemp)
         sed "s|trustStorePath=${trustStorePath}|trustStorePath=/tmp/$(basename ${trustStorePath})|" "${PARAMS_FILE}" > "${TEMP_PARAMS_FILE}"
     else
         cp ${PARAMS_FILE} ${TEMP_PARAMS_FILE}
