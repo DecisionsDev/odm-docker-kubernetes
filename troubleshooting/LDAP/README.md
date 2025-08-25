@@ -5,6 +5,9 @@
 - [Introduction](#introduction)
 - [Usage](#usage)
 - [1) automated LDAP group search](#1-automated-ldap-group-search)
+  - [Running a LDAP group search using the parameters extracted](#running-a-ldap-group-search-using-the-parameters-extracted)
+  - [Saving the parameters extracted from the LDAP configuration files](#saving-the-parameters-extracted-from-the-ldap-configuration-files)
+  - [Running a LDAP search in interactive mode](#running-a-ldap-search-in-interactive-mode)
 - [2) file-based LDAP search](#2-file-based-ldap-search)
 - [3) interactive LDAP search](#3-interactive-ldap-search)
 - [Common errors](#common-errors)
@@ -188,7 +191,7 @@ You can either:
 Your choice: 
 ```
 
-### Running a LDAP search using parameters entered interactively
+### Running a LDAP search in interactive mode
 
 Press 3 and `ldapsearch` is started in interactive mode, asking for the connection parameters first (host, port, SSL, bindDN, ...)
 ```shell
