@@ -249,7 +249,7 @@ copy_truststore() {
         echo ""
         echo "Retrieving the truststore from '${DC}'..."
         TRUST_FILE="${PWD}/$(basename ${TRUST_PATH})"
-        RESULT=$(kubectl cp ${DC}:${TRUST_PATH} ${TRUST_FILE} --namespace ${NAMESPACE})
+        local RESULT=$(kubectl cp ${DC}:${TRUST_PATH} ${TRUST_FILE} --namespace ${NAMESPACE})
         if [ "$?" = "0" ]; then
             echo " - saved into ${TRUST_FILE}"
         else
@@ -329,7 +329,7 @@ test() {
         echo " - copying the truststore file '${TRUST_FILE}'..."
         CMD="kubectl cp ${TRUST_FILE} ldap-sdk-tools:/tmp/$(basename ${TRUST_FILE}) -n ${NAMESPACE}"
         trace "$CMD"
-        RESULT=$(eval $CMD)
+        local RESULT=$(eval $CMD)
         if [ "$?" != "0" ]; then
             echo "   Error while copying:"
             echo "   ${RESULT}"
@@ -348,7 +348,7 @@ test() {
     echo "               --bindPassword       <REDACTED>"
     echo "               --baseDN             ${LDAP_BASE[${CHOICE}]}"
     echo "               --filter             ${LDAP_FILTER[${CHOICE}]}"
-    if [ -n "${TRUST_FILE:-]}" ]; then 
+    if [ "${FOUND_TLS_SECURITY}" = "true" ]; then 
     echo "               --trustStorePath     ${TRUST_FILE:-}"; 
     echo "               --trustStorePassword <REDACTED>"; 
     echo "               --trustStoreFormat   ${TRUST_TYPE:-}"; 
@@ -365,7 +365,7 @@ test() {
         CMD="${CMD} \
             ${LDAP_SSL[${CHOICE}]}" 
     fi
-    if [ -n "${TRUST_FILE:-]}" ]; then
+    if [ "${FOUND_TLS_SECURITY}" = "true" ]; then
         CMD="${CMD} \
             --trustStorePath     '/tmp/$(basename ${TRUST_FILE:-})' \
             --trustStorePassword '${TRUST_PASS:-}' \
@@ -466,7 +466,7 @@ baseDN=${LDAP_BASE[${CHOICE}]}
 filter=${LDAP_FILTER[${CHOICE}]}
 EOF
 
-    if [[ -n "${TRUST_FILE}" &&  -n "${TRUST_TYPE}" &&  -n "${TRUST_PASS}" ]]; then
+    if [[ "${FOUND_TLS_SECURITY}" = "true" && -n "${TRUST_FILE:-}" &&  -n "${TRUST_TYPE:-}" &&  -n "${TRUST_PASS:-}" ]]; then
         cat >>${PWD}/${1}.properties <<EOF
 trustStoreFormat=${TRUST_TYPE}
 trustStorePassword=${TRUST_PASS}
