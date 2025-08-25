@@ -5,9 +5,9 @@
 - [Introduction](#introduction)
 - [Usage](#usage)
 - [1) automated LDAP group search](#1-automated-ldap-group-search)
-  - [Choices 1 or 2: Running a LDAP group search using the parameters extracted](#choices-1-and-2-running-a-ldap-group-search-using-the-parameters-extracted)
-  - [Choice 3: Running a LDAP search in interactive mode](#choice-3-running-a-ldap-search-in-interactive-mode)
-  - [Choice 4: Saving the parameters extracted from the LDAP configuration files](#choice-4-saving-the-parameters-extracted-from-the-ldap-configuration-files)
+  - [Choices 1 or 2: Run a LDAP group search using the parameters extracted](#choices-1-and-2-run-a-ldap-group-search-using-the-parameters-extracted)
+  - [Choice 3: Run a LDAP search in interactive mode](#choice-3-run-a-ldap-search-in-interactive-mode)
+  - [Choice 4: Save the parameters extracted from the LDAP configuration files](#choice-4-save-the-parameters-extracted-from-the-ldap-configuration-files)
 - [2) file-based LDAP search](#2-file-based-ldap-search)
 - [3) interactive LDAP search](#3-interactive-ldap-search)
 - [Common errors](#common-errors)
@@ -147,7 +147,7 @@ You can either:
   1. Save the parameters extracted from `ldap-configurations.xml` and `webSecurity.xml` in two files to be used in a file-based LDAP search
   1. Quit
 
-### Choices 1 or 2: Running a LDAP group search using the parameters extracted
+### Choices 1 or 2: Run a LDAP group search using the parameters extracted
 
 ```shell
 Your choice: 1
@@ -197,7 +197,7 @@ You can either:
 Your choice: 
 ```
 
-### Choice 3: Running a LDAP search in interactive mode
+### Choice 3: Run a LDAP search in interactive mode
 
 Press 3 and `ldapsearch` is started in interactive mode, asking for the connection parameters (host, port, SSL, bindDN, ...) and offering to set additional parameters:
 ```shell
@@ -224,7 +224,7 @@ Enter the port on which to communicate with the directory server [636]: 636
 See an example with the unabridged interaction in the alternative way to run `ldapsearch` in interactive mode: [3) interactive LDAP search](#3-interactive-ldap-search).
 
 
-### Choice 4: Saving the parameters extracted from the LDAP configuration files
+### Choice 4: Save the parameters extracted from the LDAP configuration files
 
 This creates two properties files containing `ldapsearch` parameters with values extracted from `ldap-configurations.xml` and `webSecurity.xml` respectively:
   - `ldap-config.properties`
@@ -251,7 +251,7 @@ You can modify the values beforehand or add other parameters as defined in `ldap
 
 ## 2) file-based LDAP search
 
-Either create a `ldapsearch` parameters file from scratch (see the list of parameters in `ldapsearch` command line reference link above) or generate it using the command [Choice 4: Saving the parameters extracted from the LDAP configuration files](#choice-4-saving-the-parameters-extracted-from-the-ldap-configuration-files) when running the tool in [automated LDAP group search mode](#1-automated-ldap-group-search).
+Either create a `ldapsearch` parameters file from scratch (see the list of parameters in `ldapsearch` command line reference link above) or generate it using the command [Choice 4: Saving the parameters extracted from the LDAP configuration files](#choice-4-save-the-parameters-extracted-from-the-ldap-configuration-files) when running the tool in [automated LDAP group search mode](#1-automated-ldap-group-search).
 
 Then run the command `./ldap-diagnostic.sh -f <_LDAPSEARCH_PARAMETERS_FILE> -n <NAMESPACE>`
 
