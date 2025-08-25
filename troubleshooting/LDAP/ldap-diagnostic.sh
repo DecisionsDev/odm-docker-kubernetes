@@ -44,8 +44,8 @@ declare -A LDAP_FILTER
 usage() {
   echo "Usage: ${__base} [options]"
   echo "Options (optional):"
-  echo "  -i, --interactive                 Run ldapsearch in interactive mode"
   echo "  -f, --propertiesFilePath <FILE>   Run ldapsearch without interaction using the parameters in this file"
+  echo "  -i, --interactive                 Run ldapsearch in interactive mode"
   echo "  -n, --namespace     <NAMESPACE>   Namespace where ODM is installed"
   echo "  -v, --verbose                     Enable verbose output"
   echo "  -d, --debug                       Enable debug traces"
@@ -431,7 +431,7 @@ test_with_params_file() {
     fi
 
     if [ "${ERROR}" = "false" ]; then
-        echo " - running ldapSearch..."
+        echo " - running ldapsearch..."
         CMD="kubectl exec -it -n ${NAMESPACE} ldap-sdk-tools -- ldapsearch --propertiesFilePath /tmp/$(basename ${PARAMS_FILE})"
         trace "$CMD"
         echo ""
