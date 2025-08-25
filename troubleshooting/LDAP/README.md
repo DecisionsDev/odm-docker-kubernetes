@@ -5,9 +5,9 @@
 - [Introduction](#introduction)
 - [Usage](#usage)
 - [1) automated LDAP group search](#1-automated-ldap-group-search)
-  - [Running a LDAP group search using the parameters extracted](#running-a-ldap-group-search-using-the-parameters-extracted)
-  - [Saving the parameters extracted from the LDAP configuration files](#saving-the-parameters-extracted-from-the-ldap-configuration-files)
-  - [Running a LDAP search in interactive mode](#running-a-ldap-search-in-interactive-mode)
+  - [Choices 1 or 2: Running a LDAP group search using the parameters extracted](#choices-1-and-2-running-a-ldap-group-search-using-the-parameters-extracted)
+  - [Choice 3: Running a LDAP search in interactive mode](#choice-3-running-a-ldap-search-in-interactive-mode)
+  - [Choice 4: Saving the parameters extracted from the LDAP configuration files](#choice-4-saving-the-parameters-extracted-from-the-ldap-configuration-files)
 - [2) file-based LDAP search](#2-file-based-ldap-search)
 - [3) interactive LDAP search](#3-interactive-ldap-search)
 - [Common errors](#common-errors)
@@ -27,11 +27,13 @@ The `ldap-diagnostic.sh` tool helps identify issues in the LDAP configuration of
 
 The tool can be used in three different ways:
 
-1. the tool can extract the LDAP configuration and the truststore from one Decision Center pod and performs a LDAP group search. The LDAP configuration and the truststore can be saved for use in the second usage.
-1. the tool can take a parameters file as argument and run a LDAP search according to the filter specified in the file.
+1. the tool can extract the LDAP configuration and the truststore from one Decision Center pod and performs a LDAP group search using the parameters extracted to validate them. Those parameters and the truststore can be saved for use in the second mode below.
+
+1. the tool can take a parameters file as argument and run a LDAP search according to the filter and other parameters specified in the file.
+
 1. the tool can prompt the user to specify all the parameters of the LDAP search (host, port, credentials, baseDN, filter, ...).
 
-The tool starts a pod named `ldap-sdk-tools` in the specified namespace (the current one by default) and the LDAP search is performed inside this pod using the [`ldapsearch` command line tool](https://docs.ldap.com/ldap-sdk/docs/tool-usages/ldapsearch.html).
+The tool starts a pod named `ldap-sdk-tools` in the specified namespace (the current one by default) and an LDAP search is performed inside this pod using the [`ldapsearch` command line tool](https://docs.ldap.com/ldap-sdk/docs/tool-usages/ldapsearch.html).
 
 ## Usage
 
@@ -66,17 +68,21 @@ Options (optional):
 
 ## 1) automated LDAP group search
 
-In this mode the tool tries to extract the LDAP configuration and the truststore from one Decision Center pod. 
+In this mode the tool extracts the LDAP configuration and the truststore from one Decision Center pod. 
 
-Pass the `-n <NAMESPACE>` argument to specify in which namespace a Decision Center pod can be found. If this argument is missing, the tools checks in the current namespace.
+Pass the `-n <NAMESPACE>` argument to specify in which namespace a Decision Center pod can be found. If this argument is missing, the tools looks for a Decision Center pod in the current namespace.
 
-The tool looks for two files to check the LDAP configuration:
+The tool looks for the files below:
   - `webSecurity.xml`
   - `ldap-configurations.xml`
+  - `tlsSecurity.xml`
 
-> Note: `webSecurity.xml` is used for authenticating users and `ldap-configurations.xml` for the synchronization of the list of users and/or groups in Decision Center.
+> Note: 
+> - `webSecurity.xml` is used for authenticating users 
+> - `ldap-configurations.xml` for synchronizing the users and/or groups in Decision Center
+> - `tlsSecurity.xml` specifies the truststore used (among other SSL parameters)
 
-The tool parses those two XML files using `xmllint` when it can be found. It is best to have `xmllint` set up for better results.
+The tool parses those XML files using `xmllint` when it can be found. It is best to have `xmllint` installed as it is more reliable than the fallback solution.
 
 The result of the parsing is then displayed and the user prompted:
 
@@ -141,7 +147,7 @@ You can either:
   1. Save the parameters extracted from `ldap-configurations.xml` and `webSecurity.xml` in two files to be used in a file-based LDAP search
   1. Quit
 
-### Running a LDAP group search using the parameters extracted
+### Choices 1 or 2: Running a LDAP group search using the parameters extracted
 
 ```shell
 Your choice: 1
@@ -191,26 +197,40 @@ You can either:
 Your choice: 
 ```
 
-### Running a LDAP search in interactive mode
+### Choice 3: Running a LDAP search in interactive mode
 
-Press 3 and `ldapsearch` is started in interactive mode, asking for the connection parameters first (host, port, SSL, bindDN, ...)
+Press 3 and `ldapsearch` is started in interactive mode, asking for the connection parameters (host, port, SSL, bindDN, ...) and offering to set additional parameters:
 ```shell
 Your choice: 3
 Launching ldapsearch in interactive mode.
 
 Enter the address of the directory server [localhost]: ldap-ssl1.fyre.ibm.com
 
+Should the LDAP communication be encrypted?
+1 - Yes.  Use SSL with default trust settings.
+2 - Yes.  Use SSL with a manually specified configuration.
+3 - Yes.  Use StartTLS with default trust settings.
+4 - Yes.  Use StartTLS with a manually specified configuration.
+5 - No.  Use unencrypted LDAP.
+
+q - Quit this program
+
+Enter choice [1]: 1
+
+Enter the port on which to communicate with the directory server [636]: 636
+
 <...>
 ```
-See an example in [2) file-based LDAP search](#2-file-based-ldap-search)
+See an example with the unabridged interaction in the alternative way to run `ldapsearch` in interactive mode: [3) interactive LDAP search](#3-interactive-ldap-search).
 
-### Saving the parameters extracted from the LDAP configuration files
+
+### Choice 4: Saving the parameters extracted from the LDAP configuration files
 
 This creates two properties files containing `ldapsearch` parameters with values extracted from `ldap-configurations.xml` and `webSecurity.xml` respectively:
   - `ldap-config.properties`
   - `webSecurity.properties`
 
-Each file have a similar content. Here is an example below:
+Each file has a similar content. Here is an example below:
 
 ```ini
 hostname=ldap-ssl1.fyre.ibm.com
@@ -225,13 +245,13 @@ trustStorePassword=rpJd3AJG46PJKHntphQf
 trustStorePath=/Users/dev/ldapsearch/truststore.p12
 ```
 
-You can then use one of these files to run a (file-based) LDAP search.
+You can use either file to run a (file-based) LDAP search.
 
-You can modify values or add other parameters as defined in `ldapsearch` command line reference: https://docs.ldap.com/ldap-sdk/docs/tool-usages/ldapsearch.html beforehand.
+You can modify the values beforehand or add other parameters as defined in `ldapsearch` command line reference: https://docs.ldap.com/ldap-sdk/docs/tool-usages/ldapsearch.html .
 
 ## 2) file-based LDAP search
 
-Either create a `ldapsearch` parameters file from scratch (see the list of parameters in `ldapsearch` command line reference link above) or generate it using the command [Saving the parameters extracted from the LDAP configuration files](#saving-the-parameters-extracted-from-the-ldap-configuration-files) when running the tool in [automated LDAP group search mode](#1-automated-ldap-group-search).
+Either create a `ldapsearch` parameters file from scratch (see the list of parameters in `ldapsearch` command line reference link above) or generate it using the command [Choice 4: Saving the parameters extracted from the LDAP configuration files](#choice-4-saving-the-parameters-extracted-from-the-ldap-configuration-files) when running the tool in [automated LDAP group search mode](#1-automated-ldap-group-search).
 
 Then run the command `./ldap-diagnostic.sh -f <_LDAPSEARCH_PARAMETERS_FILE> -n <NAMESPACE>`
 
@@ -505,6 +525,7 @@ The server presented the following certificate chain:
      256-bit SHA-2 Fingerprint: ec:43:38:25:88:11:b7:43:bb:53:ad:28:e1:f9:e0:47:e1:24:48:50:a9:66:d4:4a:09:e1:b4:18:68:00:d9:f1
 
 Do you wish to trust this certificate?  Enter 'y' or 'n': y
+
 dn: cn=oidcResAdministrators,ou=groups,dc=example,dc=org
 cn: oidcResAdministrators
 uniqueMember: uid=oidcResAdmin,ou=users,dc=example,dc=org
@@ -575,7 +596,7 @@ command terminated with exit code 91
 command terminated with exit code 91
 ```
 
-### d) invalid Credentials
+### d) invalid credentials
 
 ```shell
 # Bind Result:
@@ -588,7 +609,7 @@ command terminated with exit code 91
 command terminated with exit code 49
 ```
 
-### e) baseDN not found
+### e) baseDN not found (no such object)
 
 ```shell
 # Result Code:  32 (no such object)
