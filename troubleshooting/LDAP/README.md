@@ -3,6 +3,7 @@
 <!-- TOC -->
 
 - [Introduction](#introduction)
+- [Requirements](#requirements)
 - [Usage](#usage)
 - [1) automated LDAP group search](#1-automated-ldap-group-search)
   - [Choices 1 or 2: Run a LDAP group search using the parameters extracted](#choices-1-and-2-run-a-ldap-group-search-using-the-parameters-extracted)
@@ -10,6 +11,7 @@
   - [Choice 4: Save the parameters extracted from the LDAP configuration files](#choice-4-save-the-parameters-extracted-from-the-ldap-configuration-files)
 - [2) file-based LDAP search](#2-file-based-ldap-search)
 - [3) interactive LDAP search](#3-interactive-ldap-search)
+- [Usage on Windows](#usage-on-windows)
 - [Common errors](#common-errors)
   - [a) Host not found (UnknownHostException)](#a-host-not-found-unknownhostexception)
   - [b) wrong Port number (An error occurred while attempting to establish a connection to server)](#b-wrong-port-number-an-error-occurred-while-attempting-to-establish-a-connection-to-server)
@@ -34,6 +36,14 @@ The tool can be used in three different ways:
 1. the tool can prompt the user to specify all the parameters of the LDAP search (host, port, credentials, baseDN, filter, ...).
 
 The tool starts a pod named `ldap-sdk-tools` in the specified namespace (the current one by default) and an LDAP search is performed inside this pod using the [`ldapsearch` command line tool](https://docs.ldap.com/ldap-sdk/docs/tool-usages/ldapsearch.html).
+
+Windows users can either run the tool in the Windows Linux Sub-system or follow the instructions in [Usage on Windows](#usage-on-windows).
+
+## Requirements
+
+1. `kubectl` must be installed.
+
+1. `xmllint` is strongly recommended. If `xmllint` is not installed, a less safe fallback solution is used to parse the XML files.
 
 ## Usage
 
@@ -81,8 +91,6 @@ The tool looks for the files below:
 > - `webSecurity.xml` is used for authenticating users 
 > - `ldap-configurations.xml` for synchronizing the users and/or groups in Decision Center
 > - `tlsSecurity.xml` specifies the truststore used (among other SSL parameters)
-
-The tool parses those XML files using `xmllint` when it can be found. It is best to have `xmllint` installed as it is more reliable than the fallback solution.
 
 The result of the parsing is then displayed and the user prompted:
 
@@ -550,6 +558,30 @@ objectClass: top
  - deleting pod ldap-sdk-tools...
 pod "ldap-sdk-tools" deleted
 ````
+
+## Usage on Windows
+
+The script can be run in Windows Linux Sub-system.
+
+Alternatively, you can manually start the `ldap-sdk-tools` pod and run a `ldapsearch` using parameters in a file. 
+
+Here are the instructions:
+
+1. start the `ldap-sdk-tools` pod by running the command below (using [`ldap-sdk-tools.yaml`](./ldap-sdk-tools.yaml)):
+    ```cmd
+    kubectl apply -f ldap-sdk-tools.yaml
+    ```
+
+1. edit the `ldapsearch` parameters file [`ldapsearch.properties`](./ldapsearch.properties) to fit it to your needs and copy it into the pod:
+    ```cmd
+    kubectl cp ldapsearch.properties ldap-sdk-tools:/tmp/ldapsearch.properties
+    ```
+
+3. start `ldapsearch`:
+    ```cmd
+    kubectl exec -it ldap-sdk-tools -- ldapsearch -f /tmp/ldapsearch.properties
+    ```
+
 
 ## Common errors
 
