@@ -114,13 +114,24 @@ parse_ldap_configurations_xml() {
     trace "${1}"
     trace ""
 
-    ldapUrl=$(get_xml_element "${1}" "ldapUrl")
-    searchConnectionDN=$(get_xml_element "${1}" "searchConnectionDN")
-    searchConnectionPassword=$(get_xml_element "${1}" "searchConnectionPassword")
-    groupSearchBase=$(get_xml_element "${1}" "groupSearchBase")
-    groupSearchFilter=$(get_xml_element "${1}" "groupSearchFilter")
-    groupMemberAttribute=$(get_xml_element "${1}" "groupMemberAttribute")
-    userNameAttribute=$(get_xml_element "${1}" "userNameAttribute")
+    if command -v xmllint > /dev/null ; then
+        local                  ldapUrl=$(echo ${1} | xmllint --xpath "/dc-usermanagement/ldapConnections/ldapConnection/ldapUrl/text()" -)
+        local       searchConnectionDN=$(echo ${1} | xmllint --xpath "/dc-usermanagement/ldapConnections/ldapConnection/searchConnectionDN/text()" -)
+        local searchConnectionPassword=$(echo ${1} | xmllint --xpath "/dc-usermanagement/ldapConnections/ldapConnection/searchConnectionPassword/text()" -)
+        local          groupSearchBase=$(echo ${1} | xmllint --xpath "/dc-usermanagement/ldapConnections/ldapConnection/groupSearchBase/text()" -)
+        local        groupSearchFilter=$(echo ${1} | xmllint --xpath "/dc-usermanagement/ldapConnections/ldapConnection/groupSearchFilter/text()" -)
+        local     groupMemberAttribute=$(echo ${1} | xmllint --xpath "/dc-usermanagement/ldapConnections/ldapConnection/groupMemberAttribute/text()" -)
+        local        userNameAttribute=$(echo ${1} | xmllint --xpath "/dc-usermanagement/ldapConnections/ldapConnection/userNameAttribute/text()" -)
+    else
+        trace " - WARNING: parsing without xmllint"
+        local                  ldapUrl=$(get_xml_element "${1}" "ldapUrl")
+        local       searchConnectionDN=$(get_xml_element "${1}" "searchConnectionDN")
+        local searchConnectionPassword=$(get_xml_element "${1}" "searchConnectionPassword")
+        local          groupSearchBase=$(get_xml_element "${1}" "groupSearchBase")
+        local        groupSearchFilter=$(get_xml_element "${1}" "groupSearchFilter")
+        local     groupMemberAttribute=$(get_xml_element "${1}" "groupMemberAttribute")
+        local        userNameAttribute=$(get_xml_element "${1}" "userNameAttribute")
+    fi
 
     echo "    Found:"
     echo "        ldapUrl                  = '${ldapUrl}'"
@@ -164,16 +175,27 @@ parse_webSecurity_xml() {
     trace "${1}"
     trace ""
 
-    ldapRegistry=$(get_xml_element_with_properties "${1}" "ldapRegistry")
-    host=$(get_xml_property         "${ldapRegistry}" "host")
-    port=$(get_xml_property         "${ldapRegistry}" "port")
-    sslEnabled=$(get_xml_property   "${ldapRegistry}" "sslEnabled")
-    baseDN=$(get_xml_property       "${ldapRegistry}" "baseDN")
-    bindDN=$(get_xml_property       "${ldapRegistry}" "bindDN")
-    bindPassword=$(get_xml_property "${ldapRegistry}" "bindPassword")
-    groupFilter=$(get_xml_property  "${ldapRegistry}" "groupFilter")
-    userFilter=$(get_xml_property   "${ldapRegistry}" "userFilter")
-
+    if command -v xmllint > /dev/null ; then
+        local         host=$(echo ${1} | xmllint --xpath "string(/server/ldapRegistry/@host)" -)
+        local         port=$(echo ${1} | xmllint --xpath "string(/server/ldapRegistry/@port)" -)
+        local   sslEnabled=$(echo ${1} | xmllint --xpath "string(/server/ldapRegistry/@sslEnabled)" -)
+        local       baseDN=$(echo ${1} | xmllint --xpath "string(/server/ldapRegistry/@baseDN)" -)
+        local       bindDN=$(echo ${1} | xmllint --xpath "string(/server/ldapRegistry/@bindDN)" -)
+        local bindPassword=$(echo ${1} | xmllint --xpath "string(/server/ldapRegistry/@bindPassword)" -)
+        local  groupFilter=$(echo ${1} | xmllint --xpath "string(/server/ldapRegistry/*/@groupFilter)" -) # use the wildcard * for groupFilter and userFilter as the name of the sub-element may differ between LDAP types
+        local   userFilter=$(echo ${1} | xmllint --xpath "string(/server/ldapRegistry/*/@userFilter)" -)  # see https://openliberty.io/docs/latest/reference/config/ldapRegistry.html
+    else
+        trace " - WARNING: parsing without xmllint"
+        local ldapRegistry=$(get_xml_element_with_properties "${1}" "ldapRegistry")
+        local         host=$(get_xml_property "${ldapRegistry}" "host")
+        local         port=$(get_xml_property "${ldapRegistry}" "port")
+        local   sslEnabled=$(get_xml_property "${ldapRegistry}" "sslEnabled")
+        local       baseDN=$(get_xml_property "${ldapRegistry}" "baseDN")
+        local       bindDN=$(get_xml_property "${ldapRegistry}" "bindDN")
+        local bindPassword=$(get_xml_property "${ldapRegistry}" "bindPassword")
+        local  groupFilter=$(get_xml_property "${ldapRegistry}" "groupFilter")
+        local   userFilter=$(get_xml_property "${ldapRegistry}" "userFilter")
+    fi
     echo "    Found:"
     echo "        host          = '${host}'"
     echo "        port          = '${port}'"
@@ -213,28 +235,36 @@ parse_tlsSecurity_xml() {
     trace "${1}"
     trace ""
 
-    local trustStoreRef=$(get_xml_property "${1}" "trustStoreRef")
-    local previous
-    local abstract=${1}
-    local count=0
-    while true; do
-        previous=${abstract}
-        abstract=$(get_xml_element_with_properties_beginning "${abstract}" "keyStore")
-        keystore=$(get_xml_element_with_properties_end       "${abstract}" "keyStore")
-        id________=$(get_xml_property "${keystore}" "id")
-        TRUST_TYPE=$(get_xml_property "${keystore}" "type")
-        TRUST_PASS=$(get_xml_property "${keystore}" "password")
-        TRUST_PATH=$(get_xml_property "${keystore}" "location")
+    if command -v xmllint > /dev/null ; then
+        local trustStoreRef=$(echo ${1} | xmllint --xpath "string(/server/ssl/@trustStoreRef)" -)
+                 TRUST_TYPE=$(echo ${1} | xmllint --xpath "string(/server/keyStore[@id='${trustStoreRef}']/@type)" -)
+                 TRUST_PASS=$(echo ${1} | xmllint --xpath "string(/server/keyStore[@id='${trustStoreRef}']/@password)" -)
+                 TRUST_PATH=$(echo ${1} | xmllint --xpath "string(/server/keyStore[@id='${trustStoreRef}']/@location)" -)
+                 id________=${trustStoreRef}
+    else
+        trace " - WARNING: parsing without xmllint"
+        local trustStoreRef=$(get_xml_property "${1}" "trustStoreRef")
+        local previous
+        local abstract=${1}
+        local count=0
+        while true; do
+            previous=${abstract}
+            abstract=$(get_xml_element_with_properties_beginning "${abstract}" "keyStore")
+            keystore=$(get_xml_element_with_properties_end       "${abstract}" "keyStore")
+            id________=$(get_xml_property "${keystore}" "id")
+            TRUST_TYPE=$(get_xml_property "${keystore}" "type")
+            TRUST_PASS=$(get_xml_property "${keystore}" "password")
+            TRUST_PATH=$(get_xml_property "${keystore}" "location")
 
-        if [ "${id______:-}" = "${trustStoreRef:-}" ]; then
-            break
-        fi
-        count=$((count+1))
-        if [[ "${abstract:-}" = "${previous:-}" || "${count}" -gt "10" ]]; then
-            break
-        fi
-    done
-
+            if [ "${id______:-}" = "${trustStoreRef:-}" ]; then
+                break
+            fi
+            count=$((count+1))
+            if [[ "${abstract:-}" = "${previous:-}" || "${count}" -gt "10" ]]; then
+                break
+            fi
+        done
+    fi
     echo "    Found:"
     echo "        location      = '${TRUST_PATH:-}'"
     echo "        type          = '${TRUST_TYPE:-}'"
@@ -304,7 +334,7 @@ EOF
 }
 
 stop_pod() {
-    if [ ${POD_STARTED} = "true" ]; then
+    if [ "${POD_STARTED:-}" = "true" ]; then
         echo ""
         echo " - deleting pod ldap-sdk-tools..."
         kubectl delete pod ldap-sdk-tools -n ${NAMESPACE}
@@ -524,6 +554,10 @@ if [ -n "${PARAMS_FILE}" ]; then
 fi
 
 if [ "${INTERACTIVE_MODE}" = false ]; then
+
+    if ! command -v xmllint > /dev/null ; then
+        echo "WARNING: xmllint is not installed! Using a less safe fallback solution to parse XML files."
+    fi
 
     if [ "${USE_CURRENT_NAMESPACE}" = true ]; then
         echo "Using the current namespace (${NAMESPACE})."
