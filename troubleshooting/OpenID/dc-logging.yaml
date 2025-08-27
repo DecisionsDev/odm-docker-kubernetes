@@ -5,6 +5,6 @@ metadata:
 data:
   dc-logging: |
     <server>
-      <logging hideMessage=\"SRVE9967W\" traceFileName=\"stdout\" traceFormat=\"BASIC\" traceSpecification=\"*=audit:com.ibm.ws.security.*=all:com.ibm.ws.webcontainer.security.*=all:org.apache.solr.*=warning:com.ibm.rules.bdsl.search.solr.*=warning\" consoleLogLevel=\"INFO\"/>
-      <auditFileHandler logDirectory=\"/logs\" maxFiles=\"{{ odm_rolling_max_files }}\" maxFileSize=\"{{ odm_rolling_max_size }}\" compact=\"true\"/>
+      <logging hideMessage="SRVE9967W" traceFileName="stdout" traceFormat="BASIC" traceSpecification="*=audit:com.ibm.ws.security.*=all:com.ibm.ws.webcontainer.security.*=all:org.apache.solr.*=warning:com.ibm.rules.bdsl.search.solr.*=warning" consoleLogLevel="INFO"/>
+      <auditFileHandler logDirectory="/logs" maxFiles="{{ odm_rolling_max_files }}" maxFileSize="{{ odm_rolling_max_size }}" compact="true"/>
     </server>
