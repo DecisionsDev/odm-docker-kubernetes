@@ -17,7 +17,7 @@
   - [b) wrong Port number (An error occurred while attempting to establish a connection to server)](#b-wrong-port-number-an-error-occurred-while-attempting-to-establish-a-connection-to-server)
   - [c) Certificate not trusted (SSLHandshakeException (PKIX path building failed))](#c-certificate-not-trusted-sslhandshakeexception-pkix-path-building-failed)
   - [d) invalid Credentials](#d-invalid-credentials)
-  - [e) baseDN not found](#e-basedn-not-found)
+  - [e) baseDN not found (no such object)](#e-basedn-not-found-no-such-object)
   - [f) invalid filter](#f-invalid-filter)
 
 
