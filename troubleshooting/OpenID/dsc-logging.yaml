@@ -1,7 +1,10 @@
-kind: ConfigMap
 apiVersion: v1
+kind: ConfigMap
 metadata:
   name: my-dsc-logging-configmap
 data:
-  dsc-logging: "<server>\n\t<logging traceFileName=\"stdout\" traceFormat=\"BASIC\" traceSpecification=\"*=audit:com.ibm.ws.security.*=all:com.ibm.ws.webcontainer.security.*=all:com.ibm.rules.*=info:ilog.rules.*=info\" consoleLogLevel=\"INFO\"/>\n</server>"
-
+  dsc-logging: |
+    <server>
+      <logging traceFileName=\"stdout\" traceFormat=\"BASIC\" traceSpecification=\"*=audit:com.ibm.ws.security.*=all:com.ibm.ws.webcontainer.security.*=all:com.ibm.rules.*=info:ilog.rules.*=info\" consoleLogLevel=\"INFO\"/>
+      <auditFileHandler logDirectory=\"/logs\" maxFiles=\"{{ odm_rolling_max_files }}\" maxFileSize=\"{{ odm_rolling_max_size }}\" compact=\"true\"/>
+    </server>
