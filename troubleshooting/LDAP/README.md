@@ -6,7 +6,7 @@
 - [Requirements](#requirements)
 - [Usage](#usage)
 - [1) automated LDAP group search](#1-automated-ldap-group-search)
-  - [Choices 1 or 2: Run a LDAP group search using the parameters extracted](#choices-1-and-2-run-a-ldap-group-search-using-the-parameters-extracted)
+  - [Choices 1 or 2: Run a LDAP group search using the parameters extracted](#choices-1-or-2-run-a-ldap-group-search-using-the-parameters-extracted)
   - [Choice 3: Run a LDAP search in interactive mode](#choice-3-run-a-ldap-search-in-interactive-mode)
   - [Choice 4: Save the parameters extracted from the LDAP configuration files](#choice-4-save-the-parameters-extracted-from-the-ldap-configuration-files)
 - [2) file-based LDAP search](#2-file-based-ldap-search)
