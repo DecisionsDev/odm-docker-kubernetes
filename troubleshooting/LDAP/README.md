@@ -37,7 +37,7 @@ The tool can be used in three different ways:
 
 The tool starts a pod named `ldap-sdk-tools` in the specified namespace (the current one by default) and an LDAP search is performed inside this pod using the [`ldapsearch` command line tool](https://docs.ldap.com/ldap-sdk/docs/tool-usages/ldapsearch.html).
 
-Windows users can either run the tool in the Windows Linux Sub-system or follow the instructions in [Usage on Windows](#usage-on-windows).
+Windows users can either run the tool in the Windows Subsystem for Linux (WSL) or follow the instructions in [Usage on Windows](#usage-on-windows).
 
 ## Requirements
 
@@ -90,7 +90,7 @@ The tool looks for the files below:
 > Note: 
 > - `webSecurity.xml` is used for authenticating users 
 > - `ldap-configurations.xml` for synchronizing the users and/or groups in Decision Center
-> - `tlsSecurity.xml` specifies the truststore used (among other SSL parameters)
+> - `tlsSecurity.xml` is useful to find the truststore
 
 The result of the parsing is then displayed and the user prompted:
 
@@ -561,7 +561,7 @@ pod "ldap-sdk-tools" deleted
 
 ## Usage on Windows
 
-The script can be run in Windows Linux Sub-system.
+The script can be run in Windows Subsystem for Linux (WSL).
 
 Alternatively, you can manually start the `ldap-sdk-tools` pod and run a `ldapsearch` using parameters in a file. 
 
