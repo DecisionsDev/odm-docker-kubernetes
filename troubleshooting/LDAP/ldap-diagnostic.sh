@@ -148,7 +148,6 @@ parse_ldap_configurations_xml() {
     LDAP_PORT[ldap-config]="389"
 
     if [[ "${ldapUrl}" =~ "ldaps://" ]]; then
-        #LDAP_SSL[ldap-config]='"--useSSL",'
         LDAP_SSL[ldap-config]="--useSSL"
         LDAP_PORT[ldap-config]="636"
     fi
@@ -208,7 +207,6 @@ parse_webSecurity_xml() {
     echo ""
 
     if [ "${sslEnabled}" = "true" ]; then
-        #LDAP_SSL[webSecurity]='"--useSSL",'
         LDAP_SSL[webSecurity]="--useSSL"
         LDAP_PORT[webSecurity]="636"
     else
@@ -567,7 +565,6 @@ if [ "${INTERACTIVE_MODE}" = false ]; then
     DC_LIST=($(kubectl get pods --no-headers -o custom-columns=':metadata.name' --namespace ${NAMESPACE} --selector app.kubernetes.io/component=decisionCenter))
     NUM_DC_PODs=${#DC_LIST[@]}
     for DC in ${DC_LIST[@]}; do
-        #trace "DC='${DC}'"
         break # any decisioncenter pod will do, take the first one
     done
     if [ -z "${DC:-}" ]; then
