@@ -7,7 +7,8 @@ decisionServerRuntime:
   monitorRef: runtime-monitor-configuration
 image:
   repository: cp.icr.io/cp/cp4a/odm
-  pullSecret: icregistry-secret
+  pullSecrets:
+  - ibm-entitlement-key
 internalDatabase:
   persistence:
     enabled: false

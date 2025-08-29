@@ -4,7 +4,7 @@ usersPassword: <password>
 image:
   repository: cp.icr.io/cp/cp4a/odm
   pullSecrets:
-  - <registrysecret>
+  - ibm-entitlement-key
 
 service:
   type: LoadBalancer
