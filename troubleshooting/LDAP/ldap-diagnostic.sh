@@ -41,6 +41,11 @@ declare -A LDAP_ADMIN_USERNAME
 declare -A LDAP_ADMIN_PWD
 declare -A LDAP_FILTER
 
+# Display help information for the script
+# Shows available command-line options and exits with status code 1
+# This function is called when -h/--help is provided or when invalid arguments are detected
+# No parameters
+# No return value (exits the script with status code 1)
 usage() {
   echo "Usage: ${__base} [options]"
   echo "Options (optional):"
@@ -53,12 +58,24 @@ usage() {
   exit 1
 }
 
+# Output debug information when verbose mode is enabled
+# Prints the provided message to stdout only if VERBOSE flag is set to true
+# Verbose mode is activated when the -v or --verbose argument is passed to the script
+# Parameters:
+#   $1 - The message to be printed
+# No return value
 trace() {
-    if [ "${VERBOSE}" = "true" ]; then 
+    if [ "${VERBOSE}" = "true" ]; then
         echo "$1"
     fi
 }
 
+# Extract the content of an XML element from a string
+# Finds the text between <tag> and </tag> in the provided data
+# Parameters:
+#   $1 - The XML data as a string
+#   $2 - The name of the XML element to extract
+# Returns: The content of the XML element
 get_xml_element() {
     local DATA="${1}"
     local START="<${2}>"
@@ -67,6 +84,13 @@ get_xml_element() {
     local END_TRIMMED=${BEGINNING_TRIMMED%%${END}*}
     echo "${END_TRIMMED}"
 }
+
+# Extract an XML element with its properties from a string
+# Handles both self-closing tags and regular tags
+# Parameters:
+#   $1 - The XML data as a string
+#   $2 - The name of the XML element to extract
+# Returns: The content of the XML element including properties
 get_xml_element_with_properties() {
     local DATA="${1}"
     local START="<${2}"
@@ -79,12 +103,25 @@ get_xml_element_with_properties() {
     fi
     echo "${END_TRIMMED}"
 }
+
+# Extract the beginning part of an XML element with properties
+# Parameters:
+#   $1 - The XML data as a string
+#   $2 - The name of the XML element to extract
+# Returns: The string starting from the beginning of the specified XML element
 get_xml_element_with_properties_beginning() {
     local DATA="${1}"
     local START="<${2}"
     local BEGINNING_TRIMMED=${DATA#*${START}}
     echo "${BEGINNING_TRIMMED}"
 }
+
+# Extract the end part of an XML element with properties
+# Handles both self-closing tags and regular tags
+# Parameters:
+#   $1 - The XML data string that was processed by get_xml_element_with_properties_beginning
+#   $2 - The name of the XML element to extract
+# Returns: The content up to the end of the XML element
 get_xml_element_with_properties_end() {
     local BEGINNING_TRIMMED=${1}}
     local END="</${2}>"
@@ -95,6 +132,12 @@ get_xml_element_with_properties_end() {
     fi
     echo "${END_TRIMMED}"
 }
+
+# Extract the value of a property from an XML element
+# Parameters:
+#   $1 - The XML element data as a string
+#   $2 - The name of the property to extract
+# Returns: The value of the specified property
 get_xml_property() {
     local DATA="${1}"
     local PROP="${2}"
@@ -105,6 +148,16 @@ get_xml_property() {
     echo "${END_TRIMMED}"
 }
 
+# Parse the ldap-configurations.xml file content to extract LDAP connection parameters
+# Extracts LDAP URL, credentials, search bases, and filters from the XML
+# Uses xmllint if available, otherwise falls back to custom XML parsing functions
+# Parameters:
+#   $1 - The content of the ldap-configurations.xml file as a string
+# Side effects:
+#   - Populates global associative arrays with LDAP connection parameters:
+#     LDAP_HOSTNAME, LDAP_PORT, LDAP_SSL, LDAP_ADMIN_USERNAME,
+#     LDAP_ADMIN_PWD, LDAP_BASE, LDAP_FILTER
+#   - Outputs the extracted parameters to stdout (with passwords redacted)
 parse_ldap_configurations_xml() {
 
     echo ""
@@ -165,6 +218,17 @@ parse_ldap_configurations_xml() {
     LDAP_FILTER[ldap-config]=$(sed "s|&amp;|\&|" <<< ${groupSearchFilter})    # replace any &amp; by &
 }
 
+# Parse the webSecurity.xml file content to extract LDAP registry configuration
+# Extracts LDAP host, port, SSL settings, credentials, and search filters from the XML
+# Uses xmllint if available, otherwise falls back to custom XML parsing functions
+# Parameters:
+#   $1 - The content of the webSecurity.xml file as a string
+# Side effects:
+#   - Populates global associative arrays with LDAP connection parameters:
+#     LDAP_HOSTNAME, LDAP_PORT, LDAP_SSL, LDAP_ADMIN_USERNAME,
+#     LDAP_ADMIN_PWD, LDAP_BASE, LDAP_FILTER
+#   - Outputs the extracted parameters to stdout (with passwords redacted)
+#   - Replaces special characters in filters (&amp; becomes &, %v becomes *)
 parse_webSecurity_xml() {
 
     echo ""
@@ -224,6 +288,15 @@ parse_webSecurity_xml() {
     LDAP_FILTER[webSecurity]=$(sed "s|%v|*|"     <<< ${LDAP_FILTER[webSecurity]})   # replace %v by *
 }
 
+# Parse the tlsSecurity.xml file content to extract truststore configuration
+# Extracts truststore location, type, password, and ID from the XML
+# Uses xmllint if available, otherwise falls back to custom XML parsing functions
+# Parameters:
+#   $1 - The content of the tlsSecurity.xml file as a string
+# Side effects:
+#   - Sets global variables for truststore configuration:
+#     TRUST_TYPE, TRUST_PASS, TRUST_PATH
+#   - Outputs the extracted parameters to stdout (with passwords redacted)
 parse_tlsSecurity_xml() {
 
     echo ""
@@ -271,6 +344,14 @@ parse_tlsSecurity_xml() {
     echo ""
 }
 
+# Copy the truststore file from a Decision Center pod to the local filesystem
+# Only executes if TRUST_PATH is set (from parsing tlsSecurity.xml)
+# Uses kubectl cp command to copy the file from the pod
+# No parameters (uses global variables)
+# Side effects:
+#   - Creates a local copy of the truststore file
+#   - Sets TRUST_FILE global variable to the local path of the copied truststore
+#   - Outputs status messages about the copy operation
 copy_truststore() {
 
     if [ -n "${TRUST_PATH:-}" ]; then
@@ -287,6 +368,14 @@ copy_truststore() {
     fi
 }
 
+# Start the ldap-sdk-tools pod in the specified namespace
+# Checks if the pod is already running before attempting to start it
+# Uses kubectl run command with specific security context and configuration
+# No parameters (uses global variables)
+# Side effects:
+#   - Creates a pod named 'ldap-sdk-tools' in the specified namespace
+#   - Sets POD_STARTED global variable to true if successful
+#   - Outputs status messages about the pod creation
 start_pod() {
 
     local STATUS=$(kubectl get pod ldap-sdk-tools --namespace ${NAMESPACE} -o jsonpath='{.status.phase}' 2>/dev/null)
@@ -331,6 +420,14 @@ EOF
     fi
 }
 
+# Stop and delete the ldap-sdk-tools pod if it was started by this script
+# Only executes if POD_STARTED is true
+# Uses kubectl delete command to remove the pod
+# No parameters (uses global variables)
+# Side effects:
+#   - Deletes the 'ldap-sdk-tools' pod from the specified namespace
+#   - Sets POD_STARTED global variable to false
+#   - Outputs status message about the pod deletion
 stop_pod() {
     if [ "${POD_STARTED:-}" = "true" ]; then
         echo ""
@@ -340,9 +437,18 @@ stop_pod() {
     fi
 }
 
-#
-#  run ldapsearch using the parameters found in a file in a decisioncenter pod (either ldap-configurations.xml or webSecurity.xml)
-#
+# Run ldapsearch using parameters extracted from LDAP configuration files
+# Starts the ldap-sdk-tools pod, copies the truststore if available,
+# and executes ldapsearch with the appropriate parameters
+# Parameters:
+#   $1 - The configuration source to use ("ldap-config" or "webSecurity")
+# Side effects:
+#   - Starts the ldap-sdk-tools pod if not already running
+#   - Copies the truststore file to the pod if available
+#   - Executes ldapsearch command in the pod with parameters from the specified configuration
+#   - Outputs the ldapsearch command and its results
+# Note: This function uses global associative arrays populated 
+#       by parse_ldap_configurations_xml() and parse_webSecurity_xml() functions
 test() {
 
     CHOICE="${1}"
@@ -369,17 +475,17 @@ test() {
     echo ""
     echo "    ldapsearch --hostname           ${LDAP_HOSTNAME[${CHOICE}]}"
     echo "               --port               ${LDAP_PORT[${CHOICE}]}"
-    if [ -n "${LDAP_SSL[${CHOICE}]}" ]; then 
-    echo "               ${LDAP_SSL[${CHOICE}]}"; 
+    if [ -n "${LDAP_SSL[${CHOICE}]}" ]; then
+    echo "               ${LDAP_SSL[${CHOICE}]}";
     fi
     echo "               --bindDN             ${LDAP_ADMIN_USERNAME[${CHOICE}]}"
     echo "               --bindPassword       <REDACTED>"
     echo "               --baseDN             ${LDAP_BASE[${CHOICE}]}"
     echo "               --filter             ${LDAP_FILTER[${CHOICE}]}"
-    if [ "${FOUND_TLS_SECURITY}" = "true" ]; then 
-    echo "               --trustStorePath     ${TRUST_FILE:-}"; 
-    echo "               --trustStorePassword <REDACTED>"; 
-    echo "               --trustStoreFormat   ${TRUST_TYPE:-}"; 
+    if [ "${FOUND_TLS_SECURITY}" = "true" ]; then
+    echo "               --trustStorePath     ${TRUST_FILE:-}";
+    echo "               --trustStorePassword <REDACTED>";
+    echo "               --trustStoreFormat   ${TRUST_TYPE:-}";
     fi
     echo ""
     CMD="kubectl exec -it -n ${NAMESPACE} ldap-sdk-tools -- ldapsearch \
@@ -389,15 +495,15 @@ test() {
             --bindPassword '${LDAP_ADMIN_PWD[${CHOICE}]}' \
             --baseDN       '${LDAP_BASE[${CHOICE}]}' \
             --filter       '${LDAP_FILTER[${CHOICE}]}'"
-    if [ -n "${LDAP_SSL[${CHOICE}]}" ]; then 
+    if [ -n "${LDAP_SSL[${CHOICE}]}" ]; then
         CMD="${CMD} \
-            ${LDAP_SSL[${CHOICE}]}" 
+            ${LDAP_SSL[${CHOICE}]}"
     fi
     if [ "${FOUND_TLS_SECURITY}" = "true" ]; then
         CMD="${CMD} \
             --trustStorePath     '/tmp/$(basename ${TRUST_FILE:-})' \
             --trustStorePassword '${TRUST_PASS:-}' \
-            --trustStoreFormat   '${TRUST_TYPE:-}'" 
+            --trustStoreFormat   '${TRUST_TYPE:-}'"
     fi
     trace "$CMD"
     if ! eval $CMD ; then
@@ -406,9 +512,18 @@ test() {
     fi
 }
 
-#
-#   run ldapsearch using the user-defined ${PARAMS_FILE} as parameters 
-#
+# Run ldapsearch using parameters from a user-provided properties file
+# Starts the ldap-sdk-tools pod, copies the parameters file and truststore if specified,
+# and executes ldapsearch with the parameters from the file
+# No parameters (uses global PARAMS_FILE variable)
+# Side effects:
+#   - Starts the ldap-sdk-tools pod if not already running
+#   - Creates a temporary modified parameters file with adjusted paths
+#   - Copies the parameters file and truststore (if specified) to the pod
+#   - Executes ldapsearch command in the pod with the specified parameters
+#   - Outputs the ldapsearch results
+#   - Cleans up by stopping the pod and removing temporary files
+# Note: This function parses the parameters file to extract values like trustStorePath
 test_with_params_file() {
 
     echo ""
@@ -473,15 +588,28 @@ test_with_params_file() {
     rm ${TEMP_PARAMS_FILE}
 }
 
-#
-#   run ldapsearch interactively
-#
+# Run ldapsearch in interactive mode
+# Starts the ldap-sdk-tools pod and executes ldapsearch with the --interactive flag,
+# allowing the user to input all parameters directly
+# No parameters
+# Side effects:
+#   - Starts the ldap-sdk-tools pod if not already running
+#   - Executes ldapsearch in interactive mode in the pod
+#   - User interacts directly with the ldapsearch command
 test_interactive() {
 
     start_pod
     kubectl exec -it --namespace ${NAMESPACE} ldap-sdk-tools -- ldapsearch --interactive
 }
 
+# Create a parameters file for ldapsearch based on extracted LDAP configuration
+# Generates a properties file with hostname, port, credentials, and search parameters
+# Also includes truststore information if available
+# Parameters:
+#   $1 - The configuration source to use ("ldap-config" or "webSecurity")
+# Side effects:
+#   - Creates a .properties file in the current directory named after the configuration source
+#   - Outputs a message indicating the file was created
 create_params_file() {
     CHOICE=${1}
     cat >${PWD}/${1}.properties <<EOF
@@ -505,6 +633,12 @@ EOF
     echo " - created ${PWD}/${1}.properties"
 }
 
+# Create parameters files for all available LDAP configurations
+# Calls create_params_file() for each available configuration source
+# No parameters
+# Side effects:
+#   - Creates .properties files for ldap-config and/or webSecurity if available
+#   - Outputs messages about the files being created
 create_all_params_files() {
     echo ""
     echo "Creating parameters files:"
