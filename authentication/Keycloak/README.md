@@ -453,8 +453,8 @@ You can create roles and grant these roles directly to an individual user, or ev
   ```
   The output should look like:
   ```shell
-  NAME                  	CHART VERSION	APP VERSION	DESCRIPTION
-  ibm-helm/ibm-odm-prod	     25.0.0       	9.5.0.0   	IBM Operational Decision Manager
+  NAME                      CHART VERSION  APP VERSION  DESCRIPTION
+  ibm-helm/ibm-odm-prod     25.0.0         9.5.0.0      IBM Operational Decision Manager
   ```
 
 ### 3. Run the `helm install` command
@@ -466,8 +466,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 > If you want to install a **specific version**, add the `--version` option:
 >
 > ```bash
-> helm install my-odm-release ibm-helm/ibm-odm-prod --version <version> \
->     --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=ibm-entitlement-key ...
+> helm install my-odm-release ibm-helm/ibm-odm-prod --version <version> -f keycloak-nginx-values.yaml
 > ```
 >
 > You can list all available versions using:
