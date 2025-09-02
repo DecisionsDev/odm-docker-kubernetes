@@ -1,4 +1,4 @@
-# Troubleshooting
+# OpenID Troubleshooting
 
 <!-- TOC -->
 
@@ -14,7 +14,7 @@
 
 <!-- /TOC -->
 
-It is best to follow our OpenID tutorial suitable for your OpenID Connect Provider: either [EntraID](AzureAD/README.md), [Cognito](Cognito/README.md), [Keycloak](Keycloak/README.md) or [OKTA](Okta/README.md).
+It is best to follow our OpenID tutorial suitable for your OpenID Connect Provider: either [EntraID](/authentication/AzureAD/README.md), [Cognito](/authentication/Cognito/README.md), [Keycloak](/authentication/Keycloak/README.md) or [OKTA](/authentication/Okta/README.md).
 
 Each tutorial walks you through the steps of configuring your OpenID Connect Provider, and provides a script to generate the ODM configuration files and instructions to deploy ODM.
 
@@ -242,7 +242,7 @@ Such symptoms indicate that the role of users is not processed correctly:
     It should list all the groups the authenticated user belongs to.
     One of these groups must be granted a suitable ODM role according to the role mapping in the `webSecurity.xml`.
 
-      Here is an example of a trace when the user John Doe authenticates (from the [Keycloak tutorial](./Keycloak/README.md)):
+      Here is an example of a trace when the user John Doe authenticates (from the [Keycloak tutorial](/authentication/Keycloak/README.md)):
 
       ```
       Public Credential: com.ibm.ws.security.credentials.wscred.WSCredentialImpl@151c2134,

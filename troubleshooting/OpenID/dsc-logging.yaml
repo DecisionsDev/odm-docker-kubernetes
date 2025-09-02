@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-dsc-logging-configmap
+data:
+  dsc-logging: |
+    <server>
+      <logging traceFileName="stdout" traceFormat="BASIC" traceSpecification="*=audit:com.ibm.ws.security.*=all:com.ibm.ws.webcontainer.security.*=all:com.ibm.rules.*=info:ilog.rules.*=info" consoleLogLevel="INFO"/>
+      <!-- Uncomment to enable audit logs
+        <auditFileHandler logDirectory="/logs" maxFiles="5" maxFileSize="5" compact="true"/>
+      -->
+      <!-- Uncomment to enable access logs
+        <httpAccessLogging filepath="/logs/access.log" id="accessLogging"/>
+      -->
+    </server>
