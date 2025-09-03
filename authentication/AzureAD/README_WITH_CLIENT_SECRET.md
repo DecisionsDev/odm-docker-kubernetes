@@ -565,7 +565,7 @@ curl -H "Content-Type: application/json" -k --data @payload.json \
 
 # Troubleshooting
 
-If you encounter any issue, have a look at the [common troubleshooting explanation](../README.md#troubleshooting)
+If you encounter any issue, have a look at the [common troubleshooting explanation](/troubleshooting/OpenID/README.md)
 
 # License
 

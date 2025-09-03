@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-dc-logging-configmap
+data:
+  dc-logging: |
+    <server>
+      <logging hideMessage="SRVE9967W" traceFileName="stdout" traceFormat="BASIC" traceSpecification="*=audit:com.ibm.ws.security.*=all:com.ibm.ws.webcontainer.security.*=all:org.apache.solr.*=warning:com.ibm.rules.bdsl.search.solr.*=warning" consoleLogLevel="INFO"/>
+      <!-- Uncomment to enable audit logs
+        <auditFileHandler logDirectory="/logs" maxFiles="5" maxFileSize="5" compact="true"/>
+      -->
+      <!-- Uncomment to enable access logs
+        <httpAccessLogging filepath="/logs/access.log" id="accessLogging"/>
+      -->
+    </server>
