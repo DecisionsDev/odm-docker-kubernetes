@@ -418,7 +418,7 @@ In the **Container software library** tile, verify your entitlement on the **Vie
 2. Create a pull secret by running a `kubectl create secret` command.
 
     ```
-    $ kubectl create secret docker-registry icregistry-secret \
+    $ kubectl create secret docker-registry ibm-entitlement-key \
         --docker-server=cp.icr.io \
         --docker-username=cp \
         --docker-password="<API_KEY_GENERATED>" \

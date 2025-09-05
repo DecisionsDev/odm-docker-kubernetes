@@ -3,7 +3,7 @@ license: true
 image:
   repository: cp.icr.io/cp/cp4a/odm
   pullSecrets:
-  - icregistry-secret
+  - ibm-entitlement-key
 
 internalDatabase:
   persistence:

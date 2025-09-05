@@ -371,7 +371,7 @@ You can create roles and grant these roles directly to an individual user, or ev
 2. Create a pull secret by running a `kubectl create secret` command.
 
     ```shell
-    kubectl create secret docker-registry icregistry-secret \
+    kubectl create secret docker-registry ibm-entitlement-key \
         --docker-server=cp.icr.io \
         --docker-username=cp \
         --docker-password="<API_KEY_GENERATED>" \
@@ -383,9 +383,9 @@ You can create roles and grant these roles directly to an individual user, or ev
     - *API_KEY_GENERATED* is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
     - *USER_EMAIL* is the email address associated with your IBMid.
 
-    > Note: The **cp.icr.io** value for the docker-server parameter is the only registry domain name that contains the images. You must set the *docker-username* to **cp** to use an entitlement key as *docker-password*.
-
-3. Make a note of the secret name so that you can set it for the **image.pullSecrets** parameter when you run a helm install of your containers. The **image.repository** parameter is later set to *cp.icr.io/cp/cp4a/odm*.
+    > Note: 
+    > 1. The **cp.icr.io** value for the docker-server parameter is the only registry domain name that contains the images. You must set the *docker-username* to **cp** to use an entitlement key as *docker-password*.
+    > 2. The `ibm-entitlement-key` secret name will be used for the `image.pullSecrets` parameter when you run a Helm install of your containers. The `image.repository` parameter is also set by default to `cp.icr.io/cp/cp4a/odm`.
 
 ### Create secrets to configure ODM with Keycloak
 
@@ -453,8 +453,8 @@ You can create roles and grant these roles directly to an individual user, or ev
   ```
   The output should look like:
   ```shell
-  NAME                  	CHART VERSION	APP VERSION	DESCRIPTION
-  ibm-helm/ibm-odm-prod	     25.0.0       	9.5.0.0   	IBM Operational Decision Manager
+  NAME                      CHART VERSION  APP VERSION  DESCRIPTION
+  ibm-helm/ibm-odm-prod     25.0.0         9.5.0.0      IBM Operational Decision Manager
   ```
 
 ### 3. Run the `helm install` command
@@ -466,8 +466,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 > If you want to install a **specific version**, add the `--version` option:
 >
 > ```bash
-> helm install my-odm-release ibm-helm/ibm-odm-prod --version <version> \
->     --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret ...
+> helm install my-odm-release ibm-helm/ibm-odm-prod --version <version> -f keycloak-nginx-values.yaml
 > ```
 >
 > You can list all available versions using:

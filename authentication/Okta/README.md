@@ -244,7 +244,7 @@ In this step, we augment the token with meta-information that is required by the
 2. Create a pull secret by running a `kubectl create secret` command.
 
     ```
-    $ kubectl create secret docker-registry icregistry-secret \
+    $ kubectl create secret docker-registry ibm-entitlement-key \
         --docker-server=cp.icr.io \
         --docker-username=cp \
         --docker-password="<API_KEY_GENERATED>" \
@@ -256,9 +256,9 @@ In this step, we augment the token with meta-information that is required by the
     - *API_KEY_GENERATED* is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
     - *USER_EMAIL* is the email address associated with your IBMid.
 
-    > Note: The **cp.icr.io** value for the docker-server parameter is the only registry domain name that contains the images. You must set the *docker-username* to **cp** to use an entitlement key as *docker-password*.
-
-3. Make a note of the secret name so that you can set it for the **image.pullSecrets** parameter when you run a helm install of your containers. The image.repository parameter is later set to *cp.icr.io/cp/cp4a/odm*.
+    > Note: 
+    > 1. The **cp.icr.io** value for the docker-server parameter is the only registry domain name that contains the images. You must set the *docker-username* to **cp** to use an entitlement key as *docker-password*.
+    > 2. The `ibm-entitlement-key` secret name will be used for the `image.pullSecrets` parameter when you run a Helm install of your containers. The `image.repository` parameter is also set by default to `cp.icr.io/cp/cp4a/odm`.
 
 ### Create secrets to configure ODM with Okta
 

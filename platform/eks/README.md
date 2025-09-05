@@ -153,7 +153,7 @@ You can also download the ODM on Kubernetes package (.tgz file) from Passport Ad
 #### b. Create a pull secret by running the kubectl create secret command
 
 ```bash
-kubectl create secret docker-registry my-odm-docker-registry --docker-server=cp.icr.io \
+kubectl create secret docker-registry ibm-entitlement-key --docker-server=cp.icr.io \
     --docker-username=cp --docker-password="<ENTITLEMENT_KEY>" --docker-email=<USER_EMAIL>
 ```
 
@@ -161,10 +161,9 @@ Where:
 * `<ENTITLEMENT_KEY>` is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
 * `<USER_EMAIL>` is the email address associated with your IBMid.
 
-> **Note**
-> The `cp.icr.io` value for the docker-server parameter is the only registry domain name that contains the images. You must set the docker-username to `cp` to use an entitlement key as docker-password.
-
-The `my-odm-docker-registry` secret name is used for the `image.pullSecrets` parameter when you run a helm install of your containers. The `image.repository` parameter is also set by default to `cp.icr.io/cp/cp4a/odm`.
+> Note: 
+> 1. The **cp.icr.io** value for the docker-server parameter is the only registry domain name that contains the images. You must set the *docker-username* to **cp** to use an entitlement key as *docker-password*.
+> 2. The `ibm-entitlement-key` secret name will be used for the `image.pullSecrets` parameter when you run a Helm install of your containers. The `image.repository` parameter is also set by default to `cp.icr.io/cp/cp4a/odm`.
 
 #### c. Add the public IBM Helm charts repository
 
