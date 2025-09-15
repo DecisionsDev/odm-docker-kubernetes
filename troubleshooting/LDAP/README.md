@@ -25,7 +25,7 @@
 
 ## Introduction
 
-The `ldap-diagnostic.sh` tool helps identify issues in the LDAP configuration of ODM on Kubernetes.
+The `ldap-diagnostic.sh` tool helps identify issues in the LDAP configuration of Operational Decision Manager on certified Kubernetes.
 
 The tool can be used in three different ways:
 
