@@ -3,7 +3,8 @@
 <!-- TOC depthfrom:1 depthto:6 withlinks:false updateonsave:false orderedlist:false -->
 - [Introduction](#introduction)
     - [What is mTLS?](#what-is-mtls)
-    - [About this task](#about-this-task)
+    - [How works mTLS?](#how-works-mtls)
+- [Configure mTLS on an ODM Instance](#configure-mtls-on-an-ODM-instance)
 <!-- /TOC -->
 
 # Introduction
@@ -16,7 +17,11 @@ However, for machine to machine communication where there is no identity needs a
 - no third party communication needed (OpenId provider)
 
 But, mTLS can recquire a certificate rotation management, which is also the case for OpenId (client_secret and/or certificate)
-    
+
+In this tutorial, we will describe the step by step approach to setup mTLS on the ODM on K8S Decision Server Runtime deployed on OCP.
+
+You can drill on the relevant platform tutorials to adapt it to your own platform. 
+
 
 ## What is mTLS?
 
@@ -26,7 +31,24 @@ In regular HTTPS, only the server presents a certificate, so the client can veri
 In mutual TLS, both sides — the client and the server — present and verify digital certificates.
 
 That’s why it’s called mutual TLS.
-Here is a description the way it works :
+
+mTLS helps ensure that traffic is secure and trusted in both directions between a client and server. This provides an additional layer of security for users who log in to an organization's network or applications. It also verifies connections with client devices that do not follow a login process, such as Internet of Things (IoT) devices.
+
+mTLS prevents various kinds of attacks, including:
+
+	- On-path attacks: On-path attackers place themselves between a client and a server and intercept or modify communications between the two. When mTLS is used, on-path attackers cannot authenticate to either the client or the server, making this attack almost impossible to carry out.
+
+	- Spoofing attacks: Attackers can attempt to "spoof" (imitate) a web server to a user, or vice versa. Spoofing attacks are far more difficult when both sides have to authenticate with TLS certificates.
+
+	- Credential stuffing: Attackers use leaked sets of credentials from a data breach to try to log in as a legitimate user. Without a legitimately issued TLS certificate, credential stuffing attacks cannot be successful against organizations that use mTLS.
+
+	- Brute force attacks: Typically carried out with bots, a brute force attack is when an attacker uses rapid trial and error to guess a user's password. mTLS ensures that a password is not enough to gain access to an organization's network. (Rate limiting is another way to deal with this type of bot attack.)
+
+	- Phishing attacks: The goal of a phishing attack is often to steal user credentials, then use those credentials to compromise a network or an application. Even if a user falls for such an attack, the attacker still needs a TLS certificate and a corresponding private key in order to use those credentials.
+
+	- Malicious API requests: When used for API security, mTLS ensures that API requests come from legitimate, authenticated users only. This stops attackers from sending malicious API requests that aim to exploit a vulnerability or subvert the way the API is supposed to function.
+
+## How works mTLS?
 
 1/ Client connects to the server
 → Starts a TLS handshake (just like normal HTTPS).
@@ -49,6 +71,95 @@ Here is a description the way it works :
 ![mTLS Client-Server flow](images/mtls.png)
 
 
-## About this task
+
+## Prepare your environment for the ODM installation
+
+To get access to the ODM material, you must have an IBM entitlement key to pull the images from the IBM Entitled Registry.
+
+### Using the IBM Entitled Registry with your IBMid (10 min)
+
+Log in to [MyIBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary) with the IBMid and password that are associated with the entitled software.
+
+In the Container software library tile, verify your entitlement on the View library page, and then go to Get entitlement key to retrieve the key.
+
+Create a pull secret by running the `kubectl create secret` command.
+
+```shell
+kubectl create secret docker-registry <registrysecret> --docker-server=cp.icr.io \
+                                                       --docker-username=cp \
+                                                       --docker-password="<entitlementkey>" \
+                                                       --docker-email=<email>
+```
+Where:
+
+* \<registrysecret\> is the secret name
+* \<entitlementkey\> is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
+* \<email\> is the email address associated with your IBMid.
+
+> [!NOTE]
+> The `cp.icr.io` value for the `docker-server` parameter is the only registry domain name that contains the images. You must set the `docker-username` to `cp` to use an entitlement key as docker-password.
+
+Make a note of the secret name so that you can set it for the `image.pullSecrets` parameter when you run a helm install of your containers.  The `image.repository` parameter should be set to `cp.icr.io/cp/cp4a/odm`.
+
+
+Add the public IBM Helm charts repository:
+
+```shell
+helm repo add ibm-helm https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm
+helm repo update
+```
+
+Check that you can access the ODM charts:
+
+```shell
+helm search repo ibm-odm-prod
+NAME                        CHART VERSION	APP VERSION DESCRIPTION
+ibm-helm/ibm-odm-prod       25.1.0       	9.5.0.1     IBM Operational Decision Manager  License By in...
+```
+
+### Manage a digital 'server' certificate for the ODM instance
+
+1. Generate a self-signed certificate.
+
+If you do not have a trusted certificate, you can use OpenSSL and other cryptography and certificate management libraries to generate a certificate file and a private key, to define the domain name, and to set the expiration date. The following command creates a self-signed certificate (.crt file) and a private key (.key file) that accept the domain name *myserver.com*. The expiration is set to 1000 days:
+
+```shell
+openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout myserver.key \
+        -out myserver.crt -subj "/CN=myserver.com/OU=it/O=myserver/L=Paris/C=FR" \
+        -addext "subjectAltName = DNS:myserver.com"
+```
+
+> [!NOTE]
+> You can use -addext only with actual OpenSSL and from LibreSSL 3.1.0.
+
+2. Create a Kubernetes secret with the certificate.
+
+```shell
+kubectl create secret generic <my-server-secret> --from-file=tls.crt=myserver.crt --from-file=tls.key=myserver.key
+```
+
+The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://www.ibm.com/docs/en/odm/9.5.0?topic=servers-server-certificates).
+
+### Manage a digital 'client' certificate to communicate with the ODM Runtime
+
+1. Generate a self-signed certificate.
+
+If you do not have a trusted certificate, you can use OpenSSL and other cryptography and certificate management libraries to generate a certificate file and a private key, to define the domain name, and to set the expiration date. The following command creates a self-signed certificate (.crt file) and a private key (.key file) that accept the domain name *myclient.com*. The expiration is set to 1000 days:
+
+```shell
+openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout myclient.key \
+        -out myclient.crt -subj "/CN=myclient.com/OU=it/O=myserver/L=Paris/C=FR" \
+        -addext "subjectAltName = DNS:myclient.com"
+```
+
+2. Create a Kubernetes secret with the certificate.
+
+```shell
+kubectl create secret generic <my-client-secret> --from-file=tls.crt=myclient.crt
+```
+
+> [!NOTE]
+> The mTLS communication can be managed using the same certificate on the client and the server side.
+> If this solution is preferred, then, no need to create this secret
 
 
