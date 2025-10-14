@@ -117,9 +117,9 @@ NAME                        CHART VERSION	APP VERSION DESCRIPTION
 ibm-helm/ibm-odm-prod       25.1.0       	9.5.0.1     IBM Operational Decision Manager  License By in...
 ```
 
-### Manage a digital 'server' certificate for the ODM instance
+### Manage a 'server' certificate for the ODM instance
 
-1. Generate a self-signed certificate.
+1. Generate a self-signed server certificate.
 
 If you do not have a trusted certificate, you can use OpenSSL and other cryptography and certificate management libraries to generate a certificate file and a private key, to define the domain name, and to set the expiration date. The following command creates a self-signed certificate (.crt file) and a private key (.key file) that accept the domain name *myserver.com*. The expiration is set to 1000 days:
 
@@ -132,7 +132,7 @@ openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout myserver.key \
 > [!NOTE]
 > You can use -addext only with actual OpenSSL and from LibreSSL 3.1.0.
 
-2. Create a Kubernetes secret with the certificate.
+2. Create a Kubernetes secret with the server certificate.
 
 ```shell
 kubectl create secret generic <my-server-secret> --from-file=tls.crt=myserver.crt --from-file=tls.key=myserver.key
@@ -140,9 +140,9 @@ kubectl create secret generic <my-server-secret> --from-file=tls.crt=myserver.cr
 
 The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://www.ibm.com/docs/en/odm/9.5.0?topic=servers-server-certificates).
 
-### Manage a digital 'client' certificate to communicate with the ODM Runtime
+### Manage a 'client' certificate to communicate with the ODM Runtime
 
-1. Generate a self-signed certificate.
+1. Generate a self-signed client certificate.
 
 If you do not have a trusted certificate, you can use OpenSSL and other cryptography and certificate management libraries to generate a certificate file and a private key, to define the domain name, and to set the expiration date. The following command creates a self-signed certificate (.crt file) and a private key (.key file) that accept the domain name *myclient.com*. The expiration is set to 1000 days:
 
@@ -152,7 +152,7 @@ openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout myclient.key \
         -addext "subjectAltName = DNS:myclient.com"
 ```
 
-2. Create a Kubernetes secret with the certificate.
+2. Create a Kubernetes secret with the client ertificate.
 
 ```shell
 kubectl create secret generic <my-client-secret> --from-file=tls.crt=myclient.crt
@@ -160,6 +160,68 @@ kubectl create secret generic <my-client-secret> --from-file=tls.crt=myclient.cr
 
 > [!NOTE]
 > The mTLS communication can be managed using the same certificate on the client and the server side.
-> If this solution is preferred, then, no need to create this secret
+> If this solution is preferred, then, no need to create the client certificate neither this secret
 
+## Install your ODM Helm release
 
+### 1. Add the public IBM Helm charts repository
+
+  ```shell
+  helm repo add ibm-helm https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm
+  helm repo update
+  ```
+
+### 2. Check that you can access the ODM chart
+
+  ```shell
+  helm search repo ibm-odm-prod
+  ```
+  The output should look like:
+  ```shell
+  NAME                  	CHART VERSION	APP VERSION	DESCRIPTION
+  ibm-helm/ibm-odm-prod	     25.1.0       	9.5.0.1   	IBM Operational Decision Manager
+  ```
+
+### 3. Run the `helm install` command
+
+You can now install the product. We will use the PostgreSQL internal database and disable data persistence (`internalDatabase.persistence.enabled=false`) to avoid any platform complexity with persistent volume allocation.
+
+> **Note:**  
+> The following command installs the **latest available version** of the chart.  
+> If you want to install a **specific version**, add the `--version` option:
+>
+> ```bash
+> helm install my-odm-release ibm-helm/ibm-odm-prod --version <version> \
+>     --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret ...
+> ```
+>
+> You can list all available versions using:
+>
+> ```bash
+> helm search repo ibm-helm/ibm-odm-prod -l
+> ```
+
+#### a. Installation on OpenShift using Routes
+
+  See the [Preparing to install](https://www.ibm.com/docs/en/odm/9.5.0?topic=production-preparing-install-operational-decision-manager) documentation for more information.
+
+Get the [ocp-values.yaml](./ocp-values.yaml) file and install your ODM instance:
+
+```bash
+helm install mtls-tuto ibm-helm/ibm-odm-prod -f ocp-values.yaml
+```
+
+> **Note:**  
+> - This command installs the **latest available version** of the chart. If you want to install a **specific version**, add the `--version` option:
+>
+> ```bash
+> helm install roks-tuto ibm-helm/ibm-odm-prod --version <version> -f roks-values.yaml
+> ```
+>
+> You can list all available versions using:
+>
+> ```bash
+> helm search repo ibm-helm/ibm-odm-prod -l
+> ```
+> 
+> - This configuration will deployed ODM with a sample database. You should used your own database such as [IBM Cloud Databases for PostgreSQL](https://www.ibm.com/products/databases-for-postgresql) for production.
