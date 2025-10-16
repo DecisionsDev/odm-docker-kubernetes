@@ -159,10 +159,10 @@ You can create roles and grant these roles directly to an individual user, or ev
 
 ### 1. Create a role for ODM administrators.
 
-    In the Menu **Manage** / **Realm roles**:
-      * Click **Create role**
-        * Role name: *rtsAdministrators*
-        * Click **Save**
+In the Menu **Manage** / **Realm roles**:
+  * Click **Create role**
+    * Role name: *rtsAdministrators*
+    * Click **Save**
 
     ![Create Roles](images/create_roles.png)
 
@@ -180,9 +180,9 @@ You can create roles and grant these roles directly to an individual user, or ev
 
 ### 2. Create a group for ODM administrators.
 
-    In the Menu **Manage** / **Groups**:
-      * Click **Create group**
-        * Name: *odm-admin*
+In the Menu **Manage** / **Groups**:
+  * Click **Create group**
+  * Name: *odm-admin*
 
     ![Create Group](images/create_group.png)
 
@@ -191,61 +191,61 @@ You can create roles and grant these roles directly to an individual user, or ev
       * Click the **Role mapping** tab
         * Click **Assign role**
           * Select **Filter by realm roles**
-          * Select all previously created ODM roles
+          * Tick all previously created ODM roles
           * Click **Assign**
 
     ![Assign Roles](images/assign_roles.png)
 
 ### 3. Create at least one user that belongs to this new group.
 
-    In the Menu **Manage** / **Users**:
-      * Click **Create new user** (or **Add user**)
-        * Required user actions: leave the field blank
-        * Email verified: `On`
-        * Username: `johndoe@mynicecompany.com`
-        * Email: `johndoe@mynicecompany.com`
-        * First name: `John`
-        * Last name: `Doe`
-        * Groups : Click **Join Groups** , tick ***odm-admin***, and click **Join**
-        * Click **Create**
+In the Menu **Manage** / **Users**:
+  * Click **Create new user** (or **Add user**)
+    * Required user actions: leave the field blank
+    * Email verified: `On`
+    * Username: `johndoe@mynicecompany.com`
+    * Email: `johndoe@mynicecompany.com`
+    * First name: `John`
+    * Last name: `Doe`
+    * Groups : Click **Join Groups** , tick ***odm-admin***, and click **Join**
+    * Click **Create**
 
-      ![Create User](images/create_user.png)
+    ![Create User](images/create_user.png)
 
-      * In User Details, select the **Credentials** tab
-      * Click **Set password**
-        * Fill the Password and Password confirmation fields with `johndoe`
-        * Temporary: `Off`
-        * Click **Save**
-        * Click **Save password** to confirm
-      * Click the **Details** tab
-      * Click **Save** 
+  * In User Details, select the **Credentials** tab
+  * Click **Set password**
+    * Fill the Password and Password confirmation fields with `johndoe`
+    * Temporary: `Off`
+    * Click **Save**
+    * Click **Save password** to confirm
+  * Click the **Details** tab
+  * Click **Save** 
 
-    (Optional) Every user is created with a predefined role named **default-roles-<realm>**.
-    This role is not useful for this tutorial. Here is the way to unassign this role.
+  (Optional) Every user is created with a predefined role named **default-roles-<realm>**.
+  This role is not useful for this tutorial. Here is the way to unassign this role.
 
-      * In User Details, select the **Role mapping** tab
-        * Tick **default-roles-odm**
-        * Click **Unassign**
-        * Click **Remove** to confirm
+  * In User Details, select the **Role mapping** tab
+    * Tick **default-roles-odm**
+    * Click **Unassign**
+    * Click **Remove** to confirm
 
-      ![Unassign default role](images/unassign_default_role.png)
+    ![Unassign default role](images/unassign_default_role.png)
 
-      * Click the **Details** tab
-      * Make sure the toggle **Enabled** is `On`
-      * Click **Save**
+  * Click the **Details** tab
+  * Make sure the toggle **Enabled** is `On`
+  * Click **Save**
 
-    Repeat those steps for each user you want to add.
+  Repeat those steps for each user you want to add.
 
 ## Set up the client
 
 ### 1. Create the *ODM client*.
 
-    In the Menu **Manage** / **Clients**, click **Create client**:
-    * Client type: `OpenID Connect`
-    * Client ID: `odm`
-    * Name: `ODM Application`
-    * Always display in UI: `On`
-    * Click **Next**
+  In the Menu **Manage** / **Clients**, click **Create client**:
+  * Client type: `OpenID Connect`
+  * Client ID: `odm`
+  * Name: `ODM Application`
+  * Always display in UI: `On`
+  * Click **Next**
 
     ![Create Client 1](images/create_client_1.png)
 
@@ -267,51 +267,51 @@ You can create roles and grant these roles directly to an individual user, or ev
     * Click the **Service accounts roles** tab
     * Click the **Assign role** button. 
     * Select **Filter by realm roles** 
-    * Select all `res*` and `rts*` roles in the list and click the **Assign** button.
+    * Tick all `res*` and `rts*` roles in the list and click the **Assign** button.
 
     ![Set Service Account Roles](images/assign_service_account_roles.png)
 
 
 ### 2. Add the **groups** predefined mapper to the **Roles** client scope
 
-    * Select the **Manage** / **Client scopes** menu
-      * Search for the scope : **roles**
-      * click the **roles** scope
-    * Select the **Mappers** tab
-    * Click **Add mapper > From predefined mappers**
-      * Search for mapper : **groups**
-      * Tick **groups**
-      * Click **Add**
+  * Select the **Manage** / **Client scopes** menu
+    * Search for the scope : **roles**
+    * click the **roles** scope
+  * Select the **Mappers** tab
+  * Click **Add mapper > From predefined mappers**
+    * Search for mapper : **groups**
+    * Tick **groups**
+    * Click **Add**
 
     ![Add group mapper](images/add_group_mapper_to_role_scope.png)
 
 ### 3. Retrieve the Keycloak Server URL
 
-    In the Menu **Configure** / **Realm settings**,
-    * Select the **General** tab, 
-      * Click the **OpenID Endpoint Configuration** link (at the bottom of the page).
-      * Take note of the **issuer** URL. It will be referenced as `KEYCLOAK_SERVER_URL` in the next steps.
+  In the Menu **Configure** / **Realm settings**,
+  * Select the **General** tab, 
+    * Click the **OpenID Endpoint Configuration** link (at the bottom of the page).
+    * Take note of the **issuer** URL. It will be referenced as `KEYCLOAK_SERVER_URL` in the next steps.
 
 ### 4. Check the configuration
 
-     Download the [keycloak-odm-script.zip](keycloak-odm-script.zip) file to your machine and unzip it in your working directory.
-     This .zip file contains scripts and templates to verify and set up ODM.
+  Download the [keycloak-odm-script.zip](keycloak-odm-script.zip) file to your machine and unzip it in your working directory.
+  This .zip file contains scripts and templates to verify and set up ODM.
 
-    4.1 Verify the Client Credentials Token
+#### 4.1 Verify the Client Credentials Token
 
-     You can request an access token using the Client-Credentials flow to verify the format of the token.
-     This token is used for the deployment of rulesets from the Business Console:
+  You can request an access token using the Client-Credentials flow to verify the format of the token.
+  This token is used for the deployment of rulesets from the Business Console:
 
   ```shell
   ./get-client-credential-token.sh -i $CLIENT_ID -x $CLIENT_SECRET -n $KEYCLOAK_SERVER_URL
   ```
 
-    Where:
+  Where:
   - *CLIENT_ID* is your ODM Application (`odm` if you followed the instructions). You can find it in the **Manage** / **Clients** menu.
   - *CLIENT_SECRET* is the secret for your ODM Application. You can find it in the **Credentials** tab.
   - *KEYCLOAK_SERVER_URL* is the issuer that can be retrieved using the **OpenID Endpoint Configuration** link of the **General** tab in the **Configure**/**Realm settings** menu
 
-    If you decode the *access_token* (or *id_token*) value with a JWT decoder tool, you should get:
+  If you decode the *access_token* (or *id_token*) value with a JWT decoder tool, you should get:
   ```json
   {
     ..
@@ -322,10 +322,10 @@ You can create roles and grant these roles directly to an individual user, or ev
   }
   ```
 
-    4.2 Verify the Client Password Token
+#### 4.2 Verify the Client Password Token
 
-   You can request an access token using the Password flow to verify the format of the token.
-   This token is used for the invocation of the ODM components like the Decision Center, Decision Server console, and the invocation of the Decision Server Runtime REST API.
+  You can request an access token using the Password flow to verify the format of the token.
+  This token is used for the invocation of the ODM components like the Decision Center, Decision Server console, and the invocation of the Decision Server Runtime REST API.
 
    ```shell
    ./get-user-password-token.sh -i $CLIENT_ID -x $CLIENT_SECRET -n $KEYCLOAK_SERVER_URL -u johndoe@mynicecompany.com -p johndoe
