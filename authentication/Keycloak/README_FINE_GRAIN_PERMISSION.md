@@ -5,7 +5,7 @@
 - [Introduction](#introduction)
 - [Deploy on OpenShift a custom Keycloak service with a SCIM Server](#deploy-on-openshift-a-custom-keycloak-service-with-a-scim-server)
   - [Build the Keycloak docker image embedding the open source SCIM plug-in](#build-the-keycloak-docker-image-embedding-the-open-source-scim-plug-in)
-  - [Push the image on the OpenShift Cluster](#push-the-image-on-the-openshift-cluster)
+  - [Push the image into the OpenShift Cluster](#push-the-image-into-the-openshift-cluster)
   - [Deploy Keycloak Service using the keycloak-scim image](#deploy-keycloak-service-using-the-keycloak-scim-image)
 - [Configure an ODM Application with Keycloak dashboard](#configure-an-odm-application-with-keycloak-dashboard)
 - [Deploy an Open LDAP Service](#deploy-an-open-ldap-service)
