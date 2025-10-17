@@ -416,7 +416,7 @@ In the Menu **Manage** / **Users**:
 
    Where:
     - *CLIENT_SECRET* can be found in your ODM Application, section **General** / **Client Credentials**
-    - *REALM_NAME* is optional (`odm`**` by default)
+    - *REALM_NAME* is optional (`odm**` by default)
     - *USERID_CLAIM* is optional (`preferred_username` by default). This is the name of the claim (ie. parameter) in the token that holds the name of the user.
 
     The following files are generated into the `output` directory:

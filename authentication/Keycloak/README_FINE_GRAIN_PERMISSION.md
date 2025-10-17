@@ -42,17 +42,17 @@ But alternatively you can register to https://scim-for-keycloak.de/ in order to 
 
 ## Build the Keycloak docker image embedding the open source SCIM plug-in
 
-- Get the [SCIM for Keycloak scim-for-keycloak-kc-20-b1.jar file](https://github.com/Captain-P-Goldfish/scim-for-keycloak/releases/download/kc-20-b1/scim-for-keycloak-kc-20-b1.jar)
+- Get the SCIM for Keycloak JAR [scim-for-keycloak-kc-20-b1.jar](https://github.com/Captain-P-Goldfish/scim-for-keycloak/releases/download/kc-20-b1/scim-for-keycloak-kc-20-b1.jar)
 - Get the [Dockerfile](Dockerfile)
-- Replace `${ARCH}` by the cpu architecture used in the cluster  (`amd64`,...) where Keycloak will be deployed in the command below and run the command in the directory that contains the JAR and Dockerfile. It will build an Docker image of Keycloak featuring the plugin JAR.
+- Build a Docker image of Keycloak featuring the plugin JAR. To do so:
+  - Replace `${ARCH}` by the cpu architecture used in the cluster  (`amd64`,...) where Keycloak will be deployed in the command below,
+    > Note:
+    > The image built must be suitable for the architecture of the cluster where Keycloak is deployed, not the architecture of the machine where the build is performed.
+  - and run this command in the directory that contains the JAR and Dockerfile.
 
   ```shell
   docker buildx build . --platform=linux/${ARCH} --build-arg KEYCLOAK_IMAGE=quay.io/keycloak/keycloak:20.0.5 --build-arg SCIM_JAR_FILE=scim-for-keycloak-kc-20-b1.jar -t keycloak-scim:20.0.5
   ```
-
-  > Note:
-  > Tbe image built must be suitable to the architecture (amd64, ...) of the cluster where Keycloak is deployed, not the architecture of the machine where the build is performed.
-
 
 ## Push the image into the OpenShift Cluster
 
@@ -125,19 +125,21 @@ Please follow the instructions in [Configure a Keycloak instance for ODM (Part 1
   oc apply -f ./openldap/ldap-service.yaml
   ```
 
-- Check the OpenLDAP Service
+- Check the OpenLDAP Service :
 
-- In the namespace where OpenLDAP has been deployed, run the command below (that returns the OpenLDAP Schema) :
+  - In the namespace where OpenLDAP has been deployed, run the command below:
 
-  ```shell
-  OPENLDAP_PROJECT=$(oc project --short=true)
-  OPENLDAP_POD=$(kubectl get pods --no-headers -o custom-columns=":metadata.name" --selector app=openldap-deploy)
-  oc exec -ti ${OPENLDAP_POD} bash -- ldapsearch -x -Z -H ldap://ldap-service.${OPENLDAP_PROJECT}.svc:389  -D 'cn=admin,dc=example,dc=org' -b 'dc=example,dc=org' -w xNxICc74qG24x3GoW03n
-  ```
+    ```shell
+    OPENLDAP_PROJECT=$(oc project --short=true)
+    OPENLDAP_POD=$(kubectl get pods --no-headers -o custom-columns=":metadata.name" --selector app=openldap-deploy)
+    oc exec -ti ${OPENLDAP_POD} bash -- ldapsearch -x -Z -H ldap://ldap-service.${OPENLDAP_PROJECT}.svc:389  -D 'cn=admin,dc=example,dc=org' -b 'dc=example,dc=org' -w xNxICc74qG24x3GoW03n
+    ```
 
-Where:
-  - OPENLDAP_POD is the name of the OpenLDAP pod
-  - OPENLDAP_PROJECT is the name of the project in which the OpenLDAP pod has been deployed
+    Where:
+      - OPENLDAP_POD is the name of the OpenLDAP pod
+      - OPENLDAP_PROJECT is the name of the project in which the OpenLDAP pod has been deployed
+
+  - This command should return the users and groups in the LDAP.
 
 
 # Add an LDAP User Federation to Keycloak
