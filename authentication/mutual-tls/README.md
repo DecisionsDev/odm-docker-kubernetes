@@ -36,19 +36,21 @@ mTLS helps ensure that traffic is secure and trusted in both directions between 
 
 mTLS prevents various kinds of attacks, including:
 
-	- On-path attacks: On-path attackers place themselves between a client and a server and intercept or modify communications between the two. When mTLS is used, on-path attackers cannot authenticate to either the client or the server, making this attack almost impossible to carry out.
+- On-path attacks: On-path attackers place themselves between a client and a server and intercept or modify communications between the two. When mTLS is used, on-path attackers cannot authenticate to either the client or the server, making this attack almost impossible to carry out.
 
-	- Spoofing attacks: Attackers can attempt to "spoof" (imitate) a web server to a user, or vice versa. Spoofing attacks are far more difficult when both sides have to authenticate with TLS certificates.
+- Spoofing attacks: Attackers can attempt to "spoof" (imitate) a web server to a user, or vice versa. Spoofing attacks are far more difficult when both sides have to authenticate with TLS certificates.
 
-	- Credential stuffing: Attackers use leaked sets of credentials from a data breach to try to log in as a legitimate user. Without a legitimately issued TLS certificate, credential stuffing attacks cannot be successful against organizations that use mTLS.
+- Credential stuffing: Attackers use leaked sets of credentials from a data breach to try to log in as a legitimate user. Without a legitimately issued TLS certificate, credential stuffing attacks cannot be successful against organizations that use mTLS.
 
-	- Brute force attacks: Typically carried out with bots, a brute force attack is when an attacker uses rapid trial and error to guess a user's password. mTLS ensures that a password is not enough to gain access to an organization's network. (Rate limiting is another way to deal with this type of bot attack.)
+- Brute force attacks: Typically carried out with bots, a brute force attack is when an attacker uses rapid trial and error to guess a user's password. mTLS ensures that a password is not enough to gain access to an organization's network. (Rate limiting is another way to deal with this type of bot attack.)
 
-	- Phishing attacks: The goal of a phishing attack is often to steal user credentials, then use those credentials to compromise a network or an application. Even if a user falls for such an attack, the attacker still needs a TLS certificate and a corresponding private key in order to use those credentials.
+- Phishing attacks: The goal of a phishing attack is often to steal user credentials, then use those credentials to compromise a network or an application. Even if a user falls for such an attack, the attacker still needs a TLS certificate and a corresponding private key in order to use those credentials.
 
-	- Malicious API requests: When used for API security, mTLS ensures that API requests come from legitimate, authenticated users only. This stops attackers from sending malicious API requests that aim to exploit a vulnerability or subvert the way the API is supposed to function.
+- Malicious API requests: When used for API security, mTLS ensures that API requests come from legitimate, authenticated users only. This stops attackers from sending malicious API requests that aim to exploit a vulnerability or subvert the way the API is supposed to function.
 
 ## How works mTLS?
+
+![mTLS Client-Server flow](images/mtls.png)
 
 1/ Client connects to the server
 → Starts a TLS handshake (just like normal HTTPS).
@@ -65,12 +67,10 @@ mTLS prevents various kinds of attacks, including:
 5/ Server verifies the client certificate
 → The server checks that the client’s certificate was issued by a trusted CA and possibly matches an allowed subject or organization.
 
-6/ Handshake completes
+6/ Server grants access
+
+7/ Handshake completes
 → Both sides now trust each other, and encrypted communication begins.
-
-![mTLS Client-Server flow](images/mtls.png)
-
-
 
 ## Prepare your environment for the ODM installation
 
@@ -186,21 +186,6 @@ kubectl create secret generic <my-client-secret> --from-file=tls.crt=myclient.cr
 
 You can now install the product. We will use the PostgreSQL internal database and disable data persistence (`internalDatabase.persistence.enabled=false`) to avoid any platform complexity with persistent volume allocation.
 
-> **Note:**  
-> The following command installs the **latest available version** of the chart.  
-> If you want to install a **specific version**, add the `--version` option:
->
-> ```bash
-> helm install my-odm-release ibm-helm/ibm-odm-prod --version <version> \
->     --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret ...
-> ```
->
-> You can list all available versions using:
->
-> ```bash
-> helm search repo ibm-helm/ibm-odm-prod -l
-> ```
-
 #### a. Installation on OpenShift using Routes
 
   See the [Preparing to install](https://www.ibm.com/docs/en/odm/9.5.0?topic=production-preparing-install-operational-decision-manager) documentation for more information.
@@ -215,7 +200,7 @@ helm install mtls-tuto ibm-helm/ibm-odm-prod -f ocp-values.yaml
 > - This command installs the **latest available version** of the chart. If you want to install a **specific version**, add the `--version` option:
 >
 > ```bash
-> helm install roks-tuto ibm-helm/ibm-odm-prod --version <version> -f roks-values.yaml
+> helm install mtls-tuto ibm-helm/ibm-odm-prod --version <version> -f ocp-values.yaml
 > ```
 >
 > You can list all available versions using:
@@ -225,3 +210,5 @@ helm install mtls-tuto ibm-helm/ibm-odm-prod -f ocp-values.yaml
 > ```
 > 
 > - This configuration will deployed ODM with a sample database. You should used your own database such as [IBM Cloud Databases for PostgreSQL](https://www.ibm.com/products/databases-for-postgresql) for production.
+
+
