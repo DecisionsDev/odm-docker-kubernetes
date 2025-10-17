@@ -126,8 +126,12 @@ If you do not have a trusted certificate, you can use OpenSSL and other cryptogr
 ```shell
 openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout myserver.key \
         -out myserver.crt -subj "/CN=myserver.com/OU=it/O=myserver/L=Paris/C=FR" \
-        -addext "subjectAltName = DNS:myserver.com"
+        -addext "subjectAltName=DNS:myserver.com,DNS:*.<OCP_DOMAIN_NAME>"
 ```
+
+   Where:
+    - *<OCP_DOMAIN_NAME>* is the OpenShift Cluster Domain Name that looks like apps.XXX.XXX.XXX.com
+
 
 > [!NOTE]
 > You can use -addext only with actual OpenSSL and from LibreSSL 3.1.0.
@@ -135,7 +139,7 @@ openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout myserver.key \
 2. Create a Kubernetes secret with the server certificate.
 
 ```shell
-kubectl create secret generic <my-server-secret> --from-file=tls.crt=myserver.crt --from-file=tls.key=myserver.key
+kubectl create secret generic my-server-secret --from-file=tls.crt=myserver.crt --from-file=tls.key=myserver.key
 ```
 
 The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://www.ibm.com/docs/en/odm/9.5.0?topic=servers-server-certificates).
@@ -155,7 +159,7 @@ openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout myclient.key \
 2. Create a Kubernetes secret with the client ertificate.
 
 ```shell
-kubectl create secret generic <my-client-secret> --from-file=tls.crt=myclient.crt
+kubectl create secret generic my-client-secret --from-file=tls.crt=myclient.crt
 ```
 
 > [!NOTE]
@@ -211,4 +215,40 @@ helm install mtls-tuto ibm-helm/ibm-odm-prod -f ocp-values.yaml
 > 
 > - This configuration will deployed ODM with a sample database. You should used your own database such as [IBM Cloud Databases for PostgreSQL](https://www.ibm.com/products/databases-for-postgresql) for production.
 
+## Call ODM Decision Server Runtime with curl
+
+Now, ODM Decision Server Runtime is configured for mTLS. It means that all call must be executed  with a trusted certificate.
+
+```bash
+curl -k --cert myclient.crt --key myclient.key -H "Content-Type: application/json" -k --data @payload.json \ 
+	https://mtls-tuto-odm-ds-runtime-route-test-tuto.apps.mat-test.cp.fyre.ibm.com/DecisionService/rest/production_deployment/1.0/loan_validation_production/1.0 \
+        -u odmAdmin:odmAdmin
+```
+
+## Call ODM Decision Server Runtime with java
+
+Create a java project using your preferred IDE and import the DecisionServiceExecution.java and payload files
+We need to create a client-keystore.p12 file that will be used to send the client certificate in the HTTP request.
+
+Create a client-keystore.p12 file 
+
+```bash
+openssl pkcs12 -export -inkey myclient.key -in myclient.crt -name MYCLIENT -out client-keystore.p12 -passout pass:<PASSWORD>
+```                	
+
+   Where:
+    - *PASSWORD* is the password of your choice.
+
+Create the server-truststore.p12 file
+
+```bash
+keytool -import -file myserver.crt -srcstoretype PKCS12 -keystore server-truststore.p12 -storepass <PASSWORD> -alias ODM-RUNTIME -noprompt
+```
+
+   Where:
+    - *PASSWORD* is the password of your choice.
+
+
+Push the client-keystore.p12 and server-truststore.p12 files in the java project.
+Replace the <PASSWORD> placeholder using the same *PASSWORD* value
 

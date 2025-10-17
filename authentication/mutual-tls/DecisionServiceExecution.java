@@ -17,15 +17,15 @@ public class DecisionServiceExecution {
 
 		Path payloadFilePath = Path.of("./payload.json");
 
-		System.setProperty("javax.net.ssl.trustStore", "./server-truststore.jks");
+		System.setProperty("javax.net.ssl.trustStore", "./server-truststore.p12");
 		System.setProperty("javax.net.ssl.trustStorePassword", "<PASSWORD>");
-		System.setProperty("javax.net.ssl.trustStoreType", "JKS");
+		System.setProperty("javax.net.ssl.trustStoreType", "PKCS12");
 
 		//	System.setProperty("javax.net.debug","ssl:handshake");
 
-		System.setProperty("javax.net.ssl.keyStore", "./client-keystore.jks");
+		System.setProperty("javax.net.ssl.keyStore", "./client-keystore.p12");
 		System.setProperty("javax.net.ssl.keyStorePassword", "<PASSWORD>");
-		System.setProperty("javax.net.ssl.keyStoreType", "JKS");
+		System.setProperty("javax.net.ssl.keyStoreType", "PKCS12");
 
 
 		// Create client
@@ -42,7 +42,7 @@ public class DecisionServiceExecution {
 				postRequest = HttpRequest.newBuilder()
 						.uri(URI.create(endpointURI))
 						.header("Content-Type", "application/json")
-						.header("Authorization", "Basic <BasicAuthBase64Encoded>")
+						.header("Authorization", "Basic b2RtQWRtaW46b2RtQWRtaW4=")
 						.POST(HttpRequest.BodyPublishers.ofString(Files.readString(payloadFilePath)))
 						.build();
 			} catch (IOException e) {
