@@ -27,15 +27,15 @@ First, install the following software on your machine:
 Then, create an [AWS Account](https://aws.amazon.com/getting-started/).
 
 ## Steps to deploy ODM on Kubernetes from Amazon EKS
-<!-- TOC depthFrom:3 depthTo:3 withLinks:1 updateOnSave:1 orderedList:0 -->
+<!-- TOC depthfrom:3 depthto:3 withlinks:false updateonsave:false orderedlist:false -->
 
-- [1. Prepare your environment (20 min)](#1-prepare-your-environment-20-min)
-- [2. Create an RDS database (10 min)](#2-create-an-rds-database-10-min)
-- [3. Prepare your environment for the ODM installation (5 min)](#3-prepare-your-environment-for-the-odm-installation-5-min)
-- [4. Manage a  digital certificate (10 min)](#4-manage-a-digital-certificate-10-min)
-- [5. Install an IBM Operational Decision Manager release (10 min)](#5-install-an-ibm-operational-decision-manager-release-10-min)
-- [6. Access the ODM services](#6-access-the-odm-services)
-- [7. Track ODM usage with the IBM License Service](#7-track-odm-usage-with-the-ibm-license-service)
+- Prepare your environment (20 min)
+- Create an RDS database (10 min)
+- Prepare your environment for the ODM installation (5 min)
+- Manage a  digital certificate (10 min)
+- Install an IBM Operational Decision Manager release (10 min)
+- Access the ODM services
+- Track ODM usage with the IBM License Service
 
 <!-- /TOC -->
 
@@ -55,11 +55,11 @@ Where you provide your `AWS Access Key ID`, `AWS Secret Access Key` and the `Def
 #### b. Create an EKS cluster (20 min)
 
 ```bash
-eksctl create cluster <CLUSTER_NAME> --version 1.32 --alb-ingress-access
+eksctl create cluster <CLUSTER_NAME> --version 1.33 --alb-ingress-access
 ```
 
 > **Note**
-> The tutorial has been tested with the Kubernetes version 1.32. Check the supported kubernetes version in the [system requirement](https://www.ibm.com/support/pages/ibm-operational-decision-manager-detailed-system-requirements) page.
+> The tutorial has been tested with the Kubernetes version 1.33. Check the supported kubernetes version in the [Detailed System Requirements](https://www.ibm.com/software/reports/compatibility/clarity/product.html?id=C88B83D2853E4A628442E38C1194FF8F) page.
 
 > **Warning**
 > If you prefer to use the NGINX Ingress Controller instead of the ALB Load Balancer to expose ODM services, don't use the --alb-ingress-access option during the creation of the cluster !
