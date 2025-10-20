@@ -121,6 +121,28 @@ ibm-helm/ibm-odm-prod       25.1.0       	9.5.0.1     IBM Operational Decision M
 
 1. Generate a self-signed server certificate.
 
+For the server certificate, there is 2 options :
+
+* Use the OCP ingress certificate 
+* Generate a certificate compatible with the OCP domain
+
+The best way to inject in the ODM deployment a domain valid certificate is to copy it from the OCP ingress.
+On OCP, there is a router-certs-default secret inside the openshift-ingress namespace.
+Get the tls.crt public key and the tls.key private key from this secret
+
+```shell
+oc extract secret/router-certs-default -n openshift-ingress  
+```
+So you can rename the tls.crt as myserver.crt and tls.key as myserver.key, for the next step of the tutorial
+
+```shell
+mv tls.crt myserver.crt
+mv tls.key myserver.key
+```
+
+> [!NOTE]
+> On ROKS, this secret is named [default-ingress-cert](https://github.com/DecisionsDev/odm-docker-kubernetes/blob/mutual-tls/platform/roks/README.md#a-get-the-roks-domain-certificate).
+
 If you do not have a trusted certificate, you can use OpenSSL and other cryptography and certificate management libraries to generate a certificate file and a private key, to define the domain name, and to set the expiration date. The following command creates a self-signed certificate (.crt file) and a private key (.key file) that accept the domain name *myserver.com*. The expiration is set to 1000 days:
 
 ```shell
