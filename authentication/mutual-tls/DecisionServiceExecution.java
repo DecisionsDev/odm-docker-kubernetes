@@ -42,7 +42,7 @@ public class DecisionServiceExecution {
 				postRequest = HttpRequest.newBuilder()
 						.uri(URI.create(endpointURI))
 						.header("Content-Type", "application/json")
-						.header("Authorization", "Basic b2RtQWRtaW46b2RtQWRtaW4=")
+						.header("Authorization", "Basic b2RtQWRtaW46b2RtQWRtaW4=")  // Can be commented if executed without authorization
 						.POST(HttpRequest.BodyPublishers.ofString(Files.readString(payloadFilePath)))
 						.build();
 			} catch (IOException e) {

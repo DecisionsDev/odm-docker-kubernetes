@@ -1,0 +1,22 @@
+customization:
+  runAsUser: ''
+  securitySecretRef: my-server-secret
+  trustedCertificateList:
+    - my-client-secret
+decisionServerRuntime:
+  enableMutualTLS: true
+  libertyHookRef: no-authorization-secret
+image:
+  pullSecrets:
+    - hyc.registrykey
+  repository: icr.io/cp4ba-odm
+internalDatabase:
+  persistence:
+    enabled: false
+    useDynamicProvisioning: false
+  populateSampleData: true
+  runAsUser: ''
+license: true
+service:
+  enableRoute: true
+usersPassword: odmAdmin

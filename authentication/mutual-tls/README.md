@@ -215,15 +215,38 @@ helm install mtls-tuto ibm-helm/ibm-odm-prod -f ocp-values.yaml
 > 
 > - This configuration will deployed ODM with a sample database. You should used your own database such as [IBM Cloud Databases for PostgreSQL](https://www.ibm.com/products/databases-for-postgresql) for production.
 
+> **Optional:**
+> - As mTLS will be activated. It could represents enough security to execute the ODM runtime. So, we could avoid to manage the authentication/authorization mechanism.
+> To set it, we will override the default ODM Decision Server Runtime authorization mechanism.
+> Create a dedicated secret using the [libertyHookEnd.xml](./libertyHookEnd.xml) file :
+>
+>```bash
+>kubectl create secret generic no-authorization-secret --from-file=libertyHookEnd.xml
+>```
+>
+> You can run the ODM deployment using the [ocp-no-authorization-values.yaml](./ocp-no-authorization-values.yaml)
+> ```bash
+> helm install mtls-tuto ibm-helm/ibm-odm-prod -f ocp-no-authorization-values.yaml
+>
+
 ## Call ODM Decision Server Runtime with curl
 
 Now, ODM Decision Server Runtime is configured for mTLS. It means that all call must be executed  with a trusted certificate.
 
 ```bash
-curl -k --cert myclient.crt --key myclient.key -H "Content-Type: application/json" -k --data @payload.json \ 
-	https://mtls-tuto-odm-ds-runtime-route-test-tuto.apps.mat-test.cp.fyre.ibm.com/DecisionService/rest/production_deployment/1.0/loan_validation_production/1.0 \
-        -u odmAdmin:odmAdmin
+curl -k --cert myclient.crt --key myclient.key -H "Content-Type: application/json" -k --data @payload.json \
+     https://<DECISION_SERVER_RUNTIME_ROUTE>/DecisionService/rest/production_deployment/1.0/loan_validation_production/1.0 \
+     -u odmAdmin:odmAdmin
 ```
+
+Replace <DECISION_SERVER_RUNTIME_ROUTE> placeholder by getting the ODM Decision Server Route Name :
+
+```bash
+oc get route --no-headers | grep odm-decisionserverruntime | awk '{print $2}'
+```
+
+> **Optional:**
+> Using the specific no authorization deloyment, you can remove the '-u odmAdmin:odmAdmin' parameter
 
 ## Call ODM Decision Server Runtime with java
 
@@ -255,3 +278,17 @@ oc get route --no-headers | grep odm-decisionserverruntime | awk '{print $2}'
 ```
 
 Now you can call the ODM Decision Server Runtime using a java HTTP request with a client certificate.
+
+> **Optional:**
+> Using the specific no authorization deloyment, you can comment the **.header("Authorization", "Basic b2RtQWRtaW46b2RtQWRtaW4=")** Authorization header in the [DecisionServiceExecution.java](./DecisionServiceExecution.java) file 
+
+## Access the Decision Server Runtime Console using a browser
+
+You can see that's now impossible to access the https://<DECISION_SERVER_RUNTIME_ROUTE>/DecisionService/ URL using a browser.
+You have to import and trust the client certificate key chain in your operating system.
+
+Using the previously generated client-keystore.p12 file, you can follow the step 2 of this [article](https://velmuruganv.wordpress.com/2020/04/27/mtls-mutual-tls-authentication-chrome/) to import it in Chrome.
+
+On MacOS, you can see this [video](https://www.youtube.com/watch?v=unXpQNi858Q) on how to importand trust the client certificate in MacOS Keychain Access, using the client-keystore.p12 file.
+
+     
