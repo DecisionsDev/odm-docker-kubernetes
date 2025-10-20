@@ -227,28 +227,31 @@ curl -k --cert myclient.crt --key myclient.key -H "Content-Type: application/jso
 
 ## Call ODM Decision Server Runtime with java
 
-Create a java project using your preferred IDE and import the DecisionServiceExecution.java and payload files
+Create a java project using your preferred IDE and import the [DecisionServiceExecution.java](./DecisionServiceExecution.java) and [payload.json](./payload.json) files
 We need to create a client-keystore.p12 file that will be used to send the client certificate in the HTTP request.
 
-Create a client-keystore.p12 file 
+Create a client-keystore.p12 file and push it in the java project by replacing the <KEYSTORE-PASSWORD> placeholder in the [DecisionServiceExecution.java](./DecisionServiceExecution.java) file.
 
 ```bash
-openssl pkcs12 -export -inkey myclient.key -in myclient.crt -name MYCLIENT -out client-keystore.p12 -passout pass:<PASSWORD>
+openssl pkcs12 -export -inkey myclient.key -in myclient.crt -name MYCLIENT -out client-keystore.p12 -passout pass:<KEYSTORE-PASSWORD>
 ```                	
 
    Where:
-    - *PASSWORD* is the password of your choice.
+    - *KEYSTORE-PASSWORD* is the password of your choice.
 
-Create the server-truststore.p12 file
+Create the server-truststore.p12 file and push it in the java project by replacing the <TRUSTSTORE-PASSWORD> placeholder in the [DecisionServiceExecution.java](./DecisionServiceExecution.java) file.
 
 ```bash
-keytool -import -file myserver.crt -srcstoretype PKCS12 -keystore server-truststore.p12 -storepass <PASSWORD> -alias ODM-RUNTIME -noprompt
+keytool -import -file myserver.crt -srcstoretype PKCS12 -keystore server-truststore.p12 -storepass <TRUSTSTORE-PASSWORD> -alias ODM-RUNTIME -noprompt
 ```
 
    Where:
-    - *PASSWORD* is the password of your choice.
+    - *TRUSTSTORE-PASSWORD* is the password of your choice.
 
+Replace <DECISION_SERVER_RUNTIME_ROUTE> placeholder in the [DecisionServiceExecution.java](./DecisionServiceExecution.java) file by getting the ODM Decision Server Route Name :
 
-Push the client-keystore.p12 and server-truststore.p12 files in the java project.
-Replace the <PASSWORD> placeholder using the same *PASSWORD* value
+```bash
+oc get route --no-headers | grep odm-decisionserverruntime | awk '{print $2}'
+```
 
+Now you can call the ODM Decision Server Runtime using a java HTTP request with a client certificate.

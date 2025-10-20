@@ -13,18 +13,18 @@ public class DecisionServiceExecution {
 
 	public static void main(String[] args) {
 
-		String endpointURI = "https://<DECISION_CENTER_ROUTE>/DecisionService/rest/v1/production_deployment/1.0/loan_validation_production/1.0";
+		String endpointURI = "https://<DECISION_SERVER_RUNTIME_ROUTE>/DecisionService/rest/v1/production_deployment/1.0/loan_validation_production/1.0";
 
 		Path payloadFilePath = Path.of("./payload.json");
 
 		System.setProperty("javax.net.ssl.trustStore", "./server-truststore.p12");
-		System.setProperty("javax.net.ssl.trustStorePassword", "<PASSWORD>");
+		System.setProperty("javax.net.ssl.trustStorePassword", "<TRUSTSTORE-PASSWORD>");
 		System.setProperty("javax.net.ssl.trustStoreType", "PKCS12");
 
 		//	System.setProperty("javax.net.debug","ssl:handshake");
 
 		System.setProperty("javax.net.ssl.keyStore", "./client-keystore.p12");
-		System.setProperty("javax.net.ssl.keyStorePassword", "<PASSWORD>");
+		System.setProperty("javax.net.ssl.keyStorePassword", "<KEYSTORE-PASSWORD>");
 		System.setProperty("javax.net.ssl.keyStoreType", "PKCS12");
 
 
