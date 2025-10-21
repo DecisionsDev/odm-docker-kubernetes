@@ -16,11 +16,11 @@ Installing an NGINX Ingress controller allows you to access ODM components throu
 1. Use the official YAML manifest:
 
     ```shell
-    kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.12.1/deploy/static/provider/cloud/deploy.yaml
+    kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.13.3/deploy/static/provider/cloud/deploy.yaml
     ```
 
 > [!NOTE]
-> The version will probably change after the publication of our documentation so please refer to the actual [documentation](https://kubernetes.github.io/ingress-nginx/deploy/#azure)!
+> The version will probably change after the publication of our documentation, so please refer to the actual [documentation](https://kubernetes.github.io/ingress-nginx/deploy/#azure).
 
 2. Get the Ingress controller external IP address (it will appear 80 seconds or so after the resource application above):
 
@@ -43,7 +43,7 @@ Installing an NGINX Ingress controller allows you to access ODM components throu
 
 ## Install an ODM release with NGINX Ingress Controller
 
-You can reuse the secret with TLS certificate created [above](README.md#manage-adigital-certificate-10-min):
+You can reuse the secret with TLS certificate created at [Manage a digital certificate](README.md#manage-adigital-certificate-10-min). 
 
 You can now install the product.
 - Get the [aks-nginx-values.yaml](./aks-nginx-values.yaml) file and replace the following keys:
@@ -113,7 +113,7 @@ Where:
 
 This section explains how to track ODM usage with the IBM License Service.
 
-Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.12.0?topic=ilsfpcr-installing-license-service-without-operator-lifecycle-manager-olm) documentation.
+Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.14.0?topic=ilsfpcr-installing-license-service-without-operator-lifecycle-manager-olm) documentation.
 
 ### Patch the IBM Licensing instance with Nginx configuration
 
@@ -142,6 +142,7 @@ You will be able to access the IBM License Service by retrieving the URL with th
 ```bash
 export LICENSING_URL=$(kubectl get ingress ibm-licensing-service-instance -n ibm-licensing -o jsonpath='{.status.loadBalancer.ingress[0].ip}')/ibm-licensing-service-instance
 export TOKEN=$(kubectl get secret ibm-licensing-token -n ibm-licensing -o jsonpath='{.data.token}' |base64 -d)
+echo http://${LICENSING_URL}/status?token=${TOKEN}
 ```
 
 You can access the `http://${LICENSING_URL}/status?token=${TOKEN}` URL to view the licensing usage. 
@@ -152,7 +153,7 @@ Otherwise, you can also retrieve the licensing report .zip file by running:
 curl "http://${LICENSING_URL}/snapshot?token=${TOKEN}" --output report.zip
 ```
 
-If your IBM License Service instance is not running properly, refer to this [troubleshooting page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.12.0?topic=service-troubleshooting-license).
+If your IBM License Service instance is not running properly, refer to this [troubleshooting page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.14.0?topic=service-troubleshooting-license).
 
 ## Troubleshooting
 
