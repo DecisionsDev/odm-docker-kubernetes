@@ -27,15 +27,15 @@ First, install the following software on your machine:
 Then, create an [AWS Account](https://aws.amazon.com/getting-started/).
 
 ## Steps to deploy ODM on Kubernetes from Amazon EKS
-<!-- TOC depthfrom:3 depthto:3 withlinks:false updateonsave:false orderedlist:false -->
+<!-- TOC depthFrom:3 depthTo:3 withLinks:1 updateOnSave:1 orderedList:0 -->
 
-- Prepare your environment (20 min)
-- Create an RDS database (10 min)
-- Prepare your environment for the ODM installation (5 min)
-- Manage a  digital certificate (10 min)
-- Install an IBM Operational Decision Manager release (10 min)
-- Access the ODM services
-- Track ODM usage with the IBM License Service
+- [1. Prepare your environment (20 min)](#1-prepare-your-environment-20-min)
+- [2. Create an RDS database (10 min)](#2-create-an-rds-database-10-min)
+- [3. Prepare your environment for the ODM installation (5 min)](#3-prepare-your-environment-for-the-odm-installation-5-min)
+- [4. Manage a  digital certificate (10 min)](#4-manage-a-digital-certificate-10-min)
+- [5. Install an IBM Operational Decision Manager release (10 min)](#5-install-an-ibm-operational-decision-manager-release-10-min)
+- [6. Access the ODM services](#6-access-the-odm-services)
+- [7. Track ODM usage with the IBM License Service](#7-track-odm-usage-with-the-ibm-license-service)
 
 <!-- /TOC -->
 
@@ -71,7 +71,8 @@ For more information, refer to [Creating an Amazon EKS cluster](https://docs.aws
 If your environment is set up correctly, you should be able to get the cluster information by running the following command:
 
 ```bash
-$ kubectl cluster-info
+kubectl cluster-info
+
 Kubernetes control plane is running at https://xxxxxxxx.<REGION>.eks.amazonaws.com
 CoreDNS is running at https://xxxxxxxx.<REGION>.eks.amazonaws.com/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
 
@@ -142,7 +143,7 @@ kubectl create secret generic odm-db-secret \
 To get access to the ODM material, you must have an IBM entitlement key to pull the images from the IBM Cloud Container registry.
 This is what will be used in the next step of this tutorial.
 
-You can also download the ODM on Kubernetes package (.tgz file) from Passport Advantage® (PPA), and then push the contained images to the EKS Container Registry (ECR). If you prefer to manage the ODM images this way, see the details [here](README-ECR.md)
+You can also download the ODM CASE package from IBM Cloud Container Registry, and then push the contained images to the EKS Container Registry (ECR). If you prefer to manage the ODM images this way, see the details [here](README-ECR.md)
 
 #### a. Retrieve your entitled registry key
 
@@ -177,7 +178,7 @@ helm repo update
 ```bash
 $ helm search repo ibm-odm-prod
 NAME                             	CHART VERSION	APP VERSION	DESCRIPTION
-ibm-helm/ibm-odm-prod           	25.0.0       	9.5.0.0   	IBM Operational Decision Manager
+ibm-helm/ibm-odm-prod           	25.1.0       	9.5.0.1   	IBM Operational Decision Manager
 ```
 
 ### 4. Manage a  digital certificate (10 min)
@@ -298,14 +299,14 @@ The ODM services are accessible from the following URLs:
 
 #### a. Install the IBM License Service
 
-Follow the **Installation** section of the [Installation License Service without Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.12.0?topic=ilsfpcr-installing-license-service-without-operator-lifecycle-manager-olm) documentation.
+Follow the **Installation** section of the [Installation License Service without Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.14.0?topic=ilsfpcr-installing-license-service-without-operator-lifecycle-manager-olm) documentation.
 
 #### b. Patch the IBM Licensing instance
 
 Get the [licensing-instance.yaml](./licensing-instance.yaml) file and run the command:
 
 ```bash
-kubectl patch IBMLicensing instance --type merge --patch-file licensing-instance.yaml -n ibm-licensing 
+kubectl patch IBMLicensing instance --type merge --patch-file licensing-instance.yaml -n ibm-licensing
 ```
 
 Wait a couple of minutes for the changes to be applied. 
@@ -313,7 +314,7 @@ Wait a couple of minutes for the changes to be applied.
 Run the following command to see the status of Ingress instance:
 
 ```bash
-kubectl get ingress -n ibm-licensing                         
+kubectl get ingress -n ibm-licensing
 ```
 
 You should be able to see the address and other details about `ibm-licensing-service-instance`.
@@ -321,7 +322,7 @@ You should be able to see the address and other details about `ibm-licensing-ser
 NAME                             CLASS   HOSTS   ADDRESS                                                                 PORTS   AGE
 ibm-licensing-service-instance   alb     *       k8s-ibmlicen-ibmlicen-xxxxxxxx-yyyyyyy.<aws-region>.elb.amazonaws.com   80      44m
 ```
-You can find more information and use cases on [this page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.12.0?topic=configuring-kubernetes-ingress).
+You can find more information and use cases on [this page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.14.0?topic=configuring-kubernetes-ingress).
 
 > **Note**
 > If you choose to use the NGINX Ingress Controller, you must use the [licensing-instance-nginx.yaml](./licensing-instance-nginx.yaml) file. Refer to [Track ODM usage with the IBM License Service with NGINX Ingress Controller](README-NGINX.md#track-odm-usage-with-the-ibm-license-service-with-nginx-ingress-controller).
@@ -333,6 +334,7 @@ The ALB address should be reflected in the Ingress configuration. You will be ab
 ```bash
 export LICENSING_URL=$(kubectl get ingress ibm-licensing-service-instance -n ibm-licensing -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
 export TOKEN=$(kubectl get secret ibm-licensing-token -n ibm-licensing -o jsonpath='{.data.token}' |base64 -d)
+echo http://${LICENSING_URL}/status?token=${TOKEN}
 ```
 
 > **Note**
