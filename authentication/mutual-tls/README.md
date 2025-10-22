@@ -22,10 +22,13 @@
 
 We already provide several tutorials explaining how to configure ODM on K8S with major OpenId provider vendors like Microsoft EntraID, OKTA, Keycloak and Amazon Cognito.
 The OpenID protocol is well adapted to manage SSO when dealing with an Identity, which is quite interesting to connect to UI in a web browser like the Decision Center Business Console or the Desision Server RES Console.
-However, for machine to machine communication where there is no identity needs and especially for runtime execution that are performance demanding, the openId protocol is less adapted and mutual TLS is providing enough security by avoiding the following OpenId drawbacks :
+However, for machine to machine or service to service communication where no identity is needed like a batch processing, the openId protocol is less adapted than mutual TLS.
+Here, mTLS is providing enough security, like openId but by avoiding several drawbacks : 
+
+- no identity needed 
 - less configuration complexity 
-- no token management => expiracy management
-- less latency as there is no third party communication involved (OpenId provider)
+- no token management => no need of token expiracy management
+- better performance as there is less latency (no third party communication to the OpenId provider managing token validation)
 
 But, mTLS can recquire a certificate rotation management, which is also the case for OpenId (client_secret and/or certificate)
 
