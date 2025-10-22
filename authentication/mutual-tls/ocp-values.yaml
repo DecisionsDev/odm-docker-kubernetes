@@ -7,8 +7,8 @@ decisionServerRuntime:
   enableMutualTLS: true
 image:
   pullSecrets:
-    - hyc.registrykey
-  repository: icr.io/cp4ba-odm
+    - ibm-entitlement-key
+  repository: cp.icr.io/cp/cp4a/odm
 internalDatabase:
   persistence:
     enabled: false
