@@ -30,7 +30,7 @@ Here, mTLS is providing enough security, like openId but by avoiding several dra
 - no token management => no need of token expiracy management
 - better performance as there is less latency (no third party communication to the OpenId provider managing token validation)
 
-But, mTLS can recquire a certificate rotation management, which is also the case for OpenId (client_secret and/or certificate)
+But, mTLS can require a certificate rotation management, which is also the case for OpenId (client_secret and/or certificate)
 
 In this tutorial, we will describe the step by step approach to setup mTLS on the ODM on K8S Decision Server Runtime deployed on OCP.
 
