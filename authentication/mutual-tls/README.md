@@ -4,7 +4,18 @@
 - [Introduction](#introduction)
     - [What is mTLS?](#what-is-mtls)
     - [How works mTLS?](#how-works-mtls)
-- [Configure mTLS on an ODM Instance](#configure-mtls-on-an-ODM-instance)
+- [Prepare your environment for the ODM installation](#prepare-your-environment-for-the-odm-installation)
+    - [Using the IBM Entitled Registry with your IBMid](#using-the-ibm-entitled-registry-with-your-ibmid)
+    - [Manage a 'server' certificate for the ODM instance](#Manage-a-server-certificate-for-the-odm-instance)
+    - [Manage a 'client' certificate to communicate with the ODM Runtime](#manage-a-client-certificate-to-communicate-with-the-odm-runtime)
+- [Install your ODM Helm release](#install-your-odm-helm-release)
+    - [Add the public IBM Helm charts repository](#add-the-public-ibm-helm-charts-repository)
+    - [Check that you can access the ODM chart](#check-that-you-can-access-the-odm-chart)
+    - [Run the `helm install` command](#run-the-helm-install-command)
+- [Test mTLS](#test-mtls)
+    - [Call ODM Decision Server Runtime with curl](#call-odm-decision-server-runtime-with-curl)
+    - [Call ODM Decision Server Runtime with java](#call-odm-decision-server-runtime-with-java)
+    - [Access the Decision Server Runtime Console using a browser](#access-the-decision-server-runtime-console-using-a-browser)
 <!-- /TOC -->
 
 # Introduction
@@ -72,11 +83,11 @@ mTLS prevents various kinds of attacks, including:
 7/ Handshake completes
 → Both sides now trust each other, and encrypted communication begins.
 
-## Prepare your environment for the ODM installation
+# Prepare your environment for the ODM installation
 
 To get access to the ODM material, you must have an IBM entitlement key to pull the images from the IBM Entitled Registry.
 
-### Using the IBM Entitled Registry with your IBMid (10 min)
+## Using the IBM Entitled Registry with your IBMid
 
 Log in to [MyIBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary) with the IBMid and password that are associated with the entitled software.
 
@@ -117,7 +128,7 @@ NAME                        CHART VERSION	APP VERSION DESCRIPTION
 ibm-helm/ibm-odm-prod       25.1.0       	9.5.0.1     IBM Operational Decision Manager  License By in...
 ```
 
-### Manage a 'server' certificate for the ODM instance
+## Manage a 'server' certificate for the ODM instance
 
 1. Generate a self-signed server certificate.
 
@@ -166,7 +177,7 @@ kubectl create secret generic my-server-secret --from-file=tls.crt=myserver.crt 
 
 The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://www.ibm.com/docs/en/odm/9.5.0?topic=servers-server-certificates).
 
-### Manage a 'client' certificate to communicate with the ODM Runtime
+## Manage a 'client' certificate to communicate with the ODM Runtime
 
 1. Generate a self-signed client certificate.
 
@@ -188,16 +199,16 @@ kubectl create secret generic my-client-secret --from-file=tls.crt=myclient.crt
 > The mTLS communication can be managed using the same certificate on the client and the server side.
 > If this solution is preferred, then, no need to create the client certificate neither this secret
 
-## Install your ODM Helm release
+# Install your ODM Helm release
 
-### 1. Add the public IBM Helm charts repository
+## Add the public IBM Helm charts repository
 
   ```shell
   helm repo add ibm-helm https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm
   helm repo update
   ```
 
-### 2. Check that you can access the ODM chart
+## Check that you can access the ODM chart
 
   ```shell
   helm search repo ibm-odm-prod
@@ -208,13 +219,11 @@ kubectl create secret generic my-client-secret --from-file=tls.crt=myclient.crt
   ibm-helm/ibm-odm-prod	     25.1.0       	9.5.0.1   	IBM Operational Decision Manager
   ```
 
-### 3. Run the `helm install` command
+## Run the `helm install` command
 
 You can now install the product. We will use the PostgreSQL internal database and disable data persistence (`internalDatabase.persistence.enabled=false`) to avoid any platform complexity with persistent volume allocation.
 
-#### a. Installation on OpenShift using Routes
-
-  See the [Preparing to install](https://www.ibm.com/docs/en/odm/9.5.0?topic=production-preparing-install-operational-decision-manager) documentation for more information.
+See the [Preparing to install](https://www.ibm.com/docs/en/odm/9.5.0?topic=production-preparing-install-operational-decision-manager) documentation for more information.
 
 Get the [ocp-values.yaml](./ocp-values.yaml) file and install your ODM instance:
 
@@ -256,7 +265,7 @@ helm install mtls-tuto ibm-helm/ibm-odm-prod -f ocp-values.yaml
 Now, ODM Decision Server Runtime is configured for mTLS. It means that all call must be executed  with a trusted certificate.
 
 ```bash
-curl -k --cert myclient.crt --key myclient.key -H "Content-Type: application/json" -k --data @payload.json \
+curl -k -v --cert myclient.crt --key myclient.key -H "Content-Type: application/json" -k --data @payload.json \
      https://<DECISION_SERVER_RUNTIME_ROUTE>/DecisionService/rest/production_deployment/1.0/loan_validation_production/1.0 \
      -u odmAdmin:odmAdmin
 ```
@@ -266,9 +275,41 @@ Replace <DECISION_SERVER_RUNTIME_ROUTE> placeholder by getting the ODM Decision 
 ```bash
 oc get route --no-headers | grep odm-decisionserverruntime | awk '{print $2}'
 ```
-
 > **Optional:**
 > Using the specific no authorization deloyment, you can remove the '-u odmAdmin:odmAdmin' parameter
+
+The verbose mode will provide you detailed information about the ssl handshake that should look like :
+
+* Host <XXX.XXX.XXX.XXX>:443 was resolved.
+* IPv6: (none)
+* IPv4: 9.46.106.175
+*   Trying 9.46.106.175:443...
+* ALPN: curl offers h2,http/1.1
+* TLSv1.3 (OUT), TLS handshake, Client hello (1):
+* TLSv1.3 (IN), TLS handshake, Server hello (2):
+* TLSv1.3 (IN), TLS change cipher, Change cipher spec (1):
+* TLSv1.3 (IN), TLS handshake, Encrypted Extensions (8):
+* TLSv1.3 (IN), TLS handshake, Request CERT (13):
+* TLSv1.3 (IN), TLS handshake, Certificate (11):
+* TLSv1.3 (IN), TLS handshake, CERT verify (15):
+* TLSv1.3 (IN), TLS handshake, Finished (20):
+* TLSv1.3 (OUT), TLS change cipher, Change cipher spec (1):
+* TLSv1.3 (OUT), TLS handshake, Certificate (11):
+* TLSv1.3 (OUT), TLS handshake, CERT verify (15):
+* TLSv1.3 (OUT), TLS handshake, Finished (20):
+* SSL connection using TLSv1.3 / TLS_AES_256_GCM_SHA384 / x25519 / RSASSA-PSS
+* ALPN: server accepted h2
+* Server certificate:
+*  subject: CN=myserver.com; OU=it; O=myserver; L=Paris; C=FR
+*  start date: Oct 17 15:01:06 2025 GMT
+*  expire date: Jul 13 15:01:06 2028 GMT
+*  issuer: CN=myserver.com; OU=it; O=myserver; L=Paris; C=FR
+*  SSL certificate verify result: self-signed certificate (18), continuing anyway.
+*   Certificate level 0: Public key type RSA (2048/112 Bits/secBits), signed using sha256WithRSAEncryption
+* Connected to <DECISION_SERVER_RUNTIME_ROUTE> (XXX.XXX.XXX.XXX) port 443
+* using HTTP/2
+
+# Test mTLS
 
 ## Call ODM Decision Server Runtime with java
 
@@ -313,4 +354,3 @@ Using the previously generated client-keystore.p12 file, you can follow the step
 
 On MacOS, you can see this [video](https://www.youtube.com/watch?v=unXpQNi858Q) on how to importand trust the client certificate in MacOS Keychain Access, using the client-keystore.p12 file.
 
-     

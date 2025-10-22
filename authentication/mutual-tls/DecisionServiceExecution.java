@@ -21,7 +21,7 @@ public class DecisionServiceExecution {
 		System.setProperty("javax.net.ssl.trustStorePassword", "<TRUSTSTORE-PASSWORD>");
 		System.setProperty("javax.net.ssl.trustStoreType", "PKCS12");
 
-		//	System.setProperty("javax.net.debug","ssl:handshake");
+		System.setProperty("javax.net.debug","ssl:handshake");
 
 		System.setProperty("javax.net.ssl.keyStore", "./client-keystore.p12");
 		System.setProperty("javax.net.ssl.keyStorePassword", "<KEYSTORE-PASSWORD>");
