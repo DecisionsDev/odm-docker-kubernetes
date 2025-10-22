@@ -21,7 +21,7 @@
 # Introduction
 
 We already provide several tutorials explaining how to configure ODM on K8S with major OpenId provider vendors like Microsoft EntraID, OKTA, Keycloak and Amazon Cognito.
-The OpenID protocol is well adapted to manage SSO when dealing with an Identity, which is quite interesting to connect to UI in a web browser like the Decision Center Business Console or the Desision Server RES Console.
+The OpenID protocol is well adapted to manage SSO when dealing with an Identity, which is quite interesting to connect to UI in a web browser like the Decision Center Business Console or the Decision Server RES Console.
 However, for machine to machine or service to service communication where no identity is needed like a batch processing, the openId protocol is less adapted than mutual TLS.
 Here, mTLS is providing enough security, like openId but by avoiding several drawbacks : 
 
@@ -135,10 +135,10 @@ ibm-helm/ibm-odm-prod       25.1.0       	9.5.0.1     IBM Operational Decision M
 
 1. Generate a self-signed server certificate.
 
-For the server certificate, there is 2 options :
+For the server certificate, there are 2 options :
 
 * Use the OCP ingress certificate 
-* Generate a certificate compatible with the OCP domain
+* Generate a certificate compatible with the OCP domain name
 
 The best way to inject in the ODM deployment a domain valid certificate is to copy it from the OCP ingress.
 On OCP, there is a router-certs-default secret inside the openshift-ingress namespace.
