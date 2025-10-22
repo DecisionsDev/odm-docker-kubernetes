@@ -247,7 +247,7 @@ helm install mtls-tuto ibm-helm/ibm-odm-prod -f ocp-values.yaml
 Now, ODM Decision Server Runtime is configured for mTLS. It means that all call must be executed  with a trusted certificate.
 
 ```bash
-curl -k -v --cert myclient.crt --key myclient.key -H "Content-Type: application/json" -k --data @payload.json \
+curl -k -v --cert myclient.crt --key myclient.key -H "Content-Type: application/json" --data @payload.json \
      https://<DECISION_SERVER_RUNTIME_ROUTE>/DecisionService/rest/production_deployment/1.0/loan_validation_production/1.0 \
      -u odmAdmin:odmAdmin
 ```
