@@ -6,7 +6,7 @@
     - [How works mTLS?](#how-works-mtls)
 - [Prepare your environment for the ODM installation](#prepare-your-environment-for-the-odm-installation)
     - [Using the IBM Entitled Registry with your IBMid](#using-the-ibm-entitled-registry-with-your-ibmid)
-    - [Manage a server certificate for the ODM instance](#Manage-a-server-certificate-for-the-odm-instance)
+    - [Manage a server certificate for the ODM instance](#manage-a-server-certificate-for-the-odm-instance)
     - [Manage a client certificate to communicate with the ODM Runtime](#manage-a-client-certificate-to-communicate-with-the-odm-runtime)
 - [Install your ODM Helm release](#install-your-odm-helm-release)
     - [Add the public IBM Helm charts repository](#add-the-public-ibm-helm-charts-repository)
