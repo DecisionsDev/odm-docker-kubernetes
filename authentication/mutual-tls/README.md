@@ -189,7 +189,7 @@ openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout myclient.key \
         -addext "subjectAltName = DNS:myclient.com"
 ```
 
-2. Create a Kubernetes secret with the client ertificate.
+2. Create a Kubernetes secret with the client certificate.
 
 ```shell
 kubectl create secret generic my-client-secret --from-file=tls.crt=myclient.crt
@@ -282,8 +282,8 @@ The verbose mode will provide you detailed information about the ssl handshake t
 
 * Host <XXX.XXX.XXX.XXX>:443 was resolved.
 * IPv6: (none)
-* IPv4: 9.46.106.175
-*   Trying 9.46.106.175:443...
+* IPv4: XXX.XXX.XXX.XXX
+*   Trying XXX.XXX.XXX.XXX:443...
 * ALPN: curl offers h2,http/1.1
 * TLSv1.3 (OUT), TLS handshake, Client hello (1):
 * TLSv1.3 (IN), TLS handshake, Server hello (2):
