@@ -25,7 +25,7 @@ The OpenID protocol is well adapted to manage SSO when dealing with an Identity,
 However, for machine to machine communication where there is no identity needs and especially for runtime execution that are performance demanding, the openId protocol is less adapted and mutual TLS is providing enough security by avoiding the following OpenId drawbacks :
 - less configuration complexity 
 - no token management => expiracy management
-- no third party communication needed (OpenId provider)
+- less latency as there is no third party communication involved (OpenId provider)
 
 But, mTLS can recquire a certificate rotation management, which is also the case for OpenId (client_secret and/or certificate)
 
