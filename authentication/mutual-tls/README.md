@@ -6,12 +6,12 @@
     - [How works mTLS?](#how-works-mtls)
 - [Prepare your environment for the ODM installation](#prepare-your-environment-for-the-odm-installation)
     - [Using the IBM Entitled Registry with your IBMid](#using-the-ibm-entitled-registry-with-your-ibmid)
-    - [Manage a 'server' certificate for the ODM instance](#Manage-a-server-certificate-for-the-odm-instance)
-    - [Manage a 'client' certificate to communicate with the ODM Runtime](#manage-a-client-certificate-to-communicate-with-the-odm-runtime)
+    - [Manage a server certificate for the ODM instance](#Manage-a-server-certificate-for-the-odm-instance)
+    - [Manage a client certificate to communicate with the ODM Runtime](#manage-a-client-certificate-to-communicate-with-the-odm-runtime)
 - [Install your ODM Helm release](#install-your-odm-helm-release)
     - [Add the public IBM Helm charts repository](#add-the-public-ibm-helm-charts-repository)
     - [Check that you can access the ODM chart](#check-that-you-can-access-the-odm-chart)
-    - [Run the `helm install` command](#run-the-helm-install-command)
+    - [Run the helm install command](#run-the-helm-install-command)
 - [Test mTLS](#test-mtls)
     - [Call ODM Decision Server Runtime with curl](#call-odm-decision-server-runtime-with-curl)
     - [Call ODM Decision Server Runtime with java](#call-odm-decision-server-runtime-with-java)
@@ -128,7 +128,7 @@ NAME                        CHART VERSION	APP VERSION DESCRIPTION
 ibm-helm/ibm-odm-prod       25.1.0       	9.5.0.1     IBM Operational Decision Manager  License By in...
 ```
 
-## Manage a 'server' certificate for the ODM instance
+## Manage a server certificate for the ODM instance
 
 1. Generate a self-signed server certificate.
 
@@ -177,7 +177,7 @@ kubectl create secret generic my-server-secret --from-file=tls.crt=myserver.crt 
 
 The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://www.ibm.com/docs/en/odm/9.5.0?topic=servers-server-certificates).
 
-## Manage a 'client' certificate to communicate with the ODM Runtime
+## Manage a client certificate to communicate with the ODM Runtime
 
 1. Generate a self-signed client certificate.
 
