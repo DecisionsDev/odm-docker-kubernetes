@@ -9,8 +9,6 @@
     - [Manage a server certificate for the ODM instance](#manage-a-server-certificate-for-the-odm-instance)
     - [Manage a client certificate to communicate with the ODM Runtime](#manage-a-client-certificate-to-communicate-with-the-odm-runtime)
 - [Install your ODM Helm release](#install-your-odm-helm-release)
-    - [Add the public IBM Helm charts repository](#add-the-public-ibm-helm-charts-repository)
-    - [Check that you can access the ODM chart](#check-that-you-can-access-the-odm-chart)
     - [Run the helm install command](#run-the-helm-install-command)
 - [Test mTLS](#test-mtls)
     - [Call ODM Decision Server Runtime with curl](#call-odm-decision-server-runtime-with-curl)
@@ -203,24 +201,6 @@ kubectl create secret generic my-client-secret --from-file=tls.crt=myclient.crt
 > If this solution is preferred, then, no need to create the client certificate neither this secret
 
 # Install your ODM Helm release
-
-## Add the public IBM Helm charts repository
-
-  ```shell
-  helm repo add ibm-helm https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm
-  helm repo update
-  ```
-
-## Check that you can access the ODM chart
-
-  ```shell
-  helm search repo ibm-odm-prod
-  ```
-  The output should look like:
-  ```shell
-  NAME                  	CHART VERSION	APP VERSION	DESCRIPTION
-  ibm-helm/ibm-odm-prod	     25.1.0       	9.5.0.1   	IBM Operational Decision Manager
-  ```
 
 ## Run the `helm install` command
 
