@@ -9,7 +9,6 @@
     - [Manage a server certificate for the ODM instance](#manage-a-server-certificate-for-the-odm-instance)
     - [Manage a client certificate to communicate with the ODM Runtime](#manage-a-client-certificate-to-communicate-with-the-odm-runtime)
 - [Install your ODM Helm release](#install-your-odm-helm-release)
-    - [Run the helm install command](#run-the-helm-install-command)
 - [Test mTLS](#test-mtls)
     - [Call ODM Decision Server Runtime with curl](#call-odm-decision-server-runtime-with-curl)
     - [Call ODM Decision Server Runtime with java](#call-odm-decision-server-runtime-with-java)
@@ -202,8 +201,6 @@ kubectl create secret generic my-client-secret --from-file=tls.crt=myclient.crt
 
 # Install your ODM Helm release
 
-## Run the `helm install` command
-
 You can now install the product. We will use the PostgreSQL internal database and disable data persistence (`internalDatabase.persistence.enabled=false`) to avoid any platform complexity with persistent volume allocation.
 
 See the [Preparing to install](https://www.ibm.com/docs/en/odm/9.5.0?topic=production-preparing-install-operational-decision-manager) documentation for more information.
@@ -230,7 +227,7 @@ helm install mtls-tuto ibm-helm/ibm-odm-prod -f ocp-values.yaml
 > - This configuration will deployed ODM with a sample database. You should used your own database such as [IBM Cloud Databases for PostgreSQL](https://www.ibm.com/products/databases-for-postgresql) for production.
 
 > **Optional:**
-> - As mTLS will be activated. It could represents enough security to execute the ODM runtime. So, we could avoid to manage the authentication/authorization mechanism.
+> - As mTLS will be activated. It could represent enough security to execute the ODM runtime. So, we could avoid to manage the authentication/authorization mechanism.
 > To set it, we will override the default ODM Decision Server Runtime authorization mechanism.
 > Create a dedicated secret using the [libertyHookEnd.xml](./libertyHookEnd.xml) file :
 >
@@ -242,6 +239,8 @@ helm install mtls-tuto ibm-helm/ibm-odm-prod -f ocp-values.yaml
 > ```bash
 > helm install mtls-tuto ibm-helm/ibm-odm-prod -f ocp-no-authorization-values.yaml
 >
+
+# Test mTLS
 
 ## Call ODM Decision Server Runtime with curl
 
@@ -291,8 +290,6 @@ The verbose mode will provide you detailed information about the ssl handshake t
 *   Certificate level 0: Public key type RSA (2048/112 Bits/secBits), signed using sha256WithRSAEncryption
 * Connected to <DECISION_SERVER_RUNTIME_ROUTE> (XXX.XXX.XXX.XXX) port 443
 * using HTTP/2
-
-# Test mTLS
 
 ## Call ODM Decision Server Runtime with java
 
