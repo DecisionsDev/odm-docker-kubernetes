@@ -20,6 +20,8 @@
 We already provide several tutorials explaining how to configure ODM on K8S with major OpenId provider vendors like Microsoft EntraID, OKTA, Keycloak and Amazon Cognito.
 The OpenID protocol is well adapted to manage SSO when dealing with an Identity, which is quite interesting to connect to UI in a web browser like the Decision Center Business Console or the Decision Server RES Console.
 However, for machine to machine or service to service communication where no identity is needed like a batch processing, the openId protocol is less adapted than mutual TLS.
+mTLS or client authentication comes into play when the server wants to allow only specific clients to connect. As with TLS, where the server proves its identity to the client via a server certificate, we can use a client certificate to verify that the client is who it claims to be.
+
 Here, mTLS is providing enough security, like openId but by avoiding several drawbacks : 
 
 - no identity needed 
