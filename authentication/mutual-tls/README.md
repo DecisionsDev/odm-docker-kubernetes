@@ -258,7 +258,7 @@ Replace <DECISION_SERVER_RUNTIME_ROUTE> placeholder by getting the ODM Decision 
 oc get route --no-headers | grep odm-decisionserverruntime | awk '{print $2}'
 ```
 > **Optional:**
-> Using the specific no authorization deloyment, you can remove the '-u odmAdmin:odmAdmin' parameter
+> Using the specific no authorization deployment, you can remove the '-u odmAdmin:odmAdmin' parameter
 
 The verbose mode will provide you detailed information about the ssl handshake that should look like :
 
