@@ -46,7 +46,6 @@ public class DecisionServiceExecution {
 						.POST(HttpRequest.BodyPublishers.ofString(Files.readString(payloadFilePath)))
 						.build();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
@@ -60,10 +59,8 @@ public class DecisionServiceExecution {
 					System.out.println(postResponse.body());
 				}
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
