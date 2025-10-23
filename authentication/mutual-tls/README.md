@@ -98,14 +98,14 @@ In the Container software library tile, verify your entitlement on the View libr
 Create a pull secret by running the `kubectl create secret` command.
 
 ```shell
-kubectl create secret docker-registry <registrysecret> --docker-server=cp.icr.io \
+kubectl create secret docker-registry <ibm-entitlement-key> --docker-server=cp.icr.io \
                                                        --docker-username=cp \
                                                        --docker-password="<entitlementkey>" \
                                                        --docker-email=<email>
 ```
 Where:
 
-* \<registrysecret\> is the secret name
+* \<ibm-entitlement-key\> is the secret name
 * \<entitlementkey\> is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
 * \<email\> is the email address associated with your IBMid.
 
