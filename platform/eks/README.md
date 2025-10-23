@@ -55,23 +55,24 @@ Where you provide your `AWS Access Key ID`, `AWS Secret Access Key` and the `Def
 #### b. Create an EKS cluster (20 min)
 
 ```bash
-eksctl create cluster <CLUSTER_NAME> --version 1.32 --alb-ingress-access
+eksctl create cluster <CLUSTER_NAME> --version 1.33 --nodes 3 --alb-ingress-access
 ```
 
 > **Note**
-> The tutorial has been tested with the Kubernetes version 1.32. Check the supported kubernetes version in the [system requirement](https://www.ibm.com/support/pages/ibm-operational-decision-manager-detailed-system-requirements) page.
+> The tutorial has been tested with the Kubernetes version 1.33. Check the supported kubernetes version in the [Detailed System Requirements](https://www.ibm.com/software/reports/compatibility/clarity/product.html?id=C88B83D2853E4A628442E38C1194FF8F) page.
 
 > **Warning**
-> If you prefer to use the NGINX Ingress Controller instead of the ALB Load Balancer to expose ODM services, don't use the --alb-ingress-access option during the creation of the cluster !
+> If you prefer to use the NGINX Ingress Controller instead of the ALB Load Balancer to expose ODM services, don't use the --alb-ingress-access option during the creation of the cluster.
 
-For more information, refer to [Creating an Amazon EKS cluster](https://docs.aws.amazon.com/eks/latest/userguide/create-cluster.html).
+To see the options that you can specify when creating a cluster with `eksctl`, use the `eksctl create cluster --help` command. For more information, refer to [Creating an Amazon EKS cluster](https://docs.aws.amazon.com/eks/latest/userguide/create-cluster.html).
 
 #### c. Set up your environment
 
 If your environment is set up correctly, you should be able to get the cluster information by running the following command:
 
 ```bash
-$ kubectl cluster-info
+kubectl cluster-info
+
 Kubernetes control plane is running at https://xxxxxxxx.<REGION>.eks.amazonaws.com
 CoreDNS is running at https://xxxxxxxx.<REGION>.eks.amazonaws.com/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
 
@@ -142,7 +143,7 @@ kubectl create secret generic odm-db-secret \
 To get access to the ODM material, you must have an IBM entitlement key to pull the images from the IBM Cloud Container registry.
 This is what will be used in the next step of this tutorial.
 
-You can also download the ODM on Kubernetes package (.tgz file) from Passport Advantage® (PPA), and then push the contained images to the EKS Container Registry (ECR). If you prefer to manage the ODM images this way, see the details [here](README-ECR.md)
+You can also download the ODM CASE package from IBM Cloud Container Registry, and then push the contained images to the EKS Container Registry (ECR). If you prefer to manage the ODM images this way, see the details [here](README-ECR.md)
 
 #### a. Retrieve your entitled registry key
 
@@ -177,7 +178,7 @@ helm repo update
 ```bash
 $ helm search repo ibm-odm-prod
 NAME                             	CHART VERSION	APP VERSION	DESCRIPTION
-ibm-helm/ibm-odm-prod           	25.0.0       	9.5.0.0   	IBM Operational Decision Manager
+ibm-helm/ibm-odm-prod           	25.1.0       	9.5.0.1   	IBM Operational Decision Manager
 ```
 
 ### 4. Manage a  digital certificate (10 min)
@@ -298,14 +299,14 @@ The ODM services are accessible from the following URLs:
 
 #### a. Install the IBM License Service
 
-Follow the **Installation** section of the [Installation License Service without Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.12.0?topic=ilsfpcr-installing-license-service-without-operator-lifecycle-manager-olm) documentation.
+Follow the **Installation** section of the [Installation License Service without Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.14.0?topic=ilsfpcr-installing-license-service-without-operator-lifecycle-manager-olm) documentation.
 
 #### b. Patch the IBM Licensing instance
 
 Get the [licensing-instance.yaml](./licensing-instance.yaml) file and run the command:
 
 ```bash
-kubectl patch IBMLicensing instance --type merge --patch-file licensing-instance.yaml -n ibm-licensing 
+kubectl patch IBMLicensing instance --type merge --patch-file licensing-instance.yaml -n ibm-licensing
 ```
 
 Wait a couple of minutes for the changes to be applied. 
@@ -313,7 +314,7 @@ Wait a couple of minutes for the changes to be applied.
 Run the following command to see the status of Ingress instance:
 
 ```bash
-kubectl get ingress -n ibm-licensing                         
+kubectl get ingress -n ibm-licensing
 ```
 
 You should be able to see the address and other details about `ibm-licensing-service-instance`.
@@ -321,7 +322,7 @@ You should be able to see the address and other details about `ibm-licensing-ser
 NAME                             CLASS   HOSTS   ADDRESS                                                                 PORTS   AGE
 ibm-licensing-service-instance   alb     *       k8s-ibmlicen-ibmlicen-xxxxxxxx-yyyyyyy.<aws-region>.elb.amazonaws.com   80      44m
 ```
-You can find more information and use cases on [this page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.12.0?topic=configuring-kubernetes-ingress).
+You can find more information and use cases on [this page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.14.0?topic=configuring-kubernetes-ingress).
 
 > **Note**
 > If you choose to use the NGINX Ingress Controller, you must use the [licensing-instance-nginx.yaml](./licensing-instance-nginx.yaml) file. Refer to [Track ODM usage with the IBM License Service with NGINX Ingress Controller](README-NGINX.md#track-odm-usage-with-the-ibm-license-service-with-nginx-ingress-controller).
@@ -333,6 +334,7 @@ The ALB address should be reflected in the Ingress configuration. You will be ab
 ```bash
 export LICENSING_URL=$(kubectl get ingress ibm-licensing-service-instance -n ibm-licensing -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
 export TOKEN=$(kubectl get secret ibm-licensing-token -n ibm-licensing -o jsonpath='{.data.token}' |base64 -d)
+echo http://${LICENSING_URL}/status?token=${TOKEN}
 ```
 
 > **Note**
