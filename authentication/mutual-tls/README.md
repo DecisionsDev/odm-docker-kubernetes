@@ -334,5 +334,5 @@ You have to import and trust the client certificate key chain in your operating 
 
 Using the previously generated client-keystore.p12 file, you can follow the step 2 of this [article](https://velmuruganv.wordpress.com/2020/04/27/mtls-mutual-tls-authentication-chrome/) to import it in Chrome.
 
-On MacOS, you can see this [video](https://www.youtube.com/watch?v=unXpQNi858Q) on how to importand trust the client certificate in MacOS Keychain Access, using the client-keystore.p12 file.
+On MacOS, you can see this [video](https://www.youtube.com/watch?v=unXpQNi858Q) on how to import and trust the client certificate in MacOS Keychain Access, using the client-keystore.p12 file.
 
