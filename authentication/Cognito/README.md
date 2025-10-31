@@ -437,6 +437,8 @@ In the **Container software library** tile, verify your entitlement on the **Vie
     If everything is well configured, the Cognito End-Points must be accessible at :
     https://cognito-idp.COGNITO_REGION.amazonaws.com/COGNITO_USER_POOL_ID/.well-known/openid-configuration  <!-- markdown-link-check-disable-line -->
 
+    This URL can also be retrieved with the **Token signing key URL** displayed at the user pool overview replacing **jwk.json** by **openid-configuration**
+
     Where:
     - *COGNITO_REGION* is the region where the COGNITO User Pool is deployed
     - *COGNITO_USER_POOL_ID* is the COGNITO User Pool ID retrieved at Amazon Cognito > User pools > odmuserpool > Overview > User pool ID
