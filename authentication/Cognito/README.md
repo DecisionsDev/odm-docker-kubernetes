@@ -672,7 +672,7 @@ export CC_CLIENT_SECRET=<odmclientcredentials client secret>
 export CC_DEFAULT_CUSTOM_SCOPE=<odmclientcredentials default custom scope>
 
 curl -k -X POST -H "Content-Type: application/x-www-form-urlencoded" \
-      -d "client_id=$CC_CLIENT_ID&scope=CC_DEFAULT_CUSTOM_SCOPE&client_secret=$CC_CLIENT_SECRET&grant_type=client_credentials" \
+      -d "client_id=$CC_CLIENT_ID&scope=$CC_DEFAULT_CUSTOM_SCOPE&client_secret=$CC_CLIENT_SECRET&grant_type=client_credentials" \
       "$COGNITO_SERVER_URL/oauth2/token" > response.json
 
 export ACCESS_TOKEN=$(jq -r .access_token response.json)
