@@ -293,7 +293,7 @@ Here are the details about the [Pre token generation Lambda trigger flow](https:
 We will use the pre token generation lambda trigger feature to the **identity** claim in in id_token by pushing the user email value.
 
 Select the **odmuserpool** User Pool:
-  * Select the **User pool properties** tab:
+  * Click **Extensions** under *Authentication* in the left-hand pane
     * On the **Lambda triggers** section:
       * Click the **Add Lambda trigger** button
 
