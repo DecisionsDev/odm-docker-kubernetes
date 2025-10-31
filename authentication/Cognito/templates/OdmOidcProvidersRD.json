@@ -4,7 +4,6 @@
         "name": "cognito-for-rd",
         "authorizationURL": "https://COGNITO_DOMAIN_NAME.auth.COGNITO_REGION.amazoncognito.com/oauth2/authorize",
         "tokenURL": "https://COGNITO_DOMAIN_NAME.auth.COGNITO_REGION.amazoncognito.com/oauth2/token",
-        "logoutURL": "https://COGNITO_DOMAIN_NAME.auth.COGNITO_REGION.amazoncognito.com/oauth2/logout",
         "clientId": "COGNITO_APP_CLIENT_ID",
         "clientSecret": "COGNITO_APP_CLIENT_SECRET",
         "callbackPort": "9081",

@@ -244,31 +244,6 @@ The Client-credentials flow will be used for M2M (Machine to Machine) communicat
 It will enable communication between Decision Center and the Decision Server Console for ruleapp deployment. 
 It will also enable the communication between Decision Center and Decision Runner for tests and simulation.
 
-A Resource Server needs to be created to use the client-credentials flow and some custom scopes need to be configured. A scope is a level of access that an app can request to a resource.
-To get more details about scopes and resource server, you can read [OAuth 2.0 scopes and API authorization with resource servers](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-define-resource-servers.html?icmpid=docs_cognito_console_help_panel)
-
-
-1. Create a Resource Server
-
-  * Select the **odmuserpool** User Pool
-  * Click **Domain** under *Branding* in the left-hand pane
-  * Click the **Create resource server** button in the **Resource servers** pane
-    * In **Resource server**:
-      * Set *Resource server name* = **ODMClientCredentialsServer**
-      * Set *Resource server identifier* = **odmcc**
-    * In **Custom scopes**, create 2 scopes:
-      * Click the **Add custom scope** button
-      * Set *Scope name* = **read**
-      * Set *Description* = **for GET requests**
-      * Click the **Add another** button
-      * Set *Scope name* = **write**
-      * Set *Description* = **for POST requests**
-    * Click the **create resource server** button 
-
-![Create Resource Server](images/CreateResourceServer.png)
-
-2. Create a new client application
-
   * Select the **odmuserpool** User Pool
   * Click **App clients** under *Application* in the left-hand pane
     * Click the **Create app client** button in the *App clients* pane
@@ -279,11 +254,12 @@ To get more details about scopes and resource server, you can read [OAuth 2.0 sc
     <!-- IS THE 'ALLOW_USER_SRP_AUTH' REALLY NECESSARY ?-->
     * Click the **Edit** button in the *App client information* pane
       * Enable the *Authentication flows* = **Sign in with secure remote password (SRP): ALLOW_USER_SRP_AUTH**
+      * Click the **Save changes** button
 
     * Click the **Login pages** tab and then the **Edit** button in the *Managed login pages configuration* pane
       * Keep *Identity providers* = **Cognito user pool**
       * Keep *OAuth 2.0 grant types* = **Client credentials**
-      * Select *Custom scopes* = **odmcc/read** and **odmcc/write**
+      * Take a note of the **default custom scope**
       * Click the **Save changes** button
 
 ![Client-Credentials App](images/ClientCredentialsApp.png)
@@ -317,7 +293,7 @@ Here are the details about the [Pre token generation Lambda trigger flow](https:
 We will use the pre token generation lambda trigger feature to the **identity** claim in in id_token by pushing the user email value.
 
 Select the **odmuserpool** User Pool:
-  * Select the **User pool properties** tab:
+  * Click **Extensions** under *Authentication* in the left-hand pane
     * On the **Lambda triggers** section:
       * Click the **Add Lambda trigger** button
 
@@ -461,6 +437,8 @@ In the **Container software library** tile, verify your entitlement on the **Vie
     If everything is well configured, the Cognito End-Points must be accessible at :
     https://cognito-idp.COGNITO_REGION.amazonaws.com/COGNITO_USER_POOL_ID/.well-known/openid-configuration  <!-- markdown-link-check-disable-line -->
 
+    This URL can also be retrieved with the **Token signing key URL** displayed at the user pool overview replacing **jwk.json** by **openid-configuration**
+
     Where:
     - *COGNITO_REGION* is the region where the COGNITO User Pool is deployed
     - *COGNITO_USER_POOL_ID* is the COGNITO User Pool ID retrieved at Amazon Cognito > User pools > odmuserpool > Overview > User pool ID
@@ -472,7 +450,7 @@ In the **Container software library** tile, verify your entitlement on the **Vie
 
     Generate the files with the following command:
     ```
-    ./generateTemplate.sh -u COGNITO_USER_POOL_ID -d COGNITO_DOMAIN_NAME_PREFIX -r COGNITO_REGION -i COGNITO_APP_CLIENT_ID -s COGNITO_APP_CLIENT_SECRET -c COGNITO_CC_CLIENT_ID -x COGNITO_CC_CLIENT_SECRET
+    ./generateTemplate.sh -u COGNITO_USER_POOL_ID -d COGNITO_DOMAIN_NAME_PREFIX -r COGNITO_REGION -i COGNITO_APP_CLIENT_ID -s COGNITO_APP_CLIENT_SECRET -c COGNITO_CC_CLIENT_ID -x COGNITO_CC_CLIENT_SECRET -p COGNITO_CC_DEFAULT_CUSTOM_SCOPE
     ```
 
   - *COGNITO_USER_POOL_ID* is the COGNITO User Pool ID retrieved at Amazon Cognito > User pools > odmuserpool > Overview > User pool ID
@@ -485,6 +463,7 @@ In the **Container software library** tile, verify your entitlement on the **Vie
   - *COGNITO_APP_CLIENT_SECRET* is the COGNITO ODM App Client Secret retrieved at Amazon Cognito > User pools > odmuserpool > App integration > odm > Client Secret
   - *COGNITO_CC_CLIENT_ID* is the COGNITO ODM Client-Credentials App Client ID retrieved at Amazon Cognito > User pools > odmuserpool > App integration > odmclientcredentials > Client ID
   - *COGNITO_CC_CLIENT_SECRET* is the COGNITO ODM Client-Credentials App Client Secret retrieved at Amazon Cognito > User pools > odmuserpool > App integration > odmclientcredentials > Client Secret
+  - *COGNITO_CC_DEFAULT_CUSTOM_SCOPE* is the Client-Credentials App default custom scope that can be retrieved in the Login tab page 
 
     Here is an example of the command line:
     ```
@@ -495,7 +474,8 @@ In the **Container software library** tile, verify your entitlement on the **Vie
         -i 7qo....................... \
         -s rrt................................................ \
         -c 6io....................... \
-        -x c5b................................................
+        -x c5b................................................ \
+        -p default-m2m-resource-server-.... \
     ```
 
     The four files below are generated into a directory named `output` (generated by the script):
@@ -532,7 +512,7 @@ In the **Container software library** tile, verify your entitlement on the **Vie
   ```shell
   helm search repo ibm-odm-prod
   NAME                          CHART VERSION   APP VERSION     DESCRIPTION
-  ibm-helm/ibm-odm-prod         25.0.0          9.5.0.0        IBM Operational Decision Manager
+  ibm-helm/ibm-odm-prod         25.1.0          9.5.0.1        IBM Operational Decision Manager
   ```
 
 ### 3. Run the `helm install` command
@@ -689,9 +669,10 @@ export DS_RUNTIME_HOST=<HOSTNAME eg. k8s-default-odm2302o-ed3c5eee99-301488862.e
 export COGNITO_SERVER_URL=<URL eg. https://odm.auth.eu-west-3.amazoncognito.com>
 export CC_CLIENT_ID=<odmclientcredentials client ID>
 export CC_CLIENT_SECRET=<odmclientcredentials client secret>
+export CC_DEFAULT_CUSTOM_SCOPE=<odmclientcredentials default custom scope>
 
 curl -k -X POST -H "Content-Type: application/x-www-form-urlencoded" \
-      -d "client_id=$CC_CLIENT_ID&scope=odmcc/write&client_secret=$CC_CLIENT_SECRET&grant_type=client_credentials" \
+      -d "client_id=$CC_CLIENT_ID&scope=$CC_DEFAULT_CUSTOM_SCOPE&client_secret=$CC_CLIENT_SECRET&grant_type=client_credentials" \
       "$COGNITO_SERVER_URL/oauth2/token" > response.json
 
 export ACCESS_TOKEN=$(jq -r .access_token response.json)
