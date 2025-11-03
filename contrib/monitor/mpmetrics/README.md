@@ -71,7 +71,7 @@ Create the monitor-secret
   ```shell
   helm search repo ibm-odm-prod
   NAME                  	CHART VERSION	APP VERSION	DESCRIPTION
-  ibm-helm/ibm-odm-prod	  25.0.0       	9.5.0.0   	IBM Operational Decision Manager
+  ibm-helm/ibm-odm-prod	  25.1.0       	9.5.0.1   	IBM Operational Decision Manager
   ```
 
 ### 3. Run the `helm install` command
