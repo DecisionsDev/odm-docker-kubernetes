@@ -178,7 +178,7 @@ For example, by monitoring this metrics, you can check the behaviour of the load
 
 ### Consume Metrics with Grafana Dashboard
 
-If you prefer to visualize the metrics using Grafana Dashboard, you can follow this procedure to install Grafana on OCP and connect it to Promotheus:
+If you prefer to visualize the metrics using Grafana Dashboard, you can follow this procedure to install Grafana on OCP and connect it to Prometheus:
 
 1/ Go in the OCP **operator hub** tab and install the Grafana operator.
 
