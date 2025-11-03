@@ -4,7 +4,7 @@ We provide here some installation hints about the installation and the configura
 
 ## Installation
 
-On Ubuntu 22.04, from <https://developer.hashicorp.com/vault/tutorials/getting-started/getting-started-install>, add HashiCorp Vault's repository and download it:
+On Ubuntu 24.04, from <https://developer.hashicorp.com/vault/tutorials/getting-started/getting-started-install>, add HashiCorp Vault's repository and download it:
 
 ```shell
 wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg

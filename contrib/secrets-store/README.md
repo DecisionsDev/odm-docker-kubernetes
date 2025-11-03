@@ -60,7 +60,7 @@ HashiCorp Vault must be up and running. An [on-prem installation description](RE
 - [Secrets Store CSI Driver](https://secrets-store-csi-driver.sigs.k8s.io/) already installed.
 - [HashiCorp Vault provider driver](https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-secret-store-driver) already installed
 - [Helm](https://helm.sh/docs/intro/install/)
-- Access to Operational Decision Manager on Container 9.5.0.0 images
+- Access to Operational Decision Manager on Container 9.5.0.1 images
 
 > Note: The first and second steps are described in the [companion document](README-External_Vault.md) when you use OCP.
 
@@ -139,7 +139,7 @@ Where:
 - `<API_KEY_GENERATED>` is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
 - `<USER_EMAIL>` is the email address associated with your IBMid.
 
-> Note: 
+> Note:
 > 1. The **cp.icr.io** value for the docker-server parameter is the only registry domain name that contains the images. You must set the *docker-username* to **cp** to use an entitlement key as *docker-password*.
 > 2. The `ibm-entitlement-key` secret name will be used for the `image.pullSecrets` parameter when you run a Helm install of your containers. The `image.repository` parameter is also set by default to `cp.icr.io/cp/cp4a/odm`.
 
@@ -308,8 +308,8 @@ spec:
 ```bash
 helm install odm-vault-spc ibm-helm/ibm-odm-prod -f values-default-vault.yaml
 ```
-> **Note:**  
-> This command installs the **latest available version** of the chart.  
+> **Note:**
+> This command installs the **latest available version** of the chart.
 > If you want to install a **specific version**, add the `--version` option:
 >
 > ```bash
