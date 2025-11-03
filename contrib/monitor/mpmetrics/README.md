@@ -224,13 +224,14 @@ EOF
 oc -n openshift-operators get routes grafana-route -o jsonpath="https://{.status.ingress[].host}"
 ```
 
-You can use this dashboard to help spot performance issues. For instance, metrics such as servlet response times, CPU or heap usage when seen as a time-series on Grafana, could be indicative of an underlying performance issue or memory leak.
+5/ You can use this dashboard to help spot performance issues. For instance, metrics such as servlet response times, CPU or heap usage when seen as a time-series on Grafana, could be indicative of an underlying performance issue or memory leak.
 
-5/ Click on the **Explore** tab on left part
-   > Select **prometheus** as Outline
-     > Select the **servlet_request_total** metric
-       > Add the **mp_scope=vendor** label filter
-       > Add the **servlet=DecisionService_RESTDecisionService** label filter
-         > Click the **Run query** button
+* Click on the **Explore** tab on left part
+  * Select **prometheus** as Outline
+    * Select the **servlet_request_total** metric
+      * Add the **mp_scope=vendor** label filter
+      * Add the **servlet=DecisionService_RESTDecisionService** label filter
+      * Add the **container=odm-decisionserverruntime** label filter 
+         * Click the **Run query** button
 
 ![Grafana Dashboard](./images/GrafanaDashboard.png)
