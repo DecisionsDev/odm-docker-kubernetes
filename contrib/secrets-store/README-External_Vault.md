@@ -92,14 +92,23 @@ When done, install the HashiCorp Vault provider driver:
 helm repo add hashicorp https://helm.releases.hashicorp.com
 helm repo update
 oc adm policy add-scc-to-user privileged system:serviceaccount:vault:vault-csi-provider
-helm install vault hashicorp/vault \
-    --set "global.openshift=true" \
-    --set "server.enabled=false" \
-    --set "injector.enabled=false" \
-    --set "csi.enabled=true" \
-    --set "csi.daemonSet.securityContext.container.privileged=true" \
-    --namespace vault \
-    --create-namespace
+helm install vault hashicorp/vault --namespace vault --create-namespace -f - <<EOF
+csi:
+  agent:
+    image:
+      repository: docker.io/hashicorp/vault
+  daemonSet:
+    securityContext:
+      container:
+        privileged: true
+  enabled: true
+global:
+  openshift: true
+injector:
+  enabled: false
+server:
+  enabled: false
+EOF
 ```
 
 Verify that one pod for each worker node is created in the "vault" namespace before continuing:
