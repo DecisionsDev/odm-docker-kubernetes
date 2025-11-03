@@ -178,8 +178,59 @@ For example, by monitoring this metrics, you can check the behaviour of the load
 
 ### Consume Metrics with Grafana Dashboard
 
-If you prefer to visualize the metrics using Grafana Dashboard, you can follow this [documentation](https://cloud.redhat.com/experts/o11y/ocp-grafana/) explaining how to install Grafana on OCP and connect it to Promotheus.
+If you prefer to visualize the metrics using Grafana Dashboard, you can follow this procedure to install Grafana on OCP and connect it to Promotheus:
+
+1/ Go in the OCP **operator hub** tab and install the Grafana operator.
+
+2/ Create the Grafana instance:
+
+```shell
+oc apply -f grafana.yaml
+```
+
+3/ Create the Grafana datasource using the prometheus metrics:
+
+```shell
+TOKEN=$(oc whoami -t)
+HOST=$(oc -n openshift-monitoring get route thanos-querier -o jsonpath='{.status.ingress[].host}')
+cat << EOF | oc apply -f -
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDatasource
+metadata:
+  name: thanos-query-ds
+  namespace: openshift-operators
+spec:
+  datasource:
+    access: proxy
+    isDefault: true
+    jsonData:
+      httpHeaderName1: 'Authorization'
+      timeInterval: 5s
+      tlsSkipVerify: true
+    secureJsonData:
+      httpHeaderValue1: 'Bearer ${TOKEN}'
+    name: thanos-query-ds
+    type: prometheus
+    url: 'https://${HOST}'
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+EOF
+```
+
+4/ Access the Grafana dashboard using the route:
+
+```shell
+oc -n openshift-operators get routes grafana-route -o jsonpath="https://{.status.ingress[].host}"
+```
 
 You can use this dashboard to help spot performance issues. For instance, metrics such as servlet response times, CPU or heap usage when seen as a time-series on Grafana, could be indicative of an underlying performance issue or memory leak.
+
+5/ Click on the **Explore** tab on left part
+   > Select **prometheus** as Outline
+     > Select the **servlet_request_total** metric
+       > Add the **mp_scope=vendor** label filter
+       > Add the **servlet=DecisionService_RESTDecisionService** label filter
+         > Click the **Run query** button
 
 ![Grafana Dashboard](./images/GrafanaDashboard.png)
