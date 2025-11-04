@@ -160,7 +160,7 @@ Check that you can access ODM charts:
 ```bash
 helm search repo ibm-odm-prod
 NAME                    CHART VERSION   APP VERSION     DESCRIPTION
-ibm-helm/ibm-odm-prod   25.0.0          9.5.0.0         IBM Operational Decision Manager
+ibm-helm/ibm-odm-prod   25.1.0          9.5.0.1         IBM Operational Decision Manager
 ```
 
 #### Data to be injected in the pods
