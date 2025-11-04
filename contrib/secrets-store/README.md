@@ -186,6 +186,7 @@ spec:
   provider: vault
   parameters:
     vaultAddress: http://<vaultfqdn>:8200
+    vaultAuthMountPath: <clustername>
     roleName: database
     objects: |
       - objectName: "db-password"
@@ -255,6 +256,7 @@ spec:
   provider: vault
   parameters:
     vaultAddress: http://<vaultfqdn>:8200
+    vaultAuthMountPath: <clustername>
     roleName: database
     objects: |
       - objectName: "tls.crt"
@@ -290,6 +292,7 @@ spec:
   provider: vault
   parameters:
     vaultAddress: http://<vaultfqdn>:8200
+    vaultAuthMountPath: <clustername>
     roleName: database
     objects: |
       - objectName: "group-security-configurations.xml"
