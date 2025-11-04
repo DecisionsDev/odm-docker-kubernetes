@@ -267,6 +267,12 @@ spec:
         secretKey: "tls.key"
 ```
 
+Save the content in a spc-mynicecompanytlssecret.yaml file and create the SecretProviderClass:
+
+```bash
+oc apply -f spc-mynicecompanytlssecret.yaml
+```
+
 It replaces the K8s secret that would have been created with (again, don't do that here!):
 
 ```shell
@@ -281,7 +287,7 @@ We also would like to create a Basic Registry configuration to be used as authSe
 vault kv put <secretspath>/authsecret group-security-configurations.xml=@group-security-configurations.xml webSecurity.xml=@webSecurity.xml
 ```
 
-and then create and apply the corresponding SPC:
+and then create the corresponding SPC:
 
 ```yaml
 apiVersion: secrets-store.csi.x-k8s.io/v1
@@ -301,6 +307,12 @@ spec:
       - objectName: "webSecurity.xml"
         secretPath: "<secretspath>/data/authsecret"
         secretKey: "webSecurity.xml"
+```
+
+Save the content in a spc-authsecret.yaml file and create the SecretProviderClass:
+
+```bash
+oc apply -f spc-authsecret.yaml
 ```
 
 ### ODM installation with Basic authentication (10 min)
