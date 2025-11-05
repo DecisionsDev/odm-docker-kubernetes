@@ -4,7 +4,7 @@ We provide here some installation hints about the installation and the configura
 
 ## Installation
 
-On Ubuntu 22.04, from <https://developer.hashicorp.com/vault/tutorials/getting-started/getting-started-install>, add HashiCorp Vault's repository and download it:
+On Ubuntu 24.04, from <https://developer.hashicorp.com/vault/tutorials/getting-started/getting-started-install>, add HashiCorp Vault's repository and download it:
 
 ```shell
 wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
@@ -92,14 +92,23 @@ When done, install the HashiCorp Vault provider driver:
 helm repo add hashicorp https://helm.releases.hashicorp.com
 helm repo update
 oc adm policy add-scc-to-user privileged system:serviceaccount:vault:vault-csi-provider
-helm install vault hashicorp/vault \
-    --set "global.openshift=true" \
-    --set "server.enabled=false" \
-    --set "injector.enabled=false" \
-    --set "csi.enabled=true" \
-    --set "csi.daemonSet.securityContext.container.privileged=true" \
-    --namespace vault \
-    --create-namespace
+helm install vault hashicorp/vault --namespace vault --create-namespace -f - <<EOF
+csi:
+  agent:
+    image:
+      repository: docker.io/hashicorp/vault
+  daemonSet:
+    securityContext:
+      container:
+        privileged: true
+  enabled: true
+global:
+  openshift: true
+injector:
+  enabled: false
+server:
+  enabled: false
+EOF
 ```
 
 Verify that one pod for each worker node is created in the "vault" namespace before continuing:
@@ -121,22 +130,16 @@ Get its API IP address:
 KUBE_HOST=$(kubectl config view --raw --minify --flatten --output='jsonpath={.clusters[].cluster.server}')
 ```
 
-For the next two elements you have to find the secret containing the token for the Service Account "vault" in namespace "vault". Its name is like vault-token-XXXXX on OpenShift:
+Create a review token in the same namespace you deployed the Vault CSI driver:
 
 ```shell
-SA_TOKEN_SECRET=$(kubectl get secrets --namespace vault --output=jsonpath='{.items[?(@.metadata.annotations.kubernetes\.io/service-account\.name=="vault")].metadata.name}' --field-selector type=kubernetes.io/service-account-token)
+TOKEN_REVIEW_JWT=$(oc create token vault -n vault --duration=720h)
 ```
 
-Get the Service Account's token from it:
+And get also the certificate chain of the server:
 
 ```shell
-TOKEN_REVIEW_JWT=$(kubectl get secret ${SA_TOKEN_SECRET} -n vault -o go-template='{{ .data.token }}' | base64 --decode)
-```
-
-And get also the certificate chain of the server (yes it is in the same secret indeed):
-
-```shell
-kubectl get secret ${SA_TOKEN_SECRET} -n vault -o jsonpath='{.data.ca\.crt}' | base64 -d > ca.crt
+kubectl get secret localhost-recovery-client-token -n openshift-kube-apiserver -o jsonpath='{.data.ca\.crt}' | base64 -d > ca.crt
 ```
 
 You can then configure the Vault with these elements:
