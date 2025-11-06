@@ -357,7 +357,7 @@ The first **openidConnectClient** section with the **odm** id is dedicated to th
 The second **openidConnectClient** section with the **odmapi** id is dedicated to the validation of an access_token when you are dealing with ODM rest-api and the Decision Center remote session. Here, the access_token is not requested by the ODM container as it's already part of the request through the **Bearer Authorization** header.
 As the Rule Designer is using the Decision Center remote session to manage the synchronization and the Decision Server rest-api to deploy a ruleapp, it's this section that will be used to connect.
 
-This separation between the 2 sections is managed by the (authentication filters](https://github.com/DecisionsDev/odm-ondocker/blob/master/common/config/authOidc/authFilters.xml)
+This separation between the 2 sections is managed by the [authentication filters](https://github.com/DecisionsDev/odm-ondocker/blob/master/common/config/authOidc/authFilters.xml)
 
 In order to check that an access_token is well obtained when requested to the openId server and to check it contains the relevant claims by decoding it, you can debug it by creating a **debug.txt** file containing:
 
