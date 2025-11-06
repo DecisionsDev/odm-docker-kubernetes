@@ -233,7 +233,7 @@ The certificate must be the same as the one you used to enable TLS connections i
 The ODM services will be exposed with an Ingress that uses the previously created `mynicecompany` certificate.
 It automatically creates an HTTPS GKE load balancer. We will disable the ODM internal TLS as it is not needed.
 
-- Get the [gcp-values.yaml](./gcp-values.yaml) file and replace the following keys:
+- Get the [gcp-values.yaml](./gcp-values.yaml) file and replace the following key:
 
   - `<DB_ENDPOINT>`: the database IP
 
@@ -247,6 +247,7 @@ It automatically creates an HTTPS GKE load balancer. We will disable the ODM int
   ```
 
 > [!NOTE]
+>
 > - You might prefer to access ODM components through the NGINX Ingress controller instead of using the IP addresses. If so, please follow [these instructions](README_NGINX.md).
 >
 > - This command installs the **latest available version** of the chart.
