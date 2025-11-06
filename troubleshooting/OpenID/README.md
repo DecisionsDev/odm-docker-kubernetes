@@ -11,6 +11,7 @@
     - [Missing or Invalid Allowed Domain List](#3-missing-or-invalid-allowed-domain-list)
     - [Authorization issue](#4-authorization-issue)
     - [Proxy](#5-proxy)
+    - [Rule Designer](#6-rule-designer)
 
 <!-- /TOC -->
 
@@ -331,3 +332,77 @@ This needs to be done for each ODM component as the JVM parameters are individua
 - Add the parameter `useSystemPropertiesForHttpClientConnections="true"` in both openIdConnectClient elements in `openIdWebSecurity.xml` and update the secret that contains that file.
 
 - Then redeploy the chart.
+
+## #6 Rule Designer
+
+When trying to request and validate an access token in order to synchronize the Rule Designer with Decision Center or to deploy a rule app on the Decision Server Console, it happens you face several issue that are complex to understand.
+Here is the way to add debug information to understand what happen.
+First, you have to understand the openId connect client used by ODM containers have 2 sections you will retrieve in the various templates delivered in the openIdWebSecurity.xml files:
+
+```
+<server description="ODM server">
+  
+      <openidConnectClient authFilterRef="browserAuthFilter" id="odm" scope="openid"
+      clientId="CLIENT_ID" clientSecret="CLIENT_SECRET" inboundPropagation="supported"
+      .../>
+
+      <openidConnectClient authFilterRef="apiAuthFilter" id="odmapi" scope="openid"
+      inboundPropagation="required"
+       .../>
+</server>
+```
+
+The first **openidConnectClient** section with the **odm** id is dedicated to the ODM consoles and it will be managed by the authentication flow in order to request the id_token (it can be the access_token using the **tokenOrderToFetchCallerClaims** parameter). Here an identity is essential as we are dealing with a user that is establishing SSO.
+
+The second **openidConnectClient** section with the **odmapi** id is dedicated to the validation of an access_token when you are dealing with ODM rest-api and the Decision Center remote session. Here, the access_token is not requested by the ODM container as it's already part of the request through the **Bearer Authorization** header.
+As the Rule Designer is using the Decision Center remote session to manage the synchronization and the Decision Server rest-api to deploy a ruleapp, it's this section that will be used to connect.
+
+This separation between the 2 sections is managed by the (authentication filters](https://github.com/DecisionsDev/odm-ondocker/blob/master/common/config/authOidc/authFilters.xml)
+
+In order to check that an access_token is well obtained when requested to the openId server and to check it contains the relevant claims by decoding it, you can debug it by creating a **debug.txt** file containing:
+
+```
+ilog.rules.studio.shared/debug/oidc/code_flow_traces=true
+ilog.rules.studio.shared/debug/oidc/tokencache_traces=true
+```
+
+Add it in the Rule Designer **eclipse.ini** file:
+
+```
+-debug
+<PATH>\debug.txt
+```
+
+>Note: Don't forget to restart the Rule Designer before to test a new connection to the Decision Center or the Decision Server RES Console
+
+Now, if everything is fine, you get some traces in the Rule Designer **Error log** panel that look like:
+
+```
+TRACE: Loading TLS certificate for callback server from embedded JKS file
+OIDC callback server started on port 9,081 in HTTPS mode, JVM TLS protocol TLS
+TRACE: Starting OIDC process for provider <YOUR_PROVIDER_NAME>, scopes [openid] with clientId=<YOUR_CLIENT_ID>, callbackURL=https://127.0.0.1:9081/oidcCallback
+TRACE: Openning browser at <YOUR_OPENID_AUTHORIZE_URL>?<PARAMETERS_USING_CLIENT_SECRET_OR_CODE_CHALLENGE_FOR_PKCE>
+TRACE: Trading the Request Token for an Access Token...
+TRACE: Got the Access Token!
+TRACE: The raw response looks like this: {"id_token":"****","access_token":"****","expires_in":3600,"token_type":"Bearer"}
+TRACE: Jetty server stopped on port -2
+TRACE: TokenCache: put(AccessToken(provider='<YOUR_PROVIDER_NAME>', expiration=2025-10-31T16:21:01.573674Z, scopes=[openid], access_token=****))
+```
+
+You can see the first step is the TLS connection with the openId Server. 
+If it fails, check the truststore.jks file is well containing the full certificate chain to this openId server (leaf, intermediate until root certificate, certificate authority)
+
+The second step is the access_token request using the OpenId provider json file that you provided. If **clientSecret** information is provided, then there is just one **/token** request. If **clientSecret** is not provided, the PKCE protocol is used and there is first **/authorize** request with a **code_challenge**, before the **/token** request.
+
+Check the **access_token** is containing all the needed claims by inspecting it with [https://jwt.io](https://jwt.io) 
+
+All the requests are done with the default **openid** scope.
+If you need a specific scope to retrieve some claims, then you can change by adding in the **eclipse.ini** file:
+
+```
+-Dcom.ibm.rules.studio.oidc.synchro.scopes=<YOUR_SCOPE>   // for the Decision Center connection
+-Dcom.ibm.rules.studio.oidc.res.scopes=<YOUR_SCOPE>       // for the Decision Server RES Console connection
+```
+
+>Note: <YOUR_SCOPE> can contains several scope separated by a space
+> example: openid my_first_specific_scope my_other_scope
