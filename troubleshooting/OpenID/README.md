@@ -394,7 +394,7 @@ If it fails, check the truststore.jks file is well containing the full certifica
 
 The second step is the access_token request using the OpenId provider json file that you provided. If **clientSecret** information is provided, then there is just one **/token** request. If **clientSecret** is not provided, the PKCE protocol is used and there is first **/authorize** request with a **code_challenge**, before the **/token** request.
 
-Check the **access_token** is containing all the needed claims by inspecting it with [https://jwt.io](https://jwt.io) 
+Check the **access_token** is containing all the needed claims (especially for the openidConnectClient userIdentifier and groupIdentifier parameters) by inspecting it with [https://jwt.io](https://jwt.io), meaning if you have  **groupIdentifier="my_group"**, check that **my_group** is inside the **access_token**.
 
 All the requests are done with the default **openid** scope.
 If you need a specific scope to retrieve some claims, then you can change by adding in the **eclipse.ini** file:
@@ -404,5 +404,6 @@ If you need a specific scope to retrieve some claims, then you can change by add
 -Dcom.ibm.rules.studio.oidc.res.scopes=<YOUR_SCOPE>       // for the Decision Server RES Console connection
 ```
 
->Note: <YOUR_SCOPE> can contains several scope separated by a space
-> example: openid my_first_specific_scope my_other_scope
+> Note: <YOUR_SCOPE> can contains several scope separated by a space:
+> 
+> -Dcom.ibm.rules.studio.oidc.synchro.scopes=openid my_first_specific_scope my_other_scope
