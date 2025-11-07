@@ -48,13 +48,13 @@ Without the relevant billing level, some Google Cloud resources will not be crea
 
 <!-- TOC depthfrom:3 depthto:3 -->
 
-- [1. Prepare your GKE instance 30 min](#1-prepare-your-gke-instance-30-min)
-- [2. Create the Google Cloud SQL PostgreSQL instance 10 min](#2-create-the-google-cloud-sql-postgresql-instance-10-min)
-- [3. Prepare your environment for the ODM installation 10 min](#3-prepare-your-environment-for-the-odm-installation-10-min)
-- [4. Manage a digital certificate 2 min](#4-manage-a-digital-certificate-2-min)
-- [5. Install the ODM release 10 min](#5-install-the-odm-release-10-min)
-- [6. Access ODM services](#6-access-odm-services)
-- [7. Track ODM usage with the IBM License Service](#7-track-odm-usage-with-the-ibm-license-service)
+- [Prepare your GKE instance 30 min](#1-prepare-your-gke-instance-30-min)
+- [Create the Google Cloud SQL PostgreSQL instance 10 min](#2-create-the-google-cloud-sql-postgresql-instance-10-min)
+- [Prepare your environment for the ODM installation 10 min](#3-prepare-your-environment-for-the-odm-installation-10-min)
+- [Manage a digital certificate 2 min](#4-manage-a-digital-certificate-2-min)
+- [Install the ODM release 10 min](#5-install-the-odm-release-10-min)
+- [Access ODM services](#6-access-odm-services)
+- [Track ODM usage with the IBM License Service](#7-track-odm-usage-with-the-ibm-license-service)
 
 <!-- /TOC -->
 
@@ -72,7 +72,7 @@ gcloud auth login
 
 #### Create a GKE cluster
 
-There are several [types of clusters](https://cloud.google.com/kubernetes-engine/docs/concepts/types-of-clusters).
+There are several [types of clusters](https://docs.cloud.google.com/kubernetes-engine/docs/concepts/configuration-overview#availability).
 In this article, we chose to create a [regional cluster](https://cloud.google.com/kubernetes-engine/docs/how-to/creating-a-regional-cluster).
 Regions and zones (used below) can be listed respectively with `gcloud compute regions list` and `gcloud compute zones list`.
 
@@ -181,16 +181,13 @@ To get access to the ODM material, you need an IBM entitlement key to pull the i
 kubectl create secret docker-registry ibm-entitlement-key \
         --docker-server=cp.icr.io \
         --docker-username=cp \
-        --docker-password='<API_KEY_GENERATED>' \
-        --docker-email=<USER_EMAIL>
+        --docker-password='<API_KEY_GENERATED>'
 ```
 
-Where:
+Where `<API_KEY_GENERATED>` is the entitlement key from the previous step. Make sure you enclose the key in quotes.
 
-- `<API_KEY_GENERATED>` is the entitlement key from the previous step. Make sure you enclose the key in quotes.
-- `<USER_EMAIL>` is the email address associated with your IBMid.
-
-> Note: 
+> Note:
+>
 > 1. The **cp.icr.io** value for the docker-server parameter is the only registry domain name that contains the images. You must set the *docker-username* to **cp** to use an entitlement key as *docker-password*.
 > 2. The `ibm-entitlement-key` secret name will be used for the `image.pullSecrets` parameter when you run a Helm install of your containers. The `image.repository` parameter is also set by default to `cp.icr.io/cp/cp4a/odm`.
 
@@ -206,7 +203,7 @@ helm repo update
 ```shell
 helm search repo ibm-odm-prod
 NAME                  CHART VERSION   APP VERSION     DESCRIPTION
-ibm-helm/ibm-odm-prod 25.0.0          9.5.0.0         IBM Operational Decision Manager
+ibm-helm/ibm-odm-prod 25.1.0          9.5.0.1         IBM Operational Decision Manager
 ```
 
 ### 4. Manage a digital certificate (2 min)
@@ -237,7 +234,7 @@ The certificate must be the same as the one you used to enable TLS connections i
 The ODM services will be exposed with an Ingress that uses the previously created `mynicecompany` certificate.
 It automatically creates an HTTPS GKE load balancer. We will disable the ODM internal TLS as it is not needed.
 
-- Get the [gcp-values.yaml](./gcp-values.yaml) file and replace the following keys:
+- Get the [gcp-values.yaml](./gcp-values.yaml) file and replace the following key:
 
   - `<DB_ENDPOINT>`: the database IP
 
@@ -251,9 +248,10 @@ It automatically creates an HTTPS GKE load balancer. We will disable the ODM int
   ```
 
 > [!NOTE]
+>
 > - You might prefer to access ODM components through the NGINX Ingress controller instead of using the IP addresses. If so, please follow [these instructions](README_NGINX.md).
 >
-> - This command installs the **latest available version** of the chart.  
+> - This command installs the **latest available version** of the chart.
 > If you want to install a **specific version**, add the `--version` option:
 >
 > ```bash
@@ -363,7 +361,7 @@ This section explains how to track ODM usage with the IBM License Service.
 
 #### Install the IBM License Service
 
-Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.12.0?topic=ilsfpcr-installing-license-service-without-operator-lifecycle-manager-olm) and stop before it asks you to update the License Service instance. It will be done in the next paragraph.
+Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.x_cd?topic=ilsfpcr-installing-license-service-without-operator-lifecycle-manager-olm) and stop before it asks you to update the License Service instance. It will be done in the next paragraph.
 
 #### Create the IBM Licensing instance
 
@@ -398,7 +396,7 @@ After a couple of minutes, the Ingress configuration is created and you will be 
 
 ```shell
 export LICENSING_URL=$(kubectl get ingress ibm-licensing-service-instance -n ibm-licensing -o jsonpath='{.status.loadBalancer.ingress[0].ip}')/ibm-licensing-service-instance
-export TOKEN=$(kubectl get secret ibm-licensing-token -o jsonpath={.data.token} -n ibm-licensing |base64 -d)
+export TOKEN=$(kubectl get secret ibm-licensing-token -o jsonpath={.data.token} -n ibm-licensing | base64 -d)
 ```
 
 You can access the `http://${LICENSING_URL}/status?token=${TOKEN}` URL to view the licensing usage or retrieve the licensing report .zip file by running the following command:
@@ -407,7 +405,7 @@ You can access the `http://${LICENSING_URL}/status?token=${TOKEN}` URL to view t
 curl -v "http://${LICENSING_URL}/snapshot?token=${TOKEN}" --output report.zip
 ```
 
-If your IBM License Service instance is not running properly, refer to this [troubleshooting page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.12.0?topic=service-troubleshooting-license).
+If your IBM License Service instance is not running properly, refer to this [troubleshooting page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.x_cd?topic=service-troubleshooting-license).
 
 ## Troubleshooting
 
