@@ -322,7 +322,7 @@ In this step, we augment the token with meta-information that is required by the
     ```
     ```
     NAME                    CHART VERSION APP VERSION DESCRIPTION
-    ibm-helm/ibm-odm-prod   25.0.1        9.5.0.1     IBM Operational Decision Manager
+    ibm-helm/ibm-odm-prod   25.1.0        9.5.0.1     IBM Operational Decision Manager
     ```
 
 3. Run the `helm install` command.
