@@ -95,7 +95,7 @@ helm repo update
 ```bash
 $ helm search repo ibm-odm-prod
 NAME                    CHART VERSION APP VERSION DESCRIPTION
-ibm-helm/ibm-odm-prod   25.0.0        9.5.0.0     IBM Operational Decision Manager
+ibm-helm/ibm-odm-prod   25.1.0        9.5.0.1     IBM Operational Decision Manager
 ```
 
 ### 3. Install an IBM Operational Decision Manager release (10 min)
@@ -157,7 +157,7 @@ roks-tuto-odm-ds-runtime-route   <DS_RUNTIME_HOST>
 
 ### 5. Track ODM usage with the IBM License Service
 
-Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.12.0?topic=ilsfpcr-installing-license-service-without-operator-lifecycle-manager-olm) documentation.
+Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.14.0?topic=ilsfpcr-installing-license-service-without-operator-lifecycle-manager-olm) documentation.
 
 ### 6. Deploy ODM to support sticky session on ROKS
 
