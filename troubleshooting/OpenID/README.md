@@ -370,7 +370,7 @@ Add it in the Rule Designer **eclipse.ini** file:
 
 ```
 -debug
-<PATH>\debug.txt
+<PATH>/debug.txt
 ```
 
 >Note: Don't forget to restart the Rule Designer before to test a new connection to the Decision Center or the Decision Server RES Console
