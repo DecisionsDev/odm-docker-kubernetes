@@ -98,7 +98,7 @@ Regions and zones (used below) can be listed respectively with `gcloud compute r
 
   ```shell
   gcloud container clusters create <CLUSTER_NAME> \
-    --release-channel=regular --cluster-version=1.30 \
+    --release-channel=regular --cluster-version=1.33 \
     --enable-autoscaling --num-nodes=6 --total-min-nodes=1 --total-max-nodes=16
   ```
 
