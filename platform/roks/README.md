@@ -163,7 +163,7 @@ Follow the **Installation** section of the [Manual installation without the Oper
 
 The ODM Decision Center component requires a sticky session, also known as [session affinity](https://kubernetes.io/docs/reference/networking/virtual-ips/#session-affinity). This is necessary when using more than **one** replica for the Decision Center to ensure that each user's requests are consistently routed to the same pod.
 
-According to the [OpenShift documentation](https://docs.openshift.com/container-platform/4.15/networking/routes/route-configuration.html#nw-using-cookies-keep-route-statefulness_route-configuration), using a passthrough route for Decision Center is not sufficient to enable a sticky session. Therefore, we need to use a [reencrypt route](https://docs.openshift.com/container-platform/4.15/networking/routes/secured-routes.html#nw-ingress-creating-a-reencrypt-route-with-a-custom-certificate_secured-routes).
+According to the [OpenShift documentation](https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/networking/configuring-routes#route-configuration), using a passthrough route for Decision Center is not sufficient to enable a sticky session. Therefore, we need to use a [reencrypt route](https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/networking/configuring-routes#nw-ingress-creating-a-reencrypt-route-with-a-custom-certificate_secured-routes).
 
 Using a reencrypt route, ROKS requires the route to use a valid domain certificate. Below are the steps to achieve this:
 
