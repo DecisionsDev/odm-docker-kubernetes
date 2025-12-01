@@ -10,19 +10,13 @@ license: true
 usersPassword: "odmAdmin"
 
 image:
-  repository: "cp.stg.icr.io/cp/cp4a/odm/"
+  repository: cp.icr.io/cp/cp4a/odm
   pullPolicy: IfNotPresent
 ## Optionally specify an list of imagePullSecrets.
 ## Secrets must be manually created in the namespace.
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
-  pullSecrets: 
-  - ibm-registry
-
-## Architecture - e.g. amd64, ppc64le. If left empty, the architecture will be determined automatically.
-## You can use kubectl version command to determine the architecture on the desired worker node.
-  arch: "amd64"
-
-
+  pullSecrets:
+  - ibm-entitlement-key
 
 service:
   enableRoute: true

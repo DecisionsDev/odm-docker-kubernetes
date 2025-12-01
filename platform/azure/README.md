@@ -75,7 +75,7 @@ az account list-locations -o table
 Then, create a resource group by running the following command:
 
 ```shell
-az group create --name <resourcegroup> --location <azurelocation> --tags Owner=<email> Team=<team> Usage=demo Usage_desc="Azure customers support" Delete_date=2025-12-31
+az group create --name <resourcegroup> --location <azurelocation> --tags Owner=<email> Team=<team> Usage=demo Usage_desc="Azure customers support" Delete_date=2026-12-31
 ```
 
 The following example output shows that the resource group has been created successfully:
@@ -90,7 +90,7 @@ The following example output shows that the resource group has been created succ
     "provisioningState": "Succeeded"
   },
   "tags": {
-    "Delete_date": "2025-12-31",
+    "Delete_date": "2026-12-31",
     "Owner": "<email>",
     "Team": "<team>",
     "Usage": "demo",
@@ -117,7 +117,7 @@ Make a note of the newly-created Resource Group that is displayed in the JSON ou
 
 ```shell
 az group update --name <noderesourcegroup> \
-    --tags Owner=<email> Team=<team> Usage=demo Usage_desc="Azure customers support" Delete_date=2025-12-31
+    --tags Owner=<email> Team=<team> Usage=demo Usage_desc="Azure customers support" Delete_date=2026-12-31
 ```
        
 ### Set up your environment to this cluster
@@ -144,8 +144,8 @@ The following example output shows the single node created in the previous steps
 
 ```
 NAME                                STATUS   ROLES   AGE   VERSION
-aks-nodepool1-27504729-vmss000000   Ready    agent   21m   v1.31.7
-aks-nodepool1-27504729-vmss000001   Ready    agent   21m   v1.31.7
+aks-nodepool1-27504729-vmss000000   Ready    agent   21m   v1.32.7
+aks-nodepool1-27504729-vmss000001   Ready    agent   21m   v1.32.7
 ```
 
 ## Create the PostgreSQL Azure instance (10 min)
@@ -185,7 +185,7 @@ Result:
   "availabilityZone": "2",
   "backup": {
     "backupRetentionDays": 7,
-    "earliestRestoreDate": "2025-04-29T09:37:34.208183+00:00",
+    "earliestRestoreDate": "2025-10-20T12:18:24.730053+00:00",
     "geoRedundantBackup": "Disabled"
   },
   "cluster": null,
@@ -214,7 +214,7 @@ Result:
     "startHour": 0,
     "startMinute": 0
   },
-  "minorVersion": "12",
+  "minorVersion": "14",
   "name": "<postgresqlserver>",
   "network": {
     "delegatedSubnetResourceId": null,
@@ -248,7 +248,7 @@ Result:
     "type": ""
   },
   "systemData": {
-    "createdAt": "2025-04-29T09:31:58.093917+00:00",
+    "createdAt": "2025-10-20T12:13:15.036215+00:00",
     "createdBy": null,
     "createdByType": null,
     "lastModifiedAt": null,
@@ -294,21 +294,20 @@ In the Container software library tile, verify your entitlement on the View libr
 Create a pull secret by running the `kubectl create secret` command.
 
 ```shell
-kubectl create secret docker-registry <registrysecret> --docker-server=cp.icr.io \
-                                                       --docker-username=cp \
-                                                       --docker-password="<entitlementkey>" \
-                                                       --docker-email=<email>
+kubectl create secret docker-registry ibm-entitlement-key \
+        --docker-server=cp.icr.io \
+        --docker-username=cp \
+        --docker-password="<API_KEY_GENERATED>" \
+        --docker-email=<USER_EMAIL>
 ```
 Where:
 
-* \<registrysecret\> is the secret name
-* \<entitlementkey\> is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
-* \<email\> is the email address associated with your IBMid.
+* `<API_KEY_GENERATED>` is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
+* `<USER_EMAIL>` is the email address associated with your IBMid.
 
-> [!NOTE]
-> The `cp.icr.io` value for the `docker-server` parameter is the only registry domain name that contains the images. You must set the `docker-username` to `cp` to use an entitlement key as docker-password.
-
-Make a note of the secret name so that you can set it for the `image.pullSecrets` parameter when you run a helm install of your containers.  The `image.repository` parameter should be set to `cp.icr.io/cp/cp4a/odm`.
+> Note: 
+> 1. The **cp.icr.io** value for the docker-server parameter is the only registry domain name that contains the images. You must set the *docker-username* to **cp** to use an entitlement key as *docker-password*.
+> 2. The `ibm-entitlement-key` secret name will be used for the `image.pullSecrets` parameter when you run a Helm install of your containers. The `image.repository` parameter is also set by default to `cp.icr.io/cp/cp4a/odm`.
 
 
 Add the public IBM Helm charts repository:
@@ -323,7 +322,7 @@ Check that you can access the ODM charts:
 ```shell
 helm search repo ibm-odm-prod
 NAME                        CHART VERSION	APP VERSION DESCRIPTION
-ibm-helm/ibm-odm-prod       25.0.0       	9.5.0.0     IBM Operational Decision Manager  License By in...
+ibm-helm/ibm-odm-prod       25.1.0       	9.5.0.1     IBM Operational Decision Manager  License By in...
 ```
 
 ### Manage a digital certificate (10 min)
@@ -426,7 +425,7 @@ You can then open a browser on `https://xxx.xxx.xxx.xxx:9453` to access Decision
 
 This section explains how to track ODM usage with the IBM License Service.
 
-Follow the **Installation** section of the [Installation License Service without Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.12.0?topic=ilsfpcr-installing-license-service-without-operator-lifecycle-manager-olm) documentation.
+Follow the **Installation** section of the [Installation License Service without Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.14.0?topic=ilsfpcr-installing-license-service-without-operator-lifecycle-manager-olm) documentation.
 
 #### a. Expose the licensing service using the AKS LoadBalancer
 
@@ -470,7 +469,7 @@ export TOKEN=$(kubectl get secret ibm-licensing-token -n ibm-licensing -o jsonpa
 ```
 
 > **Note**
-> If `LICENSING_URL` is empty, take a look at the [troubleshooting](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.12.0?topic=service-troubleshooting-license) page.
+> If `LICENSING_URL` is empty, take a look at the [troubleshooting](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.14.0?topic=service-troubleshooting-license) page.
 
 You can access the `http://${LICENSING_URL}:8080/status?token=${TOKEN}` URL to view the licensing usage or retrieve the licensing report .zip file by running:
 
@@ -478,7 +477,7 @@ You can access the `http://${LICENSING_URL}:8080/status?token=${TOKEN}` URL to v
 curl "http://${LICENSING_URL}:8080/snapshot?token=${TOKEN}" --output report.zip
 ```
 
-If your IBM License Service instance is not running properly, refer to this [troubleshooting page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.12.0?topic=service-troubleshooting-license).
+If your IBM License Service instance is not running properly, refer to this [troubleshooting page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.14.0?topic=service-troubleshooting-license).
 
 ## Troubleshooting
 

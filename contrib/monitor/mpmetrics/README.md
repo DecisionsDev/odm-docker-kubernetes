@@ -30,7 +30,7 @@ The MicroProfile mpMetrics Liberty feature provides a /metrics endpoint from whi
 2. Create a pull secret by running a `kubectl create secret` command.
 
     ```
-    kubectl create secret docker-registry icregistry-secret \
+    kubectl create secret docker-registry ibm-entitlement-key \
         --docker-server=cp.icr.io \
         --docker-username=cp \
         --docker-password="<API_KEY_GENERATED>" \
@@ -42,9 +42,10 @@ The MicroProfile mpMetrics Liberty feature provides a /metrics endpoint from whi
     - *API_KEY_GENERATED* is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
     - *USER_EMAIL* is the email address associated with your IBMid.
 
-    > Note: The **cp.icr.io** value for the docker-server parameter is the only registry domain name that contains the images. You must set the *docker-username* to **cp** to use an entitlement key as *docker-password*.
+    > Note: 
+    > 1. The **cp.icr.io** value for the docker-server parameter is the only registry domain name that contains the images. You must set the *docker-username* to **cp** to use an entitlement key as *docker-password*.
+    > 2. The `ibm-entitlement-key` secret name will be used for the `image.pullSecrets` parameter when you run a Helm install of your containers. The `image.repository` parameter is also set by default to `cp.icr.io/cp/cp4a/odm`.
 
-3. Make a note of the secret name so that you can set it for the **image.pullSecrets** parameter when you run a helm install of your containers. The **image.repository** parameter is later set to *cp.icr.io/cp/cp4a/odm*.
 
 ### Create a secret to configure mpMetrics
 
@@ -70,7 +71,7 @@ Create the monitor-secret
   ```shell
   helm search repo ibm-odm-prod
   NAME                  	CHART VERSION	APP VERSION	DESCRIPTION
-  ibm-helm/ibm-odm-prod	  25.0.0       	9.5.0.0   	IBM Operational Decision Manager
+  ibm-helm/ibm-odm-prod	  25.1.0       	9.5.0.1   	IBM Operational Decision Manager
   ```
 
 ### 3. Run the `helm install` command
@@ -177,8 +178,60 @@ For example, by monitoring this metrics, you can check the behaviour of the load
 
 ### Consume Metrics with Grafana Dashboard
 
-If you prefer to visualize the metrics using Grafana Dashboard, you can follow this [documentation](https://cloud.redhat.com/experts/o11y/ocp-grafana/) explaining how to install Grafana on OCP and connect it to Promotheus.
+If you prefer to visualize the metrics using Grafana Dashboard, you can follow this procedure to install Grafana on OCP and connect it to Prometheus:
 
-You can use this dashboard to help spot performance issues. For instance, metrics such as servlet response times, CPU or heap usage when seen as a time-series on Grafana, could be indicative of an underlying performance issue or memory leak.
+1/ Go in the OCP **operator hub** tab and install the Grafana operator.
+
+2/ Create the Grafana instance:
+
+```shell
+oc apply -f grafana.yaml
+```
+
+3/ Create the Grafana datasource using the prometheus metrics:
+
+```shell
+TOKEN=$(oc whoami -t)
+HOST=$(oc -n openshift-monitoring get route thanos-querier -o jsonpath='{.status.ingress[].host}')
+cat << EOF | oc apply -f -
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDatasource
+metadata:
+  name: thanos-query-ds
+  namespace: openshift-operators
+spec:
+  datasource:
+    access: proxy
+    isDefault: true
+    jsonData:
+      httpHeaderName1: 'Authorization'
+      timeInterval: 5s
+      tlsSkipVerify: true
+    secureJsonData:
+      httpHeaderValue1: 'Bearer ${TOKEN}'
+    name: thanos-query-ds
+    type: prometheus
+    url: 'https://${HOST}'
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+EOF
+```
+
+4/ Access the Grafana dashboard using the route:
+
+```shell
+oc -n openshift-operators get routes grafana-route -o jsonpath="https://{.status.ingress[].host}"
+```
+
+5/ You can use this dashboard to help spot performance issues. For instance, metrics such as servlet response times, CPU or heap usage when seen as a time-series on Grafana, could be indicative of an underlying performance issue or memory leak.
+
+* Click on the **Explore** tab on left part
+  * Select **prometheus** as Outline
+    * Select the **servlet_request_total** metric
+      * Add the **mp_scope=vendor** label filter
+      * Add the **servlet=DecisionService_RESTDecisionService** label filter
+      * Add the **container=odm-decisionserverruntime** label filter 
+         * Click the **Run query** button
 
 ![Grafana Dashboard](./images/GrafanaDashboard.png)

@@ -244,7 +244,7 @@ In this step, we augment the token with meta-information that is required by the
 2. Create a pull secret by running a `kubectl create secret` command.
 
     ```
-    $ kubectl create secret docker-registry icregistry-secret \
+    $ kubectl create secret docker-registry ibm-entitlement-key \
         --docker-server=cp.icr.io \
         --docker-username=cp \
         --docker-password="<API_KEY_GENERATED>" \
@@ -256,21 +256,21 @@ In this step, we augment the token with meta-information that is required by the
     - *API_KEY_GENERATED* is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
     - *USER_EMAIL* is the email address associated with your IBMid.
 
-    > Note: The **cp.icr.io** value for the docker-server parameter is the only registry domain name that contains the images. You must set the *docker-username* to **cp** to use an entitlement key as *docker-password*.
-
-3. Make a note of the secret name so that you can set it for the **image.pullSecrets** parameter when you run a helm install of your containers. The image.repository parameter is later set to *cp.icr.io/cp/cp4a/odm*.
+    > Note: 
+    > 1. The **cp.icr.io** value for the docker-server parameter is the only registry domain name that contains the images. You must set the *docker-username* to **cp** to use an entitlement key as *docker-password*.
+    > 2. The `ibm-entitlement-key` secret name will be used for the `image.pullSecrets` parameter when you run a Helm install of your containers. The `image.repository` parameter is also set by default to `cp.icr.io/cp/cp4a/odm`.
 
 ### Create secrets to configure ODM with Okta
 
 #### 1. Retrieve Okta Server information.
 
-    From the Okta console, in **Security** / **API** / **default** / **Settings** :
-    - Note the *OKTA_SERVER_NAME* which is the **Okta domain** in the **Issuer** (similar to *\<shortname\>.okta.com*).
+  - From the Okta console, in **Security** / **API** / **default** / **Settings** :
+  - Note the *OKTA_SERVER_NAME* which is the **Okta domain** in the **Issuer** (similar to *\<shortname\>.okta.com*).
 
 #### 2. Create a secret with the Okta Server certificate.
 
-    To allow ODM services to access the Okta Server, it is mandatory to provide the Okta Server certificate.
-    You can create the secret as follows:
+  - To allow ODM services to access the Okta Server, it is mandatory to provide the Okta Server certificate.
+  You can create the secret as follows:
 
     ```
     keytool -printcert -sslserver <OKTA_SERVER_NAME> -rfc > okta.crt
@@ -279,10 +279,9 @@ In this step, we augment the token with meta-information that is required by the
 
 #### 3. Generate the ODM configuration file for Okta.
 
-    The [script](generateTemplate.sh) allows you to generate the necessary configuration files.
-    You can download the [okta-odm-script.zip](okta-odm-script.zip) .zip file to your machine. This .zip file contains the [script](generateTemplate.sh) and the content of the [templates](templates) directory.
+  - Download the [okta-odm-script.zip](okta-odm-script.zip) .zip file to your machine
+  - and run the script [`generateTemplate.sh`](generateTemplate.sh) to generate the ODM configuration files (using [templates](templates)) :
 
-    Generate the files with the following command:
     ```
     ./generateTemplate.sh -i <OKTA_CLIENT_ID> -x <OKTA_CLIENT_SECRET> -n <OKTA_SERVER_NAME> -g <OKTA_ODM_GROUP> -s <OKTA_API_SCOPE>
     ```
@@ -294,10 +293,11 @@ In this step, we augment the token with meta-information that is required by the
     - *OKTA_API_SCOPE* has been defined [above](#configure-the-default-authorization-server) (*odmapiusers*)
 
 
-    The files are generated into the `output` directory.
+    The files are generated into a directory named `output`.
 
 #### 4. Create the Okta authentication secret.
 
+  - run the command below to create a secret containing the configuration files generated at the previous step:
     ```
     kubectl create secret generic okta-auth-secret \
         --from-file=OdmOidcProviders.json=./output/OdmOidcProviders.json \
@@ -322,22 +322,15 @@ In this step, we augment the token with meta-information that is required by the
     ```
     ```
     NAME                    CHART VERSION APP VERSION DESCRIPTION
-    ibm-helm/ibm-odm-prod   25.0.0        9.5.0.0     IBM Operational Decision Manager
+    ibm-helm/ibm-odm-prod   25.1.0        9.5.0.1     IBM Operational Decision Manager
     ```
 
 3. Run the `helm install` command.
 
-    You can now install the product. We will use the PostgreSQL internal database and disable the data persistence (`internalDatabase.persistence.enabled=false`) to avoid any platform complexity concerning persistent volume allocation.
+    You can now install the product. We will use the PostgreSQL internal database and disable the data persistence (`internalDatabase.persistence.enabled=false`) to avoid any platform complexity concerning persistent volume allocation. Inspect [okta-values.yaml](okta-values.yaml) for the parameters that have been defined for this installation.
 
     ```
-    helm install my-odm-release ibm-helm/ibm-odm-prod \
-          --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
-          --set oidc.enabled=true \
-          --set internalDatabase.persistence.enabled=false \
-          --set internalDatabase.populateSampleData=true \
-          --set customization.trustedCertificateList={"okta-secret"} \
-          --set customization.authSecretRef=okta-auth-secret \
-          --set license=true
+    helm install my-odm-release ibm-helm/ibm-odm-prod -f okta-values.yaml
     ```
 
     > Note: 
@@ -351,8 +344,7 @@ In this step, we augment the token with meta-information that is required by the
     > If you want to install a **specific version**, add the `--version` option:
     >
     > ```bash
-    > helm install my-odm-release ibm-helm/ibm-odm-prod --version <version> \
-    >     --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret ...
+    > helm install my-odm-release ibm-helm/ibm-odm-prod --version <version> -f okta-values.yaml
     > ```
     >
     > - You can list all available versions using:
@@ -478,7 +470,7 @@ But if you want to execute a bearer authentication ODM runtime call using the Cl
 
 # Troubleshooting
 
-If you encounter any issue, have a look at the [common troubleshooting explanation](../README.md#troubleshooting)
+If you encounter any issue, have a look at the [common troubleshooting explanation](/troubleshooting/OpenID/README.md)
 
 # License
 

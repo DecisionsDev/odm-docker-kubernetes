@@ -1,0 +1,27 @@
+license: true
+
+image:
+  repository: cp.icr.io/cp/cp4a/odm
+  pullSecrets:
+  - ibm-entitlement-key
+
+internalDatabase:
+  persistence:
+    enabled: false
+  populateSampleData: true
+  runAsUser: ''
+
+decisionCenter:
+  disableAllAuthenticatedUser: true
+
+customization:
+  authSecretRef: keycloak-auth-secret
+  trustedCertificateList:
+  - keycloak-secret
+  runAsUser: ''
+
+oidc:
+  enabled: true
+
+service:
+  enableRoute: true

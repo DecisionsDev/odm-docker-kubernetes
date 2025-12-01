@@ -32,11 +32,12 @@ Options:
 -s : Application Cient Secret
 -c : Client-Credentials Client ID
 -x : Client-Credentials Client Secret
+-p : Client-Credentials Default Custom Scope
 Usage example: $0 -i OdmClientId -s OdmClientSecret -r Region
 EOF
 }
 
-while getopts "i:s:r:c:x:u:d:ha:" option; do
+while getopts "i:s:r:c:x:p:u:d:ha:" option; do
     case "${option}" in
         u) COGNITO_USER_POOL_ID=${OPTARG};;
         d) COGNITO_DOMAIN_NAME=${OPTARG};;
@@ -45,6 +46,7 @@ while getopts "i:s:r:c:x:u:d:ha:" option; do
         s) COGNITO_APP_CLIENT_SECRET=${OPTARG};;
         c) COGNITO_CC_CLIENT_ID=${OPTARG};;
         x) COGNITO_CC_CLIENT_SECRET=${OPTARG};;
+        p) COGNITO_CC_DEFAULT_CUSTOM_SCOPE=${OPTARG};;
         h) usage; exit 0;;
         *) usage; exit 1;;
     esac
@@ -78,6 +80,10 @@ if [[ -z ${COGNITO_CC_CLIENT_SECRET} ]]; then
   echo "COGNITO_CC_CLIENT_SECRET has to be provided, either as in environment or with -x."
   exit 1
 fi
+if [[ -z ${COGNITO_CC_DEFAULT_CUSTOM_SCOPE} ]]; then
+  echo "COGNITO_CC_DEFAULT_CUSTOM_SCOPE has to be provided, either as in environment or with -p."
+  exit 1
+fi
 
 mkdir -p $OUTPUT_DIR && cp $TEMPLATE_DIR/* $OUTPUT_DIR
 echo "Generating files for COGNITO"
@@ -88,4 +94,5 @@ sed -i.bak 's|COGNITO_APP_CLIENT_ID|'$COGNITO_APP_CLIENT_ID'|g' $OUTPUT_DIR/*
 sed -i.bak 's|COGNITO_APP_CLIENT_SECRET|'$COGNITO_APP_CLIENT_SECRET'|g' $OUTPUT_DIR/*
 sed -i.bak 's|COGNITO_CC_CLIENT_ID|'$COGNITO_CC_CLIENT_ID'|g' $OUTPUT_DIR/*
 sed -i.bak 's|COGNITO_CC_CLIENT_SECRET|'$COGNITO_CC_CLIENT_SECRET'|g' $OUTPUT_DIR/*
+sed -i.bak 's|COGNITO_CC_DEFAULT_CUSTOM_SCOPE|'$COGNITO_CC_DEFAULT_CUSTOM_SCOPE'|g' $OUTPUT_DIR/*
 rm -f $OUTPUT_DIR/*.bak

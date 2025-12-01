@@ -1,0 +1,19 @@
+license: true
+
+image:
+  repository: cp.icr.io/cp/cp4a/odm
+  pullSecrets:
+  - ibm-entitlement-key
+
+internalDatabase:
+  persistence:
+    enabled: false
+  populateSampleData: true
+
+oidc:
+  enabled: true
+
+customization:
+  authSecretRef: okta-auth-secret
+  trustedCertificateList:
+  - okta-secret

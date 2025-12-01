@@ -70,7 +70,7 @@ This is what will be used in the next step of this tutorial.
 #### b. Create a pull secret by running the kubectl create secret command
 
 ```bash
-oc create secret docker-registry my-odm-docker-registry --docker-server=cp.icr.io \
+oc create secret docker-registry ibm-entitlement-key --docker-server=cp.icr.io \
     --docker-username=cp --docker-password="<ENTITLEMENT_KEY>" --docker-email=<USER_EMAIL>
 ```
 
@@ -79,10 +79,9 @@ Where:
 - `<ENTITLEMENT_KEY>`: The entitlement key from the previous step. Make sure to enclose the key in double quotes.
 - `<USER_EMAIL>`: The email address associated with your IBMid.
 
-> **Note**
-> The `cp.icr.io` value for the docker-server parameter is the only registry domain name that contains the images. You must set the docker-username to `cp` to use the entitlement key as the docker-password.
-
-The `my-odm-docker-registry` secret name will be used for the `image.pullSecrets` parameter when you run a Helm install of your containers. The `image.repository` parameter is also set by default to `cp.icr.io/cp/cp4a/odm`.
+> Note: 
+> 1. The **cp.icr.io** value for the docker-server parameter is the only registry domain name that contains the images. You must set the *docker-username* to **cp** to use an entitlement key as *docker-password*.
+> 2. The `ibm-entitlement-key` secret name will be used for the `image.pullSecrets` parameter when you run a Helm install of your containers. The `image.repository` parameter is also set by default to `cp.icr.io/cp/cp4a/odm`.
 
 #### c. Add the public IBM Helm charts repository
 
@@ -96,7 +95,7 @@ helm repo update
 ```bash
 $ helm search repo ibm-odm-prod
 NAME                    CHART VERSION APP VERSION DESCRIPTION
-ibm-helm/ibm-odm-prod   25.0.0        9.5.0.0     IBM Operational Decision Manager
+ibm-helm/ibm-odm-prod   25.1.0        9.5.0.1     IBM Operational Decision Manager
 ```
 
 ### 3. Install an IBM Operational Decision Manager release (10 min)
@@ -158,7 +157,7 @@ roks-tuto-odm-ds-runtime-route   <DS_RUNTIME_HOST>
 
 ### 5. Track ODM usage with the IBM License Service
 
-Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.12.0?topic=ilsfpcr-installing-license-service-without-operator-lifecycle-manager-olm) documentation.
+Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.14.0?topic=ilsfpcr-installing-license-service-without-operator-lifecycle-manager-olm) documentation.
 
 ### 6. Deploy ODM to support sticky session on ROKS
 

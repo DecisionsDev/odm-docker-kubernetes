@@ -60,9 +60,10 @@ HashiCorp Vault must be up and running. An [on-prem installation description](RE
 - [Secrets Store CSI Driver](https://secrets-store-csi-driver.sigs.k8s.io/) already installed.
 - [HashiCorp Vault provider driver](https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-secret-store-driver) already installed
 - [Helm](https://helm.sh/docs/intro/install/)
-- Access to Operational Decision Manager on Container 9.5.0.0 images
+- Access to Operational Decision Manager on Container 9.5.0.1 images
 
-> Note: The first and second steps are described in the [companion document](README-External_Vault.md) when you use OCP.
+> [!NOTE]
+> The first and second steps are described in the [companion document](README-External_Vault.md) when you use OCP.
 
 In this documentation ODM will be installed in the "odm" namespace.
 
@@ -127,24 +128,20 @@ To get access to the ODM material, you need an IBM entitlement key to pull the i
 Create a pull secret by running a kubectl create secret command:
 
 ```bash
-oc create secret docker-registry <REGISTRY_SECRET> \
+oc create secret docker-registry ibm-entitlement-key \
     --docker-server=cp.icr.io \
     --docker-username=cp \
-    --docker-password="<API_KEY_GENERATED>" \
-    --docker-email=<USER_EMAIL>
+    --docker-password="<API_KEY_GENERATED>"
 ```
 
-Where:
+Where `<API_KEY_GENERATED>` is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
 
-- `<REGISTRY_SECRET>` is the secret name.
-- `<API_KEY_GENERATED>` is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
-- `<USER_EMAIL>` is the email address associated with your IBMid.
+> [!NOTE]
+>
+> 1. The **cp.icr.io** value for the docker-server parameter is the only registry domain name that contains the images. You must set the *docker-username* to **cp** to use an entitlement key as *docker-password*.
+> 2. The `ibm-entitlement-key` secret name will be used for the `image.pullSecrets` parameter when you run a Helm install of your containers. The `image.repository` parameter is also set by default to `cp.icr.io/cp/cp4a/odm`.
 
-> NOTE:  The `cp.icr.io` value for the docker-server parameter is the only registry domain name that contains the images. You must set the docker-username to `cp` to use an entitlement key as docker-password.
-
-Take note of the secret name so that you can set it for the *image.pullSecrets* parameter when you run a helm install command of your containers.  The *image.repository* parameter will later be set to `cp.icr.io/cp/cp4a/odm`.
-
-***However, as the goal of this article is to eliminate the need for secrets, refer to the Kubernetes implementation to understand the alternative methods. For example, the OpenShift documentation on this topic can be found [here](https://docs.openshift.com/container-platform/4.14/openshift_images/managing_images/using-image-pull-secrets.html#images-update-global-pull-secret_using-image-pull-secrets)***
+***However, as the goal of this article is to eliminate the need for secrets, refer to the Kubernetes implementation to understand the alternative methods. For example, the OpenShift documentation on this topic can be found on <https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/images/managing-images#using-image-pull-secrets>***
 
 #### IBM Helm charts repository
 
@@ -160,7 +157,7 @@ Check that you can access ODM charts:
 ```bash
 helm search repo ibm-odm-prod
 NAME                    CHART VERSION   APP VERSION     DESCRIPTION
-ibm-helm/ibm-odm-prod   25.0.0          9.5.0.0         IBM Operational Decision Manager
+ibm-helm/ibm-odm-prod   25.1.0          9.5.0.1         IBM Operational Decision Manager
 ```
 
 #### Data to be injected in the pods
@@ -186,6 +183,7 @@ spec:
   provider: vault
   parameters:
     vaultAddress: http://<vaultfqdn>:8200
+    vaultAuthMountPath: <clustername>
     roleName: database
     objects: |
       - objectName: "db-password"
@@ -255,6 +253,7 @@ spec:
   provider: vault
   parameters:
     vaultAddress: http://<vaultfqdn>:8200
+    vaultAuthMountPath: <clustername>
     roleName: database
     objects: |
       - objectName: "tls.crt"
@@ -263,6 +262,12 @@ spec:
       - objectName: "tls.key"
         secretPath: "<secretspath>/data/mynicecompany.com"
         secretKey: "tls.key"
+```
+
+Save the content in a spc-mynicecompanytlssecret.yaml file and create the SecretProviderClass:
+
+```bash
+oc apply -f spc-mynicecompanytlssecret.yaml
 ```
 
 It replaces the K8s secret that would have been created with (again, don't do that here!):
@@ -279,7 +284,7 @@ We also would like to create a Basic Registry configuration to be used as authSe
 vault kv put <secretspath>/authsecret group-security-configurations.xml=@group-security-configurations.xml webSecurity.xml=@webSecurity.xml
 ```
 
-and then create and apply the corresponding SPC:
+and then create the corresponding SPC:
 
 ```yaml
 apiVersion: secrets-store.csi.x-k8s.io/v1
@@ -290,6 +295,7 @@ spec:
   provider: vault
   parameters:
     vaultAddress: http://<vaultfqdn>:8200
+    vaultAuthMountPath: <clustername>
     roleName: database
     objects: |
       - objectName: "group-security-configurations.xml"
@@ -298,6 +304,12 @@ spec:
       - objectName: "webSecurity.xml"
         secretPath: "<secretspath>/data/authsecret"
         secretKey: "webSecurity.xml"
+```
+
+Save the content in a spc-authsecret.yaml file and create the SecretProviderClass:
+
+```bash
+oc apply -f spc-authsecret.yaml
 ```
 
 ### ODM installation with Basic authentication (10 min)
@@ -311,6 +323,20 @@ helm install odm-vault-spc ibm-helm/ibm-odm-prod -f values-default-vault.yaml
 ```
 > **Note:**  
 > This command installs the **latest available version** of the chart.  
+> If you want to install a **specific version**, add the `--version` option:
+>
+> ```bash
+> helm install odm-vault-spc ibm-helm/ibm-odm-prod --version <version> -f values-default-vault.yaml
+> ```
+>
+> You can list all available versions using:
+>
+> ```bash
+> helm search repo ibm-helm/ibm-odm-prod -l
+> ```
+
+> [!NOTE]
+> This command installs the **latest available version** of the chart.
 > If you want to install a **specific version**, add the `--version` option:
 >
 > ```bash
