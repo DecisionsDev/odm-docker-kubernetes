@@ -119,7 +119,7 @@ The related instructions in the online documentation are:
   > Note: 
   Only the container images needed for your architecture are uploaded into the registry when specifying the option `--filter-by-os ".*/${ARCHITECTURE}"`
 
-  For more information about these commands, see [Mirroring images to a private container registry](https://www.ibm.com/docs/en/odm/9.5.0?topic=installation-mirroring-images-private-container-registry).
+  For more information about these commands, see [Mirroring images to a private container registry](https://www.ibm.com/docs/en/odm/9.5.0?topic=installation-mirroring-images-private-registry.
 
   You can check the repositories and the images available using the commands below :
 
