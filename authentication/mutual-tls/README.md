@@ -176,7 +176,7 @@ openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout myserver.key \
 kubectl create secret generic my-server-secret --from-file=tls.crt=myserver.crt --from-file=tls.key=myserver.key
 ```
 
-The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://www.ibm.com/docs/en/odm/9.5.0?topic=servers-server-certificates).
+The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://www.ibm.com/docs/en/odm/9.5.0?topic=production-defining-security-certificate).
 
 ## Manage a client certificate to communicate with the ODM Runtime
 

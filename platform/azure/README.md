@@ -346,7 +346,7 @@ openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mynicecompany.key \
 kubectl create secret generic <mynicecompanytlssecret> --from-file=tls.crt=mynicecompany.crt --from-file=tls.key=mynicecompany.key
 ```
 
-The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://www.ibm.com/docs/en/odm/9.5.0?topic=servers-server-certificates).
+The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://www.ibm.com/docs/en/odm/9.5.0?topic=production-defining-security-certificate).
 
 ## Install an ODM Helm release and expose it with the service type LoadBalancer (10 min)
 
