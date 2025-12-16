@@ -16,3 +16,4 @@ aliveStatusCodes:
   - 206
   - 429
 useGitIgnore: true
+followRedirects: false
