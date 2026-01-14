@@ -94,44 +94,28 @@ get_lease() {
     echo "${RESULT}"
 }
 
-# Function to get lease holder
-get_lease_holder() {
-    echo $(get_lease) | jq -r '.spec.holderIdentity'
-}
-
-# Function to get lease renew time
-get_lease_renew_time() {
-    echo $(get_lease) | jq -r '.spec.renewTime'
-}
-
 # Function to check if lease exists
 lease_exists() {
-    if [ "$(echo $(get_lease) | jq -r '.code')" = "404" ]; then
+    if [ "$(echo "$@" | jq -r '.code')" = "404" ]; then
         return 1    # does not exist
     else
         return 0    # exists
     fi
 }
 
-# Function to check if the main container is ready
-is_container_ready() {
-    RESULT=$(curl -X GET https://${KUBERNETES_SERVICE_HOST}:443/api/v1/namespaces/${NAMESPACE}/pods/${POD_NAME} \
-                  -H "Authorization: Bearer $TOKEN" \
-                  --insecure 2>/dev/null)
+# Function to get lease holder
+get_lease_holder() {
+    echo "$@" | jq -r '.spec.holderIdentity'
+}
 
-    if [[ "$?" -ne 0 || "$(echo $RESULT |jq -r '.status')" = "Failure" ]]; then
-        log "Failed to check if the pod is ready: ${RESULT}"
-        return 1
-    elif [[ "$(echo $RESULT |jq -r '.status.containerStatuses[0].ready')" = "true" ]]; then
-        return 0    # pod ready
-    else
-        return 1
-    fi
+# Function to get lease renew time
+get_lease_renew_time() {
+    echo "$@" | jq -r '.spec.renewTime'
 }
 
 # Function to check if lease is expired
 is_lease_expired() {
-    local renew_time=$(get_lease_renew_time)
+    local renew_time=$(get_lease_renew_time "$@")
     
     if [ "$renew_time" = "null" ]; then
         return 0  # No renew time means expired
@@ -200,6 +184,31 @@ EOF
     fi
 }
 
+# Function to check if the main container is ready
+is_container_ready() {
+
+    if [ "${CONTAINER_READY}" = "true" ]; then
+        return 0
+    elif [ "${CONTAINER_READY}" = "false" ]; then
+        return 1
+    fi
+
+    RESULT=$(curl -X GET https://${KUBERNETES_SERVICE_HOST}:443/api/v1/namespaces/${NAMESPACE}/pods/${POD_NAME} \
+                  -H "Authorization: Bearer $TOKEN" \
+                  --insecure 2>/dev/null)
+
+    if [[ "$?" -ne 0 || "$(echo $RESULT |jq -r '.status')" = "Failure" ]]; then
+        log "Failed to check if the pod is ready: ${RESULT}"
+        return 1
+    elif [[ "$(echo $RESULT |jq -r '.status.containerStatuses[0].ready')" = "true" ]]; then
+        CONTAINER_READY=true
+        return 0
+    else
+        CONTAINER_READY=false
+        return 1
+    fi
+}
+
 # Function to update leader status
 update_status() {
     local new_status=$1
@@ -257,60 +266,72 @@ EOF
 # Function to attempt acquiring or renewing leadership
 try_acquire_leadership() {
 
-    if ! is_container_ready; then
-        if [[ "${IS_LEADER}" = "true" && "$(get_lease_holder)" != "$POD_NAME" ]]; then
-            # no longer the leader, update the 'status' label of the pod to 'inactive'
-            update_status false
-        else
-            log "the main container is not ready"
-        fi
-        return 1
-    fi
+    local lease="$(get_lease)"
+    CONTAINER_READY="unknown"
 
-    if ! lease_exists; then
-        # Lease doesn't exist, attempt to create it
-        if create_lease; then
-            log "Successfully acquired leadership (created new lease)"
-            update_status true
-            return 0
-        else
-            log "Failed to create lease: ${RESULT}"
-            update_status false
+    if ! $(lease_exists ${lease}); then
+        if ! is_container_ready; then
+            log "the main container is not ready"
             return 1
+        else
+            if create_lease; then
+                log "Successfully acquired leadership (created new lease)"
+                update_status true
+                return 0
+            else
+                log "Failed to create lease: ${RESULT}"
+                update_status false
+                return 1
+            fi
         fi
     fi
     
     # Lease exists, check who holds it
-    local current_holder=$(get_lease_holder)
-    
-    if [ "$current_holder" = "$POD_NAME" ]; then
-        # We are the leader, renew the lease
-        if update_lease; then
-            log "Successfully renewed leadership"
-            update_status true
-            return 0
-        else
-            log "Failed to renew lease: ${RESULT}"
-            update_status false
+    local current_holder=$(get_lease_holder ${lease})
+    if [ "$current_holder" = "$POD_NAME" ]; then # we are the leader
+
+        if ! is_container_ready; then
+            # let's keep the ownership until the lease expires (do not call update_status)
+            log "the main container is not ready"
             return 1
-        fi
-    else
-        # Someone else is the leader
-        if is_lease_expired; then
-            log "Lease held by $current_holder has expired, attempting to acquire"
+        else
+            # renew the lease ownership
             if update_lease; then
-                log "Successfully acquired leadership from expired lease"
+                log "Successfully renewed leadership"
                 update_status true
                 return 0
             else
-                log "Failed to acquire expired lease: ${RESULT}"
+                log "Failed to renew lease: ${RESULT}"
                 update_status false
                 return 1
             fi
-        else
+        fi
+
+    else # Someone else is the leader
+
+        if ! $(is_lease_expired ${lease}); then
             log "Lease is held by $current_holder (not expired)"
             update_status false
             return 1
+        else
+            if ! is_container_ready; then
+                # the lease is expired but we cannot take the ownership because the container is not ready
+                log "the main container is not ready"
+                # let's call update_status in case we used to be the leader to remove the label status=active
+                update_status false
+                return 1
+            else
+                log "Lease held by $current_holder has expired, attempting to acquire"
+                if update_lease; then
+                    log "Successfully acquired leadership from expired lease"
+                    update_status true
+                    return 0
+                else
+                    log "Failed to acquire expired lease: ${RESULT}"
+                    update_status false
+                    return 1
+                fi
+            fi
         fi
     fi
 }
@@ -319,7 +340,9 @@ try_acquire_leadership() {
 release_lease() {
     log "Shutting down, releasing lease..."
 
-    local current_holder=$(get_lease_holder)
+    local lease=$(get_lease)
+    local current_holder=$(get_lease_holder ${lease})
+
     if [ "$current_holder" = "$POD_NAME" ]; then
         RESULT=$(curl -X DELETE https://${KUBERNETES_SERVICE_HOST}:443/apis/coordination.k8s.io/v1/namespaces/${NAMESPACE}/leases/${LEASE_NAME} \
                       -H "Authorization: Bearer $TOKEN" \
