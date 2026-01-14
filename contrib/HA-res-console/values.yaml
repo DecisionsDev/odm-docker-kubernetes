@@ -1,0 +1,26 @@
+license: true
+usersPassword: odmAdmin
+
+image:
+  repository: cp.icr.io/cp/cp4a/odm
+  pullSecrets:
+  - ibm-entitlement-key
+
+customization:
+  runAsUser: ""
+
+serviceAccountName: "custom-service-account" # make sure this is the name of the custom service account
+
+decisionServerConsole:
+  sidecar:
+    enabled: true
+    confSecretRef: res-console-sidecar
+
+internalDatabase:
+  runAsUser: ""
+  populateSampleData: true
+  persistence:
+    enabled: false
+
+service:
+  enableRoute: true
