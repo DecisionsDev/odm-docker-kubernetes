@@ -15,6 +15,16 @@ decisionServerConsole:
   sidecar:
     enabled: true
     confSecretRef: res-console-sidecar
+    probes:
+      livenessProbe:
+        exec:
+          command:
+          - /tmp/sidecarconf/sidecar-liveness-probe.sh
+        initialDelaySeconds: 30
+        periodSeconds: 30
+        timeoutSeconds: 5
+        successThreshold: 1
+        failureThreshold: 3
 
 internalDatabase:
   runAsUser: ""

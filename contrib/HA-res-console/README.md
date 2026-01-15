@@ -17,9 +17,11 @@ The article walks you through the steps to deploy ODM that way.
 
 ## Prerequisites
 
-You need to install both:
-- [Helm v3](https://helm.sh/docs/intro/install/)
-- [kustomize](https://kubectl.docs.kubernetes.io/installation/kustomize/)
+You need to install either:
+- [Helm v3](https://helm.sh/docs/v3/intro/install/) and [kustomize](https://kubectl.docs.kubernetes.io/installation/kustomize/)
+
+or
+- [Helm v4](https://helm.sh/docs/intro/install/) and [yq](https://github.com/mikefarah/yq/#install)
 
 ## Setup
 
@@ -79,9 +81,11 @@ kubectl create secret docker-registry ibm-entitlement-key \
 #### 1.5 Create the sidecar secret
 
 When the active pod changes, the [`leader-election.sh`](leader-election.sh) script can update the list of ruleapps and rulesets in the RES console that becomes active.
+
 Otherwise the RES console that becomes active might not display the up to date list of ruleapps and rulesets, and a manual update is needed by running the command "Update RuleApps" in the "Server Info" tab.
 
-To enable this automatic update, the script needs credentials to connect to the RES console with the `resMonitor` role.
+To enable this automatic update, the script expects credentials to connect to the RES console in basic auth. The account only needs the `resMonitor` role.
+
 Please define those credentials in the lines below in [`leader-election.sh`](leader-election.sh) or set them empty if you prefer to disable this automatic update:
 ```shell
 # optionally specify credentials to connect to the RES console in order to update the list of ruleapps & rulesets when a pod becomes active (and was inactive previously)
@@ -89,7 +93,7 @@ RESMONITOR_USER="resMonitor"    # change with your actual credentials
 RESMONITOR_PWD="odmAdmin"       # or leave it empty to disable the update
 ```
 
-Then run the command below to create the secret that configures the sidecar container in the `decisionserverconsole` pods:
+Then run the command below to create the secret that configures the sidecar container in the 'decisionServerConsole' pods:
 
 ```shell
 kubectl create secret generic res-console-sidecar \
@@ -97,9 +101,12 @@ kubectl create secret generic res-console-sidecar \
   --from-file=sidecar-liveness-probe.sh=./sidecar-liveness-probe.sh
 ```
 
+> [!WARNING]
+> Please note that the statistics displayed in the RES console (number of executions, errors, average execution time, ...) are kept in memory only.
+So they are lost when the active 'decisionServiceConsole' pod changes. 
 #### 1.6 Add IBM Helm charts repository
 
-Add IBM Helm charts repository to the repositories that Helm uses by runnning:
+Add IBM Helm charts repository to the repositories that Helm uses by running:
 
 ```shell
 helm repo add ibm-helm https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm
@@ -115,6 +122,23 @@ helm search repo ibm-odm-prod
 NAME                  	CHART VERSION   APP VERSION     DESCRIPTION
 ibm-helm/ibm-odm-prod	26.0.0          9.6.0.0        IBM Operational Decision Manager
 ```
+
+#### 1.7 Install the Helm v4 plugin
+
+Run the command below to install a plugin <u>only if you use Helm version 4</u>.
+```shell
+helm plugin install ./contrib/HA-res-console/plugin
+```
+```shell
+Installing plugin from local directory (development mode)
+Installed plugin: ha-res-console
+```
+> <u>Note 1</u>: This plugin is used when running `helm install` (thanks to the option `--post-renderer <plugin-name>`) to post-process the manifests created by Helm in order to:
+> - set the replica count to 2 in the 'decisionServerConsole' Deployment
+> - set `automountServiceAccountToken` to `true` in the 'decisionServerConsole' Deployment (needed to use the Kubernetes API from within the pod)
+> - let the 'decisionServerConsole' Services send all the requests only to the active 'decisionServerConsole' pod
+
+> <u>Note 2</u>: If you use Helm version 3, no plugin is required even though a post-processing is performed too when running `helm install`. But in this version of Helm, the option `--post-renderer` expects the path of a script instead.
 
 ### 2. Deploy ODM
 
@@ -133,16 +157,31 @@ decisionServerConsole:
   sidecar:
     enabled: true
     confSecretRef: res-console-sidecar
+    probes:
+      livenessProbe:
+        exec:
+          command:
+          - /tmp/sidecarconf/sidecar-liveness-probe.sh
+        initialDelaySeconds: 30
+        periodSeconds: 30
+        timeoutSeconds: 5
+        successThreshold: 1
+        failureThreshold: 3
 ```
 
 
 #### 2.2. Deploy ODM
 
-Run the command below to deploy ODM:
+Run one of the command below to deploy ODM, depending of your version of Helm:
+- for Helm v3:
+  ```shell
+  helm install ${HELM_RELEASE} ibm-helm/ibm-odm-prod --post-renderer ./kustomize.sh -f values.yaml
+  ```
 
-```shell
-helm install ${HELM_RELEASE} ibm-helm/ibm-odm-prod --post-renderer ./kustomize.sh -f values.yaml
-```
+- for Helm v4:
+  ```shell
+  helm install ${HELM_RELEASE} ibm-helm/ibm-odm-prod --post-renderer ha-res-console -f values.yaml
+  ```
 
 After a few minutes, ODM should be up and running.
 
