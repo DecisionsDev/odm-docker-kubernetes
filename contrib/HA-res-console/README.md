@@ -5,15 +5,15 @@ This article explains how to have more than one RES console in a deployment of O
 
 ## Introduction
 
-The solution relies on additional processes that orchestrate which `decisionserverconsole` pod gets to be active and switch to another pod whenever the active pod becomes unhealthy.
+The solution relies on additional processes that orchestrate which 'decisionServerConsole' pod gets to be active and switch to another pod whenever the active pod becomes unhealthy.
 
-There is one such additional process in each `decisionserverconsole` pod. The process runs in its own container (called a 'sidecar' container).
+There is one such additional process in each 'decisionServerConsole' pod. The process runs in its own container (called a 'sidecar' container).
 
 The leader election relies on the Kubernetes [Lease](https://kubernetes.io/docs/concepts/architecture/leases/) API. The first pod to create the Lease object gets to become the active pod, and remains active unless it fails to renew its ownership over the Lease object which expires every 15 seconds (configurable).
 
-The active pod is flagged with a `status` label set to `active`. The services use that label to send the requests to the RES console only to that pod. 
+The active pod is flagged with a `status` label set to `active`. The 'decisionServerConsole' services send the requests only to the pod that has this label set to `active`.
 
-The article walks you through the steps to deploy ODM that way.
+This article walks you through the steps to deploy ODM that way.
 
 ## Prerequisites
 
@@ -172,7 +172,7 @@ decisionServerConsole:
 
 #### 2.2. Deploy ODM
 
-Run one of the command below to deploy ODM, depending of your version of Helm:
+Run one of the command below to deploy ODM, depending on your version of Helm:
 - for Helm v3:
   ```shell
   helm install ${HELM_RELEASE} ibm-helm/ibm-odm-prod --post-renderer ./kustomize.sh -f values.yaml
