@@ -25,14 +25,13 @@ or
 
 ## Setup
 
-### 1. Prepare the namespace
+### 1. Configuration
 
-#### 1.1 Create a namespace
+#### 1.1 Set the current directory
 
-The command below creates a new namespace named `odm`:
-
-```bash
-kubectl create ns odm
+In the rest of the article, the current directory is expected to be `HA-res-console`:
+```shell
+cd contrib/HA-res-console
 ```
 
 #### 1.2 Set environment variables
@@ -48,7 +47,15 @@ SERVICEACCOUNT="custom-service-account"
 NAMESPACE="odm"
 ```
 
-#### 1.3 Create a Service Account
+#### 1.3 Create a namespace (optional)
+
+If the namespace does not exists yet, run the command below to create it:
+
+```bash
+kubectl create ns ${NAMESPACE}
+```
+
+#### 1.4 Create a Service Account
 
 Run the commands below to create a new Service Account and grants it access to the leases API and the pods API with the minimal permissions needed:
 
@@ -60,7 +67,7 @@ kubectl create rolebinding lease-binding     --role=lease-access-role --servicea
 kubectl create rolebinding   pod-binding     --role=pod-access-role   --serviceaccount=${NAMESPACE}:${SERVICEACCOUNT} -n ${NAMESPACE}
 ```
 
-#### 1.4 Create the pull secret
+#### 1.5 Create the pull secret
 
 You need an IBM entitlement key to pull the container images from the IBM Entitled Registry.
 
@@ -78,7 +85,7 @@ kubectl create secret docker-registry ibm-entitlement-key \
         -n ${NAMESPACE}
 ```
 
-#### 1.5 Create the sidecar secret
+#### 1.6 Create the sidecar secret
 
 When the active pod changes, the [`leader-election.sh`](leader-election.sh) script can update the list of ruleapps and rulesets in the RES console that becomes active.
 
@@ -104,7 +111,8 @@ kubectl create secret generic res-console-sidecar \
 > [!WARNING]
 > Please note that the statistics displayed in the RES console (number of executions, errors, average execution time, ...) are kept in memory only.
 So they are lost when the active 'decisionServiceConsole' pod changes. 
-#### 1.6 Add IBM Helm charts repository
+
+#### 1.7 Add IBM Helm charts repository
 
 Add IBM Helm charts repository to the repositories that Helm uses by running:
 
@@ -123,22 +131,22 @@ NAME                  	CHART VERSION   APP VERSION     DESCRIPTION
 ibm-helm/ibm-odm-prod	26.0.0          9.6.0.0        IBM Operational Decision Manager
 ```
 
-#### 1.7 Install the Helm v4 plugin
+#### 1.8 Install the Helm plugin (only if you use Helm v4)
 
-Run the command below to install a plugin <u>only if you use Helm version 4</u>.
+Run the command below to install the Helm plugin **only if you use Helm version 4**.
 ```shell
-helm plugin install ./contrib/HA-res-console/plugin
+helm plugin install ./plugin
 ```
-```shell
+```
 Installing plugin from local directory (development mode)
 Installed plugin: ha-res-console
 ```
-> <u>Note 1</u>: This plugin is used when running `helm install` (thanks to the option `--post-renderer <plugin-name>`) to post-process the manifests created by Helm in order to:
+> Note 1: This plugin is used when running `helm install` (thanks to the option `--post-renderer <plugin-name>`) to post-process the manifests created by Helm in order to:
 > - set the replica count to 2 in the 'decisionServerConsole' Deployment
 > - set `automountServiceAccountToken` to `true` in the 'decisionServerConsole' Deployment (needed to use the Kubernetes API from within the pod)
 > - let the 'decisionServerConsole' Services send all the requests only to the active 'decisionServerConsole' pod
 
-> <u>Note 2</u>: If you use Helm version 3, no plugin is required even though a post-processing is performed too when running `helm install`. But in this version of Helm, the option `--post-renderer` expects the path of a script instead.
+> Note 2: If you use Helm version 3, no plugin is required even though a post-processing is performed too when running `helm install`. But in this version of Helm, the option `--post-renderer` expects the path of a script instead.
 
 ### 2. Deploy ODM
 
