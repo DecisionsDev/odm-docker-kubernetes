@@ -34,14 +34,14 @@ graph TB
             Label2["Status Label:<br/>status=inactive"]
         end
         
-        SC1 -.->|"Creates/Renews Lease<br/>if healthy (every 15s)"| LeaseAPI
         SC1 -.->|"Sets Label"| Label1
+        SC1 -.->|"Creates/Renews Lease<br/>if healthy (every 15s)"| LeaseAPI
         SC2 -.->|"Attempts to<br/>Acquire Lease"| LeaseAPI
         SC2 -.->|"Sets Label"| Label2
         
         Service["decisionServerConsole<br/>Service<br/>(Label Selector: status=active)"]
         
-        Service --->|"Routes traffic to"| DC1
+        Service ---->|"Routes traffic to"| DC1
         Service -.->|"Does NOT route to"| DC2
     end
     
