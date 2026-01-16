@@ -13,6 +13,49 @@ The leader election relies on the Kubernetes [Lease](https://kubernetes.io/docs/
 
 The active pod is flagged with a `status` label set to `active`. The 'decisionServerConsole' services send the requests only to the pod that has this label set to `active`.
 
+```mermaid
+graph TB
+    subgraph "Kubernetes Cluster"
+        subgraph "Kubernetes API Server"
+            LeaseAPI["Kubernetes Lease API<br/>(Leader Election)"]
+        end
+        
+        subgraph "Pod 1 - ACTIVE"
+            direction TB
+            DC1["decisionServerConsole<br/>Container"]
+            SC1["Sidecar Container<br/>(Leader Election Process)"]
+            Label1["Status Label:<br/>status=active"]
+        end
+        
+        subgraph "Pod 2 - STANDBY"
+            direction TB
+            DC2["decisionServerConsole<br/>Container"]
+            SC2["Sidecar Container<br/>(Leader Election Process)"]
+            Label2["Status Label:<br/>status=inactive"]
+        end
+        
+        SC1 -.->|"Creates/Renews Lease<br/>if healthy (every 15s)"| LeaseAPI
+        SC1 -.->|"Sets Label"| Label1
+        SC2 -.->|"Attempts to<br/>Acquire Lease"| LeaseAPI
+        SC2 -.->|"Sets Label"| Label2
+        
+        Service["decisionServerConsole<br/>Service<br/>(Label Selector: status=active)"]
+        
+        Service --->|"Routes traffic to"| DC1
+        Service -.->|"Does NOT route to"| DC2
+    end
+    
+    Client["Client Requests"] -->|"Send requests"| Service
+    
+    style DC1 fill:#90EE90
+    style SC1 fill:#90EE90
+    style Label1 fill:#90EE90
+    style DC2 fill:#FFE4B5
+    style SC2 fill:#FFE4B5
+    style Label2 fill:#FFE4B5
+    style Service fill:#87CEEB
+    style LeaseAPI fill:#DDA0DD
+```
 This article walks you through the steps to deploy ODM that way.
 
 ## Prerequisites
