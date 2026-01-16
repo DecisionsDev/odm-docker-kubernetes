@@ -90,9 +90,9 @@ SERVICEACCOUNT="custom-service-account"
 NAMESPACE="odm"
 ```
 
-#### 1.3 Create a namespace (optional)
+#### 1.3 Create the namespace (optional)
 
-If the namespace does not exists yet, run the command below to create it:
+If the namespace does not exist yet, run the command below to create it:
 
 ```bash
 kubectl create ns ${NAMESPACE}
