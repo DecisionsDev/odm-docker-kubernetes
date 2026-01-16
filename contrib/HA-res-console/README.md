@@ -69,9 +69,8 @@ You need to install:
 
 ### 1. Configuration
 
-#### 1.1 Clone the repository and set the current directory
+#### 1.1 Clone the repository and change the current directory
 
-Clone this GitHub repository and change the current directory:
 ```shell
 git clone https://github.com/DecisionsDev/odm-docker-kubernetes.git
 cd odm-docker-kubernetes/contrib/HA-res-console
