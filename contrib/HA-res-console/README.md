@@ -20,7 +20,7 @@ graph TB
             LeaseAPI["Kubernetes Lease API<br/>(Leader Election)"]
         end
         
-        subgraph "Pod 1 - ACTIVE"
+        subgraph "<b>Pod 1 - ACTIVE</b>"
             direction TB
             DC1["decisionServerConsole<br/>Container"]
             SC1["Sidecar Container<br/>(Leader Election Process)"]
