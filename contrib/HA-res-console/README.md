@@ -60,21 +60,21 @@ This article walks you through the steps to deploy ODM that way.
 
 ## Prerequisites
 
-You need to install either:
-- [Helm v3](https://helm.sh/docs/v3/intro/install/) and [kustomize](https://kubectl.docs.kubernetes.io/installation/kustomize/)
-
-or
-- [Helm v4](https://helm.sh/docs/intro/install/) and [yq](https://github.com/mikefarah/yq/#install)
+You need to install:
+- [Helm v3](https://helm.sh/docs/v3/intro/install/) or [Helm v4](https://helm.sh/docs/intro/install/)
+- [kustomize](https://kubectl.docs.kubernetes.io/installation/kustomize/) if you use Helm v3
+- [yq](https://github.com/mikefarah/yq/#install) if you use Helm v4
 
 ## Setup
 
 ### 1. Configuration
 
-#### 1.1 Set the current directory
+#### 1.1 Clone the repository and set the current directory
 
-In the rest of the article, the current directory is expected to be `HA-res-console`:
+Clone this GitHub repository and change the current directory:
 ```shell
-cd contrib/HA-res-console
+git clone https://github.com/DecisionsDev/odm-docker-kubernetes.git
+cd odm-docker-kubernetes/contrib/HA-res-console
 ```
 
 #### 1.2 Set environment variables
@@ -134,7 +134,7 @@ When the active pod changes, the [`leader-election.sh`](leader-election.sh) scri
 
 Otherwise the RES console that becomes active might not display the up to date list of ruleapps and rulesets, and a manual update is needed by running the command "Update RuleApps" in the "Server Info" tab.
 
-To enable this automatic update, the script expects credentials to connect to the RES console in basic auth. The account only needs the `resMonitor` role.
+To enable this automatic update, the script expects credentials to connect to the RES console in **basic auth** (if you use a different authentication scheme, you need to modify the script to your needs). The account only needs the `resMonitor` role.
 
 Please define those credentials in the lines below in [`leader-election.sh`](leader-election.sh) or set them empty if you prefer to disable this automatic update:
 ```shell
