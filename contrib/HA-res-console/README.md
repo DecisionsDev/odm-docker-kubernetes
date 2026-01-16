@@ -124,8 +124,7 @@ To create the pull secret, run:
 kubectl create secret docker-registry ibm-entitlement-key -n ${NAMESPACE} \
         --docker-server=cp.icr.io \
         --docker-username=cp \
-        --docker-password="<YOUR_ENTITLEMENT_KEY>" \
-        -n ${NAMESPACE}
+        --docker-password="<YOUR_ENTITLEMENT_KEY>"
 ```
 
 #### 1.6 Create the sidecar secret
