@@ -24,14 +24,14 @@ graph TB
             direction TB
             DC1["decisionServerConsole<br/>Container"]
             SC1["Sidecar Container<br/>(Leader Election Process)"]
-            Label1["Status Label:<br/>status=active"]
+            Label1["Label:<br/>status = active"]
         end
         
         subgraph "Pod 2 - STANDBY"
             direction TB
             DC2["decisionServerConsole<br/>Container"]
             SC2["Sidecar Container<br/>(Leader Election Process)"]
-            Label2["Status Label:<br/>status=inactive"]
+            Label2["Label:<br/>status = inactive"]
         end
         
         SC1 -.->|"Sets Label"| Label1
