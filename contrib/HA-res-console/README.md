@@ -121,7 +121,7 @@ You need an IBM entitlement key to pull the container images from the IBM Entitl
 To create the pull secret, run:
 
 ```shell
-kubectl create secret docker-registry ibm-entitlement-key \
+kubectl create secret docker-registry ibm-entitlement-key -n ${NAMESPACE} \
         --docker-server=cp.icr.io \
         --docker-username=cp \
         --docker-password="<YOUR_ENTITLEMENT_KEY>" \
@@ -146,14 +146,14 @@ RESMONITOR_PWD="odmAdmin"       # or leave it empty to disable the update
 Then run the command below to create the secret that configures the sidecar container in the 'decisionServerConsole' pods:
 
 ```shell
-kubectl create secret generic res-console-sidecar \
+kubectl create secret generic res-console-sidecar -n ${NAMESPACE} \
   --from-file=sidecar-start.sh=./leader-election.sh \
   --from-file=sidecar-liveness-probe.sh=./sidecar-liveness-probe.sh
 ```
 
 > [!WARNING]
 > Please note that the statistics displayed in the RES console (number of executions, errors, average execution time, ...) are kept in memory only.
-So they are lost when the active 'decisionServiceConsole' pod changes. 
+So they are lost when the active 'decisionServerConsole' pod changes. 
 
 #### 1.7 Add IBM Helm charts repository
 

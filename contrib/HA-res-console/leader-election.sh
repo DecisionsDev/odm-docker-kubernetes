@@ -369,7 +369,7 @@ while true; do
         # sleep for 5s
         sleep ${RENEW_INTERVAL}
     else
-        # sleep for 5 to 10s
-        sleep $(shuf -i ${RENEW_INTERVAL}-$((${RENEW_INTERVAL} * 2)) -n 1)
+        # sleep for a random interval between RENEW_INTERVAL and 2 * RENEW_INTERVAL seconds
+        sleep $(( RENEW_INTERVAL + RANDOM % (RENEW_INTERVAL + 1) ))
     fi
 done
