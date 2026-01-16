@@ -62,8 +62,8 @@ This article walks you through the steps to deploy ODM that way.
 
 You need to install:
 - [Helm v3](https://helm.sh/docs/v3/intro/install/) or [Helm v4](https://helm.sh/docs/intro/install/)
-- [kustomize](https://kubectl.docs.kubernetes.io/installation/kustomize/) if you use Helm v3
 - [yq](https://github.com/mikefarah/yq/#install) if you use Helm v4
+- [kustomize](https://kubectl.docs.kubernetes.io/installation/kustomize/) if you use Helm v3
 
 ## Setup
 
