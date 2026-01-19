@@ -62,8 +62,7 @@ This article walks you through the steps to deploy ODM that way.
 
 You need to install:
 - [Helm v3](https://helm.sh/docs/v3/intro/install/) or [Helm v4](https://helm.sh/docs/intro/install/)
-- [yq](https://github.com/mikefarah/yq/#install) if you use Helm v4
-- [kustomize](https://kubectl.docs.kubernetes.io/installation/kustomize/) if you use Helm v3
+- [yq](https://github.com/mikefarah/yq/#install)
 
 ## Setup
 
@@ -187,7 +186,7 @@ Installed plugin: ha-res-console
 > - set `automountServiceAccountToken` to `true` in the 'decisionServerConsole' Deployment (needed to use the Kubernetes API from within the pod)
 > - let the 'decisionServerConsole' Services send all the requests only to the active 'decisionServerConsole' pod
 
-> Note 2: If you use Helm version 3, no plugin is required even though a post-processing is performed too when running `helm install`. But in this version of Helm, the option `--post-renderer` expects the path of a script instead.
+> Note 2: If you use Helm version 3, there is no need to install the plugin even though a post-processing is performed too when running `helm install`. But in this version of Helm, the option `--post-renderer` expects the path of a script instead and the same script is used directly without installing it as a plugin beforehand.
 
 ### 2. Deploy ODM
 
@@ -224,12 +223,12 @@ decisionServerConsole:
 Run one of the command below to deploy ODM, depending on your version of Helm:
 - for Helm v3:
   ```shell
-  helm install ${HELM_RELEASE} ibm-helm/ibm-odm-prod --post-renderer ./kustomize.sh -f values.yaml
+  helm install ${HELM_RELEASE} ibm-helm/ibm-odm-prod -f values.yaml --post-renderer plugin/ha-res-console.sh
   ```
 
 - for Helm v4:
   ```shell
-  helm install ${HELM_RELEASE} ibm-helm/ibm-odm-prod --post-renderer ha-res-console -f values.yaml
+  helm install ${HELM_RELEASE} ibm-helm/ibm-odm-prod -f values.yaml --post-renderer ha-res-console
   ```
 
 After a few minutes, ODM should be up and running.
