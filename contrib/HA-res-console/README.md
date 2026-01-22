@@ -62,7 +62,10 @@ This article walks you through the steps to deploy ODM that way.
 
 You need to install:
 - [Helm v3](https://helm.sh/docs/v3/intro/install/) or [Helm v4](https://helm.sh/docs/intro/install/)
-- [yq](https://github.com/mikefarah/yq/#install)
+- Mike Farah's [yq](https://github.com/mikefarah/yq/#install)
+
+  > [!WARNING]
+  > Be sure to use Mike Farah's `yq` (Another `yq` exist and is not compatible).
 
 ## Setup
 
