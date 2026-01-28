@@ -71,7 +71,7 @@ Auth Code flow width:
 
 First, install the following software on your machine:
 
-- [Helm v3](https://helm.sh/docs/intro/install/)
+- [Helm v3](https://helm.sh/docs/v3/intro/install/) or [Helm v4](https://helm.sh/docs/intro/install/)
 - [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl)
 - Access to an Operational Decision Manager product
 - A CNCF Kubernetes cluster
@@ -322,7 +322,7 @@ In this step, we augment the token with meta-information that is required by the
     ```
     ```
     NAME                    CHART VERSION APP VERSION DESCRIPTION
-    ibm-helm/ibm-odm-prod   25.1.0        9.5.0.1     IBM Operational Decision Manager
+    ibm-helm/ibm-odm-prod   26.0.0        9.6.0.0     IBM Operational Decision Manager
     ```
 
 3. Run the `helm install` command.
