@@ -375,7 +375,7 @@ In this step, we augment the token with meta-information that is required by the
 
 2. Register the redirect URIs into your Okta application.
 
-    The redirect URIs are built in the following way:
+    The Sign-in redirect URIs are built in the following way:
 
       - Decision Center redirect URI:  `https://<DC_HOST>/decisioncenter/openid/redirect/odm`
       - Decision Runner redirect URI:  `https://<DR_HOST>/DecisionRunner/openid/redirect/odm`
@@ -383,11 +383,18 @@ In this step, we augment the token with meta-information that is required by the
       - Decision Server Runtime redirect URI:  `https://<DS_RUNTIME_HOST>/DecisionService/openid/redirect/odm`
       - Rule Designer redirect URI: `https://127.0.0.1:9081/oidcCallback`
 
+    The Sign-out redirect URIs are built in the following way:
+
+      - Decision Center post-logout redirect URI:  `https://<DC_HOST>/decisioncenter`
+      - Decision Server Console post-logout redirect URI:  `https://<DS_CONSOLE_HOST>/res/home.jsp`
+
     In **Applications** / **Applications**:
       - Select **ODM Application**.
       - In the **General** tab, click **Edit** on the **General Settings** section.
-      - In the **LOGIN** section, click **+ Add URI** in the **Sign-in redirect URIs** section and add the Decision Center redirect URI you got earlier (`https://<DC_HOST>/decisioncenter/openid/redirect/odm` -- do not forget to replace <DC_HOST> by your actual host name!)
-      - Repeat the previous step for all other redirect URIs.
+      - In the **LOGIN** section, click **+ Add URI** in the **Sign-in redirect URIs** section and add the Sign-in redirect URI `https://<DC_HOST>/decisioncenter/openid/redirect/odm` (do not forget to replace <DC_HOST> by your actual host name!)
+        - Repeat the previous step for all other redirect URIs.
+      - In the **LOGIN** section, click **+ Add URI** in the **Sign-out redirect URIs** section and add the Sign-out redirect URI `https://<DC_HOST>/decisioncenter` (do not forget to replace <DC_HOST> by your actual host name!)
+        - Repeat the previous step for the Decision Server Console post-logout redirect URI:  `https://<DS_CONSOLE_HOST>/res/home.jsp` (do not forget to replace <DS_CONSOLE_HOST> by your actual host name!)
       - Click **Save** at the bottom of the **General Settings** section.
 
     ![Sign-in redirect URIs](images/Sign-in_redirect_URIs.png)
