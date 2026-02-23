@@ -277,7 +277,7 @@ In this step, we augment the token with meta-information that is required by the
     kubectl create secret generic okta-secret --from-file=tls.crt=okta.crt
     ```
 
-#### 3. Generate the ODM configuration file for Okta.
+#### 3. Generate the ODM configuration files for Okta.
 
   - Download the [okta-odm-script.zip](okta-odm-script.zip) .zip file to your machine
   - and run the script [`generateTemplate.sh`](generateTemplate.sh) to generate the ODM configuration files (using [templates](templates)) :
@@ -295,7 +295,30 @@ In this step, we augment the token with meta-information that is required by the
 
     The files are generated into a directory named `output`.
 
-#### 4. Create the Okta authentication secret.
+#### 4. Add the consoles logout redirect URLs in ODM configuration files (Optional)
+
+This step is optional. If you implement it:
+
+  1. When logging out the Business Console or RES console, OKTA logging page will be displayed
+  1. If the user logs in the OKTA logging page, they will be redirected back to the console they left (either the Business console or RES console).
+
+  Do the following:
+  - add the line below in the file `openIdParameters.properties` generated at the previous step:
+      ```
+      DS_OPENID_POST_LOGOUT_REDIRECT_URI=https://RES_CONSOLE_HOST/res/home.jsp
+      ```
+
+      Where:
+      - *RES_CONSOLE_HOST* should be replaced by the fully qualified hostname of the RES console (aka Decision Server Console)
+
+  - add the line below in the file `OdmOidcProviders.json` generated at the previous step:
+      ```
+      "postLogoutRedirectUri": "https://DECISION_CENTER_HOST/decisioncenter"
+      ```
+      Where:
+      - *DECISION_CENTER_HOST* should be replaced by the fully qualified hostname of Decision Center
+
+#### 5. Create the Okta authentication secret.
 
   - run the command below to create a secret containing the configuration files generated at the previous step:
     ```
@@ -396,8 +419,8 @@ In this step, we augment the token with meta-information that is required by the
       - In the **LOGIN** section, click **+ Add URI** in the **Sign-out redirect URIs** section and add the Sign-out redirect URI `https://<DC_HOST>/decisioncenter` (do not forget to replace <DC_HOST> by your actual host name!)
         - Repeat the previous step for the Decision Server Console post-logout redirect URI:  `https://<DS_CONSOLE_HOST>/res/home.jsp` (do not forget to replace <DS_CONSOLE_HOST> by your actual host name!)
       - Click **Save** at the bottom of the **General Settings** section.
-
     ![Sign-in redirect URIs](images/Sign-in_redirect_URIs.png)
+
 
 ### Access the ODM services
 
