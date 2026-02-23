@@ -1,5 +1,6 @@
 oidc:
   enabled: true
+  disableLoginPanel: true
 customization:
   authSecretRef: azuread-auth-secret
   trustedCertificateList:
