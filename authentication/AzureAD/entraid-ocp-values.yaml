@@ -1,5 +1,6 @@
 oidc:
   enabled: true
+  disableLoginPanel: true
 customization:
   runAsUser: ''
   authSecretRef: azuread-auth-secret

@@ -494,8 +494,7 @@ In the **Container software library** tile, verify your entitlement on the **Vie
     kubectl create secret generic cognito-auth-secret \
         --from-file=openIdParameters.properties=./output/openIdParameters.properties \
         --from-file=openIdWebSecurity.xml=./output/openIdWebSecurity.xml \
-        --from-file=webSecurity.xml=./output/webSecurity.xml \
-        --from-file=OdmOidcProviders.json=./output/OdmOidcProviders.json
+        --from-file=webSecurity.xml=./output/webSecurity.xml
     ```
 
 

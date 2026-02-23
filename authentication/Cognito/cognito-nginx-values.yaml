@@ -23,6 +23,7 @@ customization:
 
 oidc:
   enabled: true
+  disableLoginPanel: true
 
 service:
   enableRoute: true
