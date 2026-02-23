@@ -411,8 +411,8 @@ This step is optional. If you implement it:
       - Decision Center post-logout redirect URI:  `https://<DC_HOST>/decisioncenter`
       - Decision Server Console post-logout redirect URI:  `https://<DS_CONSOLE_HOST>/res/home.jsp`
 
-      >Note:
-      >Those two Sign-out redirect URIs must match the URIs defined at the step [4. Add the consoles logout redirect URIs in ODM configuration files (Optional)](#4-add-the-consoles-logout-redirect-uris-in-odm-configuration-files-optional)
+        >Note:
+        >Those two Sign-out redirect URIs must match the URIs defined at the step [4. Add the consoles logout redirect URIs in ODM configuration files (Optional)](#4-add-the-consoles-logout-redirect-uris-in-odm-configuration-files-optional)
 
     In **Applications** / **Applications**:
       - Select **ODM Application**.
