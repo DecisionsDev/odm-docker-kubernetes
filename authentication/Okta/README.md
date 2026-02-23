@@ -24,7 +24,7 @@
     - [Set up Rule Designer](#set-up-rule-designer)
     - [Getting Started with IBM Operational Decision Manager for Containers](#getting-started-with-ibm-operational-decision-manager-for-containers)
     - [Calling the ODM Runtime Service](#calling-the-odm-runtime-service)
-- [Configuring post logout redirect (Optional)](#configuring-post-logout-redirect-optional)
+- [Configuring post logout redirect](#configuring-post-logout-redirect)
 - [Troubleshooting](#troubleshooting)
 - [License](#license)
 
@@ -475,8 +475,9 @@ But if you want to execute a bearer authentication ODM runtime call using the Cl
          https://<DS_RUNTIME_HOST>/DecisionService/rest/production_deployment/1.0/loan_validation_production/1.0
   ```
 
-# Configuring post logout redirect (Optional)
+# Configuring post logout redirect
 
+This configuration is optional.
 What is the interest of post logout redirect configuration ?
 
 When a user logs out:
@@ -485,20 +486,20 @@ When a user logs out:
 - Decision Center logout redirect to Decision Center
 - Decision Server Console logout redirect to Decision Server Console
 
-To configure the post logout redirect, you have to add the following properties in the previusly generated ./output/openIdParameters.properties file:
+To configure the post logout redirect, you have to add the following properties in the previously generated ./output/openIdParameters.properties file:
 
-DC_OPENID_POST_LOGOUT_REDIRECT_URI=https://<DC_HOST>/decisioncenter/t/home
-DS_OPENID_POST_LOGOUT_REDIRECT_URI=https://<DS_CONSOLE_HOST>/res/home.jsp
+    DC_OPENID_POST_LOGOUT_REDIRECT_URI=https://<DC_HOST>/decisioncenter
+    DS_OPENID_POST_LOGOUT_REDIRECT_URI=https://<DS_CONSOLE_HOST>/res/home.jsp
 
 Delete the okta-auth-secret secret and recreate it as explained [Create secrets to configure ODM with Okta](#create-secrets-to-configure-odm-with-okta).
 
-    ```shell
-    kubectl delete secret okta-auth-secret
-    kubectl create secret generic okta-auth-secret \
+```shell
+kubectl delete secret okta-auth-secret
+kubectl create secret generic okta-auth-secret \
         --from-file=openIdParameters.properties=./output/openIdParameters.properties \
         --from-file=openIdWebSecurity.xml=./output/openIdWebSecurity.xml \
         --from-file=webSecurity.xml=./output/webSecurity.xml
-    ```
+```
 
 # Troubleshooting
 
