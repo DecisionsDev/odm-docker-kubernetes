@@ -295,7 +295,7 @@ In this step, we augment the token with meta-information that is required by the
 
     The files are generated into a directory named `output`.
 
-#### 4. Add the consoles logout redirect URLs in ODM configuration files (Optional)
+#### 4. Add the consoles logout redirect URIs in ODM configuration files (Optional)
 
 This step is optional. If you implement it:
 
@@ -305,18 +305,18 @@ This step is optional. If you implement it:
   Do the following:
   - add the line below in the file `openIdParameters.properties` generated at the previous step:
       ```
-      DS_OPENID_POST_LOGOUT_REDIRECT_URI=https://RES_CONSOLE_HOST/res/home.jsp
+      DS_OPENID_POST_LOGOUT_REDIRECT_URI=https://DS_CONSOLE_HOST/res/home.jsp
       ```
 
       Where:
-      - *RES_CONSOLE_HOST* should be replaced by the fully qualified hostname of the RES console (aka Decision Server Console)
+      - *DS_CONSOLE_HOST* should be replaced by the fully qualified hostname of Decision Server Console (aka RES console)
 
   - add the line below in the file `OdmOidcProviders.json` generated at the previous step:
       ```
-      "postLogoutRedirectUri": "https://DECISION_CENTER_HOST/decisioncenter"
+      "postLogoutRedirectUri": "https://DC_HOST/decisioncenter"
       ```
       Where:
-      - *DECISION_CENTER_HOST* should be replaced by the fully qualified hostname of Decision Center
+      - *DC_HOST* should be replaced by the fully qualified hostname of Decision Center
 
 #### 5. Create the Okta authentication secret.
 
@@ -410,6 +410,9 @@ This step is optional. If you implement it:
 
       - Decision Center post-logout redirect URI:  `https://<DC_HOST>/decisioncenter`
       - Decision Server Console post-logout redirect URI:  `https://<DS_CONSOLE_HOST>/res/home.jsp`
+
+      >Note:
+      >Those two Sign-out redirect URIs must match the URIs defined at the step [4. Add the consoles logout redirect URIs in ODM configuration files (Optional)](#4-add-the-consoles-logout-redirect-uris-in-odm-configuration-files-optional)
 
     In **Applications** / **Applications**:
       - Select **ODM Application**.
