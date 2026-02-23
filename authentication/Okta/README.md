@@ -427,7 +427,7 @@ This step is optional. If you implement it:
 
 ### Access the ODM services
 
-Well done!  You can now connect to ODM using the endpoints you got [earlier](#register-the-odm-redirect-urls), and log in as an ODM admin with the account you created in [the first step](#manage-groups-and-users).
+Well done!  You can now connect to ODM using the endpoints you got [earlier](#register-the-odm-redirect-uris), and log in as an ODM admin with the account you created in [the first step](#manage-groups-and-users).
 
 ### Set up Rule Designer
 
