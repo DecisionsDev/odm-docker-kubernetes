@@ -49,7 +49,7 @@ The MicroProfile mpMetrics Liberty feature provides a /metrics endpoint from whi
 
 ### Create a secret to configure mpMetrics
 
-Get the [monitor.xml](./monitor.xml) file that is containing a minimal mpMetrics liberty configuration. You can add your own configuration using [liberty documentation](https://openliberty.io/docs/23.0.0.12/reference/config/mpMetrics.html)
+Get the [monitor.xml](./monitor.xml) file that is containing a minimal mpMetrics liberty configuration. You can add your own configuration using [liberty documentation](https://openliberty.io/docs/25.0.0.12/reference/config/mpMetrics.html)
 
 Create the monitor-secret
 
