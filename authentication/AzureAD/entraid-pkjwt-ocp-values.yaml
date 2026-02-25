@@ -4,9 +4,6 @@ oidc:
 customization:
   runAsUser: ''
   authSecretRef: azuread-auth-secret
-  trustedCertificateList:
-  - ms-secret
-  - digicert-secret
   privateCertificateList:
   - myodmcompany
 image:
