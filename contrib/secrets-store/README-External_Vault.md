@@ -13,7 +13,7 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashi
 sudo apt update && sudo apt install vault
 ```
 
-Edit its configuration file to enable HTTP connectivity instead of HTTPS (this will be sufficient for this demonstration). The configuration file should look like this:
+Edit its configuration file (usually in /etc/vault.d/vault.hcl) to enable HTTP connectivity instead of HTTPS (this will be sufficient for this demonstration). The configuration file should look like this:
 
 ```text
 ui = true
@@ -24,7 +24,7 @@ storage "file" {
 
 # HTTP listener
 listener "tcp" {
-  address = "0.0.0.0:8200"
+  address = "0.0.0.0:8200"  # <- Beware to 0.0.0.0 here!
   tls_disable = 1
 }
 ```

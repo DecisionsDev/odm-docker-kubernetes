@@ -60,7 +60,7 @@ HashiCorp Vault must be up and running. An [on-prem installation description](RE
 - [Secrets Store CSI Driver](https://secrets-store-csi-driver.sigs.k8s.io/) already installed.
 - [HashiCorp Vault provider driver](https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-secret-store-driver) already installed
 - [Helm](https://helm.sh/docs/intro/install/)
-- Access to Operational Decision Manager on Container 9.5.0.1 images
+- Access to Operational Decision Manager on Container 9.6.0.0 images
 
 > [!NOTE]
 > The first and second steps are described in the [companion document](README-External_Vault.md) when you use OCP.
@@ -141,7 +141,7 @@ Where `<API_KEY_GENERATED>` is the entitlement key from the previous step. Make 
 > 1. The **cp.icr.io** value for the docker-server parameter is the only registry domain name that contains the images. You must set the *docker-username* to **cp** to use an entitlement key as *docker-password*.
 > 2. The `ibm-entitlement-key` secret name will be used for the `image.pullSecrets` parameter when you run a Helm install of your containers. The `image.repository` parameter is also set by default to `cp.icr.io/cp/cp4a/odm`.
 
-***However, since the goal of this article is to eliminate the need for secrets, refer to the Kubernetes implementation to understand alternative methods. For example, the OpenShift documentation on this topic can be found at <https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/images/managing-images#using-image-pull-secrets>***
+***However, since the goal of this article is to eliminate the need for Kubernetes secrets, refer to your cluster implementation to understand alternative methods. For example, the OpenShift documentation on this topic can be found at <https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/images/managing-images#using-image-pull-secrets>***
 
 #### IBM Helm charts repository
 
@@ -157,7 +157,7 @@ Check that you can access ODM charts:
 ```bash
 helm search repo ibm-odm-prod
 NAME                    CHART VERSION   APP VERSION     DESCRIPTION
-ibm-helm/ibm-odm-prod   25.1.0          9.5.0.1         IBM Operational Decision Manager
+ibm-helm/ibm-odm-prod   26.0.0          9.6.0.0         IBM Operational Decision Manager
 ```
 
 #### Data to be injected in the pods
@@ -172,7 +172,7 @@ First create the username and associated password used to connect to the interna
 vault kv put <secretspath>/db-pass db-password="postgrespwd" db-user="postgresuser"
 ```
 
-Please refer to the secrets store provider for the syntax.
+Then create a YAML file that will be used in replacement for the usual Kubernetes secret. Please refer to the secrets store provider for the syntax.
 
 ```yaml
 apiVersion: secrets-store.csi.x-k8s.io/v1
@@ -197,7 +197,7 @@ spec:
 Save the content in a spc-odmdbsecret.yaml file and create the SecretProviderClass:
 
 ```bash
-oc apply -f spc-odmdbsecret.yaml
+kubectl apply -f spc-odmdbsecret.yaml
 ```
 
 > The exact syntax of the SPC depends on the secret store provider. The example given above corresponds to HashiCorp Vault, but the "parameters" syntax can differ greatly depending on the provider. For instance, Google Secret Manager relies on [other keys](https://github.com/GoogleCloudPlatform/secrets-store-csi-driver-provider-gcp/blob/main/examples/app-secrets.yaml.tmpl).
@@ -267,7 +267,7 @@ spec:
 Save the content in a spc-mynicecompanytlssecret.yaml file and create the SecretProviderClass:
 
 ```bash
-oc apply -f spc-mynicecompanytlssecret.yaml
+kubectl apply -f spc-mynicecompanytlssecret.yaml
 ```
 
 It replaces the K8s secret that would have been created with (again, don't do that here!):
@@ -276,7 +276,7 @@ It replaces the K8s secret that would have been created with (again, don't do th
 kubectl create secret generic mynicecompanytlssecret --from-file=tls.crt=mynicecompany.crt --from-file=tls.key=mynicecompany.key
 ```
 
-The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://www.ibm.com/docs/en/odm/9.5.0?topic=production-defining-security-certificate).
+The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-defining-security-certificate).
 
 We also need to create a Basic Registry configuration to be used as authSecretRef (refer to the accompanying files group-security-configurations.xml and webSecurity.xml). This will allow a user named "mat" to connect to ODM components. First, upload their contents to HashiCorp Vault:
 
@@ -309,7 +309,7 @@ spec:
 Save the content in a spc-authsecret.yaml file and create the SecretProviderClass:
 
 ```bash
-oc apply -f spc-authsecret.yaml
+kubectl apply -f spc-authsecret.yaml
 ```
 
 ### ODM installation with Basic authentication (10 min)
@@ -322,20 +322,6 @@ oc apply -f spc-authsecret.yaml
 helm install odm-vault-spc ibm-helm/ibm-odm-prod -f values-default-vault.yaml
 ```
 
-> **Note:**
-> This command installs the **latest available version** of the chart.
-> If you want to install a **specific version**, add the `--version` option:
->
-> ```bash
-> helm install odm-vault-spc ibm-helm/ibm-odm-prod --version <version> -f values-default-vault.yaml
-> ```
->
-> You can list all available versions using:
->
-> ```bash
-> helm search repo ibm-helm/ibm-odm-prod -l
-> ```
->
 > [!NOTE]
 > This command installs the **latest available version** of the chart.
 > If you want to install a **specific version**, add the `--version` option:
@@ -347,7 +333,7 @@ helm install odm-vault-spc ibm-helm/ibm-odm-prod -f values-default-vault.yaml
 > You can list all available versions using:
 >
 > ```bash
-> helm search repo ibm-helm/ibm-odm-prod -l
+> helm search repo ibm-helm/ibm-odm-prod --versions
 > ```
 
 After a few minutes, ODM should be up and running without using any secrets for installation.
