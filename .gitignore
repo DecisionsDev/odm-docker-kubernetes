@@ -1,4 +1,4 @@
 *.iml
 output
 /.vscode
-*/.bob
+**/.bob
