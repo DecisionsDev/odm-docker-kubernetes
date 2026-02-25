@@ -41,21 +41,29 @@ To install ODM with the AWS RDS PostgreSQL database created in [step 2](README.m
   - `<RDS_DATABASE_NAME>`: the initial database name defined when creating the RDS database
 
 ```bash
-helm install mycompany ibm-helm/ibm-odm-prod --version 24.1.0 -f eks-rds-nginx-values.yaml
+helm install mycompany ibm-helm/ibm-odm-prod -f eks-rds-nginx-values.yaml
 ```
 
 > **Note**
-> By default, NGINX does not enable sticky session. If you want to use sticky session to connect to DC, refer to [Using sticky session for Decision Center connection](../../contrib/sticky-session/README.md)
-
-> **Note**
-> If you prefer to install ODM for prototyping (not for production) with the ODM PostgreSQL internal database:
->
-> - Get the [eks-nginx-values.yaml](./eks-nginx-values.yaml) file:
+> - By default, NGINX does not enable sticky session. If you want to use sticky session to connect to DC, refer to [Using sticky session for Decision Center connection](../../contrib/sticky-session/README.md)
+> 
+> - The above command installs the **latest available version** of the chart. If you want to install a **specific version**, add the `--version` option:
 >
 > ```bash
-> helm install mycompany ibm-helm/ibm-odm-prod --version 24.1.0 -f eks-nginx-values.yaml
+> helm install mycompany ibm-helm/ibm-odm-prod --version <version> -f eks-rds-nginx-values.yaml
 > ```
-
+>
+> - You can list all available versions using:
+>
+> ```bash
+> helm search repo ibm-helm/ibm-odm-prod -l
+> ```
+>
+> - If you prefer to install ODM for prototyping (not for production) with the ODM PostgreSQL internal database. Get the [eks-nginx-values.yaml](./eks-nginx-values.yaml) file:
+>
+> ```bash
+> helm install mycompany ibm-helm/ibm-odm-prod -f eks-nginx-values.yaml
+> ```
 
 ## Track ODM usage with the IBM License Service with NGINX Ingress Controller
 
@@ -88,6 +96,7 @@ You will be able to access the IBM License Service by retrieving the URL with th
 ```bash
 export LICENSING_URL=$(kubectl get ingress ibm-licensing-service-instance -n ibm-licensing -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')/ibm-licensing-service-instance
 export TOKEN=$(kubectl get secret ibm-licensing-token -n ibm-licensing -o jsonpath='{.data.token}' |base64 -d)
+echo http://${LICENSING_URL}/status?token=${TOKEN}
 ```
 
 You can access the `http://${LICENSING_URL}/status?token=${TOKEN}` URL to view the licensing usage. 
@@ -98,4 +107,4 @@ Otherwise, you can also retrieve the licensing report .zip file by running:
 curl "http://${LICENSING_URL}/snapshot?token=${TOKEN}" --output report.zip
 ```
 
-If your IBM License Service instance is not running properly, refer to this [troubleshooting page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.9?topic=service-troubleshooting-license).
+If your IBM License Service instance is not running properly, refer to this [troubleshooting page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.14.0?topic=service-troubleshooting-license).

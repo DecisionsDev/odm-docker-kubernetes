@@ -21,12 +21,6 @@
 <variable name="odm.resMonitors.group1" value="${group1}"/>
 <variable name="odm.resExecutors.group1" value="${group1}"/>
 
-<!-- OPTIONAL: The following section concerning mapping and authfilter override is only necessary for the Client Credentials flow
-     that is used for :
-     - DC to RES deployment (requestUrl id="res3") 
-     - Runtime execution Rest-Api call (requestUrl id="ds1"). When set, DecisionService UI is only accessible using Basic authentication. 
-  If basic authentication is used instead, then the following section can be removed -->
-
 <!-- user mapping to authorize CLIENT_CREDENTIALS using CLIENT_ID -->
 <variable name="user1" value="user:AZUREAD_SERVER_URL/v2.0/AZUREAD_CLIENT_ID"/>
 

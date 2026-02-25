@@ -4,7 +4,7 @@ usersPassword: "odmAdmin"
 image:
   repository: cp.icr.io/cp/cp4a/odm
   pullSecrets:
-  - my-odm-docker-registry
+  - ibm-entitlement-key
 
 internalDatabase:
   populateSampleData: true

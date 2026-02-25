@@ -24,6 +24,7 @@
     - [Set up Rule Designer](#set-up-rule-designer)
     - [Getting Started with IBM Operational Decision Manager for Containers](#getting-started-with-ibm-operational-decision-manager-for-containers)
     - [Calling the ODM Runtime Service](#calling-the-odm-runtime-service)
+- [Configuring post logout redirect](#configuring-post-logout-redirect)
 - [Troubleshooting](#troubleshooting)
 - [License](#license)
 
@@ -71,7 +72,7 @@ Auth Code flow width:
 
 First, install the following software on your machine:
 
-- [Helm v3](https://helm.sh/docs/intro/install/)
+- [Helm v3](https://helm.sh/docs/v3/intro/install/) or [Helm v4](https://helm.sh/docs/intro/install/)
 - [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl)
 - Access to an Operational Decision Manager product
 - A CNCF Kubernetes cluster
@@ -244,7 +245,7 @@ In this step, we augment the token with meta-information that is required by the
 2. Create a pull secret by running a `kubectl create secret` command.
 
     ```
-    $ kubectl create secret docker-registry icregistry-secret \
+    $ kubectl create secret docker-registry ibm-entitlement-key \
         --docker-server=cp.icr.io \
         --docker-username=cp \
         --docker-password="<API_KEY_GENERATED>" \
@@ -256,50 +257,50 @@ In this step, we augment the token with meta-information that is required by the
     - *API_KEY_GENERATED* is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
     - *USER_EMAIL* is the email address associated with your IBMid.
 
-    > Note: The **cp.icr.io** value for the docker-server parameter is the only registry domain name that contains the images. You must set the *docker-username* to **cp** to use an entitlement key as *docker-password*.
-
-3. Make a note of the secret name so that you can set it for the **image.pullSecrets** parameter when you run a helm install of your containers. The image.repository parameter is later set to *cp.icr.io/cp/cp4a/odm*.
+    > Note: 
+    > 1. The **cp.icr.io** value for the docker-server parameter is the only registry domain name that contains the images. You must set the *docker-username* to **cp** to use an entitlement key as *docker-password*.
+    > 2. The `ibm-entitlement-key` secret name will be used for the `image.pullSecrets` parameter when you run a Helm install of your containers. The `image.repository` parameter is also set by default to `cp.icr.io/cp/cp4a/odm`.
 
 ### Create secrets to configure ODM with Okta
 
-1. Retrieve Okta Server information.
+#### 1. Retrieve Okta Server information.
 
-    From the Okta console, in **Security** / **API** / **default** / **Settings** :
-    - Note the *OKTA_SERVER_NAME* which is the **Okta domain** in the **Issuer** (similar to *\<shortname\>.okta.com*).
+  - From the Okta console, in **Security** / **API** / **default** / **Settings** :
+  - Note the *OKTA_SERVER_NAME* which is the **Okta domain** in the **Issuer** (similar to *\<shortname\>.okta.com*).
 
-2. Create a secret with the Okta Server certificate.
+#### 2. Create a secret with the Okta Server certificate.
 
-    To allow ODM services to access the Okta Server, it is mandatory to provide the Okta Server certificate.
-    You can create the secret as follows:
+  - To allow ODM services to access the Okta Server, it is mandatory to provide the Okta Server certificate.
+  You can create the secret as follows:
 
     ```
     keytool -printcert -sslserver <OKTA_SERVER_NAME> -rfc > okta.crt
     kubectl create secret generic okta-secret --from-file=tls.crt=okta.crt
     ```
 
-3. Generate the ODM configuration file for Okta.
+#### 3. Generate the ODM configuration file for Okta.
 
-    The [script](generateTemplate.sh) allows you to generate the necessary configuration files.
-    You can download the [okta-odm-script.zip](okta-odm-script.zip) .zip file to your machine. This .zip file contains the [script](generateTemplate.sh) and the content of the [templates](templates) directory.
+  - Download the [okta-odm-script.zip](okta-odm-script.zip) .zip file to your machine
+  - and run the script [`generateTemplate.sh`](generateTemplate.sh) to generate the ODM configuration files (using [templates](templates)) :
 
-    Generate the files with the following command:
     ```
     ./generateTemplate.sh -i <OKTA_CLIENT_ID> -x <OKTA_CLIENT_SECRET> -n <OKTA_SERVER_NAME> -g <OKTA_ODM_GROUP> -s <OKTA_API_SCOPE>
     ```
 
     Where:
-    - *OKTA_API_SCOPE* has been defined [above](#configure-the-default-authorization-server) (*odmapiusers*)
-    - *OKTA_SERVER_NAME* has been obtained from [previous step](#retrieve-okta-server-information)
     - Both *OKTA_CLIENT_ID* and *OKTA_CLIENT_SECRET* are listed in your ODM Application, section **Applications** / **Applications** / **ODM Application** / **General** / **Client Credentials**
-    - *OKTA_ODM_GROUP* is the ODM Admin group we created in a [previous step](#manage-group-and-user) (*odm-admin*)
+    - *OKTA_SERVER_NAME* has been obtained from [previous step](#1-retrieve-okta-server-information)
+    - *OKTA_ODM_GROUP* is the ODM Admin group we created in a [previous step](#manage-groups-and-users) (*odm-admin*)
+    - *OKTA_API_SCOPE* has been defined [above](#configure-the-default-authorization-server) (*odmapiusers*)
 
-    The files are generated into the `output` directory.
 
-4. Create the Okta authentication secret.
+    The files are generated into a directory named `output`.
 
+#### 4. Create the Okta authentication secret.
+
+  - run the command below to create a secret containing the configuration files generated at the previous step:
     ```
     kubectl create secret generic okta-auth-secret \
-        --from-file=OdmOidcProviders.json=./output/OdmOidcProviders.json \
         --from-file=openIdParameters.properties=./output/openIdParameters.properties \
         --from-file=openIdWebSecurity.xml=./output/openIdWebSecurity.xml \
         --from-file=webSecurity.xml=./output/webSecurity.xml
@@ -320,37 +321,44 @@ In this step, we augment the token with meta-information that is required by the
     helm search repo ibm-odm-prod
     ```
     ```
-    NAME                  	CHART VERSION	APP VERSION	DESCRIPTION
-    ibm-helm/ibm-odm-prod	24.1.0       	9.0.0.1   	IBM Operational Decision Manager
+    NAME                    CHART VERSION APP VERSION DESCRIPTION
+    ibm-helm/ibm-odm-prod   26.0.0        9.6.0.0     IBM Operational Decision Manager
     ```
 
 3. Run the `helm install` command.
 
-    You can now install the product. We will use the PostgreSQL internal database and disable the data persistence (`internalDatabase.persistence.enabled=false`) to avoid any platform complexity concerning persistent volume allocation.
+    You can now install the product. We will use the PostgreSQL internal database and disable the data persistence (`internalDatabase.persistence.enabled=false`) to avoid any platform complexity concerning persistent volume allocation. Inspect [okta-values.yaml](okta-values.yaml) for the parameters that have been defined for this installation.
 
     ```
-    helm install my-odm-release ibm-helm/ibm-odm-prod --version 24.1.0 \
-          --set image.repository=cp.icr.io/cp/cp4a/odm --set image.pullSecrets=icregistry-secret \
-          --set oidc.enabled=true \
-          --set internalDatabase.persistence.enabled=false \
-          --set internalDatabase.populateSampleData=true \
-          --set customization.trustedCertificateList={"okta-secret"} \
-          --set customization.authSecretRef=okta-auth-secret \
-          --set license=true
+    helm install my-odm-release ibm-helm/ibm-odm-prod -f okta-values.yaml
     ```
 
-    > Note: On OpenShift, you have to add the following parameters due to security context constraints.
+    > Note: 
+    > - On OpenShift, you have to add the following parameters due to security context constraints.
     > ```
     > --set internalDatabase.runAsUser='' --set customization.runAsUser='' --set service.enableRoute=true
     > ```
-    > See [Preparing to install](https://www.ibm.com/docs/en/odm/9.0.0?topic=production-preparing-install-operational-decision-manager) documentation for additional information.
+    > - See [Preparing to install](https://www.ibm.com/docs/en/odm/9.5.0?topic=production-preparing-install-operational-decision-manager) documentation for additional information.
+    > 
+    > - The above command installs the **latest available version** of the chart.  
+    > If you want to install a **specific version**, add the `--version` option:
+    >
+    > ```bash
+    > helm install my-odm-release ibm-helm/ibm-odm-prod --version <version> -f okta-values.yaml
+    > ```
+    >
+    > - You can list all available versions using:
+    >
+    > ```bash
+    > helm search repo ibm-helm/ibm-odm-prod -l
+    > ```
 
 ## Complete post-deployment tasks
 
 ### Register the ODM redirect URLs
 
 1. Get the ODM endpoints.
-    You can refer to the [documentation](https://www.ibm.com/docs/en/odm/9.0.0?topic=tasks-configuring-external-access) to retrieve the ODM endpoints.
+    You can refer to the [documentation](https://www.ibm.com/docs/en/odm/9.5.0?topic=tasks-configuring-external-access) to retrieve the ODM endpoints.
     For example, on OpenShift you can get the route names and hosts with:
 
     ```
@@ -367,7 +375,7 @@ In this step, we augment the token with meta-information that is required by the
 
 2. Register the redirect URIs into your Okta application.
 
-    The redirect URIs are built in the following way:
+    The Sign-in redirect URIs are built in the following way:
 
       - Decision Center redirect URI:  `https://<DC_HOST>/decisioncenter/openid/redirect/odm`
       - Decision Runner redirect URI:  `https://<DR_HOST>/DecisionRunner/openid/redirect/odm`
@@ -375,11 +383,18 @@ In this step, we augment the token with meta-information that is required by the
       - Decision Server Runtime redirect URI:  `https://<DS_RUNTIME_HOST>/DecisionService/openid/redirect/odm`
       - Rule Designer redirect URI: `https://127.0.0.1:9081/oidcCallback`
 
+    The Sign-out redirect URIs are built in the following way:
+
+      - Decision Center post-logout redirect URI:  `https://<DC_HOST>/decisioncenter`
+      - Decision Server Console post-logout redirect URI:  `https://<DS_CONSOLE_HOST>/res/home.jsp`
+
     In **Applications** / **Applications**:
       - Select **ODM Application**.
       - In the **General** tab, click **Edit** on the **General Settings** section.
-      - In the **LOGIN** section, click **+ Add URI** in the **Sign-in redirect URIs** section and add the Decision Center redirect URI you got earlier (`https://<DC_HOST>/decisioncenter/openid/redirect/odm` -- do not forget to replace <DC_HOST> by your actual host name!)
-      - Repeat the previous step for all other redirect URIs.
+      - In the **LOGIN** section, click **+ Add URI** in the **Sign-in redirect URIs** section and add the Sign-in redirect URI `https://<DC_HOST>/decisioncenter/openid/redirect/odm` (do not forget to replace <DC_HOST> by your actual host name!)
+        - Repeat the previous step for all other redirect URIs.
+      - In the **LOGIN** section, click **+ Add URI** in the **Sign-out redirect URIs** section and add the Sign-out redirect URI `https://<DC_HOST>/decisioncenter` (do not forget to replace <DC_HOST> by your actual host name!)
+        - Repeat the previous step for the Decision Server Console post-logout redirect URI:  `https://<DS_CONSOLE_HOST>/res/home.jsp` (do not forget to replace <DS_CONSOLE_HOST> by your actual host name!)
       - Click **Save** at the bottom of the **General Settings** section.
 
     ![Sign-in redirect URIs](images/Sign-in_redirect_URIs.png)
@@ -411,7 +426,7 @@ To be able to securely connect your Rule Designer to the Decision Server and Dec
 
 4. Restart Rule Designer.
 
-For more information, refer to the [documentation](https://www.ibm.com/docs/en/odm/9.0.0?topic=designer-importing-security-certificate-in-rule).
+For more information, refer to the [documentation](https://www.ibm.com/docs/en/odm/9.5.0?topic=designer-importing-security-certificate-in-rule).
 
 ### Getting Started with IBM Operational Decision Manager for Containers
 
@@ -432,7 +447,7 @@ Deploy the **Loan Validation Service** production_deployment ruleapps using the 
 
 You can retrieve the payload.json from the ODM Decision Server Console or use [the provided payload](payload.json)
 
-As explained in the ODM on Certified Kubernetes documentation [Configuring user access with OpenID](https://www.ibm.com/docs/en/odm/9.0.0?topic=access-configuring-user-openid), we advise to use basic authentication for the ODM runtime call for performance reasons and to avoid the issue of token expiration and revocation.
+As explained in the ODM on Certified Kubernetes documentation [Configuring user access with OpenID](https://www.ibm.com/docs/en/odm/9.5.0?topic=access-configuring-user-openid), we advise to use basic authentication for the ODM runtime call for performance reasons and to avoid the issue of token expiration and revocation.
 
 You can realize a basic authentication ODM runtime call in the following way:
 
@@ -460,9 +475,35 @@ But if you want to execute a bearer authentication ODM runtime call using the Cl
          https://<DS_RUNTIME_HOST>/DecisionService/rest/production_deployment/1.0/loan_validation_production/1.0
   ```
 
+# Configuring post logout redirect
+
+This configuration is optional.
+What is the interest of post logout redirect configuration ?
+
+When a user logs out:
+- The session is cleared.
+- Token is invalidated.
+- Decision Center logout redirect to Decision Center
+- Decision Server Console logout redirect to Decision Server Console
+
+To configure the post logout redirect, you have to add the following properties in the previously generated ./output/openIdParameters.properties file:
+
+    DC_OPENID_POST_LOGOUT_REDIRECT_URI=https://<DC_HOST>/decisioncenter
+    DS_OPENID_POST_LOGOUT_REDIRECT_URI=https://<DS_CONSOLE_HOST>/res/home.jsp
+
+Delete the okta-auth-secret secret and recreate it as explained [Create secrets to configure ODM with Okta](#create-secrets-to-configure-odm-with-okta).
+
+```shell
+kubectl delete secret okta-auth-secret
+kubectl create secret generic okta-auth-secret \
+        --from-file=openIdParameters.properties=./output/openIdParameters.properties \
+        --from-file=openIdWebSecurity.xml=./output/openIdWebSecurity.xml \
+        --from-file=webSecurity.xml=./output/webSecurity.xml
+```
+
 # Troubleshooting
 
-If you encounter any issue, have a look at the [common troubleshooting explanation](../README.md#Troubleshooting)
+If you encounter any issue, have a look at the [common troubleshooting explanation](/troubleshooting/OpenID/README.md)
 
 # License
 

@@ -8,7 +8,7 @@ spec:
   httpsEnable: false
   ingressEnabled: true
   ingressOptions:
+    ingressClassName: nginx
     annotations:
-      kubernetes.io/ingress.class: nginx
       nginx.ingress.kubernetes.io/rewrite-target: '/$2'
     path: /ibm-licensing-service-instance(/|$)(.*)

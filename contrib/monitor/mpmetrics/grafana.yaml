@@ -1,0 +1,39 @@
+apiVersion: grafana.integreatly.org/v1beta1
+kind: Grafana
+metadata:
+  name: grafana
+  namespace: openshift-operators
+  labels:
+    dashboards: "grafana"
+spec:
+  config:
+    log:
+      mode: "console"
+    security:
+      admin_user: admin
+      admin_password: admin
+  route:
+    metadata: {}
+    spec: {}
+  version: 10.4.3
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: sample-dashboard
+spec:
+  resyncPeriod: 30s
+  instanceSelector:
+    matchLabels:
+      dashboards: "grafana"
+  json: >
+    {
+      "title": "Simple Dashboard",
+      "timezone": "browser",
+      "refresh": "5s",
+      "panels": [],
+      "time": {
+        "from": "now-6h",
+        "to": "now"
+      }
+    }

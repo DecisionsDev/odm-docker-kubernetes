@@ -6,7 +6,7 @@ decisionCenter:
   replicaCount: 2
 image:
   pullSecrets:
-    - my-odm-docker-registry
+    - ibm-entitlement-key
   repository: cp.icr.io/cp/cp4a/odm
 internalDatabase:
   persistence:

@@ -1,25 +1,16 @@
-name: Check Markdown links
 
-#on:
-#  push:
-#    branches:
-#      - master
-#  pull_request:
-#    branches: [master]
+name: 'Check Markdown Links with linkspector'
 on: push
 jobs:
-  markdown-link-check:
+  check-links:
+    name: runner / linkspector
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: technote-space/get-diff-action@v6
+      - name: Run linkspector
+        uses: umbrelladocs/action-linkspector@v1
         with:
-          PATTERNS: |
-            **/**.md
-
-      - uses: gaurav-nelson/github-action-markdown-link-check@v1
-        with:
-          use-quiet-mode: 'yes'
-          use-verbose-mode: 'yes'
-          config-file: '.md_check_config.json'
+          fail_on_error: true
+          filter_mode: nofilter
+          show_stats: true
 

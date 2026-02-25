@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ldap-sdk-tools
+spec:
+  containers:
+    - name: default
+      image: pingidentity/ldap-sdk-tools:edge
+      command:
+      - /bin/sh
+      tty: true
+  restartPolicy: Never
+  securityContext:
+    seccompProfile:
+      type: RuntimeDefault
