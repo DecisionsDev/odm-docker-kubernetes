@@ -4,7 +4,7 @@
 
 In the rapidly evolving world of Kubernetes (K8s), securing sensitive information remains a paramount concern. Traditional methods, like using K8s secrets, often fall short in providing the necessary security measures.
 
-This article delves into a more robust solution: integrating IBM's Operation Decision Manager (ODM) with external secrets stores supported by the [Secrets Store CSI Driver](https://secrets-store-csi-driver.sigs.k8s.io/).
+This article delves into a more robust solution: integrating IBM's Operational Decision Manager (ODM) with external secrets stores supported by the [Secrets Store CSI Driver](https://secrets-store-csi-driver.sigs.k8s.io/).
 
 Why this integration? K8s secrets, while convenient, are sometimes deemed insufficient for high-security environments.
 
@@ -34,9 +34,9 @@ The architecture diagram illustrates the integration process between the Secret 
 
 - **Secret Store CSI Driver**:
   - It acts as a secure bridge between the Secret Manager Server and the Kubernetes cluster.
-  - It's in charge of safely transmitting the secrets data to the ODM Pods within Kubernetes.
+  - It is responsible for safely transmitting the secrets data to the ODM pods within Kubernetes.
 
-- **Kubernetes**:  It's the container orchestration system where the ODM application is deployed.
+- **Kubernetes**: It is the container orchestration system where the ODM application is deployed.
 
 - **ODM Pods**:
   - Detailed within the Kubernetes rectangle, showcasing the components that make up the ODM Pods:
@@ -51,7 +51,7 @@ The architecture diagram illustrates the integration process between the Secret 
 
 The diagram visually represents the secure flow of secrets data from the central manager to the ODM application in Kubernetes, facilitated by the Secret Store CSI Driver, ensuring best practices in secret management.
 
-This documentation is based on an external HashiCorp Vault instance which hosts a few secrets needed by ODM's deployment. The differences with other Secrets stores will be highlighted.
+This documentation is based on an external HashiCorp Vault instance that hosts several secrets needed by ODM's deployment. The differences with other secret stores will be highlighted.
 
 ## Prerequisites
 
@@ -73,7 +73,7 @@ In this documentation ODM will be installed in the "odm" namespace.
 
 Please refer to the [separate document](README-External_Vault.md) if you don't have such a secrets store already available.
 
-Most following commands require you are connected already to your secrets store:
+Most of the following commands require that you are already connected to your secrets store:
 
 ```bash
 export VAULT_ADDR=http://<serverfqdn>:8200
@@ -141,7 +141,7 @@ Where `<API_KEY_GENERATED>` is the entitlement key from the previous step. Make 
 > 1. The **cp.icr.io** value for the docker-server parameter is the only registry domain name that contains the images. You must set the *docker-username* to **cp** to use an entitlement key as *docker-password*.
 > 2. The `ibm-entitlement-key` secret name will be used for the `image.pullSecrets` parameter when you run a Helm install of your containers. The `image.repository` parameter is also set by default to `cp.icr.io/cp/cp4a/odm`.
 
-***However, as the goal of this article is to eliminate the need for secrets, refer to the Kubernetes implementation to understand the alternative methods. For example, the OpenShift documentation on this topic can be found on <https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/images/managing-images#using-image-pull-secrets>***
+***However, since the goal of this article is to eliminate the need for secrets, refer to the Kubernetes implementation to understand alternative methods. For example, the OpenShift documentation on this topic can be found at <https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/images/managing-images#using-image-pull-secrets>***
 
 #### IBM Helm charts repository
 
@@ -164,7 +164,7 @@ ibm-helm/ibm-odm-prod   25.1.0          9.5.0.1         IBM Operational Decision
 
 To manage this process, the SecretProviderClass Custom Resource Definition (CRD) is utilized. Within this provider class, it's necessary to specify the address of the secure secret store and the locations of the secret keys.
 
-As an example, we have populated some data. You will need to adjust it according to your needs.
+As an example, we have populated some sample data. You will need to adjust it according to your needs.
 
 First create the username and associated password used to connect to the internal database:
 
@@ -200,7 +200,7 @@ Save the content in a spc-odmdbsecret.yaml file and create the SecretProviderCla
 oc apply -f spc-odmdbsecret.yaml
 ```
 
-> The exact syntax of the SPC depends on the Secrets store provider. The example given above corresponds to HashiCorp Vault, but the "parameters" syntax can differ greatly according to the provider. For instance Google Secret Manager relies on [other keys](https://github.com/GoogleCloudPlatform/secrets-store-csi-driver-provider-gcp/blob/main/examples/app-secrets.yaml.tmpl).
+> The exact syntax of the SPC depends on the secret store provider. The example given above corresponds to HashiCorp Vault, but the "parameters" syntax can differ greatly depending on the provider. For instance, Google Secret Manager relies on [other keys](https://github.com/GoogleCloudPlatform/secrets-store-csi-driver-provider-gcp/blob/main/examples/app-secrets.yaml.tmpl).
 
 It replaces the Kubernetes Secret that would have been created with (don't do that here!):
 
@@ -221,7 +221,7 @@ data:
   db-user: bXlhZG1pbkBteXBvc3RncmVzcWxzZXJ2ZXI=
 ```
 
-Note the equivalence between the key data.db-user (for instance) in the Secret and the key spec.parameters.objects[].secretKey = "db-user" in the SecretProviderClass. It corresponds to the db-user key in the secret/db-pass you created previously with the `vault kv put` command.
+Note the equivalence between the key data.db-user (for example) in the Secret and the key spec.parameters.objects[].secretKey = "db-user" in the SecretProviderClass. It corresponds to the db-user key in the secret/db-pass that you created previously with the `vault kv put` command.
 
 (Optional) Generate a self-signed certificate.
 
@@ -278,7 +278,7 @@ kubectl create secret generic mynicecompanytlssecret --from-file=tls.crt=mynicec
 
 The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://www.ibm.com/docs/en/odm/9.5.0?topic=production-defining-security-certificate).
 
-We also would like to create a Basic Registry configuration to be used as authSecretRef (refer to both accompanying files group-security-configurations.xml and webSecurity.xml). It will allow some "mat" guy to connect to ODM components. First upload their contents to HashiCorp Vault:
+We also need to create a Basic Registry configuration to be used as authSecretRef (refer to the accompanying files group-security-configurations.xml and webSecurity.xml). This will allow a user named "mat" to connect to ODM components. First, upload their contents to HashiCorp Vault:
 
 ```shell
 vault kv put <secretspath>/authsecret group-security-configurations.xml=@group-security-configurations.xml webSecurity.xml=@webSecurity.xml
@@ -321,8 +321,9 @@ oc apply -f spc-authsecret.yaml
 ```bash
 helm install odm-vault-spc ibm-helm/ibm-odm-prod -f values-default-vault.yaml
 ```
-> **Note:**  
-> This command installs the **latest available version** of the chart.  
+
+> **Note:**
+> This command installs the **latest available version** of the chart.
 > If you want to install a **specific version**, add the `--version` option:
 >
 > ```bash
@@ -334,7 +335,7 @@ helm install odm-vault-spc ibm-helm/ibm-odm-prod -f values-default-vault.yaml
 > ```bash
 > helm search repo ibm-helm/ibm-odm-prod -l
 > ```
-
+>
 > [!NOTE]
 > This command installs the **latest available version** of the chart.
 > If you want to install a **specific version**, add the `--version` option:
