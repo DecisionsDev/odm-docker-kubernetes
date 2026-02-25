@@ -25,6 +25,7 @@ For additional information regarding the implement in Liberty, please refer to t
         - [Set up Rule Designer](#set-up-rule-designer)
         - [Getting Started with IBM Operational Decision Manager for Containers](#getting-started-with-ibm-operational-decision-manager-for-containers)
         - [Calling the ODM Runtime Service](#calling-the-odm-runtime-service)
+- [Configuring post logout redirect](#configuring-post-logout-redirect)
 - [Troubleshooting](#troubleshooting)
 - [License](#license)
 
@@ -226,7 +227,6 @@ Then, click Save.
 
     ```shell
     kubectl create secret generic azuread-auth-secret \
-        --from-file=OdmOidcProviders.json=./outputPKeyJWT/OdmOidcProviders.json \
         --from-file=openIdParameters.properties=./outputPKeyJWT/openIdParameters.properties \
         --from-file=openIdWebSecurity.xml=./outputPKeyJWT/openIdWebSecurity.xml \
         --from-file=webSecurity.xml=./outputPKeyJWT/webSecurity.xml
@@ -246,7 +246,7 @@ Then, click Save.
   ```shell
   helm search repo ibm-odm-prod
   NAME                  	CHART VERSION	APP VERSION	DESCRIPTION
-  ibm-helm/ibm-odm-prod	25.1.0       	9.5.0.1   	IBM Operational Decision Manager
+  ibm-helm/ibm-odm-prod	26.0.0       	9.6.0.0   	IBM Operational Decision Manager
   ```
 
 ### Run the `helm install` command
@@ -477,6 +477,40 @@ And use the retrieved access token in the following way:
 curl -H "Content-Type: application/json" -k --data @payload.json \
         -H "Authorization: Bearer <ACCESS_TOKEN>" \
         https://<DS_RUNTIME_HOST>/DecisionService/rest/production_deployment/1.0/loan_validation_production/1.0
+```
+# Configuring post logout redirect
+
+This configuration is optional
+What is the interest of post logout redirect configuration ?
+
+When a user logs out:
+- The session is cleared.
+- Token is invalidated.
+- Decision Center logout redirect to Decision Center
+- Decision Server Console logout redirect to Decision Server Console
+
+To configure the post logout redirect, you have to add the following properties in the previously generated ./output/openIdParameters.properties file:
+
+Using Routes:
+
+    OPENID_LOGOUT_TOKEN_PARAM=id_token_hint
+    DC_OPENID_POST_LOGOUT_REDIRECT_URI=https://<DC_HOST>/decisioncenter/t/home
+    DS_OPENID_POST_LOGOUT_REDIRECT_URI=https://<DSC_HOST>/res/home.jsp
+
+Using Ingress:
+
+    OPENID_LOGOUT_TOKEN_PARAM=id_token_hint
+    DC_OPENID_POST_LOGOUT_REDIRECT_URI=https://<INGRESS_ADDRESS>/decisioncenter/t/home
+    DS_OPENID_POST_LOGOUT_REDIRECT_URI=https://<INGRESS_ADDRESS>/res/home.jsp
+
+Delete the azuread-auth-secret secret and recreate it as explained [Create secrets to configure ODM with Microsoft Entra ID](#create-secrets-to-configure-odm-with-microsoft-entra-id).
+
+```shell
+kubectl delete secret azuread-auth-secret
+kubectl create secret generic azuread-auth-secret \
+        --from-file=openIdParameters.properties=./output/openIdParameters.properties \
+        --from-file=openIdWebSecurity.xml=./output/openIdWebSecurity.xml \
+        --from-file=webSecurity.xml=./output/webSecurity.xml
 ```
 
 # Troubleshooting
