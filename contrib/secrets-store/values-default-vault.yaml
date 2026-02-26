@@ -13,18 +13,20 @@ internalDatabase:
   persistence:
     enabled: false
   runAsUser: ""
-  secretCredentials: odmdbsecret
+  secretCredentials:
+    name: odmdbsecret
+    type: spc
 
 service:
   enableRoute: true
 
 customization:
-  authSecretRef: authsecret
+  authSecretRef:
+    name: authsecret
+    type: spc
   runAsUser: ''
-  securitySecretRef: mynicecompanytlssecret
-
-vault:
-  enabled: true
-  type: spc
+  securitySecretRef:
+    name: mynicecompanytlssecret
+    type: spc
 
 serviceAccountName: odm-sa
