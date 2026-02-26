@@ -24,7 +24,7 @@ storage "file" {
 
 # HTTP listener
 listener "tcp" {
-  address = "0.0.0.0:8200"  # <- Beware to 0.0.0.0 here!
+  address = "0.0.0.0:8200"  # <- Either set to 0.0.0.0 (all network interfaces) or the IP address of the network interface allowing to connect to the Vault instance
   tls_disable = 1
 }
 ```
