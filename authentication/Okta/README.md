@@ -300,24 +300,20 @@ In this step, we augment the token with meta-information that is required by the
 
 This step is optional. If you implement it:
 
-  1. When logging out the Business Console or RES console, OKTA logging page will be displayed
+  1. When logging out the Business Console or the RES console, OKTA logging page will be displayed
   1. If the user logs in the OKTA logging page, they will be redirected back to the console they left (either the Business console or RES console).
 
   Do the following:
-  - add the line below in the file `openIdParameters.properties` generated at the previous step:
+  - add the lines below in the file `openIdParameters.properties` generated at the previous step:
       ```
+      DC_OPENID_POST_LOGOUT_REDIRECT_URI=https://DC_HOST/decisioncenter
       DS_OPENID_POST_LOGOUT_REDIRECT_URI=https://DS_CONSOLE_HOST/res/home.jsp
-      ```
-
-      Where:
-      - *DS_CONSOLE_HOST* should be replaced by the fully qualified hostname of Decision Server Console (aka RES console)
-
-  - add the line below in the file `OdmOidcProviders.json` generated at the previous step:
-      ```
-      "postLogoutRedirectUri": "https://DC_HOST/decisioncenter"
       ```
       Where:
       - *DC_HOST* should be replaced by the fully qualified hostname of Decision Center
+      - *DS_CONSOLE_HOST* should be replaced by the fully qualified hostname of Decision Server Console (aka RES console)
+  
+  Alternatively, if you do not know the *DC_HOST* and *DS_CONSOLE_HOST* yet at this point, you can skip this part for now to deploy ODM without logout redirect URIs, and add them later on and redeploy ODM. This is what is explained in [Configuring post logout redirect](#configuring-post-logout-redirect).
 
 #### 5. Create the Okta authentication secret.
 
@@ -503,29 +499,27 @@ But if you want to execute a bearer authentication ODM runtime call using the Cl
 
 # Configuring post logout redirect
 
-This configuration is optional.
-What is the interest of post logout redirect configuration ?
+This configuration is optional, and you might have already configured post logout redirect URIs at this point if you followed the instructions at the step [4. Add the consoles logout redirect URIs in ODM configuration files (Optional)](#4-add-the-consoles-logout-redirect-uris-in-odm-configuration-files-optional)
 
-When a user logs out:
-- The session is cleared.
-- Token is invalidated.
-- Decision Center logout redirect to Decision Center
-- Decision Server Console logout redirect to Decision Server Console
+To configure the post logout redirect URIs, you need to:
 
-To configure the post logout redirect, you have to add the following properties in the previously generated ./output/openIdParameters.properties file:
+- add the following properties in the previously generated `./output/openIdParameters.properties` file:
+  ```
+  DC_OPENID_POST_LOGOUT_REDIRECT_URI=https://<DC_HOST>/decisioncenter
+  DS_OPENID_POST_LOGOUT_REDIRECT_URI=https://<DS_CONSOLE_HOST>/res/home.jsp
+  ```
 
-    DC_OPENID_POST_LOGOUT_REDIRECT_URI=https://<DC_HOST>/decisioncenter
-    DS_OPENID_POST_LOGOUT_REDIRECT_URI=https://<DS_CONSOLE_HOST>/res/home.jsp
+- delete the okta-auth-secret secret and recreate it as explained in [Create secrets to configure ODM with Okta](#create-secrets-to-configure-odm-with-okta).
 
-Delete the okta-auth-secret secret and recreate it as explained [Create secrets to configure ODM with Okta](#create-secrets-to-configure-odm-with-okta).
+  ```shell
+  kubectl delete secret okta-auth-secret
+  kubectl create secret generic okta-auth-secret \
+          --from-file=openIdParameters.properties=./output/openIdParameters.properties \
+          --from-file=openIdWebSecurity.xml=./output/openIdWebSecurity.xml \
+          --from-file=webSecurity.xml=./output/webSecurity.xml
+  ```
 
-```shell
-kubectl delete secret okta-auth-secret
-kubectl create secret generic okta-auth-secret \
-        --from-file=openIdParameters.properties=./output/openIdParameters.properties \
-        --from-file=openIdWebSecurity.xml=./output/openIdWebSecurity.xml \
-        --from-file=webSecurity.xml=./output/webSecurity.xml
-```
+- define the post logout redirect URIs in Okta as explained in [Register the ODM redirect URIs](#register-the-odm-redirect-uris)
 
 # Troubleshooting
 
