@@ -158,7 +158,7 @@ To get a good bandwidth between ODM containers and the database, choose the same
 ```shell
 az postgres flexible-server create --name <postgresqlserver> --resource-group <resourcegroup> \
                           --admin-user myadmin --admin-password 'passw0rd!' \
-                          --sku-name Standard_D2s_v3 --version 15
+                          --sku-name Standard_D2s_v3 --version 16
 ```
 
 > [!NOTE]
@@ -257,7 +257,7 @@ Result:
   },
   "tags": null,
   "type": "Microsoft.DBforPostgreSQL/flexibleServers",
-  "version": "15"
+  "version": "16"
 }
 ```
 

@@ -137,7 +137,7 @@ We will use the Google Cloud Platform console to create the database instance.
 
 - Go to the [SQL context](https://console.cloud.google.com/sql), and then click the **CREATE INSTANCE** button
 - Click **Choose PostgreSQL**
-  - Database version: `PostgreSQL 15`
+  - Database version: `PostgreSQL 16`
   - Instance ID: ``<YourInstanceName>``
   - Password: ``<PASSWORD>`` - Take note of this password.
   - Region: ``<REGION>`` (must be the same as the cluster for the communication to be optimal between the database and the ODM instance)
