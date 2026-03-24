@@ -35,7 +35,7 @@ Then, create an [AWS Account](https://aws.amazon.com/getting-started/).
 - [4. Manage a  digital certificate (10 min)](#4-manage-a-digital-certificate-10-min)
 - [5. Install an IBM Operational Decision Manager release (10 min)](#5-install-an-ibm-operational-decision-manager-release-10-min)
 - [6. Access the ODM services](#6-access-the-odm-services)
-- [7. Track ODM usage with the IBM License Service](#7-track-odm-usage-with-the-ibm-license-service)
+- [7. Track ODM usage](#7-track-odm-usage)
 
 <!-- /TOC -->
 
@@ -295,13 +295,19 @@ The ODM services are accessible from the following URLs:
 | Decision Server Runtime | https://${ROOTURL}/DecisionService | odmAdmin/odmAdmin |
 | Decision Runner | https://${ROOTURL}/DecisionRunner | odmAdmin/odmAdmin |
 
-### 7. Track ODM usage with the IBM License Service
+### 7. Track ODM usage
 
-#### a. Install the IBM License Service
+#### 7.1. Install the IBM Usage Metering service
+
+IBM Usage Metering Service gathers metrics to monitor compliance and create reports. It captures business value metrics for auditing purposes and to visualize metric usage in reporting tools, and sends the information to IBM Software Central.
+
+From ODM 9.6.0 onwards, it is required to install this metering service in the same namespace as ODM. ODM will systematically reports usage metrics to the metering service through a CronJob. If the service is not installed, the job fails when it runs. For more information about the installation and configuration of UMS, see [Installing the usage metering service](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-installing-metering).
+
+#### 7.2. Install the IBM License Service
 
 Follow the **Installation** section of the [Installation License Service without Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.14.0?topic=ilsfpcr-installing-license-service-without-operator-lifecycle-manager-olm) documentation.
 
-#### b. Patch the IBM Licensing instance
+###### 7.2.1. Patch the IBM Licensing instance
 
 Get the [licensing-instance.yaml](./licensing-instance.yaml) file and run the command:
 
@@ -327,7 +333,7 @@ You can find more information and use cases on [this page](https://www.ibm.com/d
 > **Note**
 > If you choose to use the NGINX Ingress Controller, you must use the [licensing-instance-nginx.yaml](./licensing-instance-nginx.yaml) file. Refer to [Track ODM usage with the IBM License Service with NGINX Ingress Controller](README-NGINX.md#track-odm-usage-with-the-ibm-license-service-with-nginx-ingress-controller).
 
-#### c. Retrieving license usage
+##### 7.2.2. Retrieving license usage
 
 The ALB address should be reflected in the Ingress configuration. You will be able to access the IBM License Service by retrieving the URL with this command:
 
