@@ -33,13 +33,24 @@ FOUND_TLS_SECURITY=false
 USE_CURRENT_NAMESPACE=true
 NAMESPACE=$(kubectl config view --minify -o jsonpath='{..namespace}')
 PARAMS_FILE=""
-declare -A LDAP_HOSTNAME
-declare -A LDAP_PORT
-declare -A LDAP_SSL
-declare -A LDAP_BASE
-declare -A LDAP_ADMIN_USERNAME
-declare -A LDAP_ADMIN_PWD
-declare -A LDAP_FILTER
+LDAP_HOSTNAME=()
+LDAP_PORT=()
+LDAP_SSL=()
+LDAP_BASE=()
+LDAP_ADMIN_USERNAME=()
+LDAP_ADMIN_PWD=()
+LDAP_FILTER=()
+CONFIG_KEYS=("ldap-config" "webSecurity")
+
+# Helper function to get array index from config key
+get_config_index() {
+    local key="${1}"
+    case "${key}" in
+        "ldap-config") echo 0 ;;
+        "webSecurity") echo 1 ;;
+        *) echo -1 ;;
+    esac
+}
 
 # Display help information for the script
 # Shows available command-line options and exits with status code 1
@@ -196,26 +207,27 @@ parse_ldap_configurations_xml() {
     echo "        userNameAttribute        = '${userNameAttribute}'"
     echo ""
 
+    local idx=$(get_config_index "ldap-config")
     ldapUrlWithoutScheme=${ldapUrl#*://}
-    LDAP_SSL[ldap-config]=""
-    LDAP_PORT[ldap-config]="389"
+    LDAP_SSL[${idx}]=""
+    LDAP_PORT[${idx}]="389"
 
     if [[ "${ldapUrl}" =~ "ldaps://" ]]; then
-        LDAP_SSL[ldap-config]="--useSSL"
-        LDAP_PORT[ldap-config]="636"
+        LDAP_SSL[${idx}]="--useSSL"
+        LDAP_PORT[${idx}]="636"
     fi
 
     if [[ "${ldapUrlWithoutScheme}" =~ ":" ]]; then
-        LDAP_HOSTNAME[ldap-config]=$(cut -d ':' -f 1 <<< "${ldapUrlWithoutScheme}")
-        LDAP_PORT[ldap-config]=$(cut -d ':' -f 2 <<< "${ldapUrlWithoutScheme}")
+        LDAP_HOSTNAME[${idx}]=$(cut -d ':' -f 1 <<< "${ldapUrlWithoutScheme}")
+        LDAP_PORT[${idx}]=$(cut -d ':' -f 2 <<< "${ldapUrlWithoutScheme}")
     else
-        LDAP_HOSTNAME[ldap-config]="${ldapUrlWithoutScheme}"
+        LDAP_HOSTNAME[${idx}]="${ldapUrlWithoutScheme}"
     fi
 
-    LDAP_ADMIN_USERNAME[ldap-config]="${searchConnectionDN}"
-    LDAP_ADMIN_PWD[ldap-config]="${searchConnectionPassword}"
-    LDAP_BASE[ldap-config]="${groupSearchBase}"
-    LDAP_FILTER[ldap-config]=$(sed "s|&amp;|\&|" <<< ${groupSearchFilter})    # replace any &amp; by &
+    LDAP_ADMIN_USERNAME[${idx}]="${searchConnectionDN}"
+    LDAP_ADMIN_PWD[${idx}]="${searchConnectionPassword}"
+    LDAP_BASE[${idx}]="${groupSearchBase}"
+    LDAP_FILTER[${idx}]=$(sed "s|&amp;|\&|" <<< ${groupSearchFilter})    # replace any &amp; by &
 }
 
 # Parse the webSecurity.xml file content to extract LDAP registry configuration
@@ -270,22 +282,23 @@ parse_webSecurity_xml() {
     echo "        userFilter    = '${userFilter}'"
     echo ""
 
+    local idx=$(get_config_index "webSecurity")
     if [ "${sslEnabled}" = "true" ]; then
-        LDAP_SSL[webSecurity]="--useSSL"
-        LDAP_PORT[webSecurity]="636"
+        LDAP_SSL[${idx}]="--useSSL"
+        LDAP_PORT[${idx}]="636"
     else
-        LDAP_SSL[webSecurity]=""
-        LDAP_PORT[webSecurity]="389"
+        LDAP_SSL[${idx}]=""
+        LDAP_PORT[${idx}]="389"
     fi
     if [ -n "${port}" ]; then
-        LDAP_PORT[webSecurity]=${port}
+        LDAP_PORT[${idx}]=${port}
     fi
-    LDAP_HOSTNAME[webSecurity]=${host}
-    LDAP_ADMIN_USERNAME[webSecurity]="${bindDN}"
-    LDAP_ADMIN_PWD[webSecurity]="${bindPassword}"
-    LDAP_BASE[webSecurity]="${baseDN}"
-    LDAP_FILTER[webSecurity]=$(sed "s|&amp;|\&|" <<< ${groupFilter})                # replace &amp; by &
-    LDAP_FILTER[webSecurity]=$(sed "s|%v|*|"     <<< ${LDAP_FILTER[webSecurity]})   # replace %v by *
+    LDAP_HOSTNAME[${idx}]=${host}
+    LDAP_ADMIN_USERNAME[${idx}]="${bindDN}"
+    LDAP_ADMIN_PWD[${idx}]="${bindPassword}"
+    LDAP_BASE[${idx}]="${baseDN}"
+    LDAP_FILTER[${idx}]=$(sed "s|&amp;|\&|" <<< ${groupFilter})                # replace &amp; by &
+    LDAP_FILTER[${idx}]=$(sed "s|%v|*|"     <<< ${LDAP_FILTER[${idx}]})   # replace %v by *
 }
 
 # Parse the tlsSecurity.xml file content to extract truststore configuration
@@ -471,17 +484,18 @@ test() {
         fi
     fi
 
+    local idx=$(get_config_index "${CHOICE}")
     echo " - Running the command:"
     echo ""
-    echo "    ldapsearch --hostname           ${LDAP_HOSTNAME[${CHOICE}]}"
-    echo "               --port               ${LDAP_PORT[${CHOICE}]}"
-    if [ -n "${LDAP_SSL[${CHOICE}]}" ]; then
-    echo "               ${LDAP_SSL[${CHOICE}]}";
+    echo "    ldapsearch --hostname           ${LDAP_HOSTNAME[${idx}]}"
+    echo "               --port               ${LDAP_PORT[${idx}]}"
+    if [ -n "${LDAP_SSL[${idx}]}" ]; then
+    echo "               ${LDAP_SSL[${idx}]}";
     fi
-    echo "               --bindDN             ${LDAP_ADMIN_USERNAME[${CHOICE}]}"
+    echo "               --bindDN             ${LDAP_ADMIN_USERNAME[${idx}]}"
     echo "               --bindPassword       <REDACTED>"
-    echo "               --baseDN             ${LDAP_BASE[${CHOICE}]}"
-    echo "               --filter             ${LDAP_FILTER[${CHOICE}]}"
+    echo "               --baseDN             ${LDAP_BASE[${idx}]}"
+    echo "               --filter             ${LDAP_FILTER[${idx}]}"
     if [ "${FOUND_TLS_SECURITY}" = "true" ]; then
     echo "               --trustStorePath     ${TRUST_FILE:-}";
     echo "               --trustStorePassword <REDACTED>";
@@ -489,15 +503,15 @@ test() {
     fi
     echo ""
     CMD="kubectl exec -it -n ${NAMESPACE} ldap-sdk-tools -- ldapsearch \
-            --hostname     '${LDAP_HOSTNAME[${CHOICE}]}' \
-            --port         '${LDAP_PORT[${CHOICE}]}' \
-            --bindDN       '${LDAP_ADMIN_USERNAME[${CHOICE}]}' \
-            --bindPassword '${LDAP_ADMIN_PWD[${CHOICE}]}' \
-            --baseDN       '${LDAP_BASE[${CHOICE}]}' \
-            --filter       '${LDAP_FILTER[${CHOICE}]}'"
-    if [ -n "${LDAP_SSL[${CHOICE}]}" ]; then
+            --hostname     '${LDAP_HOSTNAME[${idx}]}' \
+            --port         '${LDAP_PORT[${idx}]}' \
+            --bindDN       '${LDAP_ADMIN_USERNAME[${idx}]}' \
+            --bindPassword '${LDAP_ADMIN_PWD[${idx}]}' \
+            --baseDN       '${LDAP_BASE[${idx}]}' \
+            --filter       '${LDAP_FILTER[${idx}]}'"
+    if [ -n "${LDAP_SSL[${idx}]}" ]; then
         CMD="${CMD} \
-            ${LDAP_SSL[${CHOICE}]}"
+            ${LDAP_SSL[${idx}]}"
     fi
     if [ "${FOUND_TLS_SECURITY}" = "true" ]; then
         CMD="${CMD} \
@@ -612,14 +626,15 @@ test_interactive() {
 #   - Outputs a message indicating the file was created
 create_params_file() {
     CHOICE=${1}
+    local idx=$(get_config_index "${CHOICE}")
     cat >${PWD}/${1}.properties <<EOF
-hostname=${LDAP_HOSTNAME[${CHOICE}]}
-port=${LDAP_PORT[${CHOICE}]}
-useSSL=$([ -z "${LDAP_SSL[${CHOICE}]}" ] && echo "false" || echo "true")
-bindDN=${LDAP_ADMIN_USERNAME[${CHOICE}]}
-bindPassword=${LDAP_ADMIN_PWD[${CHOICE}]}
-baseDN=${LDAP_BASE[${CHOICE}]}
-filter=${LDAP_FILTER[${CHOICE}]}
+hostname=${LDAP_HOSTNAME[${idx}]}
+port=${LDAP_PORT[${idx}]}
+useSSL=$([ -z "${LDAP_SSL[${idx}]}" ] && echo "false" || echo "true")
+bindDN=${LDAP_ADMIN_USERNAME[${idx}]}
+bindPassword=${LDAP_ADMIN_PWD[${idx}]}
+baseDN=${LDAP_BASE[${idx}]}
+filter=${LDAP_FILTER[${idx}]}
 EOF
 
     if [[ "${FOUND_TLS_SECURITY}" = "true" && -n "${TRUST_FILE:-}" &&  -n "${TRUST_TYPE:-}" &&  -n "${TRUST_PASS:-}" ]]; then
