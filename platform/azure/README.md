@@ -42,6 +42,7 @@ Then, [create an Azure account and pay as you go](https://azure.microsoft.com/en
 - [Create the PostgreSQL Azure instance 10 min](#create-the-postgresql-azure-instance-10-min)
 - [Prepare your environment for the ODM installation](#prepare-your-environment-for-the-odm-installation)
 - [Install an ODM Helm release and expose it with the service type LoadBalancer 10 min](#install-an-odm-helm-release-and-expose-it-with-the-service-type-loadbalancer-10-min)
+- [Install the IBM Usage Metering service](#install-the-ibm-usage-metering-service)
 - [Install the IBM License Service and retrieve license usage](#install-the-ibm-license-service-and-retrieve-license-usage)
 - [Troubleshooting](#troubleshooting)
 - [Getting Started with IBM Operational Decision Manager for Containers](#getting-started-with-ibm-operational-decision-manager-for-containers)
@@ -421,7 +422,15 @@ NAME                                        TYPE           CLUSTER-IP     EXTERN
 You can then open a browser on `https://xxx.xxx.xxx.xxx:9453` to access Decision Center, and on `https://xxx.xxx.xxx.xxx:9443` to access Decision Server console, Decision Server Runtime, and Decision Runner.
 <!-- markdown-link-check-enable -->
 
-## Install the IBM License Service and retrieve license usage
+## Track ODM usage
+
+### Install the IBM Usage Metering service
+
+IBM Usage Metering Service gathers metrics to monitor compliance and create reports. It captures business value metrics for auditing purposes and to visualize metric usage in reporting tools, and sends the information to IBM Software Central.
+
+From ODM 9.6.0 onwards, it is required to install this metering service in the same namespace as ODM. ODM will systematically reports usage metrics to the metering service through a CronJob. If the service is not installed, the job fails when it runs. For more information about the installation and configuration of UMS, see [Installing the usage metering service](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-installing-metering).
+
+### Install the IBM License Service and retrieve license usage
 
 This section explains how to track ODM usage with the IBM License Service.
 

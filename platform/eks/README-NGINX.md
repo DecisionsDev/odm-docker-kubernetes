@@ -67,7 +67,7 @@ helm install mycompany ibm-helm/ibm-odm-prod -f eks-rds-nginx-values.yaml
 
 ## Track ODM usage with the IBM License Service with NGINX Ingress Controller
 
-Install the IBM License Service following *7a.* section of [Track ODM usage with the IBM License Service](README.md#7-track-odm-usage-with-the-ibm-license-service) step of the documentation.
+Install the IBM License Service following *7.2* section of [Track ODM usage](README.md#72-install-the-ibm-license-service) step of the documentation.
 
 ### Patch the IBM Licensing instance with Nginx configuration
 
