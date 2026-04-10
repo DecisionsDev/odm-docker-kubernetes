@@ -2,3 +2,10 @@ containerSecurityContext:
   readOnlyRootFilesystem: false
 httpdConfConfigMap: httpd-cm
 htdocsPVC: httpd-pvc
+image:
+  repository: bitnamilegacy/apache
+  pullSecrets:
+    - docker-secret
+extraPodSpec:
+  securityContext:
+    fsGroup: 1001
