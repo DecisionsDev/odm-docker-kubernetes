@@ -6,6 +6,3 @@ image:
   repository: bitnamilegacy/apache
   pullSecrets:
     - docker-secret
-extraPodSpec:
-  securityContext:
-    fsGroup: 1001

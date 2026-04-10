@@ -11,6 +11,8 @@ Obviously the following solution is a proposition and can be modified according 
 
 ![File Server](images/FileServerUpload.png)
 
+If your cluster is Openshift, deploy the file server in any project/namespace but the `default` project.
+
 Install the Bitnami Helm Chart
 
 ```bash
