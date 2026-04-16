@@ -11,6 +11,8 @@ Obviously the following solution is a proposition and can be modified according 
 
 ![File Server](images/FileServerUpload.png)
 
+If your cluster is Openshift, deploy the file server in any project/namespace but the `default` project.
+
 Install the Bitnami Helm Chart
 
 ```bash
@@ -54,6 +56,14 @@ Get the [httpd-pvc.yaml](./httpd-pvc.yaml) file and create a PVC to persist all 
 ```bash
 kubectl create -f httpd-pvc.yaml
 ```
+
+Create a secret to authenticate to the Docker Hub registry to pull images:
+```
+kubectl create secret docker-registry docker-secret \
+    --docker-server=docker.io \
+    --docker-username=<username> \
+    --docker-password=<password>
+``` 
 
 Get the [httpd-values.yaml](./httpd-values.yaml) file and instanciate the Apache Http file server :
 
