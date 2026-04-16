@@ -1,3 +1,17 @@
+# ⚠️ DEPRECATION NOTICE
+
+**This vault-initcontainer approach is deprecated and has been replaced by a more streamlined CSI-based solution.**
+
+Please refer to the [Secrets Store CSI Driver setup](../secrets-store/README.md) for the recommended method of integrating ODM with Vault and other secret stores. The new approach offers:
+- Simplified configuration with reduced setup complexity
+- Direct CSI volume mounting without custom init containers
+- Better alignment with Kubernetes best practices
+- Improved maintainability and support
+
+For new deployments, we strongly recommend using the [secrets-store](../secrets-store/README.md) implementation instead of this vault-initcontainer method.
+
+---
+
 # Introduction
 
 In the rapidly evolving world of Kubernetes (K8s), securing sensitive information remains a paramount concern. Traditional methods, like using K8s secrets, often fall short in providing the necessary security measures.
