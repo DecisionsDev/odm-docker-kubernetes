@@ -54,7 +54,7 @@ Without the relevant billing level, some Google Cloud resources will not be crea
 - [Manage a digital certificate 2 min](#4-manage-a-digital-certificate-2-min)
 - [Install the ODM release 10 min](#5-install-the-odm-release-10-min)
 - [Access ODM services](#6-access-odm-services)
-- [Track ODM usage with the IBM License Service](#7-track-odm-usage-with-the-ibm-license-service)
+- [Track ODM usage](#7-track-odm-usage)
 
 <!-- /TOC -->
 
@@ -355,15 +355,21 @@ We only have to manage a configuration to simulate the mynicecompany.com access.
 > You can also click the Ingress frontends accessible from the Google Cloud console under the [Kubernetes Engine/Services & Ingress Details Panel](https://console.cloud.google.com/kubernetes/ingresses).
 > ![Ingress routes](images/ingress_routes.png)
 
-### 7. Track ODM usage with the IBM License Service
 
-This section explains how to track ODM usage with the IBM License Service.
+### 7. Track ODM usage
 
-#### Install the IBM License Service
+#### 7.1. Install the IBM Usage Metering service
+
+IBM Usage Metering Service gathers metrics to monitor compliance and create reports. It captures business value metrics for auditing purposes and to visualize metric usage in reporting tools, and sends the information to IBM Software Central.
+
+From ODM 9.6.0 onwards, it is required to install this metering service in the same namespace as ODM. ODM will systematically reports usage metrics to the metering service through a CronJob. If the service is not installed, the job fails when it runs. For more information about the installation and configuration of UMS, see [Installing the usage metering service](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-installing-metering).
+
+
+#### 7.2 Install the IBM License Service
 
 Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.x_cd?topic=ilsfpcr-installing-license-service-without-operator-lifecycle-manager-olm) and stop before it asks you to update the License Service instance. It will be done in the next paragraph.
 
-#### Create the IBM Licensing instance
+##### 7.2.1 Create the IBM Licensing instance
 
 Get the [licensing-instance.yaml](./licensing-instance.yaml) file and run the following command:
 
@@ -374,7 +380,7 @@ kubectl apply -f licensing-instance.yaml -n ibm-licensing
 > [!NOTE]
 > You can find more information and use cases on [this page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.12.0?topic=service-configuring).
 
-#### Modify GKE Load Balancer settings
+##### 7.2.2 Modify GKE Load Balancer settings
 
 As Google native Load Balancer does not support the same URL rewriting rules as other ones (such as NGINX), [some settings have to be modified](https://cloud.google.com/load-balancing/docs/https/setting-up-url-rewrite) directly on GCP Web UI.
 
@@ -390,7 +396,7 @@ Edit the rule about /ibm-licensing-service-instance/* and add `/` as path prefix
 > [!NOTE]
 > GKE Load Balancer may take a few minutes after its new configuration to actually apply it.
 
-#### Retrieving license usage
+##### 7.2.3 Retrieving license usage
 
 After a couple of minutes, the Ingress configuration is created and you will be able to access the IBM License Service by retrieving the URL with the following command:
 
