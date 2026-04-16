@@ -54,7 +54,7 @@ Without the relevant billing level, some Google Cloud resources will not be crea
 - [Manage a digital certificate 2 min](#4-manage-a-digital-certificate-2-min)
 - [Install the ODM release 10 min](#5-install-the-odm-release-10-min)
 - [Access ODM services](#6-access-odm-services)
-- [Track ODM usage with the IBM License Service](#7-track-odm-usage-with-the-ibm-license-service)
+- [Track ODM usage](#7-track-odm-usage)
 
 <!-- /TOC -->
 
