@@ -98,7 +98,7 @@ Regions and zones (used below) can be listed respectively with `gcloud compute r
 
   ```shell
   gcloud container clusters create <CLUSTER_NAME> \
-    --release-channel=regular --cluster-version=1.33 \
+    --release-channel=regular --cluster-version=1.34 \
     --enable-autoscaling --num-nodes=6 --total-min-nodes=1 --total-max-nodes=16
   ```
 
@@ -137,7 +137,7 @@ We will use the Google Cloud Platform console to create the database instance.
 
 - Go to the [SQL context](https://console.cloud.google.com/sql), and then click the **CREATE INSTANCE** button
 - Click **Choose PostgreSQL**
-  - Database version: `PostgreSQL 16`
+  - Database version: `PostgreSQL 18`
   - Instance ID: ``<YourInstanceName>``
   - Password: ``<PASSWORD>`` - Take note of this password.
   - Region: ``<REGION>`` (must be the same as the cluster for the communication to be optimal between the database and the ODM instance)
@@ -203,7 +203,7 @@ helm repo update
 ```shell
 helm search repo ibm-odm-prod
 NAME                  CHART VERSION   APP VERSION     DESCRIPTION
-ibm-helm/ibm-odm-prod 25.1.0          9.5.0.1         IBM Operational Decision Manager
+ibm-helm/ibm-odm-prod 26.0.0          9.6.0.0         IBM Operational Decision Manager
 ```
 
 ### 4. Manage a digital certificate (2 min)
