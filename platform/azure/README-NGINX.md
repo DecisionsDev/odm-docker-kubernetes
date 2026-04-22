@@ -117,6 +117,20 @@ IBM Usage Metering Service gathers metrics to monitor compliance and create repo
 
 From ODM 9.6.0 onwards, it is required to install this metering service in the same namespace as ODM. ODM will systematically reports usage metrics to the metering service through a CronJob. If the service is not installed, the job fails when it runs. For more information about the installation and configuration of UMS, see [Installing the usage metering service](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-installing-metering).
 
+Follow the instructions in [Configuring Kubernetes Ingress](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.14.0?topic=service-configuring-kubernetes-ingress) to expose the IBM Usage Metering service using an ingress.
+
+### Retrieve metering usage
+
+To get the Usage Metering report, run the command below:
+
+```bash
+UMS_TOKEN=$(kubectl get secret ibm-usage-metering-upload-token -n "${NAMESPACE}" -o jsonpath='{.data.token}' 2>/dev/null | base64 -d || echo "")
+
+curl -k --output report.zip \
+        --header "Authorization: Bearer ${UMS_TOKEN}" \
+        --url "https://mynicecompany.com/ibm-usage-metering-instance/api/v1/snapshot"
+```
+
 ### Install the IBM License Service and retrieve license usage
 
 This section explains how to track ODM usage with the IBM License Service.
