@@ -94,7 +94,7 @@ release-odm-decisionserverconsole-notif          ClusterIP      10.0.115.118   <
 release-odm-decisionserverruntime                NodePort       10.0.232.212   <none>         443:30082/TCP               16m
 ```
 
-ODM services are available through the following URLs:
+The ODM services are available at the following URLs:
 
 <!-- markdown-link-check-disable -->
 | SERVICE NAME | URL | USERNAME/PASSWORD
@@ -107,7 +107,7 @@ ODM services are available through the following URLs:
 
 Where:
 
-* \<password\> is the password provided to the **usersPassword** helm chart parameter
+* \<password\> is the password set using the **usersPassword** helm chart parameter
 
 ## Track ODM usage
 

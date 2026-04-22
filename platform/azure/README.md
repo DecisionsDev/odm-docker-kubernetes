@@ -437,7 +437,7 @@ The ODM services are available at the following URLs:
 <!-- markdown-link-check-enable -->
 
 Where:
-* \<password\> is the password provided to the **usersPassword** helm chart parameter
+* \<password\> is the password set using the **usersPassword** helm chart parameter
 
 
 ## Track ODM usage
