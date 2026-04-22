@@ -425,13 +425,20 @@ NAME                                        TYPE           CLUSTER-IP     EXTERN
 <release>-odm-decisionserverruntime         LoadBalancer   10.0.177.153   uuu.uuu.uuu.uuu   443:31921/TCP   22m
 ```
 
+The ODM services are available at the following URLs:
+
 <!-- markdown-link-check-disable -->
-You can then open a browser and navigate to:
-- `https://xxx.xxx.xxx.xxx` to access Decision Center, 
-- `https://yyy.yyy.yyy.yyy` to access Decision Runner.
-- `https://zzz.zzz.zzz.zzz` to access Decision Server console, 
-- `https://uuu.uuu.uuu.uuu` to access Decision Server Runtime
+| SERVICE NAME | URL | USERNAME/PASSWORD
+| --- | --- | ---
+| Decision Center | https://xxx.xxx.xxx.xxx | odmAdmin/\<password\>
+| Decision Runner | https://yyy.yyy.yyy.yyy | 
+| Decision Server Console | https://zzz.zzz.zzz.zzz | odmAdmin/\<password\>
+| Decision Server Runtime | https://uuu.uuu.uuu.uuu | odmAdmin/\<password\>
 <!-- markdown-link-check-enable -->
+
+Where:
+* \<password\> is the password provided to the **usersPassword** helm chart parameter
+
 
 ## Track ODM usage
 

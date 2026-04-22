@@ -127,8 +127,8 @@ Follow the instructions in the **Installation** section of the [Manual installat
 >
 >```bash
 >export operator_release_version=4.2.20
-git clone -b ${operator_release_version} https://github.com/IBM/ibm-licensing-operator.git
-cd ibm-licensing-operator/
+>git clone -b ${operator_release_version} https://github.com/IBM/ibm-licensing-operator.git
+>cd ibm-licensing-operator/
 >```
 
 ### Patch the IBM Licensing instance with Nginx configuration
