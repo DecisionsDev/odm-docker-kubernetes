@@ -16,7 +16,7 @@ Installing an NGINX Ingress controller allows you to access ODM components throu
 1. Use the official YAML manifest:
 
     ```shell
-    kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.13.3/deploy/static/provider/cloud/deploy.yaml
+    kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.15.1/deploy/static/provider/cloud/deploy.yaml
     ```
 
 > [!NOTE]
@@ -39,7 +39,7 @@ Installing an NGINX Ingress controller allows you to access ODM components throu
     nginx   k8s.io/ingress-nginx   <none>       5h38m
     ```
 
-    It should be "nginx" but if different please update the next command accordingly.
+    The name should be `nginx`. If it is different please replace `nginx` with the actual class name in the value of the parameter `service.ingress.class` in [aks-nginx-values.yaml](./aks-nginx-values.yaml).
 
 ## Install an ODM release with NGINX Ingress Controller
 
@@ -87,11 +87,11 @@ Check that ODM services are in NodePort type:
 ```shell
 kubectl get services --selector release=<release>
 NAME                                             TYPE           CLUSTER-IP     EXTERNAL-IP    PORT(S)                      AGE
-release-odm-decisioncenter                       NodePort       10.0.178.43    <none>         9453:32720/TCP               16m
-release-odm-decisionrunner                       NodePort       10.0.171.46    <none>         9443:30223/TCP               16m
-release-odm-decisionserverconsole                NodePort       10.0.106.222   <none>         9443:30280/TCP               16m
+release-odm-decisioncenter                       NodePort       10.0.178.43    <none>         443:32720/TCP               16m
+release-odm-decisionrunner                       NodePort       10.0.171.46    <none>         443:30223/TCP               16m
+release-odm-decisionserverconsole                NodePort       10.0.106.222   <none>         443:30280/TCP               16m
 release-odm-decisionserverconsole-notif          ClusterIP      10.0.115.118   <none>         1883/TCP                     16m
-release-odm-decisionserverruntime                NodePort       10.0.232.212   <none>         9443:30082/TCP               16m
+release-odm-decisionserverruntime                NodePort       10.0.232.212   <none>         443:30082/TCP               16m
 ```
 
 ODM services are available through the following URLs:
@@ -109,11 +109,27 @@ Where:
 
 * \<password\> is the password provided to the **usersPassword** helm chart parameter
 
-## Install the IBM License Service and retrieve license usage
+## Track ODM usage
+
+### Install the IBM Usage Metering service
+
+IBM Usage Metering Service gathers metrics to monitor compliance and create reports. It captures business value metrics for auditing purposes and to visualize metric usage in reporting tools, and sends the information to IBM Software Central.
+
+From ODM 9.6.0 onwards, it is required to install this metering service in the same namespace as ODM. ODM will systematically reports usage metrics to the metering service through a CronJob. If the service is not installed, the job fails when it runs. For more information about the installation and configuration of UMS, see [Installing the usage metering service](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-installing-metering).
+
+### Install the IBM License Service and retrieve license usage
 
 This section explains how to track ODM usage with the IBM License Service.
 
-Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.14.0?topic=ilsfpcr-installing-license-service-without-operator-lifecycle-manager-olm) documentation.
+Follow the instructions in the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.14.0?topic=ilsfpcr-installing-license-service-without-operator-lifecycle-manager-olm#installation) documentation, **except for the step 3** which should be replaced by:
+
+> 3. Use `git clone`.
+>
+>```bash
+>export operator_release_version=4.2.20
+git clone -b ${operator_release_version} https://github.com/IBM/ibm-licensing-operator.git
+cd ibm-licensing-operator/
+>```
 
 ### Patch the IBM Licensing instance with Nginx configuration
 
@@ -128,7 +144,7 @@ Wait a couple of minutes for the changes to be applied.
 Run the following command to see the status of Ingress instance:
 
 ```bash
-kubectl get ingress -n ibm-licensing                         
+kubectl get ingress -n ibm-licensing
 ```
 
 You should be able to see the address and other details about `ibm-licensing-service-instance`.
@@ -142,12 +158,12 @@ You will be able to access the IBM License Service by retrieving the URL with th
 ```bash
 export LICENSING_URL=$(kubectl get ingress ibm-licensing-service-instance -n ibm-licensing -o jsonpath='{.status.loadBalancer.ingress[0].ip}')/ibm-licensing-service-instance
 export TOKEN=$(kubectl get secret ibm-licensing-token -n ibm-licensing -o jsonpath='{.data.token}' |base64 -d)
-echo http://${LICENSING_URL}/status?token=${TOKEN}
+echo "http://${LICENSING_URL}/status?token=${TOKEN}"
 ```
 
 You can access the `http://${LICENSING_URL}/status?token=${TOKEN}` URL to view the licensing usage. 
 
-Otherwise, you can also retrieve the licensing report .zip file by running:
+Alternatively you can retrieve the licensing `report.zip` file by running:
 
 ```bash
 curl "http://${LICENSING_URL}/snapshot?token=${TOKEN}" --output report.zip
@@ -157,7 +173,7 @@ If your IBM License Service instance is not running properly, refer to this [tro
 
 ## Troubleshooting
 
-If your ODM instances are not running properly, refer to [our dedicated troubleshooting page](https://www.ibm.com/docs/en/odm/9.5.0?topic=950-troubleshooting-support).
+If your ODM instances are not running properly, refer to [our dedicated troubleshooting page](https://www.ibm.com/docs/en/odm/9.6.0?topic=960-troubleshooting-support).
 
 ## Getting Started with IBM Operational Decision Manager for Containers
 
