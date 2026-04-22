@@ -448,6 +448,57 @@ IBM Usage Metering Service gathers metrics to monitor compliance and create repo
 
 From ODM 9.6.0 onwards, it is required to install this metering service in the same namespace as ODM. ODM will systematically reports usage metrics to the metering service through a CronJob. If the service is not installed, the job fails when it runs. For more information about the installation and configuration of UMS, see [Installing the usage metering service](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-installing-metering).
 
+To expose the IBM Usage Metering service using the AKS LoadBalancer:
+
+1. Create a file named `usage-metering-service-loadbalancer.yaml` with the following content (after replacing ${NAMESPACE} by the actual namespace where you deployed UMS):
+
+    ```yaml
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: ibm-usage-metering-instance-loadbalancer
+      namespace: ${NAMESPACE}
+    spec:
+      type: LoadBalancer
+      ports:
+        - name: ibm-usage-metering-fetch
+          port: 8080
+          protocol: TCP
+          targetPort: 8080
+        - name: ibm-usage-metering-upload
+          port: 8081
+          protocol: TCP
+          targetPort: 8081
+      selector:
+        app.kubernetes.io/component: ibm-usage-metering-instance
+        app.kubernetes.io/name: ibm-usage-metering
+    ```
+
+1. run
+
+    ```bash
+    kubectl apply -f usage-metering-service-loadbalancer.yaml
+    ```
+
+### Retrieve metering usage
+
+To get the Usage Metering report:
+
+1. run the command below to get the external IP address of the UMS service (if you just created the service and the IP address is not set, try again after a while):
+
+    ```bash
+    EXTERNAL_IP=$(kubectl get service ibm-usage-metering-instance-loadbalancer -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+    echo "EXTERNAL_IP=${EXTERNAL_IP}"
+    ```
+
+1. run:
+    ```bash
+    UMS_TOKEN=$(kubectl get secret ibm-usage-metering-upload-token -n "${NAMESPACE}" -o jsonpath='{.data.token}' 2>/dev/null | base64 -d || echo "")
+    curl -k --output report.zip \
+          --header "Authorization: Bearer ${UMS_TOKEN}" \
+          --url "https://${EXTERNAL_IP}:8080/api/v1/snapshot"
+    ```
+
 ### Install the IBM License Service and retrieve license usage
 
 This section explains how to track ODM usage with the IBM License Service.
@@ -484,7 +535,7 @@ Wait a couple of minutes for the changes to be applied.
 You can find more information and use cases on [this page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.14.0?topic=configuring-kubernetes-ingress).
 
 > **Note**
-> If you choose to use the NGINX Ingress Controller, you must use the [licensing-instance-nginx.yaml](./licensing-instance-nginx.yaml) file. Refer to [Deploying IBM Operational Decision Manager with NGINX Ingress Controller on Azure AKS](README-NGINX.md#install-the-ibm-license-service-and-retrieve-license-usage).
+> If you chose to use the NGINX Ingress Controller, you must use the [licensing-instance-nginx.yaml](./licensing-instance-nginx.yaml) file. Refer to [Deploying IBM Operational Decision Manager with NGINX Ingress Controller on Azure AKS](README-NGINX.md#install-the-ibm-license-service-and-retrieve-license-usage).
 
 ### Retrieve license usage
 
