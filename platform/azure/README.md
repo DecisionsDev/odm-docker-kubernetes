@@ -357,6 +357,11 @@ The certificate must be the same as the one you used to enable TLS connections i
 
 ## Install an ODM Helm release and expose it with the service type LoadBalancer (10 min)
 
+> [!NOTE]
+> An alternative guide [NGINX Ingress Controller deployment guide](README-NGINX.md) is available to use the NGINX Ingress Controller instead of the default AKS Load Balancer.
+>
+> But the **NGINX Ingress Controller is now DEPRECATED** and the [NGINX Ingress Controller deployment guide](README_NGINX.md) will be removed in the coming months.
+
 ### Allocate public IP addresses
 
 ```shell
@@ -364,12 +369,6 @@ az aks update --name <cluster> --resource-group <resourcegroup> --load-balancer-
 ```
 
 ### Install the ODM release
-
-> [!NOTE]
-> An alternative guide [NGINX Ingress Controller deployment guide](README-NGINX.md) is available to use the NGINX Ingress Controller instead of the default AKS Load Balancer.
->
-> But the **NGINX Ingress Controller is now DEPRECATED** and the [NGINX Ingress Controller deployment guide](README_NGINX.md) will be removed in the coming months.
-
 
 You can now install the product.
 - Get the [aks-values.yaml](./aks-values.yaml) file and replace the following keys:
