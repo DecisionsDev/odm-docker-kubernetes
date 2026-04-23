@@ -2,6 +2,10 @@
 
 The aim of this complementary documentation is to explain how to replace the **AKS default Load Balancer** usage with an **NGINX Ingress Controller**.
 
+>[!WARNING] NGINX Ingress Controller is **DEPRECATED**.
+>
+>This documentation is kept for reference only for existing deployments and will be removed in the coming months.
+
 ## Prerequisites
 
 You must have created an AKS cluster and set up your environment by following steps :
