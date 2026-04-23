@@ -9,17 +9,6 @@ Here is the Google Cloud home page: <https://cloud.google.com>
 ![Architecture](images/architecture.png)
 
 The ODM on Kubernetes Docker images are available in the [IBM Entitled Registry](https://www.ibm.com/cloud/container-registry). The ODM Helm chart is available in the [IBM Helm charts repository](https://github.com/IBM/charts).
-> [!IMPORTANT]
-> **Deployment Options:**
->
-> There are three ways to expose ODM services on GKE:
->
-> 1. **GKE Ingress (Default - Documented in this README):** Uses the [GKE Ingress controller](https://cloud.google.com/kubernetes-engine/docs/concepts/ingress) with container-native load balancing. This is the standard approach documented in the steps below.
->
-> 2. **GKE Gateway API (Recommended for Advanced Features):** Uses the [GKE Gateway API](https://cloud.google.com/kubernetes-engine/docs/concepts/gateway-api) which provides more advanced routing capabilities, better session affinity management, and is the future direction for Kubernetes networking. See the [GKE Gateway API deployment guide](README_GATEWAY.md).
->
-> 3. **NGINX Ingress Controller (Deprecated):** The [NGINX Ingress Controller deployment guide](README_NGINX.md) is deprecated and will be removed in the coming months. Please use GKE Ingress or GKE Gateway API instead.
-
 
 ## Included components
 
@@ -53,7 +42,7 @@ Then, perform the following tasks:
 Without the relevant billing level, some Google Cloud resources will not be created.
 
 > [!NOTE]
-> Prerequisites and software supported by ODM 9.6.0 are listed on [the Detailed System Requirements page](https://www.ibm.com/support/pages/ibm-operational-decision-manager-detailed-system-requirements).
+> Prerequisites and software supported by ODM 9.5.0 are listed on [the Detailed System Requirements page](https://www.ibm.com/support/pages/ibm-operational-decision-manager-detailed-system-requirements).
 
 ## Steps to deploy ODM on Kubernetes from Google GKE
 
@@ -258,6 +247,22 @@ It automatically creates an HTTPS GKE load balancer. We will disable the ODM int
   helm install <release> ibm-helm/ibm-odm-prod -f gcp-values.yaml
   ```
 
+> [!NOTE]
+>
+> - You might prefer to access ODM components through the NGINX Ingress controller instead of using the IP addresses. If so, please follow [these instructions](README_NGINX.md).
+>
+> - This command installs the **latest available version** of the chart.
+> If you want to install a **specific version**, add the `--version` option:
+>
+> ```bash
+> helm install <release> ibm-helm/ibm-odm-prod --version <version> -f gcp-values.yaml
+> ```
+>
+> You can list all available versions using:
+>
+> ```bash
+> helm search repo ibm-helm/ibm-odm-prod -l
+> ```
 
 #### Check the topology
 
@@ -315,6 +320,54 @@ A configuration that uses [BackendConfig](https://cloud.google.com/kubernetes-en
 
   ![DecisionCenter session affinity](images/dc_sessionaffinity.png)
 
+#### (Optional) Configure Gateway API for GKE
+
+As an alternative to the default Ingress configuration, you can use the [Gateway API](https://gateway-api.sigs.k8s.io/) with GKE's native Gateway Controller. The Gateway API provides a more expressive, extensible, and role-oriented interface for managing ingress traffic.
+
+##### Prerequisites
+
+- Enable the Gateway API on your GKE cluster:
+
+  ```shell
+  gcloud container clusters update <CLUSTER_NAME> --gateway-api=standard
+  ```
+
+##### Apply the Gateway configuration
+
+The [odm-gateway-gke.yaml](./odm-gateway-gke.yaml) file contains:
+- A Gateway resource that configures the GKE load balancer with HTTPS termination
+- An HTTPRoute resource that defines routing rules for all ODM services
+- HealthCheckPolicy resources for each ODM component to ensure proper health monitoring
+
+Before applying the configuration, update the file to match your release name:
+
+- Replace `myodmsample` with your actual Helm release name in the following resources:
+  - Gateway metadata name
+  - HTTPRoute backend service names
+  - HealthCheckPolicy service names
+
+Apply the Gateway configuration:
+
+```shell
+kubectl apply -f odm-gateway-gke.yaml
+```
+
+The Gateway will create a new GKE load balancer with the following characteristics:
+- Uses the `gke-l7-global-external-managed` Gateway class for global external load balancing
+- Terminates HTTPS using the `mynicecompany-tls-secret` certificate
+- Routes traffic to ODM services based on URL paths
+- Implements custom health checks for each ODM component
+
+You can check the Gateway status with:
+
+```shell
+kubectl get gateway myodmsample-odm-gateway
+kubectl get httproute myodmsample-odm-httproute
+```
+
+> [!NOTE]
+> The Gateway API configuration is independent of the Ingress configuration. You can use either approach, but not both simultaneously for the same services.
+
 ### 6. Access ODM services
 
 In a real enterprise use case, to access the mynicecompany.com domain name, you have to deal with [Google Managed Certificate](https://cloud.google.com/load-balancing/docs/ssl-certificates/google-managed-certs) and [Google Cloud DNS](https://cloud.google.com/dns).
@@ -353,113 +406,64 @@ We only have to manage a configuration to simulate the mynicecompany.com access.
 
 ### 7. Track ODM usage
 
-### 7.1 Install the IBM Usage Metering service
+#### 7.1. Install the IBM Usage Metering service
 
 IBM Usage Metering Service gathers metrics to monitor compliance and create reports. It captures business value metrics for auditing purposes and to visualize metric usage in reporting tools, and sends the information to IBM Software Central.
 
 From ODM 9.6.0 onwards, it is required to install this metering service in the same namespace as ODM. ODM will systematically reports usage metrics to the metering service through a CronJob. If the service is not installed, the job fails when it runs. For more information about the installation and configuration of UMS, see [Installing the usage metering service](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-installing-metering).
 
-To expose the IBM Usage Metering service using the GKE LoadBalancer:
-
-
-1. run
-
-    ```bash
-    kubectl apply -f usage-metering-service-loadbalancer.yaml
-    ```
-This will create a LoadBalancer service exposing the Usage Metering Service.
-
-### Retrieve metering usage
-
-To get the Usage Metering report:
-
-1. run the command below to get the external IP address of the UMS service (if you just created the service and the IP address is not set, try again after a while):
-
-    ```bash
-    EXTERNAL_IP=$(kubectl get service ibm-usage-metering-instance-loadbalancer -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-    echo "EXTERNAL_IP=${EXTERNAL_IP}"
-    ```
-
-1. run:
-    ```bash
-    UMS_TOKEN=$(kubectl get secret ibm-usage-metering-upload-token -n "${NAMESPACE}" -o jsonpath='{.data.token}' 2>/dev/null | base64 -d || echo "")
-    curl -k --output report.zip \
-          --header "Authorization: Bearer ${UMS_TOKEN}" \
-          --url "https://${EXTERNAL_IP}:8080/api/v1/snapshot"
-    ```
 
 #### 7.2 Install the IBM License Service
 
-This section explains how to track ODM usage with the IBM License Service.
-
-Follow the **Installation** section of the [Installation License Service without Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.14.0?topic=ilsfpcr-installing-license-service-without-operator-lifecycle-manager-olm) documentation.
-
-#### 7.2.1 Expose the licensing service using the GKE LoadBalancer
-
-Wait a couple of minutes for the installation to be done.
-
-You should see two pods running:
-   ```bash
-NAME                                              READY   STATUS    RESTARTS   AGE
-ibm-licensing-operator-b8564f765-jsb95            1/1     Running   0          4m26s
-ibm-licensing-service-instance-787996886d-pzmlg   1/1     Running   0          88s
-```
-
-To expose the licensing service using the GKE LoadBalancer, run the command:
-
-```bash
-kubectl patch svc ibm-licensing-service-instance -p '{"spec": { "type": "LoadBalancer"}}' -n ibm-licensing
-```
-
-Wait a couple of minutes for the changes to be applied.
-Then, you should see an EXTERNAL-IP available for the exposed licensing service.
-
-```shell
-kubectl get service -n ibm-licensing
-NAME                                        TYPE           CLUSTER-IP     EXTERNAL-IP       PORT(S)          AGE
-ibm-licensing-service-instance              LoadBalancer   10.0.58.142    xxx.xxx.xxx.xxx   8080:32301/TCP   10m
-```
-
-#### 7.2.2 Patch the IBM Licensing instance
-
-Get the [licensing-instance.yaml](./licensing-instance.yaml) file and run the command:
-
-```bash
-kubectl patch IBMLicensing instance --type merge --patch-file licensing-instance.yaml -n ibm-licensing 
-```
-
-Wait a couple of minutes for the changes to be applied. 
-
-You can find more information and use cases on [this page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.14.0?topic=configuring-kubernetes-ingress).
-
-
-### 7.3.3 Retrieve license usage
-
-You will be able to access the IBM License Service by retrieving the URL and the required token with this command:
-
-```bash
-export LICENSING_URL=$(kubectl get service ibm-licensing-service-instance -n ibm-licensing -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-export TOKEN=$(kubectl get secret ibm-licensing-token -n ibm-licensing -o jsonpath='{.data.token}' |base64 -d)
-```
-
-> **Note**
-> If `LICENSING_URL` is empty, take a look at the [troubleshooting](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.14.0?topic=service-troubleshooting-license) page.
-
-You can access the `http://${LICENSING_URL}:8080/status?token=${TOKEN}` URL to view the licensing usage or retrieve the licensing report .zip file by running:
-
-```shell
-curl -k "https://${LICENSING_URL}:8080/snapshot?token=${TOKEN}" --output report.zip
-```
-
-If your IBM License Service instance is not running properly, refer to this [troubleshooting page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.14.0?topic=service-troubleshooting-license).
-
-
 Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.x_cd?topic=ilsfpcr-installing-license-service-without-operator-lifecycle-manager-olm) and stop before it asks you to update the License Service instance. It will be done in the next paragraph.
 
+##### 7.2.1 Create the IBM Licensing instance
+
+Get the [licensing-instance.yaml](./licensing-instance.yaml) file and run the following command:
+
+```shell
+kubectl apply -f licensing-instance.yaml -n ibm-licensing
+```
+
+> [!NOTE]
+> You can find more information and use cases on [this page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.12.0?topic=service-configuring).
+
+##### 7.2.2 Modify GKE Load Balancer settings
+
+As Google native Load Balancer does not support the same URL rewriting rules as other ones (such as NGINX), [some settings have to be modified](https://cloud.google.com/load-balancing/docs/https/setting-up-url-rewrite) directly on GCP Web UI.
+
+You have to look for the ibm-licensing-service-instance in the list of Ingresses, then select its Load Balancer in the list of resources at the bottom:
+
+![Load balancing resources](images/lb_resources.png)
+
+Edit the rule about /ibm-licensing-service-instance/* and add `/` as path prefix rewrite:
+
+![Load balancing Host and Path rules](images/lb_host_and_path_rules.png)
+![Load balancing Rewrite](images/lb_rewrite.png)
+
+> [!NOTE]
+> GKE Load Balancer may take a few minutes after its new configuration to actually apply it.
+
+##### 7.2.3 Retrieving license usage
+
+After a couple of minutes, the Ingress configuration is created and you will be able to access the IBM License Service by retrieving the URL with the following command:
+
+```shell
+export LICENSING_URL=$(kubectl get ingress ibm-licensing-service-instance -n ibm-licensing -o jsonpath='{.status.loadBalancer.ingress[0].ip}')/ibm-licensing-service-instance
+export TOKEN=$(kubectl get secret ibm-licensing-token -o jsonpath={.data.token} -n ibm-licensing | base64 -d)
+```
+
+You can access the `http://${LICENSING_URL}/status?token=${TOKEN}` URL to view the licensing usage or retrieve the licensing report .zip file by running the following command:
+
+```shell
+curl -v "http://${LICENSING_URL}/snapshot?token=${TOKEN}" --output report.zip
+```
+
+If your IBM License Service instance is not running properly, refer to this [troubleshooting page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.x_cd?topic=service-troubleshooting-license).
 
 ## Troubleshooting
 
-If your ODM instances are not running properly, refer to [our dedicated troubleshooting page](https://www.ibm.com/docs/en/odm/9.6.0?topic=950-troubleshooting).
+If your ODM instances are not running properly, refer to [our dedicated troubleshooting page](https://www.ibm.com/docs/en/odm/9.5.0?topic=950-troubleshooting).
 
 ## Getting Started with IBM Operational Decision Manager for Containers
 
