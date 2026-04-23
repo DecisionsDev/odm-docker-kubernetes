@@ -450,37 +450,11 @@ IBM Usage Metering Service gathers metrics to monitor compliance and create repo
 
 From ODM 9.6.0 onwards, it is required to install this metering service in the same namespace as ODM. ODM will systematically reports usage metrics to the metering service through a CronJob. If the service is not installed, the job fails when it runs. For more information about the installation and configuration of UMS, see [Installing the usage metering service](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-installing-metering).
 
-To expose the IBM Usage Metering service using the AKS LoadBalancer:
+To expose the IBM Usage Metering service using the AKS LoadBalancer, run:
 
-1. Create a file named `usage-metering-service-loadbalancer.yaml` with the following content (after replacing ${NAMESPACE} by the actual namespace where you deployed UMS):
-
-    ```yaml
-    apiVersion: v1
-    kind: Service
-    metadata:
-      name: ibm-usage-metering-instance-loadbalancer
-      namespace: ${NAMESPACE}
-    spec:
-      type: LoadBalancer
-      ports:
-        - name: ibm-usage-metering-fetch
-          port: 8080
-          protocol: TCP
-          targetPort: 8080
-        - name: ibm-usage-metering-upload
-          port: 8081
-          protocol: TCP
-          targetPort: 8081
-      selector:
-        app.kubernetes.io/component: ibm-usage-metering-instance
-        app.kubernetes.io/name: ibm-usage-metering
-    ```
-
-1. run
-
-    ```bash
-    kubectl apply -f usage-metering-service-loadbalancer.yaml
-    ```
+```bash
+kubectl apply -f usage-metering-svc-loadbalancer.yaml
+```
 
 ### Retrieve metering usage
 
