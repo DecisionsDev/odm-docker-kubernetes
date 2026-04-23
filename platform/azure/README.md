@@ -456,9 +456,16 @@ To expose the IBM Usage Metering service using the AKS LoadBalancer, run:
 kubectl apply -f usage-metering-svc-loadbalancer.yaml
 ```
 
-### Retrieve metering usage
+If you went through all the steps in [Installing the usage metering service](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-installing-metering) including the connection to IBM Software Central, then the usage metrics are automatically sent to IBM Software Central and you can see them at https://swc.saas.ibm.com/en-us/software-central :
+- Click **Log in** (create an account if needed)
+- Click **Workspace** in the menu tab. This unfolds a drop-down list.
+- Click **Usage** in the drop-down list
 
-To get the Usage Metering report:
+### Retrieve usage metrics
+
+If your cluster is not connected to internet, you can generate a usage report and manually upload it to Software Central.
+
+To generate a Usage report:
 
 1. run the command below to get the external IP address of the UMS service (if you just created the service and the IP address is not set, try again after a while):
 
@@ -474,6 +481,8 @@ To get the Usage Metering report:
           --header "Authorization: Bearer ${UMS_TOKEN}" \
           --url "https://${EXTERNAL_IP}:8080/api/v1/snapshot"
     ```
+
+Then follow the instructions in [Uploading usage metrics to IBM Software Central](https://www.ibm.com/docs/en/cloud-paks/cp-biz-automation/26.0.0?topic=metrics-uploading-usage-software-central).
 
 ### Install the IBM License Service and retrieve license usage
 
