@@ -3,7 +3,7 @@
 The aim of this complementary documentation is to explain how to replace the **AKS default Load Balancer** usage with an **NGINX Ingress Controller**.
 
 > [!WARNING] 
-> The NGINX Ingress Controller is **DEPRECATED**.
+> The NGINX Ingress Controller is **DEPRECATED** due to [Ingress NGINX Retirement](https://kubernetes.io/blog/2025/11/11/ingress-nginx-retirement/).
 > 
 > This documentation is kept for reference only for existing deployments and will be removed in the coming months.
 
