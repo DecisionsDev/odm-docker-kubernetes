@@ -9,7 +9,7 @@ The ODM on Kubernetes Docker images are available in the [IBM Cloud Container Re
 
 ## Included components
 The project uses the following components:
-- [IBM Operational Decision Manager](https://www.ibm.com/docs/en/odm/9.5.0?topic=operational-decision-manager-certified-kubernetes-950)
+- [IBM Operational Decision Manager](https://www.ibm.com/docs/en/odm/9.6.0?topic=operational-decision-manager-certified-kubernetes-960)
 - [Amazon Elastic Kubernetes Service (Amazon EKS)](https://aws.amazon.com/eks/)
 - [Amazon Relational Database Service (Amazon RDS)](https://aws.amazon.com/rds/)
 - [AWS Application Load Balancer (ALB)](https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html)
@@ -21,7 +21,7 @@ The commands and tools have been tested on Linux and macOS.
 First, install the following software on your machine:
 * [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html)
 * [eksctl](https://docs.aws.amazon.com/eks/latest/userguide/eksctl.html)
-* [Helm v3](https://helm.sh/docs/intro/install/)
+* [Helm v4](https://helm.sh/docs/intro/install/)
 * [kubectl](https://kubernetes.io/docs/tasks/tools/)
 
 Then, create an [AWS Account](https://aws.amazon.com/getting-started/).
@@ -55,11 +55,11 @@ Where you provide your `AWS Access Key ID`, `AWS Secret Access Key` and the `Def
 #### b. Create an EKS cluster (20 min)
 
 ```bash
-eksctl create cluster <CLUSTER_NAME> --version 1.33 --nodes 3 --alb-ingress-access
+eksctl create cluster <CLUSTER_NAME> --version 1.34 --nodes 3 --alb-ingress-access
 ```
 
 > **Note**
-> The tutorial has been tested with the Kubernetes version 1.33. Check the supported kubernetes version in the [Detailed System Requirements](https://www.ibm.com/software/reports/compatibility/clarity/product.html?id=C88B83D2853E4A628442E38C1194FF8F) page.
+> The tutorial has been tested with the Kubernetes version 1.34. Check the supported kubernetes version in the [Detailed System Requirements](https://www.ibm.com/software/reports/compatibility/clarity/product.html?id=C88B83D2853E4A628442E38C1194FF8F) page.
 
 > **Warning**
 > If you prefer to use the NGINX Ingress Controller instead of the ALB Load Balancer to expose ODM services, don't use the --alb-ingress-access option during the creation of the cluster.
@@ -178,7 +178,7 @@ helm repo update
 ```bash
 $ helm search repo ibm-odm-prod
 NAME                             	CHART VERSION	APP VERSION	DESCRIPTION
-ibm-helm/ibm-odm-prod           	25.1.0       	9.5.0.1   	IBM Operational Decision Manager
+ibm-helm/ibm-odm-prod           	26.0.0       	9.6.0.0   	IBM Operational Decision Manager
 ```
 
 ### 4. Manage a  digital certificate (10 min)
@@ -303,9 +303,58 @@ IBM Usage Metering Service gathers metrics to monitor compliance and create repo
 
 From ODM 9.6.0 onwards, it is required to install this metering service in the same namespace as ODM. ODM will systematically reports usage metrics to the metering service through a CronJob. If the service is not installed, the job fails when it runs. For more information about the installation and configuration of UMS, see [Installing the usage metering service](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-installing-metering).
 
+#### 7.1.1 Expose IBM Usage Metering service using an ingress. 
+
+- Edit the [alb-ums-ingress.yaml](./alb-ums-ingress.yaml) file 
+  - Update `<UMS_NAMESPACE>` with the namespace that you installed UMS
+  - Update `<AWS-ACCOUNTID>` with your AWS Account Id. The certificate is the one that was created in Step 4a.
+
+- Save the file
+
+- Run the command to create UMS's Ingress
+
+```bash
+kubectl apply -f alb-ums-ingress.yaml
+```
+
+- Run the following command to see the status of Ingress instance:
+
+```bash
+kubectl get ingress
+```
+
+You should be able to see the address and other details about `usage-metering-svc-ingress` instance.
+
+```bash
+NAME                         CLASS   HOSTS   ADDRESS                                                                PORTS   AGE
+mycompany-odm-ingress        alb      *      abcdefghijklmnopqrstuvqxyz.elb.<aws-region>.amazonaws.com              80      30m
+usage-metering-svc-ingress   alb      *      xxxxxxxyyyyyyzzzzzz.elb.<aws-region>.amazonaws.com                     80      1m
+```
+- Note down the address of the `usage-metering-svc-ingress` instance. It will be use to retrieve the metering usage report in the next step.
+
+#### Retrieve metering usage
+
+To get the Usage Metering report, run the command below:
+
+```bash
+UMS_TOKEN=$(kubectl get secret ibm-usage-metering-upload-token -n "${NAMESPACE}" -o jsonpath='{.data.token}' 2>/dev/null | base64 -d || echo "")
+
+curl -k --output report.zip \
+        --header "Authorization: Bearer ${UMS_TOKEN}" \
+        --url "https://xxxxxxxyyyyyyzzzzzz.elb.<aws-region>.amazonaws.com/api/v1/snapshot"
+```
+
 #### 7.2. Install the IBM License Service
 
-Follow the **Installation** section of the [Installation License Service without Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.14.0?topic=ilsfpcr-installing-license-service-without-operator-lifecycle-manager-olm) documentation.
+Follow the **Installation** section of the [Installation License Service without Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.14.0?topic=ilsfpcr-installing-license-service-without-operator-lifecycle-manager-olm) documentation, **except for the step 3** which should be replaced by:
+
+> 3. Use `git clone`.
+>
+>```bash
+>export operator_release_version=4.2.20
+>git clone -b ${operator_release_version} https://github.com/IBM/ibm-licensing-operator.git
+>cd ibm-licensing-operator/
+>```
 
 ###### 7.2.1. Patch the IBM Licensing instance
 
@@ -332,6 +381,8 @@ You can find more information and use cases on [this page](https://www.ibm.com/d
 
 > **Note**
 > If you choose to use the NGINX Ingress Controller, you must use the [licensing-instance-nginx.yaml](./licensing-instance-nginx.yaml) file. Refer to [Track ODM usage with the IBM License Service with NGINX Ingress Controller](README-NGINX.md#track-odm-usage-with-the-ibm-license-service-with-nginx-ingress-controller).
+
+> **NGINX Ingress Controller (Deprecated):** The [NGINX Ingress Controller deployment guide](README_NGINX.md) is deprecated and will be removed in the coming months.
 
 ##### 7.2.2. Retrieving license usage
 
