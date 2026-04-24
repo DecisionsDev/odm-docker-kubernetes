@@ -360,7 +360,7 @@ The certificate must be the same as the one you used to enable TLS connections i
 > [!NOTE]
 > An alternative guide [NGINX Ingress Controller deployment guide](README-NGINX.md) is available to use the NGINX Ingress Controller instead of the default AKS Load Balancer.
 >
-> But the **NGINX Ingress Controller is now DEPRECATED** and the [NGINX Ingress Controller deployment guide](README-NGINX.md) will be removed in the coming months.
+> But the **NGINX Ingress Controller is now DEPRECATED** due to [Ingress NGINX Retirement](https://kubernetes.io/blog/2025/11/11/ingress-nginx-retirement/) and the [NGINX Ingress Controller deployment guide](README-NGINX.md) will be removed in the coming months
 
 ### Allocate public IP addresses
 
