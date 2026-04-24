@@ -380,9 +380,9 @@ ibm-licensing-service-instance   alb     *       k8s-ibmlicen-ibmlicen-xxxxxxxx-
 You can find more information and use cases on [this page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.14.0?topic=configuring-kubernetes-ingress).
 
 > **Note**
-> If you choose to use the NGINX Ingress Controller, you must use the [licensing-instance-nginx.yaml](./licensing-instance-nginx.yaml) file. Refer to [Track ODM usage with the IBM License Service with NGINX Ingress Controller](README-NGINX.md#track-odm-usage-with-the-ibm-license-service-with-nginx-ingress-controller).
+> If you choose to use the NGINX Ingress Controller, you must use the [licensing-instance-nginx.yaml](./licensing-instance-nginx.yaml) file. Refer to [Install IBM License Service](README-NGINX.md#install-ibm-license-service) for NGINX.
 
-> **NGINX Ingress Controller (Deprecated):** The [NGINX Ingress Controller deployment guide](README_NGINX.md) is deprecated and will be removed in the coming months.
+> **NGINX Ingress Controller (Deprecated):** The [NGINX Ingress Controller deployment guide](README-NGINX.md) is deprecated and will be removed in the coming months.
 
 ##### 7.2.2. Retrieving license usage
 
