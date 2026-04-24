@@ -1,7 +1,7 @@
 # Deploying IBM Operational Decision Manager with NGINX Ingress Controller on Amazon EKS
 
 > **WARNING** 
-> The NGINX Ingress Controller is **DEPRECATED**.
+> The NGINX Ingress Controller is **DEPRECATED**. For more information, see [Ingress NGINX Retirement: What You Need to Know](https://kubernetes.io/blog/2025/11/11/ingress-nginx-retirement/).
 > This documentation is kept for reference purposes only for existing deployments and will be removed in the coming months.
 
 The aim of this complementary documentation is to explain how to replace the **AWS Load Balancer Controller** usage with an **NGINX Ingress Controller**.

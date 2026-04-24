@@ -382,7 +382,7 @@ You can find more information and use cases on [this page](https://www.ibm.com/d
 > **Note**
 > If you choose to use the NGINX Ingress Controller, you must use the [licensing-instance-nginx.yaml](./licensing-instance-nginx.yaml) file. Refer to [Install IBM License Service](README-NGINX.md#install-ibm-license-service) for NGINX.
 
-> **NGINX Ingress Controller (Deprecated):** The [NGINX Ingress Controller deployment guide](README-NGINX.md) is deprecated and will be removed in the coming months.
+> **NGINX Ingress Controller (Deprecated):** The [NGINX Ingress Controller deployment guide](README-NGINX.md) is deprecated and will be removed in the coming months. For more information, see [Ingress NGINX Retirement: What You Need to Know](https://kubernetes.io/blog/2025/11/11/ingress-nginx-retirement/).
 
 ##### 7.2.2. Retrieving license usage
 
