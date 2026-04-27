@@ -286,7 +286,7 @@ NAME                                                   READY   STATUS    RESTART
 
 Now that the ODM services are running, you need to deploy the Gateway API resources to expose them externally.
 
-The [odm-gateway-gke.yaml](./odm-gateway-gke.yaml) file contains three types of resources:
+The [odm-gateway.yaml](./odm-gateway.yaml) file contains three types of resources:
 - **Gateway**: Configures the GKE load balancer with HTTPS termination using the `mynicecompany-tls-secret` certificate
 - **HTTPRoute**: Defines routing rules for all ODM services based on URL paths
 - **HealthCheckPolicy**: Configures custom health checks for each ODM component to ensure proper monitoring
@@ -299,7 +299,7 @@ Before applying the configuration, update the file to match your release name by
 Apply the Gateway configuration:
 
 ```shell
-kubectl apply -f odm-gateway-gke.yaml
+kubectl apply -f odm-gateway.yaml
 ```
 
 This command creates:
@@ -324,7 +324,7 @@ When the Gateway shows a *Programmed* status, all ODM services are accessible.
 
 ##### Apply the Gateway configuration
 
-The [odm-gateway-gke.yaml](./odm-gateway-gke.yaml) file contains:
+The [odm-gateway.yaml](./odm-gateway.yaml) file contains:
 - A Gateway resource that configures the GKE load balancer with HTTPS termination
 - An HTTPRoute resource that defines routing rules for all ODM services
 - HealthCheckPolicy resources for each ODM component to ensure proper health monitoring
