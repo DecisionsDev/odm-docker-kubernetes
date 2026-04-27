@@ -16,12 +16,15 @@ This section explains how to expose the ODM services to Internet connectivity wi
 ## Table of Contents
 
 <!-- TOC -->
-
 - [Create a NGINX Ingress controller](#create-a-nginx-ingress-controller)
 - [Install the ODM release](#install-the-odm-release)
-- [Check the deployment and access ODM services](#check-the-deployment-and-access-odm-services)
-- [Deploy and check IBM Licensing Service](#deploy-and-check-ibm-licensing-service)
-
+- [Access the ODM services](#access-the-odm-services)
+- [Track ODM usage](#track-odm-usage)
+  - [Install the IBM Usage Metering service](#install-the-ibm-usage-metering-service)
+  - [Retrieve metering usage](#retrieve-metering-usage)
+  - [Install the IBM License Service and retrieve license usage](#install-the-ibm-license-service-and-retrieve-license-usage)
+  - [Patch the IBM Licensing instance with Nginx configuration](#patch-the-ibm-licensing-instance-with-nginx-configuration)
+- [Troubleshooting](#troubleshooting)
 <!-- /TOC -->
 
 ### Create a NGINX Ingress controller
