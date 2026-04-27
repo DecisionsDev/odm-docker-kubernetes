@@ -690,19 +690,7 @@ Two modes of operation are supported:
 
 ###### Online Mode Configuration
 
-**Step 1: Add the opt-in annotation to ODM pods**
-
-ODM pods are already annotated with `includeSWCUpload: "true"` by default, so this step is typically not required. However, if you need to verify or add the annotation manually:
-
-```yaml
-spec:
-  template:
-    metadata:
-      annotations:
-        includeSWCUpload: "true"
-```
-
-**Step 2: Create the IBM Entitlement Key secret**
+**Step1: Create the IBM Entitlement Key secret**
 
 Create a Kubernetes secret in the `ibm-licensing` namespace containing your IBM Entitlement Key:
 
@@ -717,7 +705,7 @@ kubectl create secret generic ibm-swc-entitlement-key \
 > [!TIP]
 > Obtain your IBM Entitlement Key from the [IBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary).
 
-**Step 3: Configure the IBMLicensing Custom Resource**
+**Step 2: Configure the IBMLicensing Custom Resource**
 
 Update the `IBMLicensing` CR to enable Software Central integration:
 
@@ -730,8 +718,6 @@ kubectl patch IBMLicensing instance \
             "softwareCentral": {
                 "enable": true,
                 "entitlementKeySecret": "ibm-swc-entitlement-key",
-                "frequency": "5 0 * * *",
-                "sandbox": false
             }
         }
     }'
@@ -743,10 +729,8 @@ kubectl patch IBMLicensing instance \
 |---|---|---|---|
 | `enable` | bool | `false` | Master switch for Software Central integration |
 | `entitlementKeySecret` | string | — | Name of the Kubernetes secret containing the IBM Entitlement Key (required) |
-| `frequency` | string | `"5 0 * * *"` | Cron expression for upload schedule (default: daily at 00:05 UTC) |
-| `sandbox` | bool | `false` | When `true`, uses `sandbox.swc.saas.ibm.com` for testing |
 
-**Step 4: Verify configuration**
+**Step 3: Verify configuration**
 
 Check that the configuration was applied successfully:
 
@@ -756,7 +740,7 @@ kubectl get IBMLicensing instance -n ibm-licensing -o yaml
 
 Look for the `softwareCentral` section in the output to confirm your settings.
 
-**Step 5: Monitor data transmission**
+**Step 4: Monitor data transmission**
 
 Monitor the IBM License Service logs to verify successful data transmission:
 
@@ -766,7 +750,7 @@ kubectl logs -n ibm-licensing -l app.kubernetes.io/name=ibm-licensing-service-in
 
 Look for log entries indicating successful uploads to Software Central.
 
-**Step 6: Verify in IBM Software Central**
+**Step 5: Verify in IBM Software Central**
 
 After the first scheduled transmission (or wait up to 24 hours), verify your license usage data:
 
