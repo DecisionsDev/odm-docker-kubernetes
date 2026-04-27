@@ -27,7 +27,7 @@
 
 # Introduction
 
-ODM Decision Center allows to [manage users and groups from the Business console](https://www.ibm.com/docs/en/odm/9.5.0?topic=center-managing-users-groups-from-business-console) in order to set access security on specific projects.
+ODM Decision Center allows to [manage users and groups from the Business console](https://www.ibm.com/docs/en/odm/9.6.0?topic=center-managing-users-groups-from-business-console) in order to set access security on specific projects.
 Groups and Users can be imported using an LDAP connection or a SCIM connection (as Keycloak can feature a SCIM server).
 
 Keycloak does not provide a SCIM server off the shelf, but this feature can be added using a plugin called *SCIM for Keycloak* which comes 
@@ -399,7 +399,7 @@ Make sure that you finish [Complete post-deployment tasks](README.md#complete-po
 
 # Manage Security on ODM Decision Service Project 
 
-ODM Decision Center allows to [manage users and groups from the Business console](https://www.ibm.com/docs/en/odm/9.5.0?topic=center-managing-users-groups-from-business-console) in order to set access security on specific projects.
+ODM Decision Center allows to [manage users and groups from the Business console](https://www.ibm.com/docs/en/odm/9.6.0?topic=center-managing-users-groups-from-business-console) in order to set access security on specific projects.
 Now, we will manage the following scenario. We will load the "Loan Validation Service" and "Miniloan Service" projects that are available at the getting started repository.
 We will only provide access to the "Loan Validation Service" project for users belonging to the `TaskAuditors` group.
 We will only provide access to the "Miniloan Service" project for users belonging to the `TaskUsers` group.
@@ -499,4 +499,4 @@ Let us also assign the `rtsUsers` role to the `TaskAuditors` and `TaskUsers` gro
 
   All these changes are performed using the Keycloak dashboard and then reflected inside Decision Center, either manually using the Decision Center Synchronize button or using the automatic synchronization (scheduled every 2 hours by default).
 
-  You can read more about configuring the automatic synchronization in the documentation page [Importing users and groups from LDAP directories](https://www.ibm.com/docs/en/odm/9.5.0?topic=ldap-importing-users-groups-from-directories).
+  You can read more about configuring the automatic synchronization in the documentation page [Importing users and groups from LDAP directories](https://www.ibm.com/docs/en/odm/9.6.0?topic=ldap-importing-users-groups-from-directories).
