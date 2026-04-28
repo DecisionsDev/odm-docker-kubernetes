@@ -28,6 +28,7 @@
     - [Complete post-deployment tasks](#complete-post-deployment-tasks)
         - [Register the ODM redirect URL](#register-the-odm-redirect-url)
         - [Access the ODM services](#access-the-odm-services)
+        - [Configuring post logout redirect (Optional)](#configuring-post-logout-redirect-optional)
         - [Set up Rule Designer](#set-up-rule-designer)
         - [Getting Started with IBM Operational Decision Manager for Containers](#getting-started-with-ibm-operational-decision-manager-for-containers)
         - [Calling the ODM Runtime Service](#calling-the-odm-runtime-service)
@@ -79,7 +80,7 @@ The OAuth 2.0 Resource Owner Password Credentials (ROPC) grant flow, also named 
 
 You need the following elements:
 
-- [Helm v3](https://helm.sh/docs/intro/install/)
+- [Helm v3](https://helm.sh/docs/v3/intro/install/) or [Helm v4](https://helm.sh/docs/intro/install/)
 - [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl)
 - Access to an Operational Decision Manager product
 - Access to a CNCF Kubernetes cluster
@@ -93,7 +94,7 @@ The first step to integrate ODM with Cognito is to create a [Cognito User Pool](
 
 ## Initiate the creation of the Cognito User Pool
 
-To create the Cognito User Pool dedicated to ODM, we followed the [getting started](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-as-user-directory.html) by applying the following settings. It doesn't mean that with your production or demo application, you cannot apply different settings. But, for this tutorial, it's preferable to keep the name that we propose.
+To create the Cognito User Pool dedicated to ODM, we followed the [getting started](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-as-user-directory.html) by applying the following settings. It does not mean that with your production or demo application, you cannot apply different settings. But, for this tutorial, it is preferable to keep the name that we propose.
 
 1. Create an Amazon Cognito User pool
 
@@ -133,6 +134,7 @@ To create the Cognito User Pool dedicated to ODM, we followed the [getting start
     * Click **Edit** in the **Password policy** pane
 
       * Select *Password policy mode* = **Cognito defaults**
+      * Click the **Save changes** button
 
 4. Authentication > Sign-in
 
@@ -186,7 +188,7 @@ To create the Cognito User Pool dedicated to ODM, we followed the [getting start
         * Under the **Login pages** tab
 
           * click **Edit** in the *Managed login pages configuration* pane
-            * *Allowed callback URLs* : to be filled up once ODM is deployed and the redirect URIs are known
+            * *Allowed callback URLs* : will be set later on once ODM is deployed and the redirect URIs are known
             * *Identity providers* = **Cognito user pool**
             * *OAuth 2.0 grant types* = **Authorization code grant**
             * *OpenID Connect Scopes* = **Email**, **OpenID**, **Phone**
@@ -200,7 +202,7 @@ To create the Cognito User Pool dedicated to ODM, we followed the [getting start
   * Select **Users** under *User Management* in the left-hand pane:
     * Click on **Create user**
 
-    In **User information**:
+    * In **User information**:
        * **Invitation message**:
          * Select **Send an email invitation**
        * **Email address**:
@@ -215,13 +217,13 @@ To create the Cognito User Pool dedicated to ODM, we followed the [getting start
   * Select **Groups** under *User Management* in the left-hand pane:
     * Click on **Create group**      
 
-   In **Group information**:
-     * **Group name**:
-       * Enter the **odm-admin** name
+  * In **Group information**:
+    * **Group name**:
+      * Enter the **odm-admin** name
+    * Click on **Create group**
+
 > [!WARNING]
 > Please do not use a different name than **odm-admin** 
-
- * Click on **Create group**
 
 ## Add the created user to the **odm-admin** group
 
@@ -229,10 +231,10 @@ To create the Cognito User Pool dedicated to ODM, we followed the [getting start
   * Select the **Groups** tab:
     * Click on the **odm-admin** group
    
-   In the **Group members** part:
+  * In the **Group members** part:
      * Click on **Add user to group**
 
-   In the **User selection** part:
+  * In the **User selection** part:
      * Select the previously created user
      * Click on **Add**
 
@@ -259,7 +261,7 @@ It will also enable the communication between Decision Center and Decision Runne
     * Click the **Login pages** tab and then the **Edit** button in the *Managed login pages configuration* pane
       * Keep *Identity providers* = **Cognito user pool**
       * Keep *OAuth 2.0 grant types* = **Client credentials**
-      * Take a note of the **default custom scope**
+      * Note down the **default custom scope** for later
       * Click the **Save changes** button
 
 ![Client-Credentials App](images/ClientCredentialsApp.png)
@@ -268,94 +270,85 @@ It will also enable the communication between Decision Center and Decision Runne
 
 A custom claim needs to be added to both:
 * the id_token (issued during the authorization flow), and
-* the access_token (issued for the client-credentials flow). 
+* the access_token (issued for the client-credentials flow)  
 
-Indeed, the existing **sub** claim is not be suitable because its value is an automatically generated unique identifier and we would rather have the user's name or email address displayed in ODM consoles UI instead. 
+This claim named **identity** will be equal to
+- either the **email** of the user authenticated when using authentication code flow, 
+- or the CLIENT ID when using client credentials.
 
-We will manage it the same way we do it with Azure AD creating an [**identity** custom claim](https://github.com/DecisionsDev/odm-docker-kubernetes/blob/master/authentication/AzureAD/README_WITH_CLIENT_SECRET.md#set-up-an-microsoft-entra-id-application-using-a-client-secret).
-
-[Since 2025](https://aws.amazon.com/blogs/security/how-to-customize-access-tokens-in-amazon-cognito-user-pools/), it is now possible to add custom claims to the Cognito access_token using the client-credentials flow.
-
-We will use the [pre token generation lambda trigger](https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-lambda-pre-token-generation.html) to add the **identity** claim inside the id_token that will take the **email** value when a user is connecting to an UI (Decision Center or RES Console)  using the authentication flow, and inside the access_token using the client-credentials flow.
-Here are the details about the [Pre token generation Lambda trigger flow](https://aws.amazon.com/blogs/security/how-to-customize-access-tokens-in-amazon-cognito-user-pools/).
+To achieve that, we will use the [pre token generation lambda trigger](https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-lambda-pre-token-generation.html).
+You can read more about the Pre token generation Lambda trigger flow [here](https://aws.amazon.com/blogs/security/how-to-customize-access-tokens-in-amazon-cognito-user-pools/).
 
 ![Pre Token Generation](images/pre-token-generation.png)
 
 > [!WARNING]
-> The customization of the access token claims is not possible with the Lite plan. It's possible to manage it with the Essentials or Plus plan.
-> You can change of plan using the Settings tab
+> The customization of the access token claims is not possible with the 'Lite' feature plan. This is only possible with the 'Essentials' or 'Plus' feature plans.
+> You can change of plan by clicking 'Feature Plan' under the 'Settings' tab
 
 ![Cognito Plan](images/CognitoPlan.png) 
 
 
 1. Add a Pre token generation Lambda trigger
 
-We will use the pre token generation lambda trigger feature to the **identity** claim in in id_token by pushing the user email value.
-
-Select the **odmuserpool** User Pool:
+* Select the **odmuserpool** User Pool:
   * Click **Extensions** under *Authentication* in the left-hand pane
     * On the **Lambda triggers** section:
       * Click the **Add Lambda trigger** button
 
-In **Lambda triggers**:
-  * Select **Authentication**
-    In **Authentication**:
-      * Select **Pre token generation trigger** (Modify claims in ID and access tokens.)
-    In **Trigger event version**
-      * Select **Basic features + access token customization for user and machine identities - Recommended** (Your user pool sends a version 3 event to your Lambda function. You can customize access tokens for M2M.
+* In **Lambda triggers**:
+  * In **Trigger type**
+    * Select **Authentication**
+  * In **Authentication**:
+      * Select "**Pre token generation trigger** Modify claims in ID and access tokens."
+  * In **Trigger event version**
+      * Select "**Basic features + access token customization for user and machine identities - Recommended** Your user pool sends a version 3 event to your Lambda function. You can customize access tokens for M2M."
 )
 
-In **Lambda function**:
+* In **Lambda function**:
     * Click on the **Create Lambda function** button
 
 2. Create a Lambda Function
 
 Now, you are in the **AWS Lambda** service dashboard.
 
-Select **Functions** in the left menu:
+* Select **Functions** in the left menu:
   * Click on the **Create function** button
   
-In the **Create function** section:
+* In the **Create function** section:
   * choose **Author from scratch**
 
-In **Basic information**:
+* In **Basic information**:
   * In **function name**
     * Enter **odmLambdaFunction**
 
-Click on the **Create function** button
+* Click the **Create function** button
 
-In the **Code>Code source** section:
-  * Replace the default index.jms code with the code below
+* In the **Code > Code source** section:
+  * Replace the default index.mjs code with the code below
 
-```
-export const handler = function(event, context) {
+```javascript
+export const handler = async (event, context) => {
   console.debug("enter in ODM lambda");
-  // Allow to get debug information in the Watcher
-  console.debug("context");
-  console.debug(context);
-  
-  console.debug("event");
-  console.debug(event);
-  console.debug("clientId");
-  console.debug(event.callerContext.clientId);
+  console.debug("context=",  context);
+  console.debug("event=",    event);
+  console.debug("clientId=", event.callerContext.clientId);
+  console.debug("userAttributes=", event.request.userAttributes);
 
-  console.debug("userAttributes");
-  console.debug(event.request.userAttributes);
-
-  var identity_for_access_token = event.callerContext.clientId;
+  var identity_for_access_token;
   if (event.request.userAttributes.email != undefined) {
-    console.debug("user email is defined. Use user email as claim identity for the access_token - Rule Designer Context");
+    console.debug("user email is defined. Using user email as claim identity for the access_token - Rule Designer Context");
     identity_for_access_token = event.request.userAttributes.email
   } else {
-    console.debug("user email is undefined. Use clienId as claim identity for the access_token - M2M Context with client-credentials");
+    console.debug("user email is undefined. Using clienId as claim identity for the access_token - M2M Context with client-credentials");
+    identity_for_access_token = event.callerContext.clientId
   }
-  console.debug(identity_for_access_token);
+  console.debug("identity=", identity_for_access_token);
   event.response = {
     "claimsAndScopeOverrideDetails": {
       "idTokenGeneration": {
         "claimsToAddOrOverride": {
           "identity": event.request.userAttributes.email
-    }
+        }
       },
       "accessTokenGeneration": {
         "claimsToAddOrOverride": {
@@ -364,19 +357,18 @@ export const handler = function(event, context) {
       },
     }
   };
-  // Return to Amazon Cognito
-  context.done(null, event);
+  return event;
 };
 ```
 > [!WARNING]
-> Do not forget to click on the **Deploy** button !
+> Do not forget to click the **Deploy** button !
 
 3. Associate the Lamda function to the Pre token generation Lambda trigger
 
-Back to the **Pre token generation Lambda trigger** creation dashboard
-   * Click on the **Assign Lambda function** Refresh button
+* Back to the **Pre token generation Lambda trigger** creation dashboard
+   * Click the Refresh Icon button under **Assign Lambda function**
    * Select **odmLambdaFunction**
-   * Click on the **Add Lambda trigger** button
+   * Click the **Add Lambda trigger** button
 
 ![Add Lambda Trigger](images/AddLambdaTrigger.png)
 
@@ -388,6 +380,7 @@ Back to the **Pre token generation Lambda trigger** creation dashboard
 
 ### Create a secret to use the Entitled Registry
 
+Log in to [MyIBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary) with the IBMid and password that are associated with the entitled software.
 
 In the **Container software library** tile, verify your entitlement on the **View library** page, and then go to **Get entitlement key**  to retrieve the key.
 
@@ -430,7 +423,7 @@ In the **Container software library** tile, verify your entitlement on the **Vie
     ```
     Where:
     - *COGNITO_REGION* is the region where the COGNITO User Pool is deployed
-    - *COGNITO_DOMAIN_NAME_PREFIX* is the prefix name of the COGNITO User Pool Domain that you can retrieve at Amazon Cognito > User pools > odmuserpool > Domain (odm in our tutorial)
+    - *COGNITO_DOMAIN_NAME_PREFIX* is the prefix name of the COGNITO User Pool Domain that you can retrieve at Amazon Cognito > User pools > odmuserpool > Domain
   
 3. Generate the ODM configuration file for Cognito
 
@@ -454,9 +447,9 @@ In the **Container software library** tile, verify your entitlement on the **Vie
     ```
 
   - *COGNITO_USER_POOL_ID* is the COGNITO User Pool ID retrieved at Amazon Cognito > User pools > odmuserpool > Overview > User pool ID
-  - *COGNITO_DOMAIN_NAME_PREFIX* is the prefix name of the COGNITO User Pool Domain that you can retrieve at Amazon Cognito > User pools > odmuserpool > Domain (odm in our tutorial)
+  - *COGNITO_DOMAIN_NAME_PREFIX* is the prefix name of the COGNITO User Pool Domain that you can retrieve at Amazon Cognito > User pools > odmuserpool > Domain
 > [!WARNING]
-> only the prefix of the domain ('odm' in our tutorial) should be provided and not the entire value <COGNITO_DOMAIN_NAME_PREFIX>.auth.<COGNITO_REGION>.amazoncognito.com
+> only the prefix of the domain should be provided and not the entire value <COGNITO_DOMAIN_NAME_PREFIX>.auth.<COGNITO_REGION>.amazoncognito.com
 
   - *COGNITO_REGION* is the region where the COGNITO User Pool is deployed
   - *COGNITO_APP_CLIENT_ID* is the COGNITO ODM App Client ID retrieved at Amazon Cognito > User pools > odmuserpool > App integration > odm > Client ID
@@ -469,7 +462,7 @@ In the **Container software library** tile, verify your entitlement on the **Vie
     ```
     ./generateTemplate.sh \
         -u odmuserpool \
-        -d odm \
+        -d eu-west-3nixardgf9 \
         -r eu-west-3 \
         -i 7qo....................... \
         -s rrt................................................ \
@@ -480,13 +473,13 @@ In the **Container software library** tile, verify your entitlement on the **Vie
 
     The four files below are generated into a directory named `output` (generated by the script):
 
-    - webSecurity.xml contains the mapping between Liberty J2EE ODM roles and Cognito User Pool groups and users:
-      * rtsAdministrators/resAdministrators/resExecutors ODM roles are given to the CLIENT_ID (which is seen as a user) to manage the client-credentials flow
-    - openIdWebSecurity.xml contains two openIdConnectClient Liberty configurations:
+    - `webSecurity.xml` contains the mapping between Liberty J2EE ODM roles and Cognito User Pool groups and users:
+      * `rtsAdministrators`/`resAdministrators`/`resExecutors` ODM roles are given to the CLIENT_ID (which is seen as a user) to manage the client-credentials flow
+    - `openIdWebSecurity.xml` contains two openIdConnectClient Liberty configurations:
       * for web access to Decision Center an Decision Server consoles using userIdentifier="client_id" with the Authorization Code flow
       * for the rest-api call using userIdentifier="client_id" with the client-credentials flow
-    - openIdParameters.properties configures several features like allowed domains, logout, and some internal ODM openid features
-    - OdmOidcProviders.json configures the connection to the RES Console using the Client Credentials grant type
+    - `openIdParameters.properties` configures several features like allowed domains, logout, and some internal ODM openid features
+    - `OdmOidcProviders.json` configures the connection to the RES Console using the Client Credentials grant type
 
 4. Create the Cognito authentication secret
 
@@ -511,7 +504,7 @@ In the **Container software library** tile, verify your entitlement on the **Vie
   ```shell
   helm search repo ibm-odm-prod
   NAME                          CHART VERSION   APP VERSION     DESCRIPTION
-  ibm-helm/ibm-odm-prod         25.1.0          9.5.0.1        IBM Operational Decision Manager
+  ibm-helm/ibm-odm-prod         26.0.0          9.6.0.0        IBM Operational Decision Manager
   ```
 
 ### 3. Run the `helm install` command
@@ -519,15 +512,15 @@ In the **Container software library** tile, verify your entitlement on the **Vie
 
 #### a. Installation on OpenShift using Routes
 
-  See the [Preparing to install](https://www.ibm.com/docs/en/odm/9.5.0?topic=production-preparing-install-operational-decision-manager) documentation for more information. Inspect [cognito-values.yaml](cognito-values.yaml) for the parameters that have been defined for this installation.
+  See the [Preparing to install](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-preparing-install-operational-decision-manager) documentation for more information. Inspect [cognito-values.yaml](cognito-values.yaml) for the parameters that have been defined for this installation.
 
   ```shell
   helm install my-odm-release ibm-helm/ibm-odm-prod -f cognito-values.yaml
   ```
 
 > **Note:**  
-> This command installs the **latest available version** of the chart.  
-> If you want to install a **specific version**, add the `--version <CHART_VERSION>` option, eg. `--version 25.0.0`
+> This command installs the **latest available version** of the chart (possibly an interim fix).  
+> If you want to install a **specific version**, add the `--version <CHART_VERSION>` option, eg. `--version 26.0.0`
 >
 
 #### b. Installation using Ingress
@@ -537,7 +530,7 @@ In the **Container software library** tile, verify your entitlement on the **Vie
   - [Amazon Elastic Kubernetes Service](../../platform/eks/README-NGINX.md)
   - [Google Kubernetes Engine](../../platform/gcloud/README_NGINX.md)
 
-  When the NGINX Ingress Controller is ready, you can install the ODM release using [cognito-nginx-values.yaml](cognito-nginx-values.yaml). Take note of the `service.ingress.annotations` values that have been defined in this file.:
+  When the NGINX Ingress Controller is ready, you can install the ODM release using [cognito-nginx-values.yaml](cognito-nginx-values.yaml) (See the `service.ingress.annotations`):
 
   ```
   helm install my-odm-release ibm-helm/ibm-odm-prod -f cognito-nginx-values.yaml
@@ -545,12 +538,11 @@ In the **Container software library** tile, verify your entitlement on the **Vie
 
 ## Complete post-deployment tasks
 
-### Register the ODM redirect URL
+### Access the ODM services
 
+  Refer to [this documentation](https://www.ibm.com/docs/en/odm/9.6.0?topic=tasks-configuring-external-access) to retrieve the endpoints.
 
-1. Get the ODM endpoints.
-    Refer to [this documentation](https://www.ibm.com/docs/en/odm/9.5.0?topic=tasks-configuring-external-access) to retrieve the endpoints.
-    For example, on OpenShift you can get the route names and hosts by running `oc get routes`:
+  - on OpenShift you can get the route names and hosts by running `oc get routes`:
 
     ```
     NAME                                  HOST/PORT
@@ -560,37 +552,39 @@ In the **Container software library** tile, verify your entitlement on the **Vie
     my-odm-release-odm-ds-runtime-route   <DS_RUNTIME_HOST>
     ```
 
-    Using an Ingress, the endpoint is the address of the ODM ingress and is the same for all components. You can get it with:
+  - When using an Ingress, the endpoint is the address of the ODM ingress and is the same for all components. You can get it with:
 
     ```
     kubectl get ingress my-odm-release-odm-ingress
     ```
 
-   You get the following ingress address:
+    You get the following ingress address:
     ```
     NAME                       CLASS    HOSTS   ADDRESS          PORTS   AGE
     my-odm-release-odm-ingress <none>   *       <INGRESS_ADDRESS>   80      14d
     ```
 
-2. Register the redirect URIs into your Cognito App Client.
+### Register the ODM redirect URL
 
-    The redirect URIs are built in the following way:
+Register the redirect URIs into your Cognito App Client.
 
-      Using Routes:
+  - The redirect URIs are built in the following way:
+
+    - Using Routes:
       - Decision Center redirect URI:  `https://<DC_HOST>/decisioncenter/openid/redirect/odm`
       - Decision Runner redirect URI:  `https://<DR_HOST>/DecisionRunner/openid/redirect/odm`
       - Decision Server Console redirect URI:  `https://<DSC_HOST>/res/openid/redirect/odm`
       - Decision Server runtime redirect URI:  `https://<DSR_HOST>/DecisionService/openid/redirect/odm`
       - Rule Designer redirect URI: `https://127.0.0.1:9081/oidcCallback`
 
-      Using Ingress:
+    - Using Ingress:
       - Decision Center redirect URI:  `https://<INGRESS_ADDRESS>/decisioncenter/openid/redirect/odm`
       - Decision Runner redirect URI:  `https://<INGRESS_ADDRESS>/DecisionRunner/openid/redirect/odm`
       - Decision Server Console redirect URI:  `https://<INGRESS_ADDRESS>/res/openid/redirect/odm`
       - Decision Server Runtime redirect URI:  `https://<INGRESS_ADDRESS>/DecisionService/openid/redirect/odm`
       - Rule Designer redirect URI: `https://127.0.0.1:9081/oidcCallback`
 
-   From the Cognito admin console, in **odmuserpool** / **App clients** / **odm** 
+  - From the Cognito admin console, in **odmuserpool** / **App clients** / **odm** 
     - Select the **Login pages** tab
     - Click the **Edit** button in the *Managed login pages configuration*
       - Add all five redirect URIs in the **Allowed callback URLs** field for all components.
@@ -600,7 +594,51 @@ In the **Container software library** tile, verify your entitlement on the **Vie
 > Do not forget to replace <DC_HOST> with your actual host name
 
 
-### Access the ODM services
+### Configuring post logout redirect (Optional)
+
+Configuring the post-logout redirect URIs makes it easier for users to log back in after loggout.
+
+- With the post-logout redirect URIs configured:
+  - When a user logs out:
+    - the session is cleared,
+    - the token is invalidated,
+    - Cognito login page is displayed.
+  - When the user logs back in:
+    - the user is taken back to the ODM console they left (either the Business Console or the Decision Server Console (aka RES console)).
+
+- Without the post-logout redirect URIs configured, the user needs to navigate to the URL of the ODM console before entering their credentials.
+
+To configure the post logout redirect URIs:
+
+- Add the following properties in the previously generated `./output/openIdParameters.properties` file:
+
+  - Using Routes:
+    ```ini
+    OPENID_LOGOUT_TOKEN_PARAM=id_token_hint
+    DC_OPENID_POST_LOGOUT_REDIRECT_URI=https://<DC_HOST>/decisioncenter/t/home
+    DS_OPENID_POST_LOGOUT_REDIRECT_URI=https://<DSC_HOST>/res/home.jsp
+    ```
+
+  - Using Ingress:
+    ```ini
+    OPENID_LOGOUT_TOKEN_PARAM=id_token_hint
+    DC_OPENID_POST_LOGOUT_REDIRECT_URI=https://<INGRESS_ADDRESS>/decisioncenter/t/home
+    DS_OPENID_POST_LOGOUT_REDIRECT_URI=https://<INGRESS_ADDRESS>/res/home.jsp
+    ```
+
+- Delete the `cognito-auth-secret` secret and recreate it as explained [Create secrets to configure ODM with Cognito](#create-secrets-to-configure-odm-with-cognito).
+
+  ```shell
+  kubectl delete secret         cognito-auth-secret
+  kubectl create secret generic cognito-auth-secret \
+      --from-file=openIdParameters.properties=./output/openIdParameters.properties \
+      --from-file=openIdWebSecurity.xml=./output/openIdWebSecurity.xml \
+      --from-file=webSecurity.xml=./output/webSecurity.xml
+  ```
+
+- Run the `helm install` command again
+
+  Run the same command as previously in [Run the helm install command](#3-run-the-helm-install-command), only replacing this time `helm install` by `helm upgrade`.
 
 
 ### Set up Rule Designer
@@ -626,7 +664,7 @@ In the **Container software library** tile, verify your entitlement on the **Vie
 
 4. Restart Rule Designer.
 
-For more information, refer to [this documentation](https://www.ibm.com/docs/en/odm/9.5.0?topic=designer-importing-security-certificate-in-rule).
+For more information, refer to [this documentation](https://www.ibm.com/docs/en/odm/9.6.0?topic=designer-importing-security-certificate-in-rule).
 
 ### Getting Started with IBM Operational Decision Manager for Containers
 
@@ -646,29 +684,29 @@ Deploy the **Loan Validation Service** production_deployment ruleapps using the 
 
 You can retrieve the payload.json from the ODM Decision Server Console or use [the provided payload](payload.json).
 
-As explained in the ODM on Certified Kubernetes documentation [Configuring user access with OpenID](https://www.ibm.com/docs/en/odm/9.5.0?topic=access-configuring-user-openid), we advise you to use basic authentication for the ODM runtime call for better performance and to avoid token expiration and revocation.
+As explained in the ODM on Certified Kubernetes documentation [Configuring user access with OpenID](https://www.ibm.com/docs/en/odm/9.6.0?topic=access-configuring-user-openid), we advise you to use basic authentication for the ODM runtime call for better performance and to avoid token expiration and revocation.
 
 You perform a basic authentication ODM runtime call in the following way:
 
    ```
   $ curl -H "Content-Type: application/json" -k --data @payload.json \
-         -H "Authorization: Basic b2RtQWRtaW46b2RtQWRtaW4=" \
+         -u "odmAdmin:odmAdmin" \
         https://<DS_RUNTIME_HOST>/DecisionService/rest/production_deployment/1.0/loan_validation_production/1.0
   ```
 
   Where:
-  - `b2RtQWRtaW46b2RtQWRtaW4=` is the base64 encoding of the current username:password odmAdmin:odmAdmin
+  - `odmAdmin:odmAdmin` is <username>:<password>
 
 If you want to perform a bearer authentication ODM runtime call using the Client Credentials flow, you need to get a bearer access token before invoking the execution of the ruleset as follows (You need to set up `jq` beforehand and set the four environment variables):
 
-  ``` 
+  ``` bash
 # /bin/bash
 
-export DS_RUNTIME_HOST=<HOSTNAME eg. k8s-default-odm2302o-ed3c5eee99-301488862.eu-west-3.elb.amazonaws.com>
-export COGNITO_SERVER_URL=<URL eg. https://odm.auth.eu-west-3.amazoncognito.com>
-export CC_CLIENT_ID=<odmclientcredentials client ID>
-export CC_CLIENT_SECRET=<odmclientcredentials client secret>
-export CC_DEFAULT_CUSTOM_SCOPE=<odmclientcredentials default custom scope>
+export DS_RUNTIME_HOST=<HOSTNAME> # eg. k8s-default-odm2302o-ed3c5eee99-301488862.eu-west-3.elb.amazonaws.com
+export COGNITO_SERVER_URL=<URL> # eg. https://odm.auth.eu-west-3.amazoncognito.com
+export CC_CLIENT_ID=<ODM CLIENT CREDENTIALS CLIENT ID>
+export CC_CLIENT_SECRET=<ODM CLIENT CREDENTIALS CLIENT SECRET>
+export CC_DEFAULT_CUSTOM_SCOPE=<ODM CLIENT CREDENTIALS DEFAULT CUSTOM SCOPE>
 
 curl -k -X POST -H "Content-Type: application/x-www-form-urlencoded" \
       -d "client_id=$CC_CLIENT_ID&scope=$CC_DEFAULT_CUSTOM_SCOPE&client_secret=$CC_CLIENT_SECRET&grant_type=client_credentials" \
