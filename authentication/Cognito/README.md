@@ -272,9 +272,9 @@ A custom claim needs to be added to both:
 * the id_token (issued during the authorization flow), and
 * the access_token (issued for the client-credentials flow)  
 
-This claim named **identity** will be equal to
-- either the **email** of the user authenticated when using authentication code flow, 
-- or the CLIENT ID when using client credentials.
+This claim named **identity** will be equal to either:
+- the **email** of the user authenticated when using authentication code flow, 
+- the CLIENT ID when using client credentials.
 
 To achieve that, we will use the [pre token generation lambda trigger](https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-lambda-pre-token-generation.html).
 You can read more about the Pre token generation Lambda trigger flow [here](https://aws.amazon.com/blogs/security/how-to-customize-access-tokens-in-amazon-cognito-user-pools/).
@@ -695,7 +695,7 @@ You perform a basic authentication ODM runtime call in the following way:
   ```
 
   Where:
-  - `odmAdmin:odmAdmin` is <username>:<password>
+  - `odmAdmin:odmAdmin` has the following format: `<username>:<password>`
 
 If you want to perform a bearer authentication ODM runtime call using the Client Credentials flow, you need to get a bearer access token before invoking the execution of the ruleset as follows (You need to set up `jq` beforehand and set the four environment variables):
 
