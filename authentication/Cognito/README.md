@@ -485,6 +485,7 @@ In the **Container software library** tile, verify your entitlement on the **Vie
 
     ```
     kubectl create secret generic cognito-auth-secret \
+        --from-file=OdmOidcProviders.json=./output/OdmOidcProviders.json \
         --from-file=openIdParameters.properties=./output/openIdParameters.properties \
         --from-file=openIdWebSecurity.xml=./output/openIdWebSecurity.xml \
         --from-file=webSecurity.xml=./output/webSecurity.xml
@@ -615,15 +616,25 @@ To configure the post logout redirect URIs:
   - Using Routes:
     ```ini
     OPENID_LOGOUT_TOKEN_PARAM=id_token_hint
-    DC_OPENID_POST_LOGOUT_REDIRECT_URI=https://<DC_HOST>/decisioncenter/t/home
     DS_OPENID_POST_LOGOUT_REDIRECT_URI=https://<DSC_HOST>/res/home.jsp
     ```
 
   - Using Ingress:
     ```ini
     OPENID_LOGOUT_TOKEN_PARAM=id_token_hint
-    DC_OPENID_POST_LOGOUT_REDIRECT_URI=https://<INGRESS_ADDRESS>/decisioncenter/t/home
     DS_OPENID_POST_LOGOUT_REDIRECT_URI=https://<INGRESS_ADDRESS>/res/home.jsp
+    ```
+
+- Add the following property in the previously generated `./output/OdmOidcProviders.json` file:
+
+  - Using Routes:
+    ```json
+    "postLogoutRedirectUri": "https://<DC_HOST>/decisioncenter/t/home",
+    ```
+
+  - Using Ingress:
+    ```json
+    "postLogoutRedirectUri": "https://<INGRESS_ADDRESS>/decisioncenter/t/home",
     ```
 
 - Delete the `cognito-auth-secret` secret and recreate it as explained [Create secrets to configure ODM with Cognito](#create-secrets-to-configure-odm-with-cognito).
@@ -631,6 +642,7 @@ To configure the post logout redirect URIs:
   ```shell
   kubectl delete secret         cognito-auth-secret
   kubectl create secret generic cognito-auth-secret \
+      --from-file=OdmOidcProviders.json=./output/OdmOidcProviders.json \
       --from-file=openIdParameters.properties=./output/openIdParameters.properties \
       --from-file=openIdWebSecurity.xml=./output/openIdWebSecurity.xml \
       --from-file=webSecurity.xml=./output/webSecurity.xml
