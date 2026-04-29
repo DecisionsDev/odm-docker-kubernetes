@@ -5,7 +5,7 @@
         "grantType": "client_credentials",
         "authorizationURL": "https://COGNITO_DOMAIN_NAME.auth.COGNITO_REGION.amazoncognito.com/oauth2/authorize",
         "tokenURL": "https://COGNITO_DOMAIN_NAME.auth.COGNITO_REGION.amazoncognito.com/oauth2/token",
-        "logoutURL": "https://COGNITO_DOMAIN_NAME.auth.COGNITO_REGION.amazoncognito.com/oauth2/logout",
+        "logoutURL": "https://COGNITO_DOMAIN_NAME.auth.COGNITO_REGION.amazoncognito.com/logout",
         "logoutTokenParam": "id_token_hint",
         "clientId": "COGNITO_CC_CLIENT_ID",
         "clientSecret": "COGNITO_CC_CLIENT_SECRET",
