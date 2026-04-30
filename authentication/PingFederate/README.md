@@ -197,8 +197,8 @@ Select **Access** and edit using the **Edit** button.
   ```
 
   Where:
-  - *CLIENT_ID* is your ODM Application (`odm` if you followed the instructions). You can find it in the **Manage** / **Clients** menu.
-  - *CLIENT_SECRET* is the secret for your ODM Application. You can find it in the **Credentials** tab.
+  - *CLIENT_ID* can be found in the **overview** of the ODM Application, section **Applications** / **Applications**    
+  - *CLIENT_SECRET* can be found in the **overview** of the ODM Application, section **Applications** / **Applications**
   - *PING_FEDERATE_SERVER_URL* is the issuer ID that can be retrieved in the Connection Details of the Overview tab of the **ODM Application** 
 
   If you decode the *access_token* value with a JWT decoder tool, you should get:
