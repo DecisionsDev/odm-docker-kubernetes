@@ -172,7 +172,7 @@ Select **Policies** and edit using the **Edit** button.
 
 Select **Attribute Mappings** and edit using the **Edit** button.
 Add new attribute using the **+Add** button
-  * Attribute Name: *groups* and **PingOne Mappings Value** *ODM-Admin*
+  * Attribute Name: *groups* and **PingOne Mappings Value** *Group Names*
   * Attribute Name: *identity* and **PingOne Mappings Value** *user.name.given + ' ' + user.name.family* using the **Advanced Expression** button
   * Click **Save**
 
