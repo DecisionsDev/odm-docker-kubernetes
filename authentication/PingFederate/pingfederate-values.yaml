@@ -16,8 +16,6 @@ decisionCenter:
 
 customization:
   authSecretRef: pingfederate-auth-secret
-  trustedCertificateList:
-  - pingfederate-secret
   runAsUser: ''
 
 oidc:
