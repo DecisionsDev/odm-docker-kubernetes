@@ -9,7 +9,6 @@ internalDatabase:
   persistence:
     enabled: false
   populateSampleData: true
-  runAsUser: ''
 
 decisionCenter:
   disableAllAuthenticatedUser: true
@@ -19,14 +18,12 @@ customization:
   trustedCertificateList:
   - cognito-idp-cert-secret
   - cognito-domain-cert-secret
-  runAsUser: ''
 
 oidc:
   enabled: true
   disableLoginPanel: true
 
 service:
-  enableRoute: true
   ingress:
     annotations:
       kubernetes.io/ingress.class: nginx
