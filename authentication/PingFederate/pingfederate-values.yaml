@@ -1,0 +1,28 @@
+license: true
+
+image:
+  repository: cp.icr.io/cp/cp4a/odm
+  pullSecrets:
+  - ibm-entitlement-key
+
+internalDatabase:
+  persistence:
+    enabled: false
+  populateSampleData: true
+  runAsUser: ''
+
+decisionCenter:
+  disableAllAuthenticatedUser: true
+
+customization:
+  authSecretRef: pingfederate-auth-secret
+  trustedCertificateList:
+  - pingfederate-secret
+  runAsUser: ''
+
+oidc:
+  enabled: true
+  disableLoginPanel: true
+
+service:
+  enableRoute: true
