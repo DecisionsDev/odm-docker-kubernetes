@@ -328,7 +328,7 @@ You can now install the product. We will use the PostgreSQL internal database an
   - [Amazon Elastic Kubernetes Service](../../platform/eks/README-NGINX.md)
   - [Google Kubernetes Engine](../../platform/gcloud/README_NGINX.md)
 
-  When the NGINX Ingress Controller is ready, you can install the ODM release using [pingfederate-nginx-values.yaml](pingfederate-nginx-values.yaml). Take note of the `service.ingress.annotations` values that have been defined in this file.
+  When the NGINX Ingress Controller is ready, you can install the ODM release using [pingfederate-ingress-values.yaml](pingfederate-ingress-values.yaml). Take note of the `service.ingress.annotations` values that have been defined in this file.
 
   ```shell
   helm install my-odm-release ibm-helm/ibm-odm-prod -f pingfederate-nginx-values.yaml
