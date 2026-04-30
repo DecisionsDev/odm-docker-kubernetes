@@ -66,11 +66,11 @@ Terminology:
 - The **ID token** — The token that is issued by the OpenID provider and contains information about the end user in the form of claims.
 - A **claim** — A piece of information about the end user.
 
-The [Authorization Code flow](https://www.PingFederate.org/docs/latest/server_admin/index.html#_oidc-auth-flows-authorization) is best used by server-side apps where the source code is not publicly exposed. The apps must be server-side because the request that exchanges the authorization code for a token requires a client secret, which has to be stored in your client. However, the server-side app requires an end user because it relies on interactions with the end user's web browser, which redirects the user and then receives the authorization code.
+The [Authorization Code flow](https://docs.pingidentity.com/pingfederate/13.0/introduction_to_pingfederate/pf_grant_types.html#primary-grant-types) is best used by server-side apps where the source code is not publicly exposed. The apps must be server-side because the request that exchanges the authorization code for a token requires a client secret, which has to be stored in your client. However, the server-side app requires an end user because it relies on interactions with the end user's web browser, which redirects the user and then receives the authorization code.
 
 ![Authorization Code Flow](images/authorization_code_flow.svg)
 
-The [Client Credentials flow](https://www.PingFederate.org/docs/latest/server_admin/index.html#_client_credentials_grant) is intended for server-side (AKA "confidential") client applications with no end user, which normally describes machine-to-machine communication. The application must be server-side because it must be trusted with the client secret, and since the credentials are hard-coded, it cannot be used by an actual end user. It involves a single, authenticated request to the token endpoint, which returns an access token.
+The [Client Credentials flow](https://docs.pingidentity.com/pingfederate/13.0/introduction_to_pingfederate/pf_grant_types.html#primary-grant-types) is intended for server-side (AKA "confidential") client applications with no end user, which normally describes machine-to-machine communication. The application must be server-side because it must be trusted with the client secret, and since the credentials are hard-coded, it cannot be used by an actual end user. It involves a single, authenticated request to the token endpoint, which returns an access token.
 
 ![Client Credentials Flow](images/client_credentials_flow.svg)
 
@@ -398,7 +398,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 
 ### Access the ODM services
 
-Well done!  You can now connect to ODM using the endpoints you got [earlier](#register-the-odm-redirect-url) and log in as an ODM admin with the account you created in [the first step](#create-a-dedicated-odm-realm) (e.g. `johndoe@mynicecompany.com` / `johndoe`).
+Well done!  You can now connect to ODM using the endpoints you got [earlier](#register-the-odm-redirect-url) and log in as an ODM admin with your account.
 
 ### Set up Rule Designer
 
