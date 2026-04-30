@@ -13,9 +13,9 @@ This tutorial demonstrates how to deploy an IBM® Operational Decision Manager (
         - [Create a secret for the Entitled registry access](#23-create-a-secret-for-the-entitled-registry-access)
             - [Retrieve your entitled registry key](#231-retrieve-your-entitled-registry-key)
             - [Create a JSON file](#232-create-a-json-file)
-            - [Create the secret in ASW Secrets Manager](#233-create-the-secret-in-asw-secrets-manager)
-            - [Create VPC endpoint to access ASW Secrets Manager service](#234-create-vpc-endpoint-to-access-asw-secrets-manager-service)
-        - [Create S3 bucket and IAM policy for IBM licensing service](#24-create-s3-bucket-and-iam-policy-for-ibm-licensing-service)
+            - [Create the secret in AWS Secrets Manager](#233-create-the-secret-in-aws-secrets-manager)
+            - [Create VPC endpoint to access AWS Secrets Manager service](#234-create-vpc-endpoint-to-access-aws-secrets-manager-service)
+        - [Create S3 bucket and IAM policy for IBM license service](#24-create-s3-bucket-and-iam-policy-for-ibm-license-service)
         - [Add Outbound rule to Load balancer's security group](#25-add-outbound-rule-to-load-balancers-security-group)
         - [Initialize ECS Compose-X](#26-initialize-ecs-compose-x)
         - [Store Amazon Root CA For HTTPS mode only](#27-store-amazon-root-ca-for-https-mode-only)
@@ -43,7 +43,7 @@ To deploy ODM containers on AWS ECS Fargate from [docker-compose](docker-compose
    * Install [ECS Compose-x](https://github.com/compose-x/ecs_composex?tab=readme-ov-file#installation), preferably in a virtual environment.
    * Ensure that you have an existing internet-facing Application Elastic Load balancer based on a VPC with public subnets [setup](https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-manage-subnets.html) on Amazon Web Services(AWS).
    * If you want to run ODM Decision services in HTTPS mode, you need to have an [ACM public certificate](https://console.aws.amazon.com/acm/home). 
-   * Ensure that AWS S3 bucket is not secured by AWS KMS keys (SSE-KMS). This is not supported by IBM licensing service.
+   * Ensure that AWS S3 bucket is not secured by AWS KMS keys (SSE-KMS). This is not supported by IBM license service.
 
 
 *Note*: The commands and tools have been tested on macOS.
@@ -106,7 +106,7 @@ It will be used in the next step of this tutorial.
 }
 ```
 
-#### 2.3.3 Create the secret in ASW Secrets Manager
+#### 2.3.3 Create the secret in AWS Secrets Manager
 
 You can proceed to create an AWS Secret containing the `token.json` file. The secret with the pull credential will be assigned in the docker-compose file.
 
@@ -140,23 +140,23 @@ For example:
     ...
 ```
 
-#### 2.3.4 Create VPC endpoint to access ASW Secrets Manager service
+#### 2.3.4 Create VPC endpoint to access AWS Secrets Manager service
 
-Since the ECS tasks need to access to the secret from Secrets Manager service, you might need to create an AWS Secrets Manager VPC endpoint. This inteface endpoint should use the VPC that you plan to deploy ODM. Choose the subnets and security group of this VPC to setup the endpoint. For more information, see [Using an AWS Secrets Manager VPC endpoint](https://docs.aws.amazon.com/secretsmanager/latest/userguide/vpc-endpoint-overview.html).
+Since the ECS tasks need to access to the secret from Secrets Manager service, you might need to create an AWS Secrets Manager VPC endpoint. This interface endpoint should use the VPC that you plan to deploy ODM. Choose the subnets and security group of this VPC to setup the endpoint. For more information, see [Using an AWS Secrets Manager VPC endpoint](https://docs.aws.amazon.com/secretsmanager/latest/userguide/vpc-endpoint-overview.html).
 
 
-### 2.4 Create S3 bucket and IAM policy for IBM licensing service
+### 2.4 Create S3 bucket and IAM policy for IBM license service
 
 > **Disclaimer** - 
-> Make sure that AWS S3 is not secured by AWS KMS keys (SSE-KMS) as it is not supported by IBM Licensing service.
+> Make sure that AWS S3 is not secured by AWS KMS keys (SSE-KMS) as it is not supported by IBM license service.
 
-In this tutorial, we have included IBM Licensing service for tracking license usage of ODM that is deployed on AWS ECS Fargate.
+In this tutorial, we have included IBM license service for tracking license usage of ODM that is deployed on AWS ECS Fargate.
 
-The following steps are needed by IBM Licensing service:
+The following steps are needed by IBM license service:
 
 - Create a S3 bucket in AWS for storing the IBM software license usage data. The name of the bucket must follow the `ibm-license-service-<aws_account_id>` pattern. 
 
-- Add a IAM policy with read and write access, and define it on the S3 bucket. 
+- Add an IAM policy with read and write access, and define it on the S3 bucket. 
 
 ```json
 {
@@ -260,7 +260,7 @@ volumes:
 
 ## 3. Deploy ODM to AWS ECS Fargate
 
-ODM can be deployed either in [HTTP](docker-compose-http.yaml) or [HTTPS](docker-compose-https.yaml) mode. Each of the ODM components are configured to be deployed as separate ECS task due to IBM licensing service which logs CPU usage per ECS task. The IBM Licensing service will be deployed to the ECS tasks of Decision Center, Decision Server Runtime and Decision Runner for tracking purpose. Inspect the docker-compose file for more details.
+ODM can be deployed either in [HTTP](docker-compose-http.yaml) or [HTTPS](docker-compose-https.yaml) mode. Each of the ODM components are configured to be deployed as separate ECS task due to IBM license service which logs CPU usage per ECS task. The IBM license service will be deployed to the ECS tasks of Decision Center, Decision Server Runtime and Decision Runner for tracking purpose. Inspect the docker-compose file for more details.
 
 <br><img src="images/topology.png" width="80%"/>
 
