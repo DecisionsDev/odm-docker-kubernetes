@@ -33,14 +33,12 @@ The MicroProfile mpMetrics Liberty feature provides a /metrics endpoint from whi
     kubectl create secret docker-registry ibm-entitlement-key \
         --docker-server=cp.icr.io \
         --docker-username=cp \
-        --docker-password="<API_KEY_GENERATED>" \
-        --docker-email=<USER_EMAIL>
+        --docker-password="<API_KEY_GENERATED>"
     ```
 
     Where:
 
     - *API_KEY_GENERATED* is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
-    - *USER_EMAIL* is the email address associated with your IBMid.
 
     > Note: 
     > 1. The **cp.icr.io** value for the docker-server parameter is the only registry domain name that contains the images. You must set the *docker-username* to **cp** to use an entitlement key as *docker-password*.
