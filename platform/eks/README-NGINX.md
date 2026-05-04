@@ -152,4 +152,6 @@ Otherwise, you can also retrieve the licensing report .zip file by running:
 curl "http://${LICENSING_URL}/snapshot?token=${TOKEN}" --output report.zip
 ```
 
+IBM License Service can optionally send collected license usage data directly to IBM Software Central. For more information about the configuration, see [Reporting license usage to IBM Software Central](https://www.ibm.com/docs/en/odm/9.6.0?topic=metering-reporting-license-usage-software-central).
+
 If your IBM License Service instance is not running properly, refer to this [troubleshooting page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.14.0?topic=service-troubleshooting-license).
