@@ -56,7 +56,7 @@ The following procedure describes how to manually configure ODM with a PingFeder
 
 ## ODM OpenID flows
 
-[OpenID Connect](https://docs.pingidentity.com/pingone/identity_verification_using_pingone_verify/p1_verify_ida.html#what-is-identity-assurance) is an authentication standard built on top of OAuth 2.0. It adds a token called an ID token.
+[OpenID Connect](https://openid.net/developers/how-connect-works) is an authentication standard built on top of OAuth 2.0. It adds a token called an ID token.
 
 Terminology:
 
