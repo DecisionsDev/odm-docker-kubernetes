@@ -1,0 +1,30 @@
+<server>
+  <!-- basic registry to manage rest-api / ruledesigner and DC to RES deployment -->
+  <basicRegistry id="basic" realm="basic">
+    <user name="odmAdmin" password="odmAdmin"/>
+    <group name="basicAdministrators">
+      <member name="odmAdmin" />
+    </group>
+</basicRegistry>
+<variable name="odm.resAdministrators.group2" value="group:basic/basicAdministrators"/>
+<variable name="odm.resExecutors.group2" value="group:basic/basicAdministrators"/>
+<variable name="odm.rtsAdministrators.group2" value="group:basic/basicAdministrators"/>
+
+<!-- group mapping to authorize Keycloak users that have the relevant roles -->
+<variable name="odm.rtsAdministrators.group1" value="group:PING_FEDERATE_SERVER_URL/ODM-Admin"/>
+<variable name="odm.rtsInstallers.group1" value="group:PING_FEDERATE_SERVER_URL/ODM-Admin"/>
+<variable name="odm.rtsConfigManagers.group1" value="group:PING_FEDERATE_SERVER_URL/ODM-Admin"/>
+  <variable name="odm.rtsUsers.group1" value="group:PING_FEDERATE_SERVER_URL/ODM-Admin"/>
+<variable name="odm.resAdministrators.group1" value="group:PING_FEDERATE_SERVER_URL/ODM-Admin"/>
+<variable name="odm.resDeployers.group1" value="group:PING_FEDERATE_SERVER_URL/ODM-Admin"/>
+<variable name="odm.resMonitors.group1" value="group:PING_FEDERATE_SERVER_URL/ODM-Admin"/>
+<variable name="odm.resExecutors.group1" value="group:PING_FEDERATE_SERVER_URL/ODM-Admin"/>
+
+<!-- user mapping to authorize CLIENT_CREDENTIALS using CLIENT_ID -->
+<variable name="user1" value="user:PING_FEDERATE_SERVER_URL/PING_FEDERATE_CLIENT_ID"/>
+
+<variable name="odm.rtsAdministrators.user1" value="${user1}"/>
+<variable name="odm.resAdministrators.user1" value="${user1}"/>
+<variable name="odm.resExecutors.user1" value="${user1}"/>
+
+</server>

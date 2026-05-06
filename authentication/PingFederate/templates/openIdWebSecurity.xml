@@ -1,0 +1,18 @@
+<server>
+
+  <variable name="ServerHost" value="PING_FEDERATE_SERVER_URL"/>
+
+  <!-- Open ID Connect -->
+  <!-- Client with inbound propagation set to supported -->
+  <openidConnectClient authFilterRef="browserAuthFilter" id="odm" scope="openid"
+        clientId="PING_FEDERATE_CLIENT_ID" clientSecret="PING_FEDERATE_CLIENT_SECRET"
+        signatureAlgorithm="RS256" inboundPropagation="supported" tokenReuse="true"
+        userIdentifier="identity" groupIdentifier="groups" audiences="ALL_AUDIENCES"
+        discoveryEndpointUrl="${ServerHost}/.well-known/openid-configuration"/>
+
+  <!-- Client with inbound propagation set to required -->
+  <openidConnectClient authFilterRef="apiAuthFilter" id="odmapi" scope="openid"
+        signatureAlgorithm="RS256" inboundPropagation="required" tokenReuse="true"
+        userIdentifier="identity" groupIdentifier="groups" audiences="ALL_AUDIENCES"
+        discoveryEndpointUrl="${ServerHost}/.well-known/openid-configuration"/>
+</server>
