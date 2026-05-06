@@ -330,7 +330,7 @@ NAME                         CLASS   HOSTS   ADDRESS                            
 mycompany-odm-ingress        alb      *      abcdefghijklmnopqrstuvqxyz.elb.<aws-region>.amazonaws.com              80      30m
 usage-metering-svc-ingress   alb      *      xxxxxxxyyyyyyzzzzzz.elb.<aws-region>.amazonaws.com                     80      1m
 ```
-- Note down the address of the `usage-metering-svc-ingress` instance. It will be use to retrieve the metering usage report in the next step.
+- Note down the address of the `usage-metering-svc-ingress` instance. It will be used to retrieve the metering usage report in the next step.
 
 #### Retrieve metering usage
 
