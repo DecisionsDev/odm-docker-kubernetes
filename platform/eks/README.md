@@ -62,7 +62,10 @@ eksctl create cluster <CLUSTER_NAME> --version 1.34 --nodes 3 --alb-ingress-acce
 > The tutorial has been tested with the Kubernetes version 1.34. Check the supported kubernetes version in the [Detailed System Requirements](https://www.ibm.com/software/reports/compatibility/clarity/product.html?id=C88B83D2853E4A628442E38C1194FF8F) page.
 
 > **Warning**
-> If you prefer to use the NGINX Ingress Controller instead of the ALB Load Balancer to expose ODM services, don't use the --alb-ingress-access option during the creation of the cluster.
+> If you prefer to use the **Deprecated** NGINX Ingress Controller instead of the AWS Load Balancer to expose ODM services, don't use the --alb-ingress-access option during the creation of the cluster.
+
+> **New**
+> Instead of the NGINX Ingress Controller, it is possible to use the AWS Load Balancer with Gateway API instead. Refer to the new [Deploying IBM Operational Decision Manager with AWS Load Balancer Controller supporting Gateway API on Amazon EKS](README-GATEWAY-API.md) tutorial.
 
 To see the options that you can specify when creating a cluster with `eksctl`, use the `eksctl create cluster --help` command. For more information, refer to [Creating an Amazon EKS cluster](https://docs.aws.amazon.com/eks/latest/userguide/create-cluster.html).
 
@@ -94,7 +97,7 @@ helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
 For more information, refer to [Installing the AWS Load Balancer Controller add-on](https://docs.aws.amazon.com/eks/latest/userguide/aws-load-balancer-controller.html).
 
 > **Note**
-> If you prefer to use the NGINX Ingress Controller instead of the AWS Load Balancer Controller, refer to [Deploying IBM Operational Decision Manager with NGINX Ingress Controller on Amazon EKS](README-NGINX.md)
+> This tutorial illustrates accessing the services using Ingress. Since AWS Load Balancer now supports Gateway API, if you prefer to use Gateway API instead of Ingress, see the [Deploying IBM Operational Decision Manager with AWS Load Balancer Controller supporting Gateway API on Amazon EKS](README-GATEWAY-API.md) tutorial for more information.
 
 ### 2. Create an RDS database (10 min)
 
@@ -113,7 +116,7 @@ For more information, refer to [Creating an Amazon RDS DB instance](https://docs
 
 #### b. Get the database endpoint (10 min)
 
-Wait a few minutes for the RDS PostgreSQL database to be created and take note of the its public endpoint. It will be referred to as `RDS_DB_ENDPOINT` in the next sections.
+Wait a few minutes for the RDS PostgreSQL database to be created and take note of its public endpoint. It will be referred to as `RDS_DB_ENDPOINT` in the next sections.
 
 Use the following command to get the RDS instance's endpoint:
 
@@ -122,7 +125,7 @@ aws rds describe-db-instances | jq -r ".DBInstances[].Endpoint.Address"
 ```
 
 > **Note**
-> If `jq` is not installed, remove the second part above and look for the endpoint address; it looks like `<INSTANCE_NAME>.xxxxxxxx.<REGION>.rds.amazonaws.com`.)
+> If `jq` is not installed, remove the second part above and look for the endpoint address; it looks like `<INSTANCE_NAME>.xxxxxxxx.<REGION>.rds.amazonaws.com`.
 
 #### c. Create the database secret
 
@@ -143,7 +146,7 @@ kubectl create secret generic odm-db-secret \
 To get access to the ODM material, you must have an IBM entitlement key to pull the images from the IBM Cloud Container registry.
 This is what will be used in the next step of this tutorial.
 
-You can also download the ODM CASE package from IBM Cloud Container Registry, and then push the contained images to the EKS Container Registry (ECR). If you prefer to manage the ODM images this way, see the details [here](README-ECR.md)
+You can also download the ODM CASE package from IBM Cloud Container Registry, and then push the contained images to the EKS Container Registry (ECR). If you prefer to manage the ODM images this way, see the details [here](README-ECR.md).
 
 #### a. Retrieve your entitled registry key
 
@@ -303,7 +306,7 @@ IBM Usage Metering Service gathers metrics to monitor compliance and create repo
 
 From ODM 9.6.0 onwards, it is required to install this metering service in the same namespace as ODM. ODM will systematically report usage metrics to the metering service through a CronJob. If the service is not installed, the job fails when it runs. For more information about the installation and configuration of UMS, see [Installing the usage metering service](https://www.ibm.com/docs/en/odm/9.6.0?topic=metrics-installing-metering).
 
-##### 7.1.1. Expose the IBM Usage Metering service using an Ingress 
+##### 7.1.1. Expose the IBM Usage Metering service using an ingress 
 
 Edit the [alb-ums-ingress.yaml](./alb-ums-ingress.yaml) file.
   - Update `<AWS-AccountId>` with your AWS Account Id. The certificate is the one that was created in Step 4a.
@@ -360,7 +363,7 @@ Follow the **Installation** section of the [Installation License Service without
 >kubectl patch IBMLicensing instance --type merge --patch-file accept-license.yaml
 >```
 
-##### 7.2.1. Expose the IBM Licensing service using an Ingress
+##### 7.2.1. Expose the IBM Licensing service using an ingress
 
 Edit the [alb-ils-ingress.yaml](./alb-ils-ingress.yaml) file.
   - Update `<AWS-AccountId>` with your AWS Account Id. The certificate is the one that was created in Step 4a.
