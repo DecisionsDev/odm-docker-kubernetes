@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: usage-metering-svc-ingress
+  name: ibm-licensing-svc-ingress
   annotations:
     alb.ingress.kubernetes.io/backend-protocol: HTTPS
     alb.ingress.kubernetes.io/certificate-arn: arn:aws:iam::<AWS-AccountId>:server-certificate/mycompany
@@ -11,13 +11,13 @@ metadata:
 spec:
   ingressClassName: alb
   rules:
-    - http:
-        paths:
-          - path: /*
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: ibm-usage-metering-instance
-                port:
-                  number: 8080
-                  
+  - http:
+      paths:
+      - path: /*
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: ibm-licensing-service-instance
+            port:
+              number: 8080
+

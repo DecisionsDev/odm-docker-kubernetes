@@ -32,7 +32,7 @@ Then, create an [AWS Account](https://aws.amazon.com/getting-started/).
 - [1. Prepare your environment (20 min)](#1-prepare-your-environment-20-min)
 - [2. Create an RDS database (10 min)](#2-create-an-rds-database-10-min)
 - [3. Prepare your environment for the ODM installation (5 min)](#3-prepare-your-environment-for-the-odm-installation-5-min)
-- [4. Manage a  digital certificate (10 min)](#4-manage-a-digital-certificate-10-min)
+- [4. Manage a digital certificate (10 min)](#4-manage-a-digital-certificate-10-min)
 - [5. Install an IBM Operational Decision Manager release (10 min)](#5-install-an-ibm-operational-decision-manager-release-10-min)
 - [6. Access the ODM services](#6-access-the-odm-services)
 - [7. Track ODM usage](#7-track-odm-usage)
@@ -181,11 +181,11 @@ NAME                             	CHART VERSION	APP VERSION	DESCRIPTION
 ibm-helm/ibm-odm-prod           	26.0.0       	9.6.0.0   	IBM Operational Decision Manager
 ```
 
-### 4. Manage a  digital certificate (10 min)
+### 4. Manage a digital certificate (10 min)
 
-#### a. (Optional) Generate a self-signed certificate
+#### a. Generate a self-signed certificate
 
-If you do not have a trusted certificate, you can use OpenSSL and other cryptography and certificate management libraries to generate a `.crt` certificate file and a private key, to define the domain name, and to set the expiration date.
+If you have a trusted certificate, you can use it to access the ODM container. Otherwise you can use OpenSSL and other cryptography and certificate management libraries to generate a `.crt` certificate file and a private key, to define the domain name, and to set the expiration date.
 The following command creates a self-signed certificate (`.crt` file) and a private key (`.key` file) that accept the domain name `.mycompany.com`. The expiration is set to 1000 days:
 
 ```bash
@@ -301,67 +301,75 @@ The ODM services are accessible from the following URLs:
 
 IBM Usage Metering Service gathers metrics to monitor compliance and create reports. It captures business value metrics for auditing purposes and to visualize metric usage in reporting tools, and sends the information to IBM Software Central. For more details, see [Collecting and sending usage metrics](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-collecting-sending-usage-metrics)
 
-From ODM 9.6.0 onwards, it is required to install this metering service in the same namespace as ODM. ODM will systematically reports usage metrics to the metering service through a CronJob. If the service is not installed, the job fails when it runs. For more information about the installation and configuration of UMS, see [Installing the usage metering service](https://www.ibm.com/docs/en/odm/9.6.0?topic=metrics-installing-metering).
+From ODM 9.6.0 onwards, it is required to install this metering service in the same namespace as ODM. ODM will systematically report usage metrics to the metering service through a CronJob. If the service is not installed, the job fails when it runs. For more information about the installation and configuration of UMS, see [Installing the usage metering service](https://www.ibm.com/docs/en/odm/9.6.0?topic=metrics-installing-metering).
 
-#### 7.1.1 Expose IBM Usage Metering service using an ingress. 
+##### 7.1.1. Expose the IBM Usage Metering service using an Ingress 
 
-- Edit the [alb-ums-ingress.yaml](./alb-ums-ingress.yaml) file 
-  - Update `<UMS_NAMESPACE>` with the namespace that you installed UMS
-  - Update `<AWS-ACCOUNTID>` with your AWS Account Id. The certificate is the one that was created in Step 4a.
+Edit the [alb-ums-ingress.yaml](./alb-ums-ingress.yaml) file.
+  - Update `<AWS-AccountId>` with your AWS Account Id. The certificate is the one that was created in Step 4a.
+  - Save the file.
 
-- Save the file
-
-- Run the command to create UMS's Ingress
+Run the command to create UMS's Ingress:
 
 ```bash
 kubectl apply -f alb-ums-ingress.yaml
 ```
 
-- Run the following command to see the status of Ingress instance:
+Run the following command to see the status of Ingress instance:
 
 ```bash
 kubectl get ingress
 ```
 
-You should be able to see the address and other details about `usage-metering-svc-ingress` instance.
+You should be able to see the address and other details about `usage-metering-svc-ingress` instance:
 
 ```bash
 NAME                         CLASS   HOSTS   ADDRESS                                                                PORTS   AGE
 mycompany-odm-ingress        alb      *      abcdefghijklmnopqrstuvqxyz.elb.<aws-region>.amazonaws.com              80      30m
 usage-metering-svc-ingress   alb      *      xxxxxxxyyyyyyzzzzzz.elb.<aws-region>.amazonaws.com                     80      1m
 ```
-- Note down the address of the `usage-metering-svc-ingress` instance. It will be used to retrieve the metering usage report in the next step.
 
-#### Retrieve metering usage
+##### 7.1.2. Retrieve metering usage
 
 To get the Usage Metering report, run the command below:
 
 ```bash
 UMS_TOKEN=$(kubectl get secret ibm-usage-metering-upload-token -n "${NAMESPACE}" -o jsonpath='{.data.token}' 2>/dev/null | base64 -d || echo "")
-
-curl -k --output report.zip \
+UMS_URL=$(kubectl get ingress usage-metering-svc-ingress --no-headers |awk '{print $4}')
+curl -k --output ums-report.zip \
         --header "Authorization: Bearer ${UMS_TOKEN}" \
-        --url "https://xxxxxxxyyyyyyzzzzzz.elb.<aws-region>.amazonaws.com/api/v1/snapshot"
+        --url "https://${UMS_URL}/api/v1/snapshot"
 ```
 
 #### 7.2. Install the IBM License Service
 
-Follow the **Installation** section of the [Installation License Service without Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.14.0?topic=ilsfpcr-installing-license-service-without-operator-lifecycle-manager-olm) documentation, **except for the step 3** which should be replaced by:
+Follow the **Installation** section of the [Installation License Service without Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.x_cd?topic=ilsfpcr-installing-license-service-without-operator-lifecycle-manager-olm) documentation, **except for the step 7** which must be replaced by the following:
 
-> 3. Use `git clone`.
+> 7. Update the License Service instance that was created during installation to accept the license. At the same time, the default gateway configuration must be deactivated. We will create an Ingress that is adapted for AWS Load Balancer controller.
+> - Create the `accept-license.yaml` file with the following content:
 >
 >```bash
->export operator_release_version=4.2.20
->git clone -b ${operator_release_version} https://github.com/IBM/ibm-licensing-operator.git
->cd ibm-licensing-operator/
+>spec:
+>  gatewayEnabled: false
+>  license:
+>    accept: true
+>```
+> 
+> - Patch the IBM Licensing instance
+>```bash
+>kubectl patch IBMLicensing instance --type merge --patch-file accept-license.yaml
 >```
 
-###### 7.2.1. Patch the IBM Licensing instance
+##### 7.2.1. Expose the IBM Licensing service using an Ingress
 
-Get the [licensing-instance.yaml](./licensing-instance.yaml) file and run the command:
+Edit the [alb-ils-ingress.yaml](./alb-ils-ingress.yaml) file.
+  - Update `<AWS-AccountId>` with your AWS Account Id. The certificate is the one that was created in Step 4a.
+  - Save the file.
+
+Run the following command to create the ingress:
 
 ```bash
-kubectl patch IBMLicensing instance --type merge --patch-file licensing-instance.yaml -n ibm-licensing
+kubectl apply -f alb-ils-ingress.yaml -n ibm-licensing
 ```
 
 Wait a couple of minutes for the changes to be applied. 
@@ -372,15 +380,14 @@ Run the following command to see the status of Ingress instance:
 kubectl get ingress -n ibm-licensing
 ```
 
-You should be able to see the address and other details about `ibm-licensing-service-instance`.
+You should be able to see the address and other details about `ibm-licensing-svc-ingress`.
 ```
 NAME                             CLASS   HOSTS   ADDRESS                                                                 PORTS   AGE
-ibm-licensing-service-instance   alb     *       k8s-ibmlicen-ibmlicen-xxxxxxxx-yyyyyyy.<aws-region>.elb.amazonaws.com   80      44m
+ibm-licensing-svc-ingress        alb     *       k8s-ibmlicen-ibmlicen-xxxxxxxx-yyyyyyy.<aws-region>.elb.amazonaws.com   80      44m
 ```
-You can find more information and use cases on [this page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.14.0?topic=configuring-kubernetes-ingress).
 
 > **Note**
-> If you choose to use the NGINX Ingress Controller, you must use the [licensing-instance-nginx.yaml](./licensing-instance-nginx.yaml) file. Refer to [Install IBM License Service](README-NGINX.md#install-ibm-license-service) for NGINX.
+> If you choose to use the AWS Load Balancer with Gateway API, refer to [Deploying IBM Operational Decision Manager with AWS Load Balancer Controller supporting Gateway API on Amazon EKS](README-GATEWAY-API.md) tutorial.
 
 > **NGINX Ingress Controller (Deprecated):** The [NGINX Ingress Controller deployment guide](README-NGINX.md) is deprecated and will be removed in the coming months. For more information, see [Ingress NGINX Retirement: What You Need to Know](https://kubernetes.io/blog/2025/11/11/ingress-nginx-retirement/).
 
@@ -389,21 +396,18 @@ You can find more information and use cases on [this page](https://www.ibm.com/d
 The ALB address should be reflected in the Ingress configuration. You will be able to access the IBM License Service by retrieving the URL with this command:
 
 ```bash
-export LICENSING_URL=$(kubectl get ingress ibm-licensing-service-instance -n ibm-licensing -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+export LICENSING_URL=$(kubectl get ingress ibm-licensing-svc-ingress -n ibm-licensing -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
 export TOKEN=$(kubectl get secret ibm-licensing-token -n ibm-licensing -o jsonpath='{.data.token}' |base64 -d)
-echo http://${LICENSING_URL}/status?token=${TOKEN}
+echo https://${LICENSING_URL}/status?token=${TOKEN}
 ```
 
-> **Note**
-> If `LICENSING_URL` is empty, take a look at the [troubleshooting](#troubleshooting) section.
-
-You can access the `http://${LICENSING_URL}/status?token=${TOKEN}` URL to view the licensing usage or retrieve the licensing report .zip file by running:
+You can access the `https://${LICENSING_URL}/status?token=${TOKEN}` URL to view the licensing usage or retrieve the licensing report .zip file by running:
 
 ```bash
-curl "http://${LICENSING_URL}/snapshot?token=${TOKEN}" --output report.zip
+curl -k "https://${LICENSING_URL}/snapshot?token=${TOKEN}" --output report.zip
 ```
 
-#### 7.2.3. Reporting license usage to IBM Software Central
+##### 7.2.3. Reporting license usage to IBM Software Central
 
 IBM License Service can optionally send collected license usage data directly to IBM Software Central. For more information about the configuration, see [Reporting license usage to IBM Software Central](https://www.ibm.com/docs/en/odm/9.6.0?topic=metering-reporting-license-usage-software-central).
 
@@ -423,8 +427,6 @@ IBM License Service can optionally send collected license usage data directly to
 
   Check the ALB configuration if you get a message like:
   `"msg"="Reconciler error" "error"="failed to reconcile ...`
-
-  For more information, refer to [Using a Network Load Balancer with the NGINX Ingress Controller on Amazon EKS](https://aws.amazon.com/blogs/opensource/network-load-balancer-nginx-ingress-controller-eks/).
 
 ## Getting Started with IBM Operational Decision Manager for Containers
 
