@@ -134,7 +134,7 @@ From ODM 9.6.0 onwards, it is required to install this metering service in the s
 Edit the [ums-gateway-api.yaml](./ums-gateway-api.yaml) file and replace the `<AWS-AccountId>` placeholder with your account ID. This can be found at the `defaultCertificate` parameter of `LoadBalancerConfiguration`. Save the file.
 
 > **Note**
->  You can replace the `defaultCertificate` value with the ARN of the digital certificate that you have created in [Manage a  digital certificate](README.md#4-manage-a-digital-certificate-10-min) section. If you have an existing digital certificate in ACM, you can use it instead of creating a new one.
+>  You can replace the `defaultCertificate` value with the ARN of the digital certificate that you have created in [Manage a  digital certificate](README.md#4-manage-adigital-certificate-10-min) section. If you have an existing digital certificate in ACM, you can use it instead of creating a new one.
 
 Run the command to create UMS's gateway:
 
@@ -202,7 +202,7 @@ Follow the **Installation** section of the [Installation License Service without
 Edit the file [ils-gateway-api.yaml](./ils-gateway-api.yaml) and replace the `<AWS-AccountId>` placeholder with your account ID. This can be found at the `defaultCertificate` parameter of `LoadBalancerConfiguration`. Save the file.
 
 > **Note**
->  You can replace the `defaultCertificate` value with the ARN of the digital certificate that you have created in [Manage a  digital certificate](README.md#4-manage-a-digital-certificate-10-min) section. If you have an existing digital certificate in ACM, you can use it instead of creating a new one.
+>  You can replace the `defaultCertificate` value with the ARN of the digital certificate that you have created in [Manage a  digital certificate](README.md#4-manage-adigital-certificate-10-min) section. If you have an existing digital certificate in ACM, you can use it instead of creating a new one.
 
 Run this command to create the Gateway for the License Service instance:
 ```bash
