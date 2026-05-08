@@ -171,8 +171,8 @@ Wait for the Gateway to be programmed to `True` to access the UMS service to ret
 
 To get the Usage Metering report, run the command below:
 ```bash
-UMS_URL=$(kubectl get gateway ums-gateway -o jsonpath='{.status.addresses[*].value}')
-UMS_TOKEN=$(kubectl get secret ibm-usage-metering-upload-token -o jsonpath='{.data.token}' | base64 -d)
+export UMS_URL=$(kubectl get gateway ums-gateway -o jsonpath='{.status.addresses[*].value}')
+export UMS_TOKEN=$(kubectl get secret ibm-usage-metering-upload-token -o jsonpath='{.data.token}' | base64 -d)
 curl -k --output ums-report.zip \
         --header "Authorization: Bearer ${UMS_TOKEN}" \
         --url "https://${UMS_URL}/api/v1/snapshot"
@@ -211,10 +211,10 @@ kubectl apply -f ils-gateway-api.yaml
 
 You should see the Gatewayclass, AWS Load Balancer configuration, Target Group configuration, Gateway and Httproute being created:
 ```bash
-gatewayclass.gateway.networking.k8s.io/ibm-licensing created
+gatewayclass.gateway.networking.k8s.io/ils-alb-gateway-class created
 loadbalancerconfiguration.gateway.k8s.aws/ils-alb-config created
 targetgroupconfiguration.gateway.k8s.aws/ibm-licensing-service-tgc created
-gateway.gateway.networking.k8s.io/ibm-licensing-service-gateway created
+gateway.gateway.networking.k8s.io/ils-gateway created
 httproute.gateway.networking.k8s.io/ibm-licensing-route created
 ```
 
@@ -227,16 +227,16 @@ kubectl get gateway -n ibm-licensing
 ```
 
 You will find the address and other details about `ibm-licensing-service-gateway`.
-```
-NAME                            CLASS           ADDRESS                                                                 PROGRAMMED   AGE
-ibm-licensing-service-gateway   ibm-licensing   k8s-ibmlicen-ibmlicen-xxxxxyyyyzzzzzz.<aws-region>.elb.amazonaws.com    True         1m
+```bash
+NAME          CLASS                   ADDRESS                                                                   PROGRAMMED   AGE
+ils-gateway   ils-alb-gateway-class   k8s-ibmlicen-ilsgatew-3xxxxxyyyyzzzzzz.<aws-region>.elb.amazonaws.com     True         3m30s
 ```
 
 When the Gateway is programmed (set to `True`), you will be able to access the IBM License Service by retrieving the URL with this command:
 
 ```bash
 export TOKEN=$(kubectl get secret ibm-licensing-token -n ibm-licensing -o jsonpath='{.data.token}' |base64 -d)
-export LICENSING_URL=$(kubectl get gateway ibm-licensing-service-gateway -n ibm-licensing -o jsonpath='{.status.addresses[*].value}')/ibm-licensing-service-instance
+export LICENSING_URL=$(kubectl get gateway ils-gateway -n ibm-licensing -o jsonpath='{.status.addresses[*].value}')/ibm-licensing-service-instance
 echo https://${LICENSING_URL}/status?token=${TOKEN}
 ```
 

@@ -308,14 +308,14 @@ From ODM 9.6.0 onwards, it is required to install this metering service in the s
 
 ##### 7.1.1. Expose the IBM Usage Metering service using an ingress 
 
-Edit the [alb-ums-ingress.yaml](./alb-ums-ingress.yaml) file.
+Edit the [ums-alb-ingress.yaml](./ums-alb-ingress.yaml) file.
   - Update `<AWS-AccountId>` with your AWS Account Id. The certificate is the one that was created in Step 4a.
   - Save the file.
 
 Run the command to create UMS's Ingress:
 
 ```bash
-kubectl apply -f alb-ums-ingress.yaml
+kubectl apply -f ums-alb-ingress.yaml
 ```
 
 Run the following command to see the status of Ingress instance:
@@ -337,8 +337,8 @@ usage-metering-svc-ingress   alb      *      xxxxxxxyyyyyyzzzzzz.elb.<aws-region
 To get the Usage Metering report, run the command below:
 
 ```bash
-UMS_TOKEN=$(kubectl get secret ibm-usage-metering-upload-token -n "${NAMESPACE}" -o jsonpath='{.data.token}' 2>/dev/null | base64 -d || echo "")
-UMS_URL=$(kubectl get ingress usage-metering-svc-ingress --no-headers |awk '{print $4}')
+export UMS_TOKEN=$(kubectl get secret ibm-usage-metering-upload-token -n "${NAMESPACE}" -o jsonpath='{.data.token}' 2>/dev/null | base64 -d || echo "")
+export UMS_URL=$(kubectl get ingress usage-metering-svc-ingress --no-headers |awk '{print $4}')
 curl -k --output ums-report.zip \
         --header "Authorization: Bearer ${UMS_TOKEN}" \
         --url "https://${UMS_URL}/api/v1/snapshot"
@@ -365,14 +365,14 @@ Follow the **Installation** section of the [Installation License Service without
 
 ##### 7.2.1. Expose the IBM Licensing service using an ingress
 
-Edit the [alb-ils-ingress.yaml](./alb-ils-ingress.yaml) file.
+Edit the [ils-alb-ingress.yaml](./ils-alb-ingress.yaml) file.
   - Update `<AWS-AccountId>` with your AWS Account Id. The certificate is the one that was created in Step 4a.
   - Save the file.
 
 Run the following command to create the ingress:
 
 ```bash
-kubectl apply -f alb-ils-ingress.yaml -n ibm-licensing
+kubectl apply -f ils-alb-ingress.yaml -n ibm-licensing
 ```
 
 Wait a couple of minutes for the changes to be applied. 
