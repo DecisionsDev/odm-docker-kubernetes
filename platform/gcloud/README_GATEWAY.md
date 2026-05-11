@@ -6,7 +6,7 @@ The ODM services will be exposed using the Gateway API provided by GKE's native 
 This deployment implements Kubernetes and Docker technologies.
 Here is the Google Cloud home page: <https://cloud.google.com>
 
-![Architecture](images/architecture.png)
+![Architecture](images/architecture-gateway.png)
 
 The ODM on Kubernetes Docker images are available in the [IBM Entitled Registry](https://www.ibm.com/cloud/container-registry). The ODM Helm chart is available in the [IBM Helm charts repository](https://github.com/IBM/charts).
 
@@ -101,12 +101,9 @@ Regions and zones (used below) can be listed respectively with `gcloud compute r
   ```shell
   gcloud container clusters create <CLUSTER_NAME> \
     --release-channel=regular --cluster-version=1.34 \
-    --enable-autoscaling --num-nodes=6 --total-min-nodes=1 --total-max-nodes=16
+    --enable-autoscaling --num-nodes=6 --total-min-nodes=1 --total-max-nodes=16 --gateway-api=standard
   ```
 
-> [!NOTE]
-> If you get a red warning about a missing gke-gcloud-auth-plugin, install it with `gcloud components install gke-gcloud-auth-plugin`.
-> For Kubernetes versions lower than 1.26 you have to enable it for each kubectl command with `export USE_GKE_GCLOUD_AUTH_PLUGIN=True` ([more information](https://cloud.google.com/blog/products/containers-kubernetes/kubectl-auth-changes-in-gke)).
 > [!NOTE]
 > You can also create your cluster from the Google Cloud Platform using the **Kubernetes Engine** > **Clusters** panel and clicking the **Create** button
 > ![Create cluster](images/create_cluster.png)
@@ -236,7 +233,7 @@ The certificate must be the same as the one you used to enable TLS connections i
 The ODM services will be exposed with an Ingress that uses the previously created `mynicecompany` certificate.
 It automatically creates an HTTPS GKE load balancer. We will disable the ODM internal TLS as it is not needed.
 
-- Get the [gcp-values.yaml](./gcp-values.yaml) file and replace the following key:
+- Get the [gcp-values-gateway.yaml](./ggp-values-gateway.yaml) file and replace the following key:
 
   - `<DB_ENDPOINT>`: the database IP
 
@@ -246,13 +243,13 @@ It automatically creates an HTTPS GKE load balancer. We will disable the ODM int
 - Install the chart from IBM's public Helm charts repository:
 
   ```shell
-  helm install <release> ibm-helm/ibm-odm-prod -f gcp-values.yaml --set service.ingress.enabled=false
+  helm install <release> ibm-helm/ibm-odm-prod -f gcp-values-gateway.yaml
   ```
 
 Example:
 
   ```shell
-  helm install myodmsample ibm-helm/ibm-odm-prod -f gcp-values.yaml --set service.ingress.enabled=false
+  helm install myodmsample ibm-helm/ibm-odm-prod -f gcp-values-gateway.yaml 
   ```
 
 
@@ -429,14 +426,33 @@ After installing UMS, choose one of the following configuration modes based on y
 1. **Online Mode** (Recommended): Automatic data transmission to IBM Software Central
 2. **Offline Mode** (Air-gapped): Manual data download and upload process
 
-##### 7.1.1 Usage Metering Service in Offline Mode (Air-gapped Environment)
+##### 7.1.1 Online Mode (Recommended)
 
-In an offline or air-gapped environment, the IBM Usage Metering Service (UMS) cannot connect directly to IBM Software Central. You must manually download the usage data and upload it to Software Central.
+In online mode, the Usage Metering Service automatically sends usage data to IBM Software Central on a scheduled basis. This is the recommended configuration for environments with internet connectivity.
 
-**Prerequisites:**
-- IBM Entitlement Key (IEK) for authentication
-- Network access to IBM Software Central from the machine performing the upload
-- `kubectl` access to the cluster
+**Key Features:**
+- Automatic data transmission every 24 hours
+- No manual intervention required after initial setup
+- Automatic retry on transmission failures
+
+**Configuration Requirements:**
+- IBM Entitlement Key (required for authentication)
+- Network connectivity to IBM Software Central (`swc.saas.ibm.com`)
+
+For complete step-by-step instructions on configuring online mode, refer to:
+
+📖 **[Automatic data transmission to IBM Software Central](https://ibmdocs-test.dcs.ibm.com/docs/en/SSQP76_9.6.0/com.ibm.odm.kube/topics/tsk_online_mode.html)**
+
+This documentation covers:
+- Creating the IBM Entitlement Key secret
+- Configuring the IBMUsageMetering instance
+- Verifying the configuration
+- Monitoring data transmission
+- Troubleshooting common issues
+
+##### 7.1.2 Offline Mode (Air-gapped Environments)
+
+For offline/air-gapped environments where the Usage Metering Service cannot connect directly to IBM Software Central, you need to manually download and upload usage data.
 
 **Step 1: Expose the Usage Metering Service**
 
@@ -445,9 +461,6 @@ Create a LoadBalancer service to expose UMS:
 ```bash
 kubectl apply -f usage-metering-service-loadbalancer.yaml
 ```
-
-> [!NOTE]
-> This creates a LoadBalancer service that exposes the Usage Metering Service externally.
 
 **Step 2: Download Usage Data**
 
@@ -463,150 +476,20 @@ curl -k --output "swc_payload.tar.gz" \
      --url "https://${UMS_URL}:8080/api/v1/snapshot"
 ```
 
-**Step 3: Verify the Downloaded Data**
+For complete instructions on verifying, uploading, and managing offline mode data, refer to:
 
-Extract and inspect the usage data:
+📖 **[Uploading usage metrics to IBM Software Central](https://ibmdocs-test.dcs.ibm.com/docs/en/SSQP76_9.6.0/com.ibm.odm.kube/topics/tsk_upload_metrics.html)**
 
-```bash
-tar xvzf swc_payload.tar.gz
-```
+This documentation covers:
+- Verifying downloaded data
+- Uploading to IBM Software Central
+- Scheduling regular uploads
+- Troubleshooting upload issues
 
-Expected output:
+**Additional Resources:**
 
-```
-x manifest.json
-x usage.json
-```
-
-**Extracted files:**
-- **`manifest.json`**: Metadata about the usage data package
-  - Package version and format information
-  - Data collection period
-  - Checksum for integrity verification
-- **`usage.json`**: Actual usage metrics data
-  - Product usage statistics (number of pods, resources)
-  - Metric collection timestamps and intervals
-  - License consumption details
-
-**Step 4: Upload Data to IBM Software Central**
-
-Upload the usage data to IBM Software Central:
-
-```bash
-curl -X POST "https://swc.saas.ibm.com/metering/api/v2/metrics" \
-     -H "Authorization: Bearer <IEK>" \
-     -F "file=@swc_payload.tar.gz;type=application/gzip"
-```
-
-**Parameters:**
-- `<IEK>`: Your IBM Entitlement Key (obtain from [IBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary))
-
-**Step 5: Verify Upload**
-
-Verify the usage data in the IBM Software Central portal:
-- Navigate to: https://swc.saas.ibm.com/en-us/software-central
-- Check the usage reports section for your uploaded data
-
-> [!TIP]
-> Schedule this process regularly (e.g., monthly) to ensure compliance reporting is up to date.
-
-
-##### 7.1.2 Usage Metering Service in Online Mode (Recommended)
-
-In online mode, the Usage Metering Service automatically sends usage data to IBM Software Central on a scheduled basis. This is the recommended configuration for environments with internet connectivity.
-
-**Default Behavior:**
-- Usage data is automatically sent every 24 hours at **12:05 AM UTC**
-- No manual intervention required after initial setup
-- Automatic retry on transmission failures
-
-**Prerequisites:**
-- IBM Entitlement Key (IEK) - **REQUIRED**
-- Network connectivity to IBM Software Central (`swc.saas.ibm.com`)
-- UMS installed and running in the same namespace as ODM
-
-> [!IMPORTANT]
-> An IBM Entitlement Key (IEK) is **REQUIRED** to configure Software Central integration. The key authenticates requests to Software Central and associates usage data with your client information.
-
-**Step 1: Create Entitlement Key Secret**
-
-Store your IBM Entitlement Key as a Kubernetes secret:
-
-```bash
-export NAMESPACE=<namespace>
-export ENTITLEMENT_SECRET_NAME=entitlement-secret
-export ENTITLEMENT_KEY_VALUE=<your_entitlement_key>
-
-kubectl create secret generic ${ENTITLEMENT_SECRET_NAME} \
-    --from-literal=token=${ENTITLEMENT_KEY_VALUE} \
-    -n ${NAMESPACE}
-```
-
-> [!TIP]
-> Obtain your IBM Entitlement Key from the [IBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary).
-
-**Step 2: Configure Automatic Data Transmission**
-
-Patch the IBMUsageMetering instance to enable automatic data transmission:
-
-```bash
-kubectl patch IBMUsageMetering ibm-usage-metering-instance \
-    -n ${NAMESPACE} \
-    --type=merge \
-    -p "{
-        \"spec\": {
-            \"sender\": {
-                \"softwareCentral\": {
-                    \"enable\": true,
-                    \"entitlementKeySecret\": \"${ENTITLEMENT_SECRET_NAME}\",
-                    \"anonymize\": false
-                }
-            }
-        }
-    }"
-```
-
-**Configuration Parameters:**
-- `enable`: Set to `true` to activate automatic transmission
-- `entitlementKeySecret`: Name of the secret containing your IEK
-
-
-**Step 3: Verify Configuration**
-
-Check that the configuration was applied successfully:
-
-```bash
-kubectl get IBMUsageMetering ibm-usage-metering-instance -n ${NAMESPACE} -o yaml
-```
-
-Look for the `sender.softwareCentral` section in the output to confirm your settings.
-
-**Step 4: Monitor Data Transmission**
-
-Monitor the UMS logs to verify successful data transmission:
-
-```bash
-kubectl logs -n ${NAMESPACE} -l app.kubernetes.io/name=ibm-usage-metering-instance --tail=100
-```
-
-Look for log entries indicating successful uploads to Software Central.
-
-**Verification:**
-
-After the first scheduled transmission (or wait up to 24 hours), verify your usage data in IBM Software Central:
-- Navigate to: https://swc.saas.ibm.com/en-us/software-central
-- Check the usage reports section for your product
-
-> [!NOTE]
-> The first data transmission occurs at the next scheduled time (12:05 AM UTC). You can also trigger an immediate transmission by restarting the UMS pod.
-
-**Troubleshooting:**
-
-If data transmission fails:
-1. Verify network connectivity to `swc.saas.ibm.com`
-2. Confirm the entitlement key is valid and not expired
-3. Check UMS pod logs for error messages
-4. Ensure the secret name matches the configuration
+For general information about collecting and sending usage metrics, see:
+📖 **[Collecting and sending usage metrics](https://ibmdocs-test.dcs.ibm.com/docs/en/odm/9.6.0?topic=production-collecting-sending-usage-metrics)**
 
 #### 7.2 Install the IBM License Service
 
