@@ -191,4 +191,4 @@ The related instructions in the online documentation are:
   ```
 
   > **Note:**
-  > By using `eks-values.yaml`, ODM with a PostgreSQL internal database will be installed. It requires an ALB ingress controller and a server certificate. For more information, see [Provision an AWS Load Balancer Controller](README.md#d-provision-an-aws-load-balancer-controller) and [Manage a digital certificate](README.md#4-manage-a-digital-certificate-10-min).
+  > By using `eks-values.yaml`, ODM with a PostgreSQL internal database will be installed. It requires an ALB ingress controller and a server certificate. For more information, see [Provision an AWS Load Balancer Controller](README.md#d-provision-an-aws-load-balancer-controller) and [Manage a digital certificate](README.md#4-manage-adigital-certificate-10-min).
