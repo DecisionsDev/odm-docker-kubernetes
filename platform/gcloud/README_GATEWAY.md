@@ -301,10 +301,11 @@ Apply the Gateway configuration:
 kubectl apply -f odm-gateway.yaml
 ```
 
-This command creates:
-- A Gateway resource that provisions a GKE external load balancer
-- An HTTPRoute that routes traffic to the appropriate ODM services
-- HealthCheckPolicy resources for Decision Center, Decision Server Console, Decision Server Runtime, and Decision Runner
+The Gateway will create a new GKE load balancer with the following characteristics:
+- Uses the `gke-l7-global-external-managed` Gateway class for global external load balancing
+- Terminates HTTPS using the `mynicecompany-tls-secret` certificate
+- Routes traffic to ODM services based on URL paths
+- Implements custom health checks for each ODM component
 
 You can check the Gateway status with:
 
@@ -320,42 +321,10 @@ When the Gateway shows a *Programmed* status, all ODM services are accessible.
 > [!NOTE]
 > The Gateway API automatically handles session affinity for Decision Center through the HealthCheckPolicy configuration, eliminating the need for manual BackendConfig annotations.
 
-
-##### Apply the Gateway configuration
-
-The [odm-gateway.yaml](./odm-gateway.yaml) file contains:
-- A Gateway resource that configures the GKE load balancer with HTTPS termination
-- An HTTPRoute resource that defines routing rules for all ODM services
-- HealthCheckPolicy resources for each ODM component to ensure proper health monitoring
-
-Before applying the configuration, update the file to match your release name:
-
-- Replace `myodmsample` with your actual Helm release name in the following resources:
-  - Gateway metadata name
-  - HTTPRoute backend service names
-  - HealthCheckPolicy service names
-
-Apply the Gateway configuration:
-
-```shell
-kubectl apply -f odm-gateway.yaml
-```
-
-The Gateway will create a new GKE load balancer with the following characteristics:
-- Uses the `gke-l7-global-external-managed` Gateway class for global external load balancing
-- Terminates HTTPS using the `mynicecompany-tls-secret` certificate
-- Routes traffic to ODM services based on URL paths
-- Implements custom health checks for each ODM component
-
-You can check the Gateway status with:
-
-```shell
-kubectl get gateway myodmsample-odm-gateway
-kubectl get httproute myodmsample-odm-httproute
-```
-
 > [!NOTE]
 > The Gateway API configuration is the recommended approach for this deployment. If you prefer to use the traditional Ingress approach instead, please refer to the main [README.md](README.md).
+
+
 
 ### 6. Access ODM services
 
@@ -410,7 +379,7 @@ The IBM Usage Metering Service (UMS) is a critical component that gathers metric
 
 **Installation:**
 
-For detailed installation and configuration instructions, see [Installing the usage metering service](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-installing-metering).
+For detailed installation and configuration instructions, see [Installing the usage metering service](https://www.ibm.com/docs/en/odm/9.6.0?topic=metrics-installing-metering).
 
 **Troubleshooting:**
 
@@ -441,7 +410,7 @@ In online mode, the Usage Metering Service automatically sends usage data to IBM
 
 For complete step-by-step instructions on configuring online mode, refer to:
 
-📖 **[Automatic data transmission to IBM Software Central](https://ibmdocs-test.dcs.ibm.com/docs/en/SSQP76_9.6.0/com.ibm.odm.kube/topics/tsk_online_mode.html)**
+📖 **[Automatic data transmission to IBM Software Central](https://www.ibm.com/docs/en/odm/9.6.0?topic=metrics-automatic-data-transmission)**
 
 This documentation covers:
 - Creating the IBM Entitlement Key secret
@@ -467,18 +436,19 @@ kubectl apply -f usage-metering-service-loadbalancer.yaml
 Retrieve the metering service data from the LoadBalancer:
 
 ```bash
+
 export NAMESPACE=<namespace>
-UMS_TOKEN=$(kubectl get secret ibm-usage-metering-upload-token -n "${NAMESPACE}" -o jsonpath='{.data.token}' 2>/dev/null | base64 -d || echo "")
 UMS_URL=$(kubectl get service ibm-usage-metering-instance-loadbalancer -n "${NAMESPACE}" -o jsonpath='{.status.loadBalancer.ingress[0].ip}' 2>/dev/null || echo "")
 
+UMS_TOKEN=$(kubectl get secret ibm-usage-metering-upload-token -n "${NAMESPACE}" -o jsonpath='{.data.token}' 2>/dev/null | base64 -d || echo "")
 curl -k --output "swc_payload.tar.gz" \
      --header "Authorization: Bearer ${UMS_TOKEN}" \
-     --url "https://${UMS_URL}:8080/api/v1/snapshot"
+     --url "https://${UMS_URL}:8080/api/v1/swc"
 ```
 
 For complete instructions on verifying, uploading, and managing offline mode data, refer to:
 
-📖 **[Uploading usage metrics to IBM Software Central](https://ibmdocs-test.dcs.ibm.com/docs/en/SSQP76_9.6.0/com.ibm.odm.kube/topics/tsk_upload_metrics.html)**
+📖 **[Uploading usage metrics to IBM Software Central](https://www.ibm.com/docs/en/odm/9.6.0?topic=metrics-uploading-usage-software-central)**
 
 This documentation covers:
 - Verifying downloaded data
@@ -489,7 +459,7 @@ This documentation covers:
 **Additional Resources:**
 
 For general information about collecting and sending usage metrics, see:
-📖 **[Collecting and sending usage metrics](https://ibmdocs-test.dcs.ibm.com/docs/en/odm/9.6.0?topic=production-collecting-sending-usage-metrics)**
+📖 **[Collecting and sending usage metrics](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-collecting-sending-usage-metrics)**
 
 #### 7.2 Install the IBM License Service
 
@@ -500,7 +470,7 @@ Follow the instructions in the **Installation** section of the [Manual installat
 
 ##### 7.2.1 Create the IBM Licensing instance
 
-Get the [licensing-instance.yaml](./licensing-instance.yaml) file and run the following command:
+Get the [licensing-instance-gateway.yaml](./licensing-instance-gateway.yaml) file and run the following command:
 
 ```shell
 kubectl apply -f licensing-instance-gateway.yaml -n ibm-licensing
@@ -555,101 +525,17 @@ If your IBM License Service instance is not running properly, refer to this [tro
 
 ##### 7.2.4 Reporting License Usage to IBM Software Central
 
-IBM License Service (ILS) can optionally send collected license usage data directly to [IBM Software Central](https://swc.saas.ibm.com) (SWC). This enables you to view aggregated license usage across clusters in the Software Central UI and analytics dashboards.
+For complete information about reporting license usage to IBM Software Central, refer to the official documentation:
 
-This feature is **opt-in**: no product data is sent to Software Central unless explicitly enabled by both the product team (via pod annotation) and the cluster administrator (via IBMLicensing CR configuration).
-
-**How it works:**
-
-ILS collects license usage data from annotated workloads across all namespaces. Only products that have explicitly opted in are included in the upload. Data is transformed into Software Central's format and sent once per day.
-
-Two modes of operation are supported:
-- **Online mode**: ILS automatically uploads data to Software Central on a configurable schedule (default: daily at 00:05 UTC)
-- **Offline mode**: For airgapped environments, ILS exposes an API endpoint to download a data package for manual upload
-
-###### Prerequisites
-
-- IBM Entitlement Key (IEK) for authentication with Software Central
-- Network connectivity to `swc.saas.ibm.com` (for online mode)
-- IBM License Service installed and running
+📖 **[Reporting License Usage to IBM Software Central](https://www.ibm.com/docs/en/odm/9.6.0?topic=metering-reporting-license-usage-software-central)**
 
 ###### Online Mode Configuration
 
-**Step1: Create the IBM Entitlement Key secret**
+For detailed steps on configuring online mode (automatic data transmission), including creating the IBM Entitlement Key secret, configuring the IBMLicensing Custom Resource, and verifying the setup, refer to the [online mode documentation](https://www.ibm.com/docs/en/odm/9.6.0?topic=metering-reporting-license-usage-software-central).
 
-Create a Kubernetes secret in the `ibm-licensing` namespace containing your IBM Entitlement Key:
+###### Offline Mode (Air-gapped Environments)
 
-```bash
-export ENTITLEMENT_KEY=<your_ibm_entitlement_key>
-
-kubectl create secret generic ibm-swc-entitlement-key \
-    --from-literal=entitlementKey=${ENTITLEMENT_KEY} \
-    -n ibm-licensing
-```
-
-> [!TIP]
-> Obtain your IBM Entitlement Key from the [IBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary).
-
-**Step 2: Configure the IBMLicensing Custom Resource**
-
-Update the `IBMLicensing` CR to enable Software Central integration:
-
-```bash
-kubectl patch IBMLicensing instance \
-    -n ibm-licensing \
-    --type=merge \
-    -p '{
-        "spec": {
-            "softwareCentral": {
-                "enable": true,
-                "entitlementKeySecret": "ibm-swc-entitlement-key",
-            }
-        }
-    }'
-```
-
-**Configuration parameters:**
-
-| Parameter | Type | Default | Description |
-|---|---|---|---|
-| `enable` | bool | `false` | Master switch for Software Central integration |
-| `entitlementKeySecret` | string | — | Name of the Kubernetes secret containing the IBM Entitlement Key (required) |
-
-**Step 3: Verify configuration**
-
-Check that the configuration was applied successfully:
-
-```bash
-kubectl get IBMLicensing instance -n ibm-licensing -o yaml
-```
-
-Look for the `softwareCentral` section in the output to confirm your settings.
-
-**Step 4: Monitor data transmission**
-
-Monitor the IBM License Service logs to verify successful data transmission:
-
-```bash
-kubectl logs -n ibm-licensing -l app.kubernetes.io/name=ibm-licensing-service-instance --tail=100
-```
-
-Look for log entries indicating successful uploads to Software Central.
-
-**Step 5: Verify in IBM Software Central**
-
-After the first scheduled transmission (or wait up to 24 hours), verify your license usage data:
-
-1. Navigate to: https://swc.saas.ibm.com/en-us/software-central
-2. Log in with your IBM ID
-3. Check the usage reports section for your product data
-
-###### Offline Mode (Airgapped Environments)
-
-In airgapped environments where ILS cannot directly connect to Software Central, you can download the data and manually upload it.
-
-**Step 1: Download the usage data**
-
-Access the IBM License Service API endpoint to download usage data:
+For air-gapped environments where ILS cannot directly connect to Software Central, download the usage data using the Gateway-specific commands below:
 
 ```bash
 export LICENSING_URL=$(kubectl get gateway ils-gateway -n ibm-licensing -o jsonpath='{.status.addresses[0].value}')/ibm-licensing-service-instance
@@ -659,57 +545,7 @@ curl --insecure --output "swc_payload.tar.gz" \
      "https://${LICENSING_URL}/swc_aggregations?token=${TOKEN}"
 ```
 
-**Step 2: Transfer and upload to Software Central**
-
-1. Transfer the downloaded `swc_payload.tar.gz` file to a system with access to Software Central
-2. Upload the file to Software Central:
-
-```bash
-export ENTITLEMENT_KEY=<your_ibm_entitlement_key>
-export SWC_URL=swc.saas.ibm.com  # Use sandbox.swc.saas.ibm.com for testing
-
-curl -X POST "https://${SWC_URL}/metering/api/v2/metrics" \
-     -H "Authorization: Bearer ${ENTITLEMENT_KEY}" \
-     -F "file=@swc_payload.tar.gz;type=application/gzip"
-```
-
-> [!NOTE]
-> When `spec.softwareCentral.enable` is set to `false`, no automatic upload occurs and only the manual download endpoint is available.
-
-###### Metrics Included
-
-Software Central upload covers all contractual metrics already included in the ILS snapshot generation, including:
-- **VPC** (Virtual Processor Core)
-- **PVU** (Processor Value Unit)
-- **GPGPU** (General Purpose Graphics Processing Unit)
-
-###### Troubleshooting
-
-If data transmission fails:
-
-1. **Verify network connectivity to Software Central:**
-   ```bash
-   kubectl run -it --rm debug --image=curlimages/curl --restart=Never -n ibm-licensing -- \
-       curl -I https://swc.saas.ibm.com/metering/api/v2/metrics
-   ```
-
-2. **Confirm the entitlement key is valid:**
-   ```bash
-   kubectl get secret ibm-swc-entitlement-key -n ibm-licensing -o jsonpath='{.data.entitlementKey}' | base64 -d
-   ```
-
-3. **Check IBM License Service pod logs for errors:**
-   ```bash
-   kubectl logs -n ibm-licensing -l app.kubernetes.io/name=ibm-licensing-service-instance --tail=200
-   ```
-
-4. **Verify the IBMLicensing instance configuration:**
-   ```bash
-   kubectl describe IBMLicensing instance -n ibm-licensing
-   ```
-
-> [!NOTE]
-> Failed uploads are retried automatically up to 3 times using exponential backoff. Upload failures do not affect ILS core functionality or license compliance reporting.
+For complete instructions on transferring and uploading the downloaded file to Software Central, refer to the [offline mode documentation](https://www.ibm.com/docs/en/odm/9.6.0?topic=metering-reporting-license-usage-software-central).
 
 
 
