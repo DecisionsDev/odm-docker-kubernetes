@@ -233,7 +233,7 @@ The certificate must be the same as the one you used to enable TLS connections i
 The ODM services will be exposed with an Ingress that uses the previously created `mynicecompany` certificate.
 It automatically creates an HTTPS GKE load balancer. We will disable the ODM internal TLS as it is not needed.
 
-- Get the [gcp-values-gateway.yaml](./ggp-values-gateway.yaml) file and replace the following key:
+- Get the [gcp-values-gateway.yaml](./gcp-values-gateway.yaml) file and replace the following key:
 
   - `<DB_ENDPOINT>`: the database IP
 
