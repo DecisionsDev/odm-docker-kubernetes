@@ -6,7 +6,7 @@ spec:
   apiSecretToken: ibm-licensing-token
   datasource: datacollector
   httpsEnable: false
-  ingressEnabled: true
+  ingressEnabled: false
   ingressOptions:
     annotations:
       ingress.kubernetes.io/rewrite-target: /

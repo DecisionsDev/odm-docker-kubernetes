@@ -350,40 +350,100 @@ We only have to manage a configuration to simulate the mynicecompany.com access.
 
 ### 7. Track ODM usage
 
-### 7.1 Install the IBM Usage Metering service
+#### 7.1 Install the IBM Usage Metering Service
 
-IBM Usage Metering Service gathers metrics to monitor compliance and create reports. It captures business value metrics for auditing purposes and to visualize metric usage in reporting tools, and sends the information to IBM Software Central.
+The IBM Usage Metering Service (UMS) is a critical component that gathers metrics to monitor compliance and create reports. It captures business value metrics for auditing purposes, visualizes metric usage in reporting tools, and sends the information to IBM Software Central.
 
-From ODM 9.6.0 onwards, it is required to install this metering service in the same namespace as ODM. ODM will systematically reports usage metrics to the metering service through a CronJob. If the service is not installed, the job fails when it runs. For more information about the installation and configuration of UMS, see [Installing the usage metering service](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-installing-metering).
+**Prerequisites:**
+- Cluster-admin permissions or appropriate RBAC roles
+- Target namespace must exist before installation
+- ODM 9.6.0 or later installed
 
-To expose the IBM Usage Metering service using the GKE LoadBalancer:
+**Important Requirements:**
+- From ODM 9.6.0 onwards, UMS **must** be installed in the same namespace as ODM
+- ODM reports usage metrics to UMS through a scheduled CronJob
+- If UMS is not installed, the CronJob will fail when it runs
 
+**Installation:**
 
-1. run
+For detailed installation and configuration instructions, see [Installing the usage metering service](https://www.ibm.com/docs/en/odm/9.6.0?topic=metrics-installing-metering).
 
-    ```bash
-    kubectl apply -f usage-metering-service-loadbalancer.yaml
-    ```
-This will create a LoadBalancer service exposing the Usage Metering Service.
+**Troubleshooting:**
 
-### Retrieve metering usage
+If the CronJob fails, check the pod logs:
+```bash
+kubectl logs -n <namespace> -l job-name=<cronjob-name>
+```
 
-To get the Usage Metering report:
+**Configuration Options:**
 
-1. run the command below to get the external IP address of the UMS service (if you just created the service and the IP address is not set, try again after a while):
+After installing UMS, choose one of the following configuration modes based on your environment:
 
-    ```bash
-    EXTERNAL_IP=$(kubectl get service ibm-usage-metering-instance-loadbalancer -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-    echo "EXTERNAL_IP=${EXTERNAL_IP}"
-    ```
+1. **Online Mode** (Recommended): Automatic data transmission to IBM Software Central
+2. **Offline Mode** (Air-gapped): Manual data download and upload process
 
-1. run:
-    ```bash
-    UMS_TOKEN=$(kubectl get secret ibm-usage-metering-upload-token -n "${NAMESPACE}" -o jsonpath='{.data.token}' 2>/dev/null | base64 -d || echo "")
-    curl -k --output report.zip \
-          --header "Authorization: Bearer ${UMS_TOKEN}" \
-          --url "https://${EXTERNAL_IP}:8080/api/v1/snapshot"
-    ```
+##### 7.1.1 Online Mode (Recommended)
+
+In online mode, the Usage Metering Service automatically sends usage data to IBM Software Central on a scheduled basis. This is the recommended configuration for environments with internet connectivity.
+
+**Key Features:**
+- Automatic data transmission every 24 hours
+- No manual intervention required after initial setup
+- Automatic retry on transmission failures
+
+**Configuration Requirements:**
+- IBM Entitlement Key (required for authentication)
+- Network connectivity to IBM Software Central (`swc.saas.ibm.com`)
+
+For complete step-by-step instructions on configuring online mode, refer to:
+
+📖 **[Automatic data transmission to IBM Software Central](https://www.ibm.com/docs/en/odm/9.6.0?topic=metrics-automatic-data-transmission)**
+
+This documentation covers:
+- Creating the IBM Entitlement Key secret
+- Configuring the IBMUsageMetering instance
+- Verifying the configuration
+- Monitoring data transmission
+- Troubleshooting common issues
+
+##### 7.1.2 Offline Mode (Air-gapped Environments)
+
+For offline/air-gapped environments where the Usage Metering Service cannot connect directly to IBM Software Central, you need to manually download and upload usage data.
+
+**Step 1: Expose the Usage Metering Service**
+
+Create a LoadBalancer service to expose UMS:
+
+```bash
+kubectl apply -f usage-metering-service-loadbalancer.yaml
+```
+
+**Step 2: Download Usage Data**
+
+Retrieve the metering service data from the LoadBalancer:
+
+```bash
+export NAMESPACE=<namespace>
+EXTERNAL_IP=$(kubectl get service ibm-usage-metering-instance-loadbalancer -n "${NAMESPACE}" -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+
+UMS_TOKEN=$(kubectl get secret ibm-usage-metering-upload-token -n "${NAMESPACE}" -o jsonpath='{.data.token}' 2>/dev/null | base64 -d || echo "")
+curl -k --output "swc_payload.tar.gz" \
+     --header "Authorization: Bearer ${UMS_TOKEN}" \
+     --url "https://${EXTERNAL_IP}:8080/api/v1/swc"
+```
+
+**Step 3: Upload to IBM Software Central**
+
+After downloading the `swc_payload.tar.gz` file, you need to upload it to IBM Software Central to report your usage metrics. The upload process requires authentication with your IBM ID and must be performed from a machine with internet access.
+
+For detailed instructions on how to upload the usage data file to IBM Software Central, including authentication steps and troubleshooting, refer to:
+
+📖 **[Uploading usage metrics to IBM Software Central](https://www.ibm.com/docs/en/odm/9.6.0?topic=metrics-uploading-usage-software-central)**
+
+**Additional Resources:**
+
+For general information about collecting and sending usage metrics, see:
+📖 **[Collecting and sending usage metrics](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-collecting-sending-usage-metrics)**
 
 #### 7.2 Install the IBM License Service
 
@@ -391,13 +451,6 @@ This section explains how to track ODM usage with the IBM License Service.
 
 Follow the instructions in the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.14.0?topic=ilsfpcr-installing-license-service-without-operator-lifecycle-manager-olm#installation) documentation, **except for the step 3** which should be replaced by:
 
-> 3. Use `git clone`.
->
->```bash
->export operator_release_version=4.2.20
->git clone -b ${operator_release_version} https://github.com/IBM/ibm-licensing-operator.git
->cd ibm-licensing-operator/
->```
 
 #### 7.2.1 Expose the licensing service using the GKE LoadBalancer
 
@@ -450,16 +503,37 @@ export TOKEN=$(kubectl get secret ibm-licensing-token -n ibm-licensing -o jsonpa
 > **Note**
 > If `LICENSING_URL` is empty, take a look at the [troubleshooting](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.14.0?topic=service-troubleshooting-license) page.
 
-You can access the `http://${LICENSING_URL}:8080/status?token=${TOKEN}` URL to view the licensing usage or retrieve the licensing report .zip file by running:
+You can access the `}`http://${LICENSING_URL}:8080/status?token=${TOKEN URL to view the licensing usage or retrieve the licensing report .zip file by running:
 
 ```shell
-curl -k "https://${LICENSING_URL}:8080/snapshot?token=${TOKEN}" --output report.zip
+curl -k "http://${LICENSING_URL}:8080/snapshot?token=${TOKEN}" --output report.zip
 ```
 
 If your IBM License Service instance is not running properly, refer to this [troubleshooting page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.14.0?topic=service-troubleshooting-license).
 
+#### 7.2.4 Reporting License Usage to IBM Software Central
 
-Follow the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.x_cd?topic=ilsfpcr-installing-license-service-without-operator-lifecycle-manager-olm) and stop before it asks you to update the License Service instance. It will be done in the next paragraph.
+For complete information about reporting license usage to IBM Software Central, refer to the official documentation:
+
+📖 **[Reporting License Usage to IBM Software Central](https://www.ibm.com/docs/en/odm/9.6.0?topic=metering-reporting-license-usage-software-central)**
+
+##### Online Mode Configuration
+
+For detailed steps on configuring online mode (automatic data transmission), including creating the IBM Entitlement Key secret, configuring the IBMLicensing Custom Resource, and verifying the setup, refer to the [online mode documentation](https://www.ibm.com/docs/en/odm/9.6.0?topic=metering-reporting-license-usage-software-central).
+
+##### Offline Mode (Air-gapped Environments)
+
+For air-gapped environments where ILS cannot directly connect to Software Central, download the usage data using the LoadBalancer-specific commands below:
+
+```bash
+export LICENSING_URL=$(kubectl get service ibm-licensing-service-instance -n ibm-licensing -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+export TOKEN=$(kubectl get secret ibm-licensing-token -o jsonpath={.data.token} -n ibm-licensing | base64 -d)
+
+curl --insecure --output "swc_payload.tar.gz" \
+     "http://${LICENSING_URL}:8080/swc_aggregations?token=${TOKEN}"
+```
+
+For complete instructions on transferring and uploading the downloaded file to Software Central, refer to the [offline mode documentation](https://www.ibm.com/docs/en/odm/9.6.0?topic=metering-reporting-license-usage-software-central).
 
 
 ## Troubleshooting

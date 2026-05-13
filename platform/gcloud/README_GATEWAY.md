@@ -436,7 +436,6 @@ kubectl apply -f usage-metering-service-loadbalancer.yaml
 Retrieve the metering service data from the LoadBalancer:
 
 ```bash
-
 export NAMESPACE=<namespace>
 UMS_URL=$(kubectl get service ibm-usage-metering-instance-loadbalancer -n "${NAMESPACE}" -o jsonpath='{.status.loadBalancer.ingress[0].ip}' 2>/dev/null || echo "")
 
@@ -446,15 +445,13 @@ curl -k --output "swc_payload.tar.gz" \
      --url "https://${UMS_URL}:8080/api/v1/swc"
 ```
 
-For complete instructions on verifying, uploading, and managing offline mode data, refer to:
+**Step 3: Upload to IBM Software Central**
+
+After downloading the `swc_payload.tar.gz` file, you need to upload it to IBM Software Central to report your usage metrics. The upload process requires authentication with your IBM ID and must be performed from a machine with internet access.
+
+For detailed instructions on how to upload the usage data file to IBM Software Central, including authentication steps and troubleshooting, refer to:
 
 📖 **[Uploading usage metrics to IBM Software Central](https://www.ibm.com/docs/en/odm/9.6.0?topic=metrics-uploading-usage-software-central)**
-
-This documentation covers:
-- Verifying downloaded data
-- Uploading to IBM Software Central
-- Scheduling regular uploads
-- Troubleshooting upload issues
 
 **Additional Resources:**
 
