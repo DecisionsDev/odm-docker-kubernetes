@@ -29,7 +29,7 @@ You can then go back to the main documentation to continue [Step 2: Create an RD
 
 ## Install an ODM release with Gateway API
 
-In this tutorial, you will use [eks-gateway-values.yaml](./eks-gateway-values.yaml) or [eks-rds-gateway-values.yaml](./eks-rds-gateway-values.yaml) file for the installation.
+In this tutorial, you will use [eks-gateway-values.yaml](./eks-gateway-values.yaml) or [eks-rds-gateway-values.yaml](./eks-rds-gateway-values.yaml) file for the installation. We assume that ODM is installed in the namespace `default`.
 
 To install ODM with the AWS RDS PostgreSQL database created in [step 2](README.md#2-create-an-rds-database-10-min):
 
@@ -129,7 +129,37 @@ IBM Usage Metering Service gathers metrics to monitor compliance and create repo
 
 From ODM 9.6.0 onwards, it is required to install this metering service in the same namespace as ODM. ODM will systematically report usage metrics to the metering service through a CronJob. If the service is not installed, the job fails when it runs. For more information about the installation and configuration of UMS, see [Installing the usage metering service](https://www.ibm.com/docs/en/odm/9.6.0?topic=metrics-installing-metering). In this tutorial, we assume that ODM and UMS are installed in the same namespace `default`.
 
-#### Expose the IBM Usage Metering service using a Gateway API
+#### Troubleshooting
+
+If the CronJob fails, check the pod logs:
+```bash
+kubectl logs -n <namespace> -l job-name=<cronjob-name>
+```
+
+#### Data transmission options
+
+After installing the IBM Usage Metering service, choose one of the following modes to transmit the usage metering data based on your environment:
+
+1. **Online mode** (Recommended): Automatic data transmission to IBM Software Central
+2. **Offline mode** (Air-gapped): Manual data download and upload process
+
+##### Online mode (Recommended)
+
+In online mode, the Usage Metering Service automatically sends usage data to IBM Software Central on a scheduled basis every 24 hours. This is the recommended configuration for environments with internet connectivity.
+
+**Configuration requirements**:
+- IBM Entitlement Key (required for authentication).
+- Network connectivity to IBM Software Central (`swc.saas.ibm.com`)
+
+For complete step-by-step instructions on configuring online mode, see [Automatic data transmission to IBM Software Central](https://www.ibm.com/docs/en/odm/9.6.0?topic=metrics-automatic-data-transmission).
+
+#####  Offline mode (Air-gapped environments)
+
+For offline/air-gapped environments where the Usage Metering Service cannot connect directly to IBM Software Central, you need to manually download and upload usage data.
+
+###### Expose the IBM Usage Metering service using a Gateway API
+
+First, you will need to expose the service to have the access.
 
 Edit the [ums-gateway-api.yaml](./ums-gateway-api.yaml) file and replace the `<AWS-AccountId>` placeholder with your account ID. This can be found at the `defaultCertificate` parameter of `LoadBalancerConfiguration`. Save the file.
 
@@ -137,10 +167,10 @@ Edit the [ums-gateway-api.yaml](./ums-gateway-api.yaml) file and replace the `<A
 >  You can replace the `defaultCertificate` value with the ARN of the digital certificate that you have created in [Manage a  digital certificate](README.md#4-manage-adigital-certificate-10-min) section. If you have an existing digital certificate in ACM, you can use it instead of creating a new one.
 
 Run the command to create UMS's gateway:
-
 ```bash
 kubectl apply -f ums-gateway-api.yaml
 ```
+
 You should see the Gatewayclass, AWS Load Balancer configuration, Target Group configuration, Gateway and Httproute being created:
 ```bash
 gatewayclass.gateway.networking.k8s.io/ums-alb-gateway-class created
@@ -153,13 +183,12 @@ httproute.gateway.networking.k8s.io/usage-metering-route created
 Wait a couple of minutes for the gateway to be programmed. 
 
 Run this command to see the status of Gateway instance:
-
 ```bash
 kubectl get gateway
 ```
 
 You will find the address and other details about the gateway pertaining to UMS `ums-gateway`.
-``` bash
+```bash
 NAME          CLASS                   ADDRESS                                                                  PROGRAMMED   AGE
 odm-gateway   odm-alb-gateway-class   k8s-default-odmgatew-abcdefgh-123456789.<aws-region>.elb.amazonaws.com   True         20m
 ums-gateway   ums-alb-gateway-class   k8s-default-umsgatew-ijklmnop-987654321.<aws-region>.elb.amazonaws.com   True         1m
@@ -167,16 +196,39 @@ ums-gateway   ums-alb-gateway-class   k8s-default-umsgatew-ijklmnop-987654321.<a
 
 Wait for the Gateway to be programmed to `True` to access the UMS service to retrieve the report.
 
-#### Retrieve metering usage
+##### Retrieve metering usage data
 
 To get the Usage Metering report, run the command below:
 ```bash
 export UMS_URL=$(kubectl get gateway ums-gateway -o jsonpath='{.status.addresses[*].value}')
 export UMS_TOKEN=$(kubectl get secret ibm-usage-metering-upload-token -o jsonpath='{.data.token}' | base64 -d)
-curl -k --output ums-report.zip \
-        --header "Authorization: Bearer ${UMS_TOKEN}" \
-        --url "https://${UMS_URL}/api/v1/snapshot"
+curl -k --output "swc_payload.tar.gz" \
+     --header "Authorization: Bearer ${UMS_TOKEN}" \
+     --url "https://${UMS_URL}/api/v1/swc"
 ```
+
+The `swc_payload.tar.gz` contains the following files:
+- manifest.json
+- usage.json
+
+#####  Sending data to IBM Software Central
+
+Transfer the downloaded `swc_payload.tar.gz` file to a system with internet connectivity.
+
+Run the command to upload the file to IBM Software Central through its API:
+```bash
+curl -X POST "https://swc.saas.ibm.com/metering/api/v2/metrics" \
+     -H "Authorization: Bearer <IEK>" \
+     -F "file=@swc_payload.tar.gz;type=application/gzip"
+```
+> **Note**
+> Replace the `<IEK>` placeholder with IBM Entitlement Key. You can obtain it from [IBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary).
+
+For complete instructions, see [Uploading usage metrics to IBM Software Central](https://www.ibm.com/docs/en/odm/9.6.0?topic=metrics-uploading-usage-software-central).
+
+#### Additional resources
+
+For general information about collecting and sending usage metrics, see [Collecting and sending usage metrics](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-collecting-sending-usage-metrics).
 
 ### Install IBM License Service
 
@@ -185,7 +237,7 @@ Follow the **Installation** section of the [Installation License Service without
 > 7. Update the License Service instance that was created during installation to accept the license. At the same time, the default gateway configuration must be deactivated. We will apply the configuration that is adapted for AWS Load Balancer controller.
 > - Create the `accept-license.yaml` file with the following content:
 >
->```bash
+>```yaml
 >spec:
 >  gatewayEnabled: false
 >  license:
@@ -248,6 +300,37 @@ Otherwise, you can also retrieve the licensing report .zip file by running:
 curl -k "https://${LICENSING_URL}/snapshot?token=${TOKEN}" --output report.zip
 ```
 
+#### Reporting License Usage to IBM Software Central
+
 IBM License Service can optionally send collected license usage data directly to IBM Software Central. For more information about the configuration, see [Reporting license usage to IBM Software Central](https://www.ibm.com/docs/en/odm/9.6.0?topic=metering-reporting-license-usage-software-central).
+
+##### Online mode
+
+For detailed steps on configuring online mode (automatic data transmission), including creating the IBM Entitlement Key secret, configuring the IBMLicensing Custom Resource, and verifying the setup, refer to the [online mode documentation](https://www.ibm.com/docs/en/odm/9.6.0?topic=central-online-mode-configuration).
+
+
+##### Offline mode (Air-gapped environments)
+
+For air-gapped environments where ILS cannot directly connect to IBM Software Central, download the usage data using the Gateway-specific commands below:
+
+```bash
+export TOKEN=$(kubectl get secret ibm-licensing-token -n ibm-licensing -o jsonpath='{.data.token}' |base64 -d)
+export LICENSING_URL=$(kubectl get gateway ils-gateway -n ibm-licensing -o jsonpath='{.status.addresses[*].value}')/ibm-licensing-service-instance
+curl --insecure --output "ils_swc_payload.tar.gz" \
+     "https://${LICENSING_URL}/swc_aggregations?token=${TOKEN}"
+```
+
+Transfer the downloaded `ils_swc_payload.tar.gz` file to a system with internet connectivity.
+
+Run the command to upload the file to IBM Software Central:
+```bash
+curl -X POST "https://swc.saas.ibm.com/metering/api/v2/metrics" \
+     -H "Authorization: Bearer <IEK>" \
+     -F "file=@ils_swc_payload.tar.gz;type=application/gzip"
+```
+> **Note**
+> Replace the `<IEK>` placeholder with IBM Entitlement Key. You can obtain it from [IBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary).
+
+For complete instructions on uploading the downloaded file to IBM Software Central, see the [offline mode documentation](https://www.ibm.com/docs/en/odm/9.6.0?topic=central-offline-mode-air-gapped-environments).
 
 If your IBM License Service instance is not running properly, refer to this [troubleshooting page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.x_cd?topic=service-troubleshooting-license).
