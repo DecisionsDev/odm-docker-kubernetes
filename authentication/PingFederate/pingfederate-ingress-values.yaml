@@ -9,15 +9,13 @@ internalDatabase:
   persistence:
     enabled: false
   populateSampleData: true
+  runAsUser: ''
 
 decisionCenter:
   disableAllAuthenticatedUser: true
 
 customization:
-  authSecretRef: cognito-auth-secret
-  trustedCertificateList:
-  - cognito-idp-cert-secret
-  - cognito-domain-cert-secret
+  authSecretRef: pingfederate-auth-secret
 
 oidc:
   enabled: true
@@ -25,8 +23,8 @@ oidc:
 
 service:
   ingress:
-    annotations:
-      kubernetes.io/ingress.class: nginx
-      nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-      nginx.ingress.kubernetes.io/affinity: "cookie"
+#    annotations: => TO BE ADAPTED ACCORDING TO THE INGRESS CONTROLLER USED
+#      kubernetes.io/ingress.class: nginx
+#      nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+#      nginx.ingress.kubernetes.io/affinity: "cookie"
     enabled: true
