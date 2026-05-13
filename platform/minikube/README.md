@@ -10,7 +10,7 @@ The ODM on Kubernetes Docker images are available in the [IBM Entitled Registry]
 
 ## Included Components
 
-- [IBM Operational Decision Manager](https://www.ibm.com/docs/en/odm/9.5.0?topic=operational-decision-manager-certified-kubernetes-950)
+- [IBM Operational Decision Manager](https://www.ibm.com/docs/en/odm/9.6.0?topic=operational-decision-manager-certified-kubernetes-960)
 - [Kubernetes Minikube](https://minikube.sigs.k8s.io/docs/)
 
 ## Test environment
@@ -21,7 +21,7 @@ This tutorial was tested on macOS and Linux.
 
 - [Minikube](https://minikube.sigs.k8s.io/docs/start/)
 - [Helm](https://helm.sh/docs/intro/install/)
-- [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/)
+- [Kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl)
 
 ## Steps
 
@@ -34,7 +34,7 @@ This tutorial was tested on macOS and Linux.
 #### a. Start Minikube with sufficient resources
 
 ```shell
-minikube start --cpus 6 --memory 8GB --kubernetes-version=v1.31.9
+minikube start --cpus 6 --memory 8GB
 ```
 
 The kubectl context is automatically set to point to the created Minikube cluster.
@@ -46,14 +46,14 @@ The kubectl context is automatically set to point to the created Minikube cluste
 
 ```shell
 $ kubectl cluster-info
-Kubernetes control plane is running at https://<CLUSTER-IP>:8443
-CoreDNS is running at https://<CLUSTER-IP>:8443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+Kubernetes control plane is running at https://127.0.0.1:32771
+CoreDNS is running at https://127.0.0.1:32771/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
 
 To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
 ```
 
 > [!NOTE]
-> You can access the [Kubernetes Dashboard](https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/) by running the `minikube dashboard` command.
+> The [Kubernetes Dashboard](https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/) is deprecated; if you need one then consider [Headlamp](https://headlamp.dev/).
 
 ### 2. Prepare your environment for the ODM installation
 
@@ -69,15 +69,15 @@ To get access to the ODM material, you need an IBM entitlement key to pull the i
 
 ```shell
 kubectl create secret docker-registry ibm-entitlement-key --docker-server=cp.icr.io \
-    --docker-username=cp --docker-password="<ENTITLEMENT_KEY>" --docker-email=<USER_EMAIL>
+    --docker-username=cp --docker-password="<ENTITLEMENT_KEY>"
 ```
 
 Where:
 
 - `<ENTITLEMENT_KEY>` is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
-- `<USER_EMAIL>` is the email address associated with your IBMid.
 
-> Note: 
+> [!NOTE]
+>
 > 1. The **cp.icr.io** value for the docker-server parameter is the only registry domain name that contains the images. You must set the *docker-username* to **cp** to use an entitlement key as *docker-password*.
 > 2. The `ibm-entitlement-key` secret name will be used for the `image.pullSecrets` parameter when you run a Helm install of your containers. The `image.repository` parameter is also set by default to `cp.icr.io/cp/cp4a/odm`.
 
@@ -93,8 +93,15 @@ helm repo update
 ```shell
 $ helm search repo ibm-odm-prod
 NAME                              CHART VERSION APP VERSION DESCRIPTION
-ibmcharts/ibm-odm-prod            25.1.0        9.5.0.1     IBM Operational Decision Manager
+ibmcharts/ibm-odm-prod            26.0.0        9.6.0.0     IBM Operational Decision Manager
 ```
+
+> [!NOTE]
+> You can list all available versions using:
+>
+> ```bash
+> helm search repo ibm-helm/ibm-odm-prod -l
+> ```
 
 ### 3. Install an IBM Operational Decision Manager release
 
@@ -106,18 +113,12 @@ Get the [minikube-values.yaml](./minikube-values.yaml) file and run the followin
 helm install my-odm-release ibmcharts/ibm-odm-prod -f minikube-values.yaml
 ```
 
-> **Note:**  
-> This command installs the **latest available version** of the chart.  
+> [!NOTE]
+> This command installs the **latest available version** of the chart.
 > If you want to install a **specific version**, add the `--version` option:
 >
 > ```bash
 > helm install my-odm-release ibm-helm/ibm-odm-prod --version <version> -f minikube-values.yaml
-> ```
->
-> You can list all available versions using:
->
-> ```bash
-> helm search repo ibm-helm/ibm-odm-prod -l
 > ```
 
 #### b. Check the topology
@@ -144,17 +145,19 @@ $ minikube service list
 ```
 
 | *NAMESPACE* | *NAME* | *TARGET PORT* | *URL* |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | default | my-odm-release-dbserver | No node port | |
-| default | my-odm-release-odm-decisioncenter | decisioncenter-https/9453 | http://`<CLUSTER-IP>`:30108 |
-| default | my-odm-release-odm-decisionrunner | decisionrunner-https/9443 | http://`<CLUSTER-IP>`:32215 |
-| default | my-odm-release-odm-decisionserverconsole | decisionserverconsole-https/9443 | http://`<CLUSTER-IP>`:32040 |
+| default | my-odm-release-odm-decisioncenter | dc-svc-port/443 | http://`<CLUSTER-IP>`:30108 |
+| default | my-odm-release-odm-decisionrunner | dr-svc-port/443 | http://`<CLUSTER-IP>`:32215 |
+| default | my-odm-release-odm-decisionserverconsole | dsc-svc-port/443 | http://`<CLUSTER-IP>`:32040 |
 | default | my-odm-release-odm-decisionserverconsole-notif | No node port | |
-| default | my-odm-release-odm-decisionserverruntime | decisionserverruntime-https/9443  | http://`<CLUSTER-IP>`:32346 |
+| default | my-odm-release-odm-decisionserverruntime | dsr-svc-port/443 | http://`<CLUSTER-IP>`:32346 |
 
 > [!WARNING]
+>
 > - The URLs are prefixed with **http**. You must replace the prefix with **https** to access the services.
-> - The port numbers may differ from the ones listed above (30108, 32215,...)
+> - The port numbers in URLs will differ from the ones listed above, this is normal.
+> - On macOS with Docker Desktop or Rancher Desktop, no URL will be displayed in this view. However the command below will open the ODM components as expected.
 
 You can directly open the URL corresponding to a component in a new browser tab with the following command:
 
