@@ -1,9 +1,9 @@
-# Deploying IBM Operational Decision Manager with Application Gateway for Containers (AGC)  supporting Gateway API on Azure AKS
+# Deploying IBM Operational Decision Manager with Application Gateway for Containers (AGC) supporting Gateway API on Azure AKS
 
 
 The aim of this complementary documentation is to explain how to replace the deprecated **NGINX Ingress Controller** with the **Application Gateway for Containers (AGC) and ALB controller** leveraging Kubernetes **Gateway API**. 
 
-You can read more about [Application Gateway for Containers](https://learn.microsoft.com/en-us/azure/application-gateway/for-containers/overview). In this tutorial, we will use the Managed by ALB Controller deployment strategy for its ease of use. 
+You can read more about [Application Gateway for Containers](https://learn.microsoft.com/en-us/azure/application-gateway/for-containers/overview). In this tutorial, we use the Managed by ALB Controller deployment strategy for its ease of use. 
 
 ## Prerequisites
 
@@ -14,48 +14,67 @@ Check the [Prerequisites](README.md#prerequisites) to install the required tools
 ### 1. Create an AKS cluster
 Follow [Prepare your AKS instance (30 min)](README.md#prepare-your-aks-instance-30-min) to create an AKS cluster and set up your environment. This tutorial was tested using an AKS cluster version 1.34.
 
-### 2. Install Managed Gateway API CRDs on your AKS cluster
+### 2. Deploy Application Gateway for Containers ALB Controller using AKS Add-on
 - Prerequisites:
 
-  - [Install or update the aks-preview extension](https://learn.microsoft.com/en-us/azure/aks/managed-gateway-api#install-or-update-the-aks-preview-extension)
+  - [Install or update the Azure CLI extensions](https://learn.microsoft.com/en-us/azure/application-gateway/for-containers/quickstart-deploy-application-gateway-for-containers-alb-controller-addon?toc=%2Fazure%2Faks%2Ftoc.json&bc=%2Fazure%2Faks%2Fbreadcrumb%2Ftoc.json&tabs=azure-cli%2Cazure-cli2#prerequisites)
     ```shell
-    # Install the aks-preview extension
+    # Install Azure CLI extensions
+    az extension add --name alb
     az extension add --name aks-preview
 
-    # Update the aks-preview extension to the latest version
+    # Update the extensions to the latest version
+    az extension update --name alb
     az extension update --name aks-preview
     ```
 
-  - [Register the Managed Gateway API preview feature flag](https://learn.microsoft.com/en-us/azure/aks/managed-gateway-api#register-the-managed-gateway-api-preview-feature-flag)
+  - Register the add-on features flag](https://learn.microsoft.com/en-us/azure/aks/managed-gateway-api#register-the-managed-gateway-api-preview-feature-flag)
     ```shell
     az feature register --namespace "Microsoft.ContainerService" --name "ManagedGatewayAPIPreview"
+    az feature register --namespace "Microsoft.ContainerService" --name "ApplicationLoadBalancerPreview"
     ```
 
-- [Install Managed Gateway API CRDs on an existing AKS cluster](https://learn.microsoft.com/en-us/azure/aks/managed-gateway-api#install-managed-gateway-api-crds-on-an-existing-aks-cluster)
-  ```shell
-  az aks update --resource-group myResourceGroup --name myAKSCluster --enable-gateway-api
-  ```
+  - [Add prerequisites to an existing cluster](https://learn.microsoft.com/en-us/azure/application-gateway/for-containers/quickstart-deploy-application-gateway-for-containers-alb-controller-addon?toc=%2Fazure%2Faks%2Ftoc.json&bc=%2Fazure%2Faks%2Fbreadcrumb%2Ftoc.json&tabs=azure-cli%2Cazure-cli2#add-prerequisites-to-an-existing-cluster)
+    ```shell
+    az aks update --resource-group resourcegroup --name cluster --enable-oidc-issuer --enable-workload-identity --no-wait
+    ```
+
+  - [Install Managed Gateway API CRDs on an existing AKS cluster](https://learn.microsoft.com/en-us/azure/aks/managed-gateway-api#install-managed-gateway-api-crds-on-an-existing-aks-cluster) and [Install ALB Controller add-on](https://learn.microsoft.com/en-us/azure/application-gateway/for-containers/quickstart-deploy-application-gateway-for-containers-alb-controller-addon?toc=%2Fazure%2Faks%2Ftoc.json&bc=%2Fazure%2Faks%2Fbreadcrumb%2Ftoc.json&tabs=azure-cli%2Cazure-cli2#install-alb-controller-add-on)
+    ```shell
+    az aks update --resource-group resourcegroup --name cluster --enable-gateway-api --enable-application-load-balancer
+    ```
 
 - Verification:
 
   - [Verify Managed Gateway API CRD installation](https://learn.microsoft.com/en-us/azure/aks/managed-gateway-api#verify-managed-gateway-api-crd-installation).
 
+  - [Verify the ALB Controller installation](#https://learn.microsoft.com/en-us/azure/application-gateway/for-containers/quickstart-deploy-application-gateway-for-containers-alb-controller-addon?toc=%2Fazure%2Faks%2Ftoc.json&bc=%2Fazure%2Faks%2Fbreadcrumb%2Ftoc.json&tabs=azure-cli%2Cazure-cli2#verify-the-alb-controller-installation)
+    - check the ALB controller is running:
+      ```shell
+      kubectl get pods -n kube-system | grep alb-controller
+      ```
+      You should see two alb-controller pods in Running state.
+
+    - Verify the GatewayClass `azure-alb-external` is installed on your cluster:
+      ```shell
+      kubectl get gatewayclass azure-alb-external -o yaml
+      ```
+
   - [Validate Add-on Resources in Azure portal](https://learn.microsoft.com/en-us/azure/application-gateway/for-containers/quickstart-deploy-application-gateway-for-containers-alb-controller-addon?toc=%2Fazure%2Faks%2Ftoc.json&bc=%2Fazure%2Faks%2Fbreadcrumb%2Ftoc.json&tabs=azure-cli%2Cazure-cli2#validate-add-on-resources-in-azure-portal):
     - An identity named `applicationloadbalancer-<cluster-name>` should be created and granted roles
     - a subnet named `aks-appgateway` is automatically created with delegation enabled for `Microsoft.ServiceNetworking/TrafficController`
 
-  - check the ALB controller is running:
-    ```shell
-    kubectl get pods -n kube-system | grep alb-controller
-    ```
-
 You can then go back to the main documentation to continue:
 - (optionally) [Create the PostgreSQL Azure instance 10 min](README.md#create-the-postgresql-azure-instance-10-min),
-- and [Prepare your environment for the ODM installation](README.md#prepare-your-environment-for-the-odm-installation).
+- and [Prepare your environment for the ODM installation](README.md#prepare-your-environment-for-the-odm-installation) in order to create:
+  - the registry pull secret `ibm-entitlement-key`,
+  - Add the public IBM Helm charts repository,
+  - (Optional) Generate a self-signed certificate,
+  - Create a Kubernetes secret containing the key and certificate to use to secure the communication (TLS)
 
 ## Install an ODM release and expose it with Gateway API
 
-### 1. Configure your environment, set environment variables and create a namespace
+### 1. Configure your environment and set environment variables
 
 - Clone this repository and change the current directory:
 
@@ -69,31 +88,11 @@ You can then go back to the main documentation to continue:
     ```bash
     export HELM_RELEASE="odmchart"
     export USERS_PASSWORD="odmAdmin"
+    export DOMAIN="mynicecompany.com"
     export TLS_SECRET="mynicecompanytlssecret"
     export CLUSTER_NAME="cluster"           # AKS cluster name
     export RESOURCE_GROUP="resourcegroup"   # Azure resource group
-    ```
-
-- Store the credentials to access the cluster as the current kubectl context
-
-    ```shell
-    az aks get-credentials \
-        --name ${CLUSTER_NAME} \
-        --resource-group ${RESOURCE_GROUP} \
-        --overwrite-existing
-    ```
-
-- Optionally create a namespace different from `default`, eg. `odm`, and update the current kubectl context
-
-    ```shell
-    kubectl create namespace odm
-    kubectl config set-context --current --namespace odm
-    ```
-
-- set the environmemnt variable defining the namespace where ODM is installed
-
-    ```shell
-    export NAMESPACE=$(kubectl config view --minify -o jsonpath='{..namespace}') # Namespace where ODM is installed. Assumes this is also the current kubectl context
+    export NAMESPACE="default"              # Namespace where ODM is installed
     ```
 
 ### 2. Deploy ODM
@@ -105,7 +104,7 @@ You can either:
 - deploy ODM with an **internal ephemeral database** (for a quick test):
 
   ```bash
-  envsubst < aks-gateway-values.yaml | helm install ${HELM_RELEASE} ibm-helm/ibm-odm-prod -f -
+  envsubst < aks-gateway-values.yaml | helm install ${HELM_RELEASE} ibm-helm/ibm-odm-prod -f - -n ${NAMESPACE}
   ```
 
 - or deploy ODM with the **PostgreSQL Azure database**:
@@ -114,7 +113,7 @@ You can either:
   export POSTGRESQL_SERVER_NAME="postgresqlserver" # not the FQDN - the FQDN is ${POSTGRESQL_SERVER_NAME}.postgres.database.azure.com
   export POSTGRESQL_CREDENTIALS_SECRET="odmdbsecret"
 
-  envsubst < aks-gateway-external-db-values.yaml | helm install ${HELM_RELEASE} ibm-helm/ibm-odm-prod -f -
+  envsubst < aks-gateway-external-db-values.yaml | helm install ${HELM_RELEASE} ibm-helm/ibm-odm-prod -f - -n ${NAMESPACE}
   ```
 
 > **Note:** The above command installs the **latest version** of the chart (possibly an iFix). To install an alternative version:
@@ -148,7 +147,7 @@ kubectl wait --for=condition=Programmed gateway/${HELM_RELEASE}-odm-gateway -n $
 
 echo "Waiting for the gateway to have an address..."
 while true; do
-    FQDN=$(kubectl get gateway ${HELM_RELEASE}-odm-gateway -o jsonpath='{.status.addresses[0].value}')
+    FQDN=$(kubectl get gateway ${HELM_RELEASE}-odm-gateway -n ${NAMESPACE} -o jsonpath='{.status.addresses[0].value}')
     if [[ -n "${FQDN}" ]]; then break; fi
     sleep 5
 done
@@ -180,12 +179,13 @@ Waiting for the gateway to have an address...
 External IP: 4.150.170.213
 ```
 
-If you check the status of the Gateway, you should see the following:
+Check that the status of the Gateway is PROGRAMMED=`True`:
 
 ```bash
 kubectl get gateway
 ```
 
+You should see the following:
 ```bash
 NAME                  CLASS                ADDRESS                               PROGRAMMED   AGE
 odmchart-odm-gateway  azure-alb-external   hvf6h8c5f4fdhcbk.fz46.alb.azure.com   True         10m
@@ -215,7 +215,7 @@ The ODM services are then accessible from the following URLs:
 
 IBM Usage Metering Service gathers metrics to monitor compliance and create reports. It captures business value metrics for auditing purposes and to visualize metric usage in reporting tools, and sends the information to IBM Software Central. For more details, see [Collecting and sending usage metrics](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-collecting-sending-usage-metrics)
 
-From ODM 9.6.0 onwards, it is required to install this metering service in the same namespace as ODM. ODM will systematically report usage metrics to the metering service through a CronJob. If the service is not installed, the job fails when it runs. For more information about the installation and configuration of UMS, see [Installing the usage metering service](https://www.ibm.com/docs/en/odm/9.6.0?topic=metrics-installing-metering). In this tutorial, we assume that ODM and UMS are installed in the same namespace `default`.
+From ODM 9.6.0 onwards, it is required to install this metering service in the **same namespace as ODM**. ODM will systematically report usage metrics to the metering service through a CronJob. If the service is not installed, the job fails when it runs. For more information about the installation and configuration of UMS, see [Installing the usage metering service](https://www.ibm.com/docs/en/odm/9.6.0?topic=metrics-installing-metering). In this tutorial, we assume that ODM and UMS are installed in the same namespace `default`.
 
 #### Troubleshooting
 
@@ -264,7 +264,6 @@ kubectl wait --for=condition=Programmed gateway/ums-gateway -n ${NAMESPACE} --ti
 
 You should see the traces below:
 ```bash
-applicationloadbalancer.alb.networking.azure.io/shared-alb unchanged
 gateway.gateway.networking.k8s.io/ums-gateway created
 httproute.gateway.networking.k8s.io/ums-httproute created
 healthcheckpolicy.alb.networking.azure.io/ums-gateway-health-check-policy created
@@ -364,8 +363,6 @@ kubectl wait --for=condition=Programmed gateway/ils-gateway -n ${LICENSING_NAMES
 You should then see the traces below:
 
 ```bash
-applicationloadbalancer.alb.networking.azure.io/shared-alb unchanged
-applicationloadbalancer.alb.networking.azure.io/ils-alb created
 gateway.gateway.networking.k8s.io/ils-gateway created
 httproute.gateway.networking.k8s.io/ils-httproute created
 healthcheckpolicy.alb.networking.azure.io/ils-gateway-health-check-policy created
@@ -380,22 +377,20 @@ It may take a couple of minutes for the gateway to be programmed (ready).
 Run the following command to see the status of Gateway instance:
 
 ```bash
-kubectl get gateway
+kubectl get gateway -n ${LICENSING_NAMESPACE}
 ```
 
 You will find the address and other details about `ibm-licensing-service-gateway`.
 ```bash
 NAME                  CLASS                ADDRESS                               PROGRAMMED   AGE
 ils-gateway           azure-alb-external   bzetc7augqbqdadh.fz85.alb.azure.com   True         3m30s
-odmchart-odm-gateway  azure-alb-external   hvf6h8c5f4fdhcbk.fz46.alb.azure.com   True         28m
-ums-gateway           azure-alb-external   asayd2eue7efc3ea.fz25.alb.azure.com   True         9m
 ```
 
 When the Gateway is programmed (set to `True`), you will be able to access the IBM License Service by retrieving the URL with this command:
 
 ```bash
-export TOKEN=$(kubectl get secret ibm-licensing-token -o jsonpath='{.data.token}' |base64 -d)
-export LICENSING_URL=$(kubectl get gateway ils-gateway -o jsonpath='{.status.addresses[*].value}')/ibm-licensing-service-instance
+export TOKEN=$(kubectl get secret ibm-licensing-token -n ${LICENSING_NAMESPACE} -o jsonpath='{.data.token}' |base64 -d)
+export LICENSING_URL=$(kubectl get gateway ils-gateway -n ${LICENSING_NAMESPACE} -o jsonpath='{.status.addresses[*].value}')/ibm-licensing-service-instance
 echo "https://${LICENSING_URL}/status?token=${TOKEN}"
 ```
 
@@ -432,11 +427,11 @@ Transfer the downloaded `ils_swc_payload.tar.gz` file to a system with internet 
 Run the command to upload the file to IBM Software Central:
 ```bash
 curl -X POST "https://swc.saas.ibm.com/metering/api/v2/metrics" \
-     -H "Authorization: Bearer <IEK>" \
+     -H "Authorization: Bearer <ENTITLEMENT_KEY>" \
      -F "file=@ils_swc_payload.tar.gz;type=application/gzip"
 ```
 > **Note**
-> Replace the `<IEK>` placeholder with IBM Entitlement Key. You can obtain it from [IBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary).
+> Replace the `<ENTITLEMENT_KEY>` placeholder with IBM Entitlement Key. You can obtain it from [IBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary).
 
 For complete instructions on uploading the downloaded file to IBM Software Central, see the [offline mode documentation](https://www.ibm.com/docs/en/odm/9.6.0?topic=central-offline-mode-air-gapped-environments).
 
