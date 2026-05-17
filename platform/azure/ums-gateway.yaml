@@ -1,0 +1,77 @@
+# Gateway API configuration for UMS
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: ums-gateway
+  namespace: ${NAMESPACE}
+  annotations:
+    alb.networking.azure.io/alb-namespace: ${NAMESPACE}
+    alb.networking.azure.io/alb-name: shared-alb
+spec:
+  gatewayClassName: azure-alb-external
+  listeners:
+  - name: https
+    port: 443
+    protocol: HTTPS
+    allowedRoutes:
+      namespaces:
+        from: Same
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind : Secret
+        group: ""
+        name: ibm-usage-metering-instance
+---
+# HTTPRoute for IBM Usage Metering Service
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: ums-httproute
+  namespace: ${NAMESPACE}
+spec:
+  parentRefs:
+  - name: ums-gateway
+    sectionName: https
+  rules:
+  - backendRefs:
+    - name: ibm-usage-metering-instance
+      port: 8080
+---
+# https://learn.microsoft.com/en-us/azure/application-gateway/for-containers/api-specification-kubernetes
+apiVersion: alb.networking.azure.io/v1
+kind: HealthCheckPolicy
+metadata:
+  name: ums-gateway-health-check-policy
+  namespace: ${NAMESPACE}
+spec:
+  targetRef:
+    group: ""
+    kind: Service
+    name: ibm-usage-metering-instance
+    namespace: ${NAMESPACE}
+  default:
+    port: 8080  # pod port
+    http:
+      path: /ready
+      match:
+        statusCodes: 
+        - start: 200
+          end: 200
+    useTLS: true
+---
+# https://learn.microsoft.com/en-us/azure/application-gateway/for-containers/api-specification-kubernetes#alb.networking.azure.io/v1.BackendTLSPolicy
+apiVersion: alb.networking.azure.io/v1
+kind: BackendTLSPolicy
+metadata:
+  name: ums-tls-policy
+  namespace: ${NAMESPACE}
+spec:
+  targetRef:
+    group: ""
+    kind: Service
+    name: ibm-usage-metering-instance
+  default:
+    sni: ibm-usage-metering-instance.${NAMESPACE}.svc.cluster.local
+    ports:
+    - port: 8080  # service port

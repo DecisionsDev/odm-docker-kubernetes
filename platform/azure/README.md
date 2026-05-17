@@ -145,8 +145,8 @@ The following example output shows the single node created in the previous steps
 
 ```
 NAME                                STATUS   ROLES   AGE   VERSION
-aks-nodepool1-27504729-vmss000000   Ready    agent   21m   v1.32.7
-aks-nodepool1-27504729-vmss000001   Ready    agent   21m   v1.32.7
+aks-nodepool1-27504729-vmss000000   Ready    agent   21m   v1.34.6
+aks-nodepool1-27504729-vmss000001   Ready    agent   21m   v1.34.6
 ```
 
 ## Create the PostgreSQL Azure instance (10 min)
@@ -186,7 +186,7 @@ Result:
   "availabilityZone": "2",
   "backup": {
     "backupRetentionDays": 7,
-    "earliestRestoreDate": "2025-10-20T12:18:24.730053+00:00",
+    "earliestRestoreDate": "2026-05-13T12:18:24.730053+00:00",
     "geoRedundantBackup": "Disabled"
   },
   "cluster": null,
@@ -249,7 +249,7 @@ Result:
     "type": ""
   },
   "systemData": {
-    "createdAt": "2025-10-20T12:13:15.036215+00:00",
+    "createdAt": "2026-05-13T12:13:15.036215+00:00",
     "createdBy": null,
     "createdByType": null,
     "lastModifiedAt": null,
@@ -323,7 +323,7 @@ Check that you can access the ODM charts:
 ```shell
 helm search repo ibm-odm-prod
 NAME                        CHART VERSION	APP VERSION DESCRIPTION
-ibm-helm/ibm-odm-prod       25.1.0       	9.5.0.1     IBM Operational Decision Manager  License By in...
+ibm-helm/ibm-odm-prod       26.0.0       	9.6.0.0     IBM Operational Decision Manager  License By in...
 ```
 
 ### Manage a digital certificate (10 min)
@@ -490,7 +490,7 @@ If your IBM License Service instance is not running properly, refer to this [tro
 
 ## Troubleshooting
 
-If your ODM instances are not running properly, refer to [our dedicated troubleshooting page](https://www.ibm.com/docs/en/odm/9.5.0?topic=950-troubleshooting-support).
+If your ODM instances are not running properly, refer to [our dedicated troubleshooting page](https://www.ibm.com/docs/en/odm/9.6.0?topic=960-troubleshooting-support).
 
 ## Getting Started with IBM Operational Decision Manager for Containers
 

@@ -1,0 +1,90 @@
+# Gateway API configuration for ILS (IBM License Service)
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: ils-gateway
+  namespace: ${LICENSING_NAMESPACE}
+  annotations:
+    alb.networking.azure.io/alb-namespace: ${NAMESPACE}   # the ApplicationLoadBalancer is defined in the namespace where ODM is deployed
+    alb.networking.azure.io/alb-name: shared-alb
+spec:
+  gatewayClassName: azure-alb-external
+  listeners:
+  - name: https
+    port: 443
+    protocol: HTTPS
+    allowedRoutes:
+      namespaces:
+        from: Same
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind : Secret
+        name: ibm-license-service-cert-internal
+        namespace: ${LICENSING_NAMESPACE}
+---
+# HTTPRoute for IBM Licensing Service
+# Based on IBM documentation: path /ibm-licensing-service-instance with URL rewrite to /
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: ils-httproute
+  namespace: ${LICENSING_NAMESPACE}
+spec:
+  parentRefs:
+  - name: ils-gateway
+    namespace: ${LICENSING_NAMESPACE}
+    sectionName: https
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /ibm-licensing-service-instance
+    filters:
+    - type: URLRewrite
+      urlRewrite:
+        path:
+          type: ReplacePrefixMatch
+          replacePrefixMatch: /
+    backendRefs:
+    - name: ibm-licensing-service-instance
+      port: 8080
+---
+# https://learn.microsoft.com/en-us/azure/application-gateway/for-containers/api-specification-kubernetes
+apiVersion: alb.networking.azure.io/v1
+kind: HealthCheckPolicy
+metadata:
+  name: ils-gateway-health-check-policy
+  namespace: ${LICENSING_NAMESPACE}
+spec:
+  targetRef:
+    group: ""
+    kind: Service
+    name: ibm-licensing-service-instance
+    namespace: ${LICENSING_NAMESPACE}
+  default:
+    port: 8080  # pod port
+    http:
+      path: /
+      match:
+        statusCodes: 
+        - start: 200
+          end: 200
+    useTLS: true
+---
+# https://learn.microsoft.com/en-us/azure/application-gateway/for-containers/api-specification-kubernetes#alb.networking.azure.io/v1.BackendTLSPolicy
+apiVersion: alb.networking.azure.io/v1
+kind: BackendTLSPolicy
+metadata:
+  name: ils-tls-policy
+  namespace: ${LICENSING_NAMESPACE}
+spec:
+  targetRef:
+    group: ""
+    kind: Service
+    name: ibm-licensing-service-instance
+    namespace: ${LICENSING_NAMESPACE}
+  default:
+    sni: ibm-licensing-service-instance.${LICENSING_NAMESPACE}.svc.cluster.local
+    ports:
+    - port: 8080  # service port
