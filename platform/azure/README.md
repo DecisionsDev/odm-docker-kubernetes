@@ -369,9 +369,9 @@ The certificate must be the same as the one you used to enable TLS connections i
 ## Install an ODM Helm release and expose it with the service type LoadBalancer (10 min)
 
 > [!NOTE]
-> An alternative guide [NGINX Ingress Controller deployment guide](README-NGINX.md) is available to use the NGINX Ingress Controller instead of the default AKS Load Balancer.
+> There are three different options to expose the ODM services. The current tutorial uses the default AKS Load Balancer.
 >
-> But the **NGINX Ingress Controller is now DEPRECATED** due to [Ingress NGINX Retirement](https://kubernetes.io/blog/2025/11/11/ingress-nginx-retirement/) and the [NGINX Ingress Controller deployment guide](README-NGINX.md) will be removed in the coming months
+> Please refer to the [beginning of this tutorial](#deploying-ibm-operational-decision-manager-on-azure-aks) to read about the other options.
 
 ### Allocate public IP addresses
 
@@ -380,12 +380,6 @@ az aks update --name <cluster> --resource-group <resourcegroup> --load-balancer-
 ```
 
 ### Install the ODM release
-
-> **Note**:
-
-> There are three different options to expose the ODM services. The current tutorial uses the default AKS Load Balancer.
-
-> Please refer to the [beginning of this tutorial](#deploying-ibm-operational-decision-manager-on-azure-aks) to read about the other options.
 
 You can now install the product.
 - Get the [aks-values.yaml](./aks-values.yaml) file and replace the following keys:
