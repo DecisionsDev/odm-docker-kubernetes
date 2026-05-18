@@ -53,7 +53,7 @@ Then, [create an Azure account and pay as you go](https://azure.microsoft.com/en
 - [Create the PostgreSQL Azure instance 10 min](#create-the-postgresql-azure-instance-10-min)
 - [Prepare your environment for the ODM installation](#prepare-your-environment-for-the-odm-installation)
 - [Install an ODM Helm release and expose it with the service type LoadBalancer 10 min](#install-an-odm-helm-release-and-expose-it-with-the-service-type-loadbalancer-10-min)
-- [Install the IBM Usage Metering service](#install-the-ibm-usage-metering-service)
+- [IBM Usage Metering service](#ibm-usage-metering-service)
 - [Install the IBM License Service and retrieve license usage](#install-the-ibm-license-service-and-retrieve-license-usage)
 - [Troubleshooting](#troubleshooting)
 - [Getting Started with IBM Operational Decision Manager for Containers](#getting-started-with-ibm-operational-decision-manager-for-containers)
@@ -453,7 +453,7 @@ Where:
 * \<password\> is the password set using the **usersPassword** helm chart parameter
 
 
-## Track ODM usage
+## IBM Usage Metering service
 
 ### 1. Install the IBM Usage Metering service
 
