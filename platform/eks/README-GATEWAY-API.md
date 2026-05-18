@@ -311,7 +311,7 @@ For detailed steps on configuring online mode (automatic data transmission), inc
 
 ##### 3.2.2.2. Offline mode (Air-gapped environments)
 
-For air-gapped environments where ILS cannot directly connect to IBM Software Central, download the usage data using the Gateway-specific commands below:
+For air-gapped environments where ILS cannot directly connect to IBM Software Central, download the usage data using the following commands:
 
 ```bash
 export TOKEN=$(kubectl get secret ibm-licensing-token -n ibm-licensing -o jsonpath='{.data.token}' |base64 -d)
@@ -331,6 +331,6 @@ curl -X POST "https://swc.saas.ibm.com/metering/api/v2/metrics" \
 > **Note**
 > Replace the `<IEK>` placeholder with IBM Entitlement Key. You can obtain it from [IBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary).
 
-For complete instructions on uploading the downloaded file to IBM Software Central, see the [offline mode documentation](https://www.ibm.com/docs/en/odm/9.6.0?topic=central-offline-mode-air-gapped-environments).
+For complete instructions, see the [offline mode documentation](https://www.ibm.com/docs/en/odm/9.6.0?topic=central-offline-mode-air-gapped-environments).
 
 If your IBM License Service instance is not running properly, refer to this [troubleshooting page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.x_cd?topic=service-troubleshooting-license).
