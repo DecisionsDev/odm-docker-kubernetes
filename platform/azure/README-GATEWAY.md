@@ -130,7 +130,7 @@ You can either:
 >     envsubst < aks-gateway-external-db-values.yaml | helm install ${HELM_RELEASE} ibm-helm/ibm-odm-prod --version 26.0.0 -f - -n ${NAMESPACE}
 >     ```
 
-### 2. Expose ODM with Gateway API
+### 3. Expose ODM with Gateway API
 
 Run the script:
 
@@ -211,27 +211,27 @@ The ODM services are then accessible from the following URLs:
 
 ## Track ODM usage
 
-### Install the IBM Usage Metering service
+### 1. Install the IBM Usage Metering service
 
 IBM Usage Metering Service gathers metrics to monitor compliance and create reports. It captures business value metrics for auditing purposes and to visualize metric usage in reporting tools, and sends the information to IBM Software Central. For more details, see [Collecting and sending usage metrics](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-collecting-sending-usage-metrics)
 
 From ODM 9.6.0 onwards, it is required to install this metering service in the **same namespace as ODM**. ODM will systematically report usage metrics to the metering service through a CronJob. If the service is not installed, the job fails when it runs. For more information about the installation and configuration of UMS, see [Installing the usage metering service](https://www.ibm.com/docs/en/odm/9.6.0?topic=metrics-installing-metering). In this tutorial, we assume that ODM and UMS are installed in the same namespace.
 
-#### Troubleshooting
+### 2. Troubleshooting
 
 If the CronJob fails, check the pod logs:
 ```bash
 kubectl logs -n <namespace> -l job-name=<cronjob-name>
 ```
 
-#### Data transmission options
+### 3. Data transmission options
 
 After installing the IBM Usage Metering service, choose one of the following modes to transmit the usage metering data based on your environment:
 
 1. **Online mode** (Recommended): Automatic data transmission to IBM Software Central
 2. **Offline mode** (Air-gapped): Manual data download and upload process
 
-##### Online mode (Recommended)
+#### 3.1 Online mode (Recommended)
 
 In online mode, the Usage Metering Service automatically sends usage data to IBM Software Central on a scheduled basis every 24 hours. This is the recommended configuration for environments with internet connectivity.
 
@@ -241,11 +241,11 @@ In online mode, the Usage Metering Service automatically sends usage data to IBM
 
 For complete step-by-step instructions on configuring online mode, see [Automatic data transmission to IBM Software Central](https://www.ibm.com/docs/en/odm/9.6.0?topic=metrics-automatic-data-transmission).
 
-#####  Offline mode (Air-gapped environments)
+#### 3.2 Offline mode (Air-gapped environments)
 
 For offline/air-gapped environments where the Usage Metering Service cannot connect directly to IBM Software Central, you need to manually download and upload usage data.
 
-###### Expose the IBM Usage Metering service using a Gateway API
+### 4. Expose the IBM Usage Metering service using a Gateway API
 
 The script below defines Gateway API Kubernetes resources that enable to expose the Usage Metering service.
 
@@ -287,7 +287,7 @@ ums-gateway           azure-alb-external   asayd2eue7efc3ea.fz25.alb.azure.com  
 
 Wait for the Gateway to be programmed (`True`) to access the UMS service to retrieve the report.
 
-##### Retrieve metering usage data
+### 5. Retrieve metering usage data
 
 To get the Usage Metering report, run the command below:
 ```bash
@@ -302,7 +302,7 @@ The `swc_payload.tar.gz` contains the following files:
 - manifest.json
 - usage.json
 
-#####  Sending data to IBM Software Central
+### 6. Sending data to IBM Software Central
 
 Transfer the downloaded `swc_payload.tar.gz` file to a system with internet connectivity.
 
@@ -317,11 +317,11 @@ curl -X POST "https://swc.saas.ibm.com/metering/api/v2/metrics" \
 
 For complete instructions, see [Uploading usage metrics to IBM Software Central](https://www.ibm.com/docs/en/odm/9.6.0?topic=metrics-uploading-usage-software-central).
 
-#### Additional resources
+### 7. Additional resources
 
 For general information about collecting and sending usage metrics, see [Collecting and sending usage metrics](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-collecting-sending-usage-metrics).
 
-### Install IBM License Service
+## Install IBM License Service
 
 Follow the **Installation** section of the [Installation License Service without Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.x_cd?topic=ilsfpcr-installing-license-service-without-operator-lifecycle-manager-olm) documentation, **except for the step 7** which must be replaced by the following:
 
@@ -340,7 +340,7 @@ Follow the **Installation** section of the [Installation License Service without
 >   kubectl patch IBMLicensing instance --type merge --patch-file accept-license.yaml
 >   ```
 
-#### Expose the IBM License Service instance using the Gateway API
+### 1. Expose the IBM License Service instance using the Gateway API
 
 The script below defines Gateway API Kubernetes resources to expose the License service.
 
@@ -402,16 +402,16 @@ Alternatively, you can also retrieve the licensing report .zip file by running:
 curl -k "https://${LICENSING_URL}/snapshot?token=${TOKEN}" --output report.zip
 ```
 
-#### Reporting License Usage to IBM Software Central
+### 2. Reporting License Usage to IBM Software Central
 
 IBM License Service can optionally send collected license usage data directly to IBM Software Central. For more information about the configuration, see [Reporting license usage to IBM Software Central](https://www.ibm.com/docs/en/odm/9.6.0?topic=metering-reporting-license-usage-software-central).
 
-##### Online mode
+### 2.1 Online mode
 
 For detailed steps on configuring online mode (automatic data transmission), including creating the IBM Entitlement Key secret, configuring the IBMLicensing Custom Resource, and verifying the setup, refer to the [online mode documentation](https://www.ibm.com/docs/en/odm/9.6.0?topic=central-online-mode-configuration).
 
 
-##### Offline mode (Air-gapped environments)
+### 2.2 Offline mode (Air-gapped environments)
 
 For air-gapped environments where ILS cannot directly connect to IBM Software Central, download the usage data using the Gateway-specific commands below:
 
