@@ -170,7 +170,7 @@ To get a good bandwidth between ODM containers and the database, choose the same
 ```shell
 az postgres flexible-server create --name <postgresqlserver> --resource-group <resourcegroup> \
                           --admin-user myadmin --admin-password 'passw0rd!' \
-                          --sku-name Standard_D2s_v3 --version 16
+                          --sku-name Standard_D2s_v3 --version 18
 ```
 
 > [!NOTE]
@@ -197,7 +197,7 @@ Result:
   "availabilityZone": "2",
   "backup": {
     "backupRetentionDays": 7,
-    "earliestRestoreDate": "2026-05-13T12:18:24.730053+00:00",
+    "earliestRestoreDate": null,
     "geoRedundantBackup": "Disabled"
   },
   "cluster": null,
@@ -260,7 +260,7 @@ Result:
     "type": ""
   },
   "systemData": {
-    "createdAt": "2026-05-13T12:13:15.036215+00:00",
+    "createdAt": "2026-05-18T06:38:28.834391+00:00",
     "createdBy": null,
     "createdByType": null,
     "lastModifiedAt": null,
@@ -269,7 +269,7 @@ Result:
   },
   "tags": null,
   "type": "Microsoft.DBforPostgreSQL/flexibleServers",
-  "version": "16"
+  "version": "18"
 }
 ```
 
@@ -283,6 +283,12 @@ To make sure your database and your AKS cluster can communicate, put in place fi
 az postgres flexible-server firewall-rule create --resource-group <resourcegroup> --name <postgresqlserver> \
             --rule-name <rule-name> --start-ip-address 0.0.0.0 --end-ip-address 255.255.255.255
 ```
+
+>Note: if you use azure-cli version **2.86.0** or higher (released on May 2026), the --name/-n argument has been repurposed to specify the firewall rule name and the --server-name/-s argument was introduced to specify the server name. As a result, the command to run is:
+>```shell
+>az postgres flexible-server firewall-rule create --resource-group <resourcegroup> --server-name <postgresqlserver> \
+>            --name <rule-name> --start-ip-address 0.0.0.0 --end-ip-address 255.255.255.255
+>```
 
 ### Create the database credentials secret for Azure PostgreSQL
 
