@@ -449,7 +449,7 @@ For general information about collecting and sending usage metrics, see:
 
 This section explains how to track ODM usage with the IBM License Service.
 
-Follow the instructions in the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.14.0?topic=ilsfpcr-installing-license-service-without-operator-lifecycle-manager-olm#installation) documentation, **except for the step 3** which should be replaced by:
+Follow the instructions in the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.x_cd?topic=ilsfpcr-installing-license-service-without-operator-lifecycle-manager-olm)
 
 
 #### 7.2.1 Expose the licensing service using the GKE LoadBalancer
@@ -488,9 +488,6 @@ kubectl patch IBMLicensing instance --type merge --patch-file licensing-instance
 
 Wait a couple of minutes for the changes to be applied. 
 
-You can find more information and use cases on [this page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.14.0?topic=configuring-kubernetes-ingress).
-
-
 ### 7.3.3 Retrieve license usage
 
 You will be able to access the IBM License Service by retrieving the URL and the required token with this command:
@@ -501,7 +498,7 @@ export TOKEN=$(kubectl get secret ibm-licensing-token -n ibm-licensing -o jsonpa
 ```
 
 > **Note**
-> If `LICENSING_URL` is empty, take a look at the [troubleshooting](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.14.0?topic=service-troubleshooting-license) page.
+> If `LICENSING_URL` is empty, take a look at the [troubleshooting](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.x_cd?topic=service-troubleshooting-license) page.
 
 You can access the `}`http://${LICENSING_URL}:8080/status?token=${TOKEN URL to view the licensing usage or retrieve the licensing report .zip file by running:
 
@@ -509,7 +506,7 @@ You can access the `}`http://${LICENSING_URL}:8080/status?token=${TOKEN URL to v
 curl -k "http://${LICENSING_URL}:8080/snapshot?token=${TOKEN}" --output report.zip
 ```
 
-If your IBM License Service instance is not running properly, refer to this [troubleshooting page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.14.0?topic=service-troubleshooting-license).
+If your IBM License Service instance is not running properly, refer to this [troubleshooting page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.x_cd?topic=service-troubleshooting-license).
 
 #### 7.2.4 Reporting License Usage to IBM Software Central
 
@@ -519,7 +516,7 @@ For complete information about reporting license usage to IBM Software Central, 
 
 ##### Online Mode Configuration
 
-For detailed steps on configuring online mode (automatic data transmission), including creating the IBM Entitlement Key secret, configuring the IBMLicensing Custom Resource, and verifying the setup, refer to the [online mode documentation](https://www.ibm.com/docs/en/odm/9.6.0?topic=metering-reporting-license-usage-software-central).
+For detailed steps on configuring online mode (automatic data transmission), including creating the IBM Entitlement Key secret, configuring the IBMLicensing Custom Resource, and verifying the setup, refer to the [online mode documentation](https://www.ibm.com/docs/en/odm/9.6.0?topic=central-online-mode-configuration).
 
 ##### Offline Mode (Air-gapped Environments)
 
@@ -533,12 +530,12 @@ curl --insecure --output "swc_payload.tar.gz" \
      "http://${LICENSING_URL}:8080/swc_aggregations?token=${TOKEN}"
 ```
 
-For complete instructions on transferring and uploading the downloaded file to Software Central, refer to the [offline mode documentation](https://www.ibm.com/docs/en/odm/9.6.0?topic=metering-reporting-license-usage-software-central).
+For complete instructions on transferring and uploading the downloaded file to Software Central, refer to the [offline mode documentation](https://www.ibm.com/docs/en/odm/9.6.0?topic=central-offline-mode-air-gapped-environments).
 
 
 ## Troubleshooting
 
-If your ODM instances are not running properly, refer to [our dedicated troubleshooting page](https://www.ibm.com/docs/en/odm/9.6.0?topic=950-troubleshooting).
+If your ODM instances are not running properly, refer to [our dedicated troubleshooting page](https://www.ibm.com/docs/en/odm/9.6.0?topic=960-troubleshooting).
 
 ## Getting Started with IBM Operational Decision Manager for Containers
 

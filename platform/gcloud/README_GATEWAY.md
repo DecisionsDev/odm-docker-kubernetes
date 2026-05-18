@@ -542,7 +542,7 @@ curl --insecure --output "swc_payload.tar.gz" \
      "https://${LICENSING_URL}/swc_aggregations?token=${TOKEN}"
 ```
 
-For complete instructions on transferring and uploading the downloaded file to Software Central, refer to the [offline mode documentation](https://www.ibm.com/docs/en/odm/9.6.0?topic=metering-reporting-license-usage-software-central).
+For complete instructions on transferring and uploading the downloaded file to Software Central, refer to the [offline mode documentation]( https://www.ibm.com/docs/en/odm/9.6.0?topic=central-online-mode-configuration).
 
 
 
