@@ -5,6 +5,17 @@ Here is the home page of Microsoft Azure: https://portal.azure.com/#home
 
 ![AKS schema](images/aks-schema.png)
 
+> [!IMPORTANT]
+> **Deployment Options:**
+>
+> There are three ways to expose ODM services on AKS:
+>
+> 1. **AKS default Load Balancer (Documented in this tutorial):** Uses the [AKS Load Balancer](https://learn.microsoft.com/en-us/azure/aks/load-balancer-standard) with container-native load balancing. This is the standard approach documented in the steps below.
+>
+> 2. **Gateway API (Recommended for Advanced Features):** Uses the [Application Gateway for Containers](https://learn.microsoft.com/en-us/azure/application-gateway/for-containers/overview) which provides more advanced routing capabilities, better session affinity management, and is the future direction for Kubernetes networking. See our tutorial [Deploying IBM Operational Decision Manager with Application Gateway for Containers (AGC) supporting Gateway API on Azure AKS](README-GATEWAY.md).
+>
+> 3. **AKS Ingress Controller (Deprecated):** Our tutorial [Deploying IBM Operational Decision Manager with NGINX Ingress Controller on Azure AKS](README-NGINX.md) is deprecated and will be removed in the coming months. Please use AKS Load Balancer or AKS Gateway API instead.
+
 The ODM on Kubernetes Docker images are available in the [IBM Entitled Registry](https://www.ibm.com/cloud/container-registry). The ODM Helm chart is available in the [IBM Helm charts repository](https://github.com/IBM/charts).
 
 ## Included components
@@ -359,8 +370,11 @@ az aks update --name <cluster> --resource-group <resourcegroup> --load-balancer-
 
 ### Install the ODM release
 
-> **Note**
-> If you prefer to use the NGINX Ingress Controller instead of the default AKS Load Balancer, refer to [Deploying IBM Operational Decision Manager with NGINX Ingress Controller on Azure AKS](README-NGINX.md)
+> **Note**:
+
+> There are three different options to expose the ODM services. The current tutorial uses the default AKS Load Balancer.
+
+> Please refer to the [beginning of this tutorial](#deploying-ibm-operational-decision-manager-on-azure-aks) to read about the other options.
 
 You can now install the product.
 - Get the [aks-values.yaml](./aks-values.yaml) file and replace the following keys:
