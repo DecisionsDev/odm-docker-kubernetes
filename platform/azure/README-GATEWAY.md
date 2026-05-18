@@ -48,7 +48,7 @@ Follow [Prepare your AKS instance (30 min)](README.md#prepare-your-aks-instance-
 
   - [Verify Managed Gateway API CRD installation](https://learn.microsoft.com/en-us/azure/aks/managed-gateway-api#verify-managed-gateway-api-crd-installation).
 
-  - [Verify the ALB Controller installation](#https://learn.microsoft.com/en-us/azure/application-gateway/for-containers/quickstart-deploy-application-gateway-for-containers-alb-controller-addon?toc=%2Fazure%2Faks%2Ftoc.json&bc=%2Fazure%2Faks%2Fbreadcrumb%2Ftoc.json&tabs=azure-cli%2Cazure-cli2#verify-the-alb-controller-installation)
+  - [Verify the ALB Controller installation](#https://learn.microsoft.com/en-us/azure/application-gateway/for-containers/quickstart-deploy-application-gateway-for-containers-alb-controller-addon#verify-the-alb-controller-installation)
     - check the ALB controller is running:
       ```shell
       kubectl get pods -n kube-system | grep alb-controller
@@ -249,7 +249,7 @@ For offline/air-gapped environments where the Usage Metering Service cannot conn
 
 The script below defines Gateway API Kubernetes resources that enable to expose the Usage Metering service.
 
-- Make sure you have set the environment variables (see [step](#1-configure-your-environment-set-environment-variables-and-create-a-namespace)).
+- Make sure you have set the environment variables (see [step](#1-configure-your-environment-and-set-environment-variables)).
 - Then run the script
 
 ```bash
@@ -344,7 +344,7 @@ Follow the **Installation** section of the [Installation License Service without
 
 The script below defines Gateway API Kubernetes resources to expose the License service.
 
-- Make sure you have set the environment variables (see [step](#1-configure-your-environment-set-environment-variables-and-create-a-namespace)),
+- Make sure you have set the environment variables (see [step](#1-configure-your-environment-and-set-environment-variables)),
 - change the value of the environment variable `LICENSING_NAMESPACE` if the License Service is not installed in the `ibm-licensing` namespace,
 - then run the script
 
