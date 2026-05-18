@@ -373,13 +373,13 @@ The certificate must be the same as the one you used to enable TLS connections i
 >
 > Please refer to the [beginning of this tutorial](#deploying-ibm-operational-decision-manager-on-azure-aks) to read about the other options.
 
-### Allocate public IP addresses
+### 1. Allocate public IP addresses
 
 ```shell
 az aks update --name <cluster> --resource-group <resourcegroup> --load-balancer-managed-outbound-ip-count 4
 ```
 
-### Install the ODM release
+### 2. Install the ODM release
 
 You can now install the product.
 - Get the [aks-values.yaml](./aks-values.yaml) file and replace the following keys:
@@ -407,7 +407,7 @@ helm install <release> ibm-helm/ibm-odm-prod -f aks-values.yaml
 > helm search repo ibm-helm/ibm-odm-prod -l
 > ```
 
-### Check the topology
+### 3. Check the topology
 
 Run the following command to check the status of the pods that have been created:
 
@@ -422,7 +422,7 @@ NAME                                                   READY   STATUS    RESTART
 <release>-odm-decisionserverruntime-***                1/1     Running   0          20m
 ```
 
-### Access ODM services
+### 4. Access ODM services
 
 By setting `service.type=LoadBalancer`, the services are exposed with public IPs to be accessed with the following command:
 
@@ -455,27 +455,27 @@ Where:
 
 ## Track ODM usage
 
-### Install the IBM Usage Metering service
+### 1. Install the IBM Usage Metering service
 
 IBM Usage Metering Service gathers metrics to monitor compliance and create reports. It captures business value metrics for auditing purposes and to visualize metric usage in reporting tools, and sends the information to IBM Software Central.
 
 From ODM 9.6.0 onwards, it is required to install this metering service in the same namespace as ODM. ODM will systematically reports usage metrics to the metering service through a CronJob. If the service is not installed, the job fails when it runs. For more information about the installation and configuration of UMS, see [Installing the usage metering service](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-installing-metering).
 
-#### Troubleshooting
+### 2. Troubleshooting
 
 If the CronJob fails, check the pod logs:
 ```bash
 kubectl logs -n <namespace> -l job-name=<cronjob-name>
 ```
 
-#### Data transmission options
+### 3. Data transmission options
 
 After installing the IBM Usage Metering service, choose one of the following modes to transmit the usage metering data based on your environment:
 
 1. **Online mode** (Recommended): Automatic data transmission to IBM Software Central
 2. **Offline mode** (Air-gapped): Manual data download and upload process
 
-##### Online mode (Recommended)
+#### 3.1 Online mode (Recommended)
 
 In online mode, the Usage Metering Service automatically sends usage data to IBM Software Central on a scheduled basis every 24 hours. This is the recommended configuration for environments with internet connectivity.
 
@@ -485,11 +485,11 @@ In online mode, the Usage Metering Service automatically sends usage data to IBM
 
 For complete step-by-step instructions on configuring online mode, see [Automatic data transmission to IBM Software Central](https://www.ibm.com/docs/en/odm/9.6.0?topic=metrics-automatic-data-transmission).
 
-#####  Offline mode (Air-gapped environments)
+#### 3.2 Offline mode (Air-gapped environments)
 
 For offline/air-gapped environments where the Usage Metering Service cannot connect directly to IBM Software Central, you need to manually download and upload usage data.
 
-###### Expose the IBM Usage Metering service using a Gateway API
+### 4. Expose the IBM Usage Metering service using a Gateway API
 
 To expose the IBM Usage Metering service using the AKS LoadBalancer, run:
 
@@ -502,7 +502,7 @@ If you went through all the steps in [Installing the usage metering service](htt
 - Click **Workspace** in the menu tab. This unfolds a drop-down list.
 - Click **Usage** in the drop-down list
 
-### Retrieve usage metrics
+### 5. Retrieve usage metrics
 
 If your cluster is not connected to internet, you can generate a usage report and manually upload it to Software Central.
 
@@ -525,13 +525,13 @@ To generate a Usage report:
 
 Then follow the instructions in [Uploading usage metrics to IBM Software Central](https://www.ibm.com/docs/en/cloud-paks/cp-biz-automation/26.0.0?topic=metrics-uploading-usage-software-central).
 
-### Install the IBM License Service and retrieve license usage
+## Install the IBM License Service and retrieve license usage
 
 This section explains how to track ODM usage with the IBM License Service.
 
 Follow the **Installation** section of the [Installation License Service without Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.14.0?topic=ilsfpcr-installing-license-service-without-operator-lifecycle-manager-olm) documentation.
 
-#### a. Expose the licensing service using the AKS LoadBalancer
+### 1. Expose the licensing service using the AKS LoadBalancer
 
 To expose the licensing service using the AKS LoadBalancer, run the command:
 
@@ -548,7 +548,7 @@ NAME                                        TYPE           CLUSTER-IP     EXTERN
 ibm-licensing-service-instance              LoadBalancer   10.0.58.142    xxx.xxx.xxx.xxx   8080:32301/TCP   10m
 ```
 
-#### b. Patch the IBM Licensing instance
+### 2. Patch the IBM Licensing instance
 
 Get the [licensing-instance.yaml](./licensing-instance.yaml) file and run the command:
 
@@ -563,7 +563,7 @@ You can find more information and use cases on [this page](https://www.ibm.com/d
 > **Note**
 > If you chose to use the NGINX Ingress Controller, you must use the [licensing-instance-nginx.yaml](./licensing-instance-nginx.yaml) file. Refer to [Deploying IBM Operational Decision Manager with NGINX Ingress Controller on Azure AKS](README-NGINX.md#install-the-ibm-license-service-and-retrieve-license-usage).
 
-### Retrieve license usage
+### 3. Retrieve license usage
 
 You will be able to access the IBM License Service by retrieving the URL and the required token with this command:
 
@@ -583,15 +583,15 @@ Alternatively you can retrieve the licensing report .zip file by running:
 curl "http://${LICENSING_URL}:8080/snapshot?token=${TOKEN}" --output report.zip
 ```
 
-#### Reporting License Usage to IBM Software Central
+### 4. Reporting License Usage to IBM Software Central
 
 IBM License Service can optionally send the license usage data collected directly to IBM Software Central. For more information about the configuration, see [Reporting license usage to IBM Software Central](https://www.ibm.com/docs/en/odm/9.6.0?topic=metering-reporting-license-usage-software-central).
 
-##### Online mode
+#### 4.1 Online mode
 
 For detailed steps on configuring online mode (automatic data transmission), including creating the IBM Entitlement Key secret, configuring the IBMLicensing Custom Resource, and verifying the setup, refer to the [online mode documentation](https://www.ibm.com/docs/en/odm/9.6.0?topic=central-online-mode-configuration).
 
-##### Offline mode (Air-gapped environments)
+#### 4.2 Offline mode (Air-gapped environments)
 
 For air-gapped environments where ILS cannot directly connect to IBM Software Central, download the usage data using the Gateway-specific commands below:
 
@@ -615,7 +615,7 @@ curl -X POST "https://swc.saas.ibm.com/metering/api/v2/metrics" \
 
 For complete instructions on uploading the downloaded file to IBM Software Central, see the [offline mode documentation](https://www.ibm.com/docs/en/odm/9.6.0?topic=central-offline-mode-air-gapped-environments).
 
-### Troubleshooting IBM License Service
+### 5. Troubleshooting IBM License Service
 
 If your IBM License Service instance is not running properly, refer to this [troubleshooting page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.14.0?topic=service-troubleshooting-license).
 
