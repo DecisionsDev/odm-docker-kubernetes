@@ -489,7 +489,7 @@ For complete step-by-step instructions on configuring online mode, see [Automati
 
 For offline/air-gapped environments where the Usage Metering Service cannot connect directly to IBM Software Central, you need to manually download and upload usage data.
 
-### 4. Expose the IBM Usage Metering service using a Gateway API
+### 4. Expose the IBM Usage Metering service using the LoadBalancer
 
 To expose the IBM Usage Metering service using the AKS LoadBalancer, run:
 
@@ -593,13 +593,13 @@ For detailed steps on configuring online mode (automatic data transmission), inc
 
 #### 4.2 Offline mode (Air-gapped environments)
 
-For air-gapped environments where ILS cannot directly connect to IBM Software Central, download the usage data using the Gateway-specific commands below:
+For air-gapped environments where ILS cannot directly connect to IBM Software Central, download the usage data using the commands below:
 
 ```bash
+export LICENSING_URL=$(kubectl get service ibm-licensing-service-instance -n ibm-licensing -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 export TOKEN=$(kubectl get secret ibm-licensing-token -n ibm-licensing -o jsonpath='{.data.token}' |base64 -d)
-export LICENSING_URL=$(kubectl get gateway ils-gateway -n ibm-licensing -o jsonpath='{.status.addresses[*].value}')/ibm-licensing-service-instance
 curl --insecure --output "ils_swc_payload.tar.gz" \
-     "https://${LICENSING_URL}/swc_aggregations?token=${TOKEN}"
+     "https://${LICENSING_URL}:8080/swc_aggregations?token=${TOKEN}"
 ```
 
 Transfer the downloaded `ils_swc_payload.tar.gz` file to a system with internet connectivity.
