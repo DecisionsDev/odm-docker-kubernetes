@@ -1,0 +1,178 @@
+---
+# GatewayClass - Defines the controller that will manage Gateways
+apiVersion: gateway.networking.k8s.io/v1
+kind: GatewayClass
+metadata:
+  name: odm-alb-gateway-class
+spec:
+  controllerName: gateway.k8s.aws/alb
+---
+# LoadBalancerConfiguration - AWS-specific configuration for the ALB
+apiVersion: gateway.k8s.aws/v1beta1
+kind: LoadBalancerConfiguration
+metadata:
+  name: odm-alb-config
+spec:
+  scheme: internet-facing
+  listenerConfigurations:
+    - protocolPort: HTTPS:443
+      #Provide the ARN of the certificate created in ACM/IAM
+      defaultCertificate: arn:aws:iam::<AWS-AccountId>:server-certificate/mycompany
+---
+# TargetGroupConfiguration for Decision Server Console
+apiVersion: gateway.k8s.aws/v1beta1
+kind: TargetGroupConfiguration
+metadata:
+  name: odm-decisionserverconsole-tgc
+spec:
+  targetReference:
+    kind: Service
+    name: mycompany-odm-decisionserverconsole
+  defaultConfiguration:
+    protocol: HTTPS
+    protocolVersion: HTTP1
+    healthCheckConfig:
+      healthCheckProtocol: HTTPS
+      healthCheckPath: /res
+      healthCheckInterval: 30
+      healthCheckTimeout: 5
+      healthyThresholdCount: 2
+      unhealthyThresholdCount: 2
+---
+# TargetGroupConfiguration for Decision Center
+apiVersion: gateway.k8s.aws/v1beta1
+kind: TargetGroupConfiguration
+metadata:
+  name: odm-decisioncenter-tgc
+spec:
+  targetReference:
+    kind: Service
+    name: mycompany-odm-decisioncenter
+  defaultConfiguration:
+    protocol: HTTPS
+    protocolVersion: HTTP1
+    healthCheckConfig:
+      healthCheckProtocol: HTTPS
+      healthCheckPath: /decisioncenter
+      healthCheckInterval: 30
+      healthCheckTimeout: 5
+      healthyThresholdCount: 2
+      unhealthyThresholdCount: 2
+    targetGroupAttributes:
+    - key: stickiness.enabled
+      value: "true"
+    - key: stickiness.type
+      value: lb_cookie
+    - key: stickiness.lb_cookie.duration_seconds
+      value: "86400"
+---
+# TargetGroupConfiguration for Decision Server Runtime
+apiVersion: gateway.k8s.aws/v1beta1
+kind: TargetGroupConfiguration
+metadata:
+  name: odm-decisionserverruntime-tgc
+spec:
+  targetReference:
+    kind: Service
+    name: mycompany-odm-decisionserverruntime
+  defaultConfiguration:
+    protocol: HTTPS
+    protocolVersion: HTTP1
+    healthCheckConfig:
+      healthCheckProtocol: HTTPS
+      healthCheckPath: /DecisionService
+      healthCheckInterval: 30
+      healthCheckTimeout: 5
+      healthyThresholdCount: 2
+      unhealthyThresholdCount: 2
+---
+# TargetGroupConfiguration for Decision Runner
+apiVersion: gateway.k8s.aws/v1beta1
+kind: TargetGroupConfiguration
+metadata:
+  name: odm-decisionrunner-tgc
+spec:
+  targetReference:
+    kind: Service
+    name: mycompany-odm-decisionrunner
+  defaultConfiguration:
+    protocol: HTTPS
+    protocolVersion: HTTP1
+    healthCheckConfig:
+      healthCheckProtocol: HTTPS
+      healthCheckPath: /DecisionRunner
+      healthCheckInterval: 30
+      healthCheckTimeout: 5
+      healthyThresholdCount: 2
+      unhealthyThresholdCount: 2
+---
+# Gateway - Creates the AWS Application Load Balancer
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: odm-gateway
+spec:
+  gatewayClassName: odm-alb-gateway-class
+  infrastructure:
+    parametersRef:
+      kind: LoadBalancerConfiguration
+      name: odm-alb-config
+      group: gateway.k8s.aws
+  listeners:
+  - name: https
+    protocol: HTTPS
+    port: 443
+    allowedRoutes:
+      namespaces:
+        from: Same
+---
+# HTTPRoute - Routes traffic to all ODM services
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: odm-services-route
+spec:
+  parentRefs:
+  - name: odm-gateway
+    sectionName: https
+  rules:
+  # Decision Server Console
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /res
+    backendRefs:
+    - name: mycompany-odm-decisionserverconsole
+      port: 443
+  # Decision Center
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /decisioncenter
+    backendRefs:
+    - name: mycompany-odm-decisioncenter
+      port: 443
+  # Decision Center API
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /decisioncenter-api
+    backendRefs:
+    - name: mycompany-odm-decisioncenter
+      port: 443
+  # Decision Server Runtime
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /DecisionService
+    backendRefs:
+    - name: mycompany-odm-decisionserverruntime
+      port: 443
+  # Decision Runner
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /DecisionRunner
+    backendRefs:
+    - name: mycompany-odm-decisionrunner
+      port: 443
