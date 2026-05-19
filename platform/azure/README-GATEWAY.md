@@ -7,7 +7,15 @@ You can read more about [Application Gateway for Containers](https://learn.micro
 
 ## Prerequisites
 
-Check the [Prerequisites](README.md#prerequisites) to install the required tools and configure your environment.
+First, install the following software on your machine:
+
+- [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)
+- [Helm v3](https://helm.sh/docs/v3/intro/install/) or [Helm v4](https://helm.sh/docs/intro/install/)
+
+Then, [create an Azure account and pay as you go](https://azure.microsoft.com/en-us/pricing/purchase-options/pay-as-you-go/).
+
+> [!NOTE]
+> Prerequisites and software supported by ODM 9.6.0 are listed in [the Detailed System Requirements page](https://www.ibm.com/support/pages/ibm-operational-decision-manager-detailed-system-requirements).
 
 ## Create an AKS cluster and Application Gateway for Containers (AGC)
 
