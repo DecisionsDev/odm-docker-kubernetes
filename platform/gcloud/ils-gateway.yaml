@@ -1,0 +1,50 @@
+# Gateway API descriptor for GKE native Gateway Controller
+# This uses GKE's built-in Gateway API support (no additional CRDs needed)
+# Requires: gcloud container clusters update CLUSTER_NAME --gateway-api=standard
+
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name:  ils-gateway
+  namespace: ibm-licensing
+spec:
+  # Use GKE's native Gateway Controller
+  # Options: gke-l7-global-external-managed, gke-l7-regional-external-managed, gke-l7-rilb
+  gatewayClassName: gke-l7-global-external-managed
+  listeners:
+  - name: https
+    protocol: HTTPS
+    port: 443
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        name: ibm-license-service-cert-internal
+        namespace: ibm-licensing
+    allowedRoutes:
+      namespaces:
+        from: Same
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: ils-httproute
+spec:
+  parentRefs:
+  - name: ils-gateway
+    namespace: ibm-licensing
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /ibm-licensing-service-instance
+    filters:
+    - type: URLRewrite
+      urlRewrite:
+        path:
+          type: ReplacePrefixMatch
+          replacePrefixMatch: /
+    backendRefs:
+    - name: ibm-licensing-service-instance
+      port: 8080
+      weight: 1

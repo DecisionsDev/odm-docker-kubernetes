@@ -1,0 +1,182 @@
+# Gateway API descriptor for GKE native Gateway Controller
+# This uses GKE's built-in Gateway API support (no additional CRDs needed)
+# Requires: gcloud container clusters update CLUSTER_NAME --gateway-api=standard
+
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: myodmsample-odm-gateway
+spec:
+  # Use GKE's native Gateway Controller
+  # Options: gke-l7-global-external-managed, gke-l7-regional-external-managed, gke-l7-rilb
+  gatewayClassName: gke-l7-global-external-managed
+  listeners:
+  - name: https
+    protocol: HTTPS
+    port: 443
+    hostname: "mynicecompany.com"
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        name: mynicecompany-tls-secret
+    allowedRoutes:
+      namespaces:
+        from: Same
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: myodmsample-odm-httproute
+spec:
+  parentRefs:
+  - name: myodmsample-odm-gateway
+  rules:
+  # Decision Server Console - /res
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /res
+    backendRefs:
+    - name: myodmsample-odm-decisionserverconsole
+      port: 80
+      weight: 1
+  
+  # Decision Center - /decisioncenter
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /decisioncenter
+    backendRefs:
+    - name: myodmsample-odm-decisioncenter
+      port: 80
+      weight: 1
+  
+  # Decision Center API - /decisioncenter-api
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /decisioncenter-api
+    backendRefs:
+    - name: myodmsample-odm-decisioncenter
+      port: 80
+      weight: 1
+  
+  # Decision Server Runtime - /DecisionService
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /DecisionService
+    backendRefs:
+    - name: myodmsample-odm-decisionserverruntime
+      port: 80
+      weight: 1
+  
+  # Decision Runner - /DecisionRunner
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /DecisionRunner
+    backendRefs:
+    - name: myodmsample-odm-decisionrunner
+      port: 80
+      weight: 1
+
+---
+# Health checks — required because GKE defaults to GET / which returns 302 on Liberty
+apiVersion: networking.gke.io/v1
+kind: HealthCheckPolicy
+metadata:
+  name: odm-decisioncenter-healthcheck
+spec:
+  default:
+    checkIntervalSec: 15
+    timeoutSec: 10
+    healthyThreshold: 1
+    unhealthyThreshold: 2
+    config:
+      type: HTTP
+      httpHealthCheck:
+        port: 9060
+        requestPath: /decisioncenter/healthCheck
+  targetRef:
+    group: ""
+    kind: Service
+    name: myodmsample-odm-decisioncenter
+
+---
+apiVersion: networking.gke.io/v1
+kind: HealthCheckPolicy
+metadata:
+  name: odm-decisionserverconsole-healthcheck
+spec:
+  default:
+    checkIntervalSec: 15
+    timeoutSec: 10
+    healthyThreshold: 1
+    unhealthyThreshold: 2
+    config:
+      type: HTTP
+      httpHealthCheck:
+        port: 9080
+        requestPath: /res/login.jsp
+  targetRef:
+    group: ""
+    kind: Service
+    name: myodmsample-odm-decisionserverconsole
+
+---
+apiVersion: networking.gke.io/v1
+kind: HealthCheckPolicy
+metadata:
+  name: odm-decisionserverruntime-healthcheck
+spec:
+  default:
+    checkIntervalSec: 15
+    timeoutSec: 10
+    healthyThreshold: 1
+    unhealthyThreshold: 2
+    config:
+      type: HTTP
+      httpHealthCheck:
+        port: 9080
+        requestPath: /DecisionService/
+  targetRef:
+    group: ""
+    kind: Service
+    name: myodmsample-odm-decisionserverruntime
+
+---
+apiVersion: networking.gke.io/v1
+kind: HealthCheckPolicy
+metadata:
+  name: odm-decisionrunner-healthcheck
+spec:
+  default:
+    checkIntervalSec: 15
+    timeoutSec: 10
+    healthyThreshold: 1
+    unhealthyThreshold: 2
+    config:
+      type: HTTP
+      httpHealthCheck:
+        port: 9080
+        requestPath: /DecisionRunner/
+  targetRef:
+    group: ""
+    kind: Service
+    name: myodmsample-odm-decisionrunner
+
+---
+apiVersion: networking.gke.io/v1
+kind: GCPBackendPolicy
+metadata:
+  name: dc-backend-service-policy
+spec:
+  targetRef:
+    group: ""
+    kind: Service
+    name: myodmsample-odm-decisioncenter
+  default:
+    sessionAffinity:
+      type: GENERATED_COOKIE      # ← matches your pod's C
