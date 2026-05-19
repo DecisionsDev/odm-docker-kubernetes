@@ -14,7 +14,7 @@ Here is the home page of Microsoft Azure: https://portal.azure.com/#home
 >
 > 2. **Gateway API (Recommended for Advanced Features):** Uses the [Application Gateway for Containers](https://learn.microsoft.com/en-us/azure/application-gateway/for-containers/overview) which provides more advanced routing capabilities, better session affinity management, and is the future direction for Kubernetes networking. See our tutorial [Deploying IBM Operational Decision Manager with Application Gateway for Containers (AGC) supporting Gateway API on Azure AKS](README-GATEWAY.md).
 >
-> 3. **AKS Ingress Controller (Deprecated):** Our tutorial [Deploying IBM Operational Decision Manager with NGINX Ingress Controller on Azure AKS](README-NGINX.md) is deprecated and will be removed in the coming months. Please use AKS Load Balancer or AKS Gateway API instead.
+> 3. **AKS Ingress Controller** (**Deprecated** due to [Ingress NGINX Retirement](https://kubernetes.io/blog/2025/11/11/ingress-nginx-retirement)): Our tutorial [Deploying IBM Operational Decision Manager with NGINX Ingress Controller on Azure AKS](README-NGINX.md) is deprecated and will be removed in the coming months. Please use AKS Load Balancer or AKS Gateway API instead.
 
 The ODM on Kubernetes Docker images are available in the [IBM Entitled Registry](https://www.ibm.com/cloud/container-registry). The ODM Helm chart is available in the [IBM Helm charts repository](https://github.com/IBM/charts).
 
