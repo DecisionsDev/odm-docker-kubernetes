@@ -416,7 +416,7 @@ For offline/air-gapped environments where the Usage Metering Service cannot conn
 
 The script below defines Gateway API Kubernetes resources that enable to expose the Usage Metering service.
 
-- Make sure you have set the environment variables (see [step](#1-configure-your-environment-and-set-environment-variables)).
+- Make sure you have set the environment variables (see [step](#3-configure-your-environment-and-set-environment-variables)).
 - Then run the script
 
 ```bash
@@ -511,7 +511,7 @@ Follow the **Installation** section of the [Installation License Service without
 
 The script below defines Gateway API Kubernetes resources to expose the License service.
 
-- Make sure you have set the environment variables (see [step](#1-configure-your-environment-and-set-environment-variables)),
+- Make sure you have set the environment variables (see [step](#3-configure-your-environment-and-set-environment-variables)),
 - change the value of the environment variable `LICENSING_NAMESPACE` if the License Service is not installed in the `ibm-licensing` namespace,
 - then run the script
 
