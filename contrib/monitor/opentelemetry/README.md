@@ -8,316 +8,23 @@ The goal of this tutorial is to demonstrate how to configure ODM on Kubernetes t
 
 ![Architecture](./images/otel_architecture.png) 
 
-## Install Grafana Tempo to display traces
 
-Grafana Tempo will be used to display traces emitted by the Open Telemetry Java agent and collected by the OpenTelemetry (OTEL) collector.
+## Install the Red Hat build of OpenTelemetry Operator
 
-### Install Tempo
+The Red Hat build of OpenTelemetry Operator isn't just an installer; it's a management engine. The easiest way to get started is via the OpenShift web console. Follow these steps to install the operator:
 
-Tempo can be installed on various platforms. Below are instructions for different installation methods:
+1 Log in to your OpenShift web console with administrator privileges.
+2 Navigate to Operators > OperatorHub.
+3 Search for the Red Hat build of OpenTelemetry.
+4 Select Install.
+5 On the installation page:
+    Update channel: Select stable.
+    Installation mode: Choose All namespaces on the cluster.
+    Approval strategy: Automatic
+6 Select Install and wait for the status to show "Succeeded."
 
-#### Option 1: Quick Installation using Helm (Recommended for testing)
 
-Create the namespace and install Tempo:
-
-```bash
-kubectl create namespace tempo-system
-helm repo add grafana https://grafana.github.io/helm-charts
-helm repo update
-helm install tempo grafana/tempo -n tempo-system
-```
-
-This installs Tempo with default settings suitable for testing and development.
-
-#### Option 2: Production Installation with Distributed Mode
-
-For production environments, use the tempo-distributed chart which provides better scalability:
-
-```bash
-helm install tempo grafana/tempo-distributed -n tempo-system \
-  --set traces.otlp.grpc.enabled=true \
-  --set traces.otlp.http.enabled=true
-```
-
-#### Option 3: OpenShift with Tempo Operator (Easiest for OpenShift)
-
-On OpenShift, the easiest way is to use the Red Hat OpenShift distributed tracing platform (Tempo) with MinIO as S3-compatible storage:
-
-**Step 1: Install the Tempo Operator**
-
-```bash
-# Create the namespace
-oc new-project tempo-system
-
-# Install the operator via CLI
-cat <<EOF | oc apply -f -
-apiVersion: operators.coreos.com/v1alpha1
-kind: Subscription
-metadata:
-  name: tempo-operator
-  namespace: openshift-operators
-spec:
-  channel: stable
-  name: tempo-operator
-  source: redhat-operators
-  sourceNamespace: openshift-marketplace
-EOF
-```
-
-Or install via the OpenShift Console:
-1. Navigate to **Operators** → **OperatorHub**
-2. Search for "Tempo" or "Red Hat OpenShift distributed tracing platform"
-3. Click **Install** and follow the prompts
-
-**Step 2: Deploy MinIO for S3-compatible storage (simplest for testing)**
-
-```bash
-# Deploy MinIO
-cat <<EOF | oc apply -f -
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: minio-pvc
-  namespace: tempo-system
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 10Gi
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: minio
-  namespace: tempo-system
-spec:
-  selector:
-    matchLabels:
-      app: minio
-  template:
-    metadata:
-      labels:
-        app: minio
-    spec:
-      containers:
-      - name: minio
-        image: quay.io/minio/minio:latest
-        args:
-        - server
-        - /data
-        - --console-address
-        - :9001
-        env:
-        - name: MINIO_ROOT_USER
-          value: "tempo"
-        - name: MINIO_ROOT_PASSWORD
-          value: "supersecret"
-        ports:
-        - containerPort: 9000
-        - containerPort: 9001
-        volumeMounts:
-        - name: data
-          mountPath: /data
-      volumes:
-      - name: data
-        persistentVolumeClaim:
-          claimName: minio-pvc
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: minio
-  namespace: tempo-system
-spec:
-  ports:
-  - port: 9000
-    targetPort: 9000
-    name: api
-  - port: 9001
-    targetPort: 9001
-    name: console
-  selector:
-    app: minio
-EOF
-```
-
-**Step 3: Create the MinIO bucket**
-
-```bash
-# Wait for MinIO to be ready
-oc wait --for=condition=available --timeout=300s deployment/minio -n tempo-system
-
-# Create the bucket using MinIO client
-oc run mc --image=quay.io/minio/mc:latest --restart=Never -n tempo-system --command -- \
-  /bin/sh -c "mc alias set myminio http://minio.tempo-system.svc:9000 tempo supersecret && mc mb myminio/tempo && echo 'Bucket created successfully'"
-
-# Wait for the job to complete and check logs
-sleep 5
-oc logs mc -n tempo-system
-
-# Clean up the pod
-oc delete pod mc -n tempo-system --ignore-not-found=true
-```
-
-Alternatively, you can create the bucket by port-forwarding to MinIO and using a local mc client:
-
-```bash
-# Port-forward to MinIO
-oc port-forward svc/minio 9000:9000 -n tempo-system &
-PF_PID=$!
-
-# Wait a moment for port-forward to establish
-sleep 3
-
-# Create bucket using local mc (install from https://min.io/docs/minio/linux/reference/minio-mc.html)
-mc alias set myminio http://localhost:9000 tempo supersecret
-mc mb myminio/tempo
-
-# Stop port-forward
-kill $PF_PID
-```
-
-**Step 4: Create storage secret and TempoStack with Gateway (required for OpenShift)**
-
-```bash
-cat <<EOF | oc apply -f -
-apiVersion: v1
-kind: Secret
-metadata:
-  name: tempo-storage
-  namespace: tempo-system
-stringData:
-  endpoint: http://minio.tempo-system.svc:9000
-  bucket: tempo
-  access_key_id: tempo
-  access_key_secret: supersecret
-type: Opaque
----
-apiVersion: tempo.grafana.com/v1alpha1
-kind: TempoStack
-metadata:
-  name: tempo
-  namespace: tempo-system
-spec:
-  storage:
-    secret:
-      name: tempo-storage
-      type: s3
-  storageSize: 1Gi
-  tenants:
-    mode: openshift
-    authentication:
-      - tenantName: dev
-        tenantId: "1610b0c3-c509-4592-a256-a1871353dbfa"
-  template:
-    gateway:
-      enabled: true
-    queryFrontend:
-      jaegerQuery:
-        enabled: true
-        ingress:
-          type: route
-EOF
-```
-
-**Important:** The gateway is required on OpenShift for authentication and authorization. The configuration above:
-- Enables the gateway component
-- Uses OpenShift authentication mode
-- Creates a default "dev" tenant
-- Provides secure access to ingest and query paths
-
-**Step 5: Wait for TempoStack to be ready**
-
-```bash
-oc get tempostack tempo -n tempo-system -w
-```
-
-Wait until STATUS shows "Ready". This may take a few minutes.
-
-**Step 6: Get the Jaeger Query UI route**
-
-```bash
-oc get route -n tempo-system | grep jaeger
-```
-
-You can now access the Jaeger Query UI to view traces.
-
-**Note:** For production environments, replace MinIO with a managed S3 service (AWS S3, Azure Blob Storage, or Google Cloud Storage) by updating the storage secret accordingly.
-
-### Verify Tempo Installation
-
-Check that Tempo is running:
-
-```bash
-kubectl get pods -n tempo-system
-kubectl logs -n tempo-system -l app.kubernetes.io/name=tempo
-```
-
-You should see Tempo pods in Running state.
-
-### Install Grafana for Trace Visualization
-
-Install Grafana to query and visualize traces:
-
-```bash
-helm install grafana grafana/grafana -n tempo-system \
-  --set persistence.enabled=true \
-  --set persistence.size=10Gi \
-  --set adminPassword=admin \
-  --set service.type=ClusterIP
-```
-
-Get the Grafana admin password (if you didn't set it):
-
-```bash
-kubectl get secret --namespace tempo-system grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
-```
-
-### Configure Grafana Data Source
-
-After Grafana is running, configure Tempo as a data source:
-
-1. Access Grafana (see instructions in the "Observe the collected traces" section below)
-2. Go to **Configuration** → **Data Sources** → **Add data source**
-3. Select **Tempo**
-4. Configure the following:
-   - **Name**: Tempo
-   - **URL**: `http://tempo.tempo-system.svc.cluster.local:3100`
-   - Click **Save & Test**
-
-Alternatively, you can configure the data source automatically during Grafana installation:
-
-```bash
-cat <<EOF | kubectl apply -f -
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: grafana-datasources
-  namespace: tempo-system
-data:
-  datasources.yaml: |
-    apiVersion: 1
-    datasources:
-    - name: Tempo
-      type: tempo
-      access: proxy
-      url: http://tempo.tempo-system.svc.cluster.local:3100
-      isDefault: true
-EOF
-
-helm upgrade grafana grafana/grafana -n tempo-system \
-  --reuse-values \
-  --set datasources.datasources\\.yaml.apiVersion=1 \
-  --set datasources.datasources\\.yaml.datasources[0].name=Tempo \
-  --set datasources.datasources\\.yaml.datasources[0].type=tempo \
-  --set datasources.datasources\\.yaml.datasources[0].access=proxy \
-  --set datasources.datasources\\.yaml.datasources[0].url=http://tempo.tempo-system.svc.cluster.local:3100
-```
-
-For more advanced configurations and production deployments, refer to the [Tempo documentation](https://grafana.com/docs/tempo/latest/setup/).
-
-## Deploy the OpenTelemetry Collector
+### Create a collector instance
 
 We will install the OpenTelemetry Collector near the ODM Instance in a project named **otel**.
 On OCP, create the **otel** project:
@@ -326,20 +33,18 @@ On OCP, create the **otel** project:
 oc new-project otel
 ```
 
-Install the [OpenTelemetry Collector Helm Chart](https://opentelemetry.io/docs/platforms/kubernetes/helm/collector/):
+Once the operator is active, you must define an OpenTelemetryCollector Custom Resource (CR). This acts as the central hub for your telemetry data.
 
-```bash
-helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-helm repo update
-```
+For a standard starting point, we recommend the deployment mode. This creates a centralized service to receive, process, and export data. Use the following configuration to set up a receiver that logs data for debug:
 
-Install the Collector instance using [otel-collector-values.yaml](./otel-collector-values.yaml)
+1 Create a new project: oc new-project otel-demo.
+2 Go to Operators > Installed Operators > Red Hat build of OpenTelemetry.
+3 Select the OpenTelemetry collector tab and select Create OpenTelemetryCollector.
+4 Switch to the YAML view and use this basic deployment mode configuration:
 
-```bash
-helm install my-opentelemetry-collector open-telemetry/opentelemetry-collector \    
-	--set image.repository="otel/opentelemetry-collector-k8s" \
-	-f otel-collector-values.yaml
-```
+This configuration ensures your collector is ready to ingest data via the OpenTelemetry protocol (OTLP). Use oc logs to see your traces appearing in real time during the testing phase.
+
+### Verify the collector
 
 Verify that the OpenTelemetry Collector is up and running by executing:
 
@@ -352,6 +57,8 @@ You should get the message :
  ```console
 "Everything is ready. Begin running and processing data."
  ```
+
+
 
 ## Install ODM with the Open Telemetry agent
 
@@ -373,12 +80,11 @@ This key will be utilized in the subsequent step of this tutorial.
 
 ```bash
 kubectl create secret docker-registry ibm-entitlement-key --docker-server=cp.icr.io \
-    --docker-username=cp --docker-password="<ENTITLEMENT_KEY>" --docker-email=<USER_EMAIL>
+    --docker-username=cp --docker-password="<ENTITLEMENT_KEY>"
 ```
 
 Where:
 * `<ENTITLEMENT_KEY>` is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
-* `<USER_EMAIL>` is the email address associated with your IBMid.
 
 > Note: 
 > 1. The **cp.icr.io** value for the docker-server parameter is the only registry domain name that contains the images. You must set the *docker-username* to **cp** to use an entitlement key as *docker-password*.
@@ -396,7 +102,7 @@ helm repo update
 ```bash
 $ helm search repo ibm-odm-prod
 NAME                             	CHART VERSION	APP VERSION	DESCRIPTION
-ibm-helm/ibm-odm-prod           	25.1.0       	9.5.0.1   	IBM Operational Decision Manager
+ibm-helm/ibm-odm-prod           	26.0.0       	9.6.0.0   	IBM Operational Decision Manager
 ```
 
 ### Install an IBM Operational Decision Manager release (10 min)
