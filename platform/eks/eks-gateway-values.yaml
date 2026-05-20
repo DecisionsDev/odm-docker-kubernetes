@@ -1,0 +1,13 @@
+license: true
+usersPassword: "odmAdmin"
+
+image:
+  repository: cp.icr.io/cp/cp4a/odm
+  pullSecrets:
+  - ibm-entitlement-key
+
+internalDatabase:
+  populateSampleData: true
+  persistence:
+    enabled: false
+    useDynamicProvisioning: true
