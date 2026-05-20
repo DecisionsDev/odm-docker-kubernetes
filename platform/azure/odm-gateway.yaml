@@ -1,0 +1,282 @@
+# Gateway API descriptor for AKS native Gateway Controller
+# Uses AKS built-in Gateway API support (no additional CRDs needed)
+# Requires that you have:
+#   - installed the ALB Controller on your cluster, and
+#   - deployed the Application Gateway for Containers resources in Azure
+
+apiVersion: alb.networking.azure.io/v1
+kind: ApplicationLoadBalancer
+metadata:
+  name: shared-alb
+  namespace: ${NAMESPACE}
+spec:
+  associations:
+  - ${ALB_SUBNET_ID}
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: ${HELM_RELEASE}-odm-gateway
+  namespace: ${NAMESPACE}
+  annotations:
+    alb.networking.azure.io/alb-namespace: ${NAMESPACE}
+    alb.networking.azure.io/alb-name: shared-alb
+spec:
+  gatewayClassName: azure-alb-external
+  listeners:
+  - name: https
+    protocol: HTTPS
+    port: 443
+    # hostname: "${DOMAIN}"
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        group: ""
+        name: ${TLS_SECRET}
+    allowedRoutes:
+      namespaces:
+        from: Same
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: ${HELM_RELEASE}-odm-httproute
+  namespace: ${NAMESPACE}
+spec:
+  parentRefs:
+  - name: ${HELM_RELEASE}-odm-gateway
+  hostnames:
+  - "${DOMAIN}"
+  rules:
+
+  # Decision Server Console - /res
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /res
+    backendRefs:
+    - name: ${HELM_RELEASE}-odm-decisionserverconsole
+      port: 443
+      weight: 1
+
+  # Decision Center API - /decisioncenter-api
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /decisioncenter-api
+    backendRefs:
+    - name: ${HELM_RELEASE}-odm-decisioncenter
+      port: 443
+      weight: 1
+  
+  # Decision Server Runtime - /DecisionService
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /DecisionService
+    backendRefs:
+    - name: ${HELM_RELEASE}-odm-decisionserverruntime
+      port: 443
+      weight: 1
+  
+  # Decision Runner - /DecisionRunner
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /DecisionRunner
+    backendRefs:
+    - name: ${HELM_RELEASE}-odm-decisionrunner
+      port: 443
+      weight: 1
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: ${HELM_RELEASE}-odm-decisioncenter-httproute
+  namespace: ${NAMESPACE}
+spec:
+  parentRefs:
+  - name: ${HELM_RELEASE}-odm-gateway
+  hostnames:
+  - "${DOMAIN}"
+  rules:
+
+  # Decision Center - /decisioncenter
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /decisioncenter
+    backendRefs:
+    - name: ${HELM_RELEASE}-odm-decisioncenter
+      port: 443
+      weight: 1
+---
+# for session affinity, see https://learn.microsoft.com/en-us/azure/application-gateway/for-containers/session-affinity?tabs=session-affinity-gateway-api
+# spec: https://learn.microsoft.com/en-us/azure/application-gateway/for-containers/api-specification-kubernetes#alb.networking.azure.io/v1.RoutePolicy
+apiVersion: alb.networking.azure.io/v1
+kind: RoutePolicy
+metadata:
+  name: ${HELM_RELEASE}-odm-decisioncenter-session-affinity-route-policy
+spec:
+  targetRef:
+    group: "gateway.networking.k8s.io"
+    kind: HTTPRoute
+    name: ${HELM_RELEASE}-odm-decisioncenter-httproute
+    namespace: ${NAMESPACE}
+  default:
+    sessionAffinity: 
+      affinityType: "application-cookie"
+      cookieName:   "JSESSIONID_DC_${HELM_RELEASE}"
+      cookieDuration: 24h
+---
+# spec:            https://learn.microsoft.com/en-us/azure/application-gateway/for-containers/api-specification-kubernetes
+# troubleshooting: https://learn.microsoft.com/en-us/azure/application-gateway/for-containers/alb-controller-backend-health-metrics?tabs=backend-health-kubectl-access
+#                  https://learn.microsoft.com/en-nz/answers/questions/5875319/application-gateway-for-containers-not-reaching-ak
+apiVersion: alb.networking.azure.io/v1
+kind: HealthCheckPolicy
+metadata:
+  name: ${HELM_RELEASE}-odm-decisioncenter-health-check-policy
+  namespace: ${NAMESPACE}
+spec:
+  targetRef:
+    group: ""
+    kind: Service
+    name: ${HELM_RELEASE}-odm-decisioncenter
+    namespace: ${NAMESPACE}
+  default:
+    port: 9453
+    http:
+      path: /decisioncenter/healthcheck?dontCheckRestAPI=true
+      match:
+        statusCodes: 
+        - start: 200
+          end: 302
+    useTLS: true
+---
+apiVersion: alb.networking.azure.io/v1
+kind: HealthCheckPolicy
+metadata:
+  name: ${HELM_RELEASE}-odm-decisionrunner-health-check-policy
+  namespace: ${NAMESPACE}
+spec:
+  targetRef:
+    group: ""
+    kind: Service
+    name: ${HELM_RELEASE}-odm-decisionrunner
+    namespace: ${NAMESPACE}
+  default:
+    port: 9443
+    http:
+      path: /DecisionRunner
+      match:
+        statusCodes: 
+        - start: 200
+          end: 302
+    useTLS: true
+---
+apiVersion: alb.networking.azure.io/v1
+kind: HealthCheckPolicy
+metadata:
+  name: ${HELM_RELEASE}-odm-decisionserverconsole-health-check-policy
+  namespace: ${NAMESPACE}
+spec:
+  targetRef:
+    group: ""
+    kind: Service
+    name: ${HELM_RELEASE}-odm-decisionserverconsole
+    namespace: ${NAMESPACE}
+  default:
+    port: 9443
+    http:
+      path: /res/login.jsp
+      match:
+        statusCodes: 
+        - start: 200
+          end: 302
+    useTLS: true
+---
+apiVersion: alb.networking.azure.io/v1
+kind: HealthCheckPolicy
+metadata:
+  name: ${HELM_RELEASE}-odm-decisionserverruntime-health-check-policy
+  namespace: ${NAMESPACE}
+spec:
+  targetRef:
+    group: ""
+    kind: Service
+    name: ${HELM_RELEASE}-odm-decisionserverruntime
+    namespace: ${NAMESPACE}
+  default:
+    port: 9443
+    http:
+      path: /DecisionService
+      match:
+        statusCodes: 
+        - start: 200
+          end: 302
+    useTLS: true
+---
+# https://learn.microsoft.com/en-us/azure/application-gateway/for-containers/api-specification-kubernetes#alb.networking.azure.io/v1.BackendTLSPolicy
+apiVersion: alb.networking.azure.io/v1
+kind: BackendTLSPolicy
+metadata:
+  name: ${HELM_RELEASE}-odm-decisioncenter-tls-policy
+  namespace: ${NAMESPACE}
+spec:
+  targetRef:
+    group: ""
+    kind: Service
+    name: ${HELM_RELEASE}-odm-decisioncenter
+    namespace: ${NAMESPACE}
+  default:
+    sni: ${HELM_RELEASE}-odm-decisioncenter.${NAMESPACE}.svc.cluster.local
+    ports:
+    - port: 443
+---
+apiVersion: alb.networking.azure.io/v1
+kind: BackendTLSPolicy
+metadata:
+  name: ${HELM_RELEASE}-odm-decisionrunner-tls-policy
+  namespace: ${NAMESPACE}
+spec:
+  targetRef:
+    group: ""
+    kind: Service
+    name: ${HELM_RELEASE}-odm-decisionrunner
+    namespace: ${NAMESPACE}
+  default:
+    sni: ${HELM_RELEASE}-odm-decisionrunner.${NAMESPACE}.svc.cluster.local
+    ports:
+    - port: 443
+---
+apiVersion: alb.networking.azure.io/v1
+kind: BackendTLSPolicy
+metadata:
+  name: ${HELM_RELEASE}-odm-decisionserverconsole-tls-policy
+  namespace: ${NAMESPACE}
+spec:
+  targetRef:
+    group: ""
+    kind: Service
+    name: ${HELM_RELEASE}-odm-decisionserverconsole
+  default:
+    sni: ${HELM_RELEASE}-odm-decisionserverconsole.${NAMESPACE}.svc.cluster.local
+    ports:
+    - port: 443
+---
+apiVersion: alb.networking.azure.io/v1
+kind: BackendTLSPolicy
+metadata:
+  name: ${HELM_RELEASE}-odm-decisionserverruntime-tls-policy
+  namespace: ${NAMESPACE}
+spec:
+  targetRef:
+    group: ""
+    kind: Service
+    name: ${HELM_RELEASE}-odm-decisionserverruntime
+    namespace: ${NAMESPACE}
+  default:
+    sni: ${HELM_RELEASE}-odm-decisionserverruntime.${NAMESPACE}.svc.cluster.local
+    ports:
+    - port: 443
