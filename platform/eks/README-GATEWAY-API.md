@@ -238,11 +238,11 @@ Follow the **Installation** section of the [Installation License Service without
 > - Create the `accept-license.yaml` file with the following content:
 >
 >```yaml
->spec:
->  gatewayEnabled: false
->  license:
->    accept: true
->```
+> spec:
+>   gatewayEnabled: false
+>   license:
+>     accept: true
+> ```
 > 
 > - Patch the IBM Licensing instance
 >```bash
