@@ -14,15 +14,15 @@ We will explain how to configure the OpenTelemetry collector to receive traces f
 
 The Red Hat build of OpenTelemetry Operator isn't just an installer; it's a management engine. The easiest way to get started is via the OpenShift web console. Follow these steps to install the operator:
 
-1 Log in to your OpenShift web console with administrator privileges.
-2 Navigate to Operators > OperatorHub.
-3 Search for the Red Hat build of OpenTelemetry.
-4 Select Install.
-5 On the installation page:
-    Update channel: Select stable.
-    Installation mode: Choose All namespaces on the cluster.
-    Approval strategy: Automatic
-6 Select Install and wait for the status to show "Succeeded."
+* Log in to your OpenShift web console with administrator privileges.
+* Navigate to Operators > OperatorHub.
+* Search for the Red Hat build of OpenTelemetry.
+* Select Install.
+* On the installation page:
+    * Update channel: Select stable.
+    * Installation mode: Choose All namespaces on the cluster.
+    * Approval strategy: Automatic
+* Select Install and wait for the status to show "Succeeded."
 
 
 ### Create a collector instance
@@ -38,10 +38,10 @@ Once the operator is active, you must define an OpenTelemetryCollector Custom Re
 
 For a standard starting point, we recommend the deployment mode. This creates a centralized service to receive, process, and export data. Use the following configuration to set up a receiver that logs data for debug:
 
-1 Create a new project: oc new-project otel-demo.
-2 Go to Operators > Installed Operators > Red Hat build of OpenTelemetry.
-3 Select the OpenTelemetry collector tab and select Create OpenTelemetryCollector.
-4 Switch to the YAML view and use this basic deployment mode configuration:
+* Create a new project: oc new-project otel-demo.
+* Go to Operators > Installed Operators > Red Hat build of OpenTelemetry.
+* Select the OpenTelemetry collector tab and select Create OpenTelemetryCollector.
+* Switch to the YAML view and use this basic deployment mode configuration:
 
 This configuration ensures your collector is ready to ingest data via the OpenTelemetry protocol (OTLP). Use oc logs to see your traces appearing in real time during the testing phase.
 
