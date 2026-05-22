@@ -1,23 +1,21 @@
- kind: OpenTelemetryCollector
+kind: OpenTelemetryCollector
+apiVersion: opentelemetry.io/v1beta1
 metadata:
-  name: otel-collector
+  name: otel
   namespace: otel-demo
 spec:
-  mode: "deployment"
   config:
+    exporters:
+      debug: {}
     receivers:
       otlp:
         protocols:
-          grpc:
-            endpoint: ${env:MY_POD_IP}:4317
-          http:
-            endpoint: ${env:MY_POD_IP}:4318
+          grpc: {}
+          http: {}
     service:
       pipelines:
         traces:
           exporters:
-            - otlp
-          processors:
-            - batch
+            - debug
           receivers:
             - otlp
