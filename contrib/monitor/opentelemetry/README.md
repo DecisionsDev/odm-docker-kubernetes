@@ -27,13 +27,6 @@ The Red Hat build of OpenTelemetry Operator isn't just an installer; it's a mana
 
 ### Create a collector instance
 
-We will install the OpenTelemetry Collector near the ODM Instance in a project named **otel**.
-On OCP, create the **otel** project:
-
-```bash
-oc new-project otel
-```
-
 Once the operator is active, you must define an OpenTelemetryCollector Custom Resource (CR). This acts as the central hub for your telemetry data.
 
 For a standard starting point, we recommend the deployment mode. This creates a centralized service to receive, process, and export data. Use the following configuration to set up a receiver that logs data for debug:
@@ -50,7 +43,7 @@ This configuration ensures your collector is ready to ingest data via the OpenTe
 Verify that the OpenTelemetry Collector is up and running by executing:
 
  ```bash
-kubectl logs deployment/my-opentelemetry-collector
+kubectl logs deployment/otel-collector
  ```
 
 You should get the message :
@@ -118,7 +111,7 @@ To configure the OTEL Java agent, we need to set up some JVM options, such as:
     -javaagent:/config/download/opentelemetry-javaagent.jar
     -Dotel.sdk.disabled=false
     -Dotel.exporter.otlp.protocol=grpc
-    -Dotel.exporter.otlp.endpoint=http://my-opentelemetry-collector.otel.svc.cluster.local:4317
+    -Dotel.exporter.otlp.endpoint=http://otel-collector.otel-demo.svc.cluster.local:4317
     -Dotel.service.name=odm
     -Dotel.traces.exporter=otlp
     -Dotel.logs.exporter=none
