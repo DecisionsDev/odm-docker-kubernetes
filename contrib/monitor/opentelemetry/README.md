@@ -42,13 +42,13 @@ This configuration ensures your collector is ready to ingest data via the OpenTe
 
 Verify that the OpenTelemetry Collector is up and running by executing:
 
- ```bash
-kubectl logs deployment/otel-collector
+```bash
+kubectl logs deployment/otel-collector -n otel-demo
  ```
 
 You should get the message :
 
- ```console
+```console
 "Everything is ready. Begin running and processing data."
  ```
 
@@ -56,7 +56,7 @@ You should get the message :
 
 ## Install ODM with the Open Telemetry agent
 
-In this tutorial, we will inject the OpenTelemetry java agent inside the Decision Server Runtime and configure it to communicate with the OTEL Collector using JVM options. Then, we will manage some execution to generate traces and inspect them with Grafana.
+In this tutorial, we will inject the OpenTelemetry java agent inside the Decision Server Runtime and configure it to communicate with the OTEL Collector using JVM options. Then, we will manage some execution to generate traces and inspect them in the otel collector pod logs.
 
 
 ### Prepare your environment for the ODM installation (5 min)
@@ -110,16 +110,16 @@ To configure the OTEL Java agent, we need to set up some JVM options, such as:
 ```bash
     -javaagent:/config/download/opentelemetry-javaagent.jar
     -Dotel.sdk.disabled=false
-    -Dotel.exporter.otlp.protocol=grpc
-    -Dotel.exporter.otlp.endpoint=http://otel-collector.otel-demo.svc.cluster.local:4317
+    -Dotel.exporter.otlp.endpoint=http://otel-collector.otel-demo.svc.cluster.local:4318
     -Dotel.service.name=odm
+    -Dotel.javaagent.debug=true
     -Dotel.traces.exporter=otlp
     -Dotel.logs.exporter=none
     -Dotel.metrics.exporter=none
 ```
 
 > [!NOTE]
-> If you are installing in a different project than the **otel** project, don't forget to adapt the otlp endpoint. Also ensure the Tempo endpoint matches your Tempo installation namespace (default: **tempo-system**).
+> We set the agent in debug mode using **-Dotel.javaagent.debug=true** in order to get the full stack trace in the logs. As it is very verbose, don't forget to remove this setting in production to avoid performance issues.
 
 To do this, create the **otel-runtime-jvm-options-configmap** configmap that will be associated to the **decisionServerRuntime.jvmOptionsRef** parameter :
 
@@ -159,7 +159,7 @@ helm install otel-odm-release ibm-helm/ibm-odm-prod -f otel-values.yaml
 Having a look at the Decision Server Runtime pod logs, you should see : 
 
 ```console
-[otel.javaagent 2024-04-03 18:03:27:166 +0200] [main] INFO io.opentelemetry.javaagent.tooling.VersionLogger - opentelemetry-javaagent - version: 2.16.0
+[otel.javaagent 2026-05-22 10:37:54:277 +0200] [main] INFO io.opentelemetry.javaagent.tooling.VersionLogger - opentelemetry-javaagent - version: 2.28.0
 ```
 
 Using **-Dotel.traces.exporter=otlp** JVM options, no OTEL traces are exported in the log files. So, that's normal to see nothing here. If you need to display them, you can replace it by **-Dotel.traces.exporter=logging**
@@ -170,7 +170,7 @@ Using **-Dotel.traces.exporter=otlp** JVM options, no OTEL traces are exported i
 
 After instantiating ODM by populating it with the sample data, we are ready to directly execute some Decision Server Runtime calls.
 
-Refer to [this documentation](https://www.ibm.com/docs/en/odm/9.5.0?topic=tasks-configuring-external-access) to retrieve the endpoints. 
+Refer to [this documentation](https://www.ibm.com/docs/en/odm/9.6.0?topic=tasks-configuring-external-access) to retrieve the endpoints. 
 
 For example, on OpenShift, you can obtain the route names and hosts with the following commands:
 
@@ -196,34 +196,70 @@ You perform a basic authentication ODM runtime call in the following way:
 
   Where `b2RtQWRtaW46b2RtQWRtaW4=` is the base64 encoding of the current username:password odmAdmin:odmAdmin
 
-### Observe the collected traces in Grafana
+### Observe the collected traces in the otel collector pod
 
-If you followed the Tempo and Grafana installation, Grafana should be accessible via a route or service in the **tempo-system** namespace.
+After you executed the Decision Server Runtime call, you should see in the otel collector pod log:
 
-On OpenShift, you can expose Grafana with a route:
-
- ```bash
- oc expose svc/grafana -n tempo-system
- oc get route grafana -n tempo-system
+```bash
+kubectl logs deployment/otel-collector -n otel-demo
  ```
 
-On other Kubernetes platforms, you can use port-forwarding:
+a trace like :
 
- ```bash
- kubectl port-forward svc/grafana 3000:80 -n tempo-system
+```bash
+Span #1
+    Trace ID       : 56ea58ef8c974581e710318d0d22c181
+    Parent ID      : 
+    ID             : 8eaf460180e3f9b1
+    Name           : POST /DecisionService/rest/*
+    Kind           : Server
+    Start time     : 2026-05-26 13:05:29.430716167 +0000 UTC
+    End time       : 2026-05-26 13:05:30.361695373 +0000 UTC
+    Status code    : Unset
+    Status message : 
+    DroppedAttributesCount: 0
+    DroppedEventsCount: 0
+    DroppedLinksCount: 0
+Attributes:
+     -> url.path: Str(/DecisionService/rest/production_deployment/1.0/loan_validation_production/1.0)
+     -> network.peer.address: Str(10.254.20.2)
+     -> client.address: Str(10.254.20.2)
+     -> user_agent.original: Str(curl/8.19.0)
+     -> http.route: Str(/DecisionService/rest/*)
+     -> network.protocol.version: Str(2.0)
+     -> http.request.method: Str(POST)
+     -> network.peer.port: Int(59436)
+     -> http.response.status_code: Int(200)
+     -> url.scheme: Str(https)
+     -> thread.id: Int(106)
+     -> thread.name: Str(Default Executor-thread-25)
+	{"resource": {"service.instance.id": "4b468a04-00b5-4909-9a65-e3c7ace050b5", "service.name": "otelcol", "service.version": "0.144.0"}, "otelcol.component.id": "debug", "otelcol.component.kind": "exporter", "otelcol.signal": "traces"}
+2026-05-26T13:05:48.896Z	info	Traces	{"resource": {"service.instance.id": "4b468a04-00b5-4909-9a65-e3c7ace050b5", "service.name": "otelcol", "service.version": "0.144.0"}, "otelcol.component.id": "debug", "otelcol.component.kind": "exporter", "otelcol.signal": "traces", "resource spans": 1, "spans": 1}
+2026-05-26T13:05:48.896Z	info	ResourceSpans #0
+Resource SchemaURL: https://opentelemetry.io/schemas/1.24.0
+Resource attributes:
+     -> container.id: Str(d4616b65a83dbf02534a8487ffe02583d13e618bf732681cff9cc8ce67c0b12e)
+     -> host.arch: Str(amd64)
+     -> host.name: Str(test-odm-decisionserverruntime-6487f9c9dc-5lcz9)
+     -> os.description: Str(Linux 5.14.0-570.107.1.el9_6.x86_64)
+     -> os.type: Str(linux)
+     -> os.version: Str(5.14.0-570.107.1.el9_6.x86_64)
+     -> process.command_args: Slice(["/opt/java/openjdk/bin/java","-javaagent:/opt/ibm/wlp/bin/tools/ws-javaagent.jar","-Djava.awt.headless=true","-Djdk.attach.allowAttachSelf=true","-Duser.timezone=Europe/Paris","-Dcom.ibm.jsse2.overrideDefaultTLS=true","-javaagent:/config/download/opentelemetry-javaagent.jar","-Dotel.sdk.disabled=false","-Dotel.exporter.otlp.protocol=grpc","-Dotel.exporter.otlp.endpoint=http://otel-collector.otel-demo.svc.cluster.local:4317","-Dotel.service.name=odm","-Dotel.traces.exporter=otlp","-Dotel.logs.exporter=none","-Dotel.metrics.exporter=none","-Dotel.instrumentation.common.default-enabled=true","-Dotel.instrumentation.methods.include=com.ibm.rules.*;ilog.rules.*","-Dotel.instrumentation.jdbc.enabled=true","-Dotel.instrumentation.servlet.enabled=true","-Dotel.instrumentation.jaxrs.enabled=true","-Dotel.instrumentation.liberty.enabled=true","-Dotel.span.attribute.count.limit=256","-Dotel.span.event.count.limit=256","-Dotel.span.link.count.limit=256","--add-exports","java.base/sun.security.action=ALL-UNNAMED","--add-exports","java.naming/com.sun.jndi.ldap=ALL-UNNAMED","--add-exports","java.naming/com.sun.jndi.url.ldap=ALL-UNNAMED","--add-exports","jdk.naming.dns/com.sun.jndi.dns=ALL-UNNAMED","--add-exports","jdk.naming.dns/com.sun.jndi.url.dns=ALL-UNNAMED","--add-exports","java.security.jgss/sun.security.krb5.internal=ALL-UNNAMED","--add-exports","jdk.attach/sun.tools.attach=ALL-UNNAMED","--add-opens","java.base/java.util=ALL-UNNAMED","--add-opens","java.base/java.lang=ALL-UNNAMED","--add-opens","java.base/java.util.concurrent=ALL-UNNAMED","--add-opens","java.base/java.io=ALL-UNNAMED","--add-opens","java.base/java.nio=ALL-UNNAMED","--add-opens","java.base/sun.nio.ch=ALL-UNNAMED","--add-opens","java.naming/javax.naming.spi=ALL-UNNAMED","--add-opens","java.naming/com.sun.naming.internal=ALL-UNNAMED","--add-opens","jdk.naming.rmi/com.sun.jndi.url.rmi=ALL-UNNAMED","--add-opens","java.naming/javax.naming=ALL-UNNAMED","--add-opens","java.rmi/java.rmi=ALL-UNNAMED","--add-opens","java.sql/java.sql=ALL-UNNAMED","--add-opens","java.management/javax.management=ALL-UNNAMED","--add-opens","java.base/java.lang.reflect=ALL-UNNAMED","--add-opens","java.desktop/java.awt.image=ALL-UNNAMED","--add-opens","java.base/java.security=ALL-UNNAMED","--add-opens","java.base/java.net=ALL-UNNAMED","--add-opens","java.base/java.text=ALL-UNNAMED","--add-opens","java.base/sun.net.www.protocol.https=ALL-UNNAMED","--add-exports","jdk.management.agent/jdk.internal.agent=ALL-UNNAMED","--add-exports","java.base/jdk.internal.vm=ALL-UNNAMED","-jar","/opt/ibm/wlp/bin/tools/ws-server.jar","defaultServer"])
+     -> process.executable.path: Str(/opt/java/openjdk/bin/java)
+     -> process.pid: Int(1)
+     -> process.runtime.description: Str(Eclipse OpenJ9 Eclipse OpenJ9 VM 21.0.11+10-openj9-0.59.0)
+     -> process.runtime.name: Str(IBM Semeru Runtime Open Edition)
+     -> process.runtime.version: Str(21.0.11+10-LTS)
+     -> service.instance.id: Str(acb881e9-fe88-4b33-af4a-4c14ac2dd938)
+     -> service.name: Str(odm)
+     -> telemetry.distro.name: Str(opentelemetry-java-instrumentation)
+     -> telemetry.distro.version: Str(2.28.0)
+     -> telemetry.sdk.language: Str(java)
+     -> telemetry.sdk.name: Str(opentelemetry)
+     -> telemetry.sdk.version: Str(1.62.0)
  ```
 
-To observe Decision Server Runtime executions in Grafana:
-1. Navigate to Grafana (default credentials: admin/admin)
-2. Go to **Explore** in the left menu
-3. Select **Tempo** as the data source
-4. In the query builder, select **Search** tab
-5. Filter by **Service Name**: `odm`
-6. Click **Run query** to see the traces
 
-![Runtime Traces](./images/runtime_traces.png)
 
-By clicking on a **odm:POST /DecisionService/rest/** result, you can access detailed information about the execution:
 
-![Traces Details](./images/traces_details.png)
 

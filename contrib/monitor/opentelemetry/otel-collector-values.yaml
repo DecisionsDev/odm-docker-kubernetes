@@ -6,7 +6,8 @@ metadata:
 spec:
   config:
     exporters:
-      debug: {}
+      debug:
+        verbosity: detailed
     receivers:
       otlp:
         protocols:
