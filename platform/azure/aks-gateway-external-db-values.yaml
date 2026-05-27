@@ -1,0 +1,17 @@
+license: true
+usersPassword: ${USERS_PASSWORD}
+
+image:
+  repository: cp.icr.io/cp/cp4a/odm
+  pullSecrets:
+  - ibm-entitlement-key
+
+externalDatabase:
+  type: postgres
+  secretCredentials: ${POSTGRESQL_CREDENTIALS_SECRET}
+  port: 5432
+  serverName: ${POSTGRESQL_SERVER_NAME}.postgres.database.azure.com
+  databaseName: postgres
+
+customization:
+  securitySecretRef: ${TLS_SECRET}

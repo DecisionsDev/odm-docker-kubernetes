@@ -1,0 +1,86 @@
+---
+# GatewayClass - Defines the controller for the Gateway
+apiVersion: gateway.networking.k8s.io/v1
+kind: GatewayClass
+metadata:
+  name: ils-alb-gateway-class
+spec:
+  controllerName: gateway.k8s.aws/alb
+---
+# LoadBalancerConfiguration - AWS-specific configuration for the ILS ALB
+apiVersion: gateway.k8s.aws/v1beta1
+kind: LoadBalancerConfiguration
+metadata:
+  name: ils-alb-config
+spec:
+  scheme: internet-facing
+  listenerConfigurations:
+    - protocolPort: HTTPS:443
+      #Provide the ARN of the certificate created in ACM/IAM
+      defaultCertificate: arn:aws:iam::<AWS-AccountId>:server-certificate/mycompany
+---
+# TargetGroupConfiguration for IBM Licensing Service
+apiVersion: gateway.k8s.aws/v1beta1
+kind: TargetGroupConfiguration
+metadata:
+  name: ibm-licensing-service-tgc
+spec:
+  targetReference:
+    kind: Service
+    name: ibm-licensing-service-instance
+  defaultConfiguration:
+    targetType: ip
+    protocol: HTTPS
+    protocolVersion: HTTP1
+    healthCheckConfig:
+      healthCheckProtocol: HTTPS
+      healthCheckPath: /
+      healthCheckInterval: 30
+      healthCheckTimeout: 5
+      healthyThresholdCount: 2
+      unhealthyThresholdCount: 2
+---
+# Gateway - Creates a dedicated AWS Application Load Balancer for IBM Licensing Service
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: ils-gateway
+spec:
+  gatewayClassName: ils-alb-gateway-class
+  infrastructure:
+    parametersRef:
+      kind: LoadBalancerConfiguration
+      name: ils-alb-config
+      group: gateway.k8s.aws
+  listeners:
+  - name: https
+    protocol: HTTPS
+    port: 443
+    allowedRoutes:
+      namespaces:
+        from: Same
+---
+# HTTPRoute for IBM Licensing Service
+# Based on IBM documentation: path /ibm-licensing-service-instance with URL rewrite to /
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: ibm-licensing-route
+spec:
+  parentRefs:
+  - name: ils-gateway
+    sectionName: https
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /ibm-licensing-service-instance
+    filters:
+    - type: URLRewrite
+      urlRewrite:
+        path:
+          type: ReplacePrefixMatch
+          replacePrefixMatch: /
+    backendRefs:
+    - name: ibm-licensing-service-instance
+      port: 8080

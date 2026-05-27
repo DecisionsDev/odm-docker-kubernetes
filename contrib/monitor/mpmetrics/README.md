@@ -33,14 +33,12 @@ The MicroProfile mpMetrics Liberty feature provides a /metrics endpoint from whi
     kubectl create secret docker-registry ibm-entitlement-key \
         --docker-server=cp.icr.io \
         --docker-username=cp \
-        --docker-password="<API_KEY_GENERATED>" \
-        --docker-email=<USER_EMAIL>
+        --docker-password="<API_KEY_GENERATED>"
     ```
 
     Where:
 
     - *API_KEY_GENERATED* is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
-    - *USER_EMAIL* is the email address associated with your IBMid.
 
     > Note: 
     > 1. The **cp.icr.io** value for the docker-server parameter is the only registry domain name that contains the images. You must set the *docker-username* to **cp** to use an entitlement key as *docker-password*.
@@ -71,14 +69,14 @@ Create the monitor-secret
   ```shell
   helm search repo ibm-odm-prod
   NAME                  	CHART VERSION	APP VERSION	DESCRIPTION
-  ibm-helm/ibm-odm-prod	  25.1.0       	9.5.0.1   	IBM Operational Decision Manager
+  ibm-helm/ibm-odm-prod	  26.0.0       	9.6.0.0   	IBM Operational Decision Manager
   ```
 
 ### 3. Run the `helm install` command
 
 You can now install the product. We will use the PostgreSQL internal database and disable data persistence (`internalDatabase.persistence.enabled=false`) to avoid any platform complexity with persistent volume allocation.
 
-See the [Preparing to install](https://www.ibm.com/docs/en/odm/9.5.0?topic=production-preparing-install-operational-decision-manager) documentation for more information.
+See the [Preparing to install](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-preparing-install-operational-decision-manager) documentation for more information.
 
 ```shell
 helm install my-odm-release ibm-helm/ibm-odm-prod -f monitor-values.yaml
@@ -155,7 +153,7 @@ kubectl create -f enableMetricsConfigMap.yaml
 ### Check that ODM targets are available
 
 The ODM Helm chart instance has created a PodMonitor k8s resource that you can retrieve now in the OCP dashboard.
-* Drill at Observe > Target
+* Drill at Observe > Targets
 * Click on Filter and check **User**
  
 You should see the 4 ODM metrics endpoints
@@ -173,6 +171,10 @@ For example put **gc_total** in the **Expression** field and click on the **Run 
 
 If you are interested in servlet requests managed by the runtime, you can use the query **servlet_request_total{mp_scope="vendor",servlet="DecisionService_RESTDecisionService"}**
 For example, by monitoring this metrics, you can check the behaviour of the load balancer is correct if all Decision Server Runtime replicas are receiving almost the same number of requests like in the following screenshot.
+
+ > Note: 
+ > **servlet_request_total{mp_scope="vendor",servlet="DecisionService_RESTDecisionService"}** is accessible when at least a request 
+ > as been sent to Decision Server Runtime. 
  
 ![Runtime Servlet Request](./images/RuntimeRequest.png)
 
@@ -224,10 +226,12 @@ EOF
 oc -n openshift-operators get routes grafana-route -o jsonpath="https://{.status.ingress[].host}"
 ```
 
-5/ You can use this dashboard to help spot performance issues. For instance, metrics such as servlet response times, CPU or heap usage when seen as a time-series on Grafana, could be indicative of an underlying performance issue or memory leak.
+5/ Login using **admin/admin**
+
+6/ You can use this dashboard to help spot performance issues. For instance, metrics such as servlet response times, CPU or heap usage when seen as a time-series on Grafana, could be indicative of an underlying performance issue or memory leak.
 
 * Click on the **Explore** tab on left part
-  * Select **prometheus** as Outline
+  * Select **thanos-query-ds** as Outline
     * Select the **servlet_request_total** metric
       * Add the **mp_scope=vendor** label filter
       * Add the **servlet=DecisionService_RESTDecisionService** label filter

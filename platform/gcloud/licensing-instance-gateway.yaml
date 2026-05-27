@@ -6,11 +6,8 @@ spec:
   apiSecretToken: ibm-licensing-token
   datasource: datacollector
   httpsEnable: false
-  ingressEnabled: false
-  ingressOptions:
-    annotations:
-      ingress.kubernetes.io/rewrite-target: /
-    path: /ibm-licensing-service-instance/*
+  routeEnabled: false
+  gatewayEnabled: false
   instanceNamespace: ibm-licensing
   license:
     accept: true
