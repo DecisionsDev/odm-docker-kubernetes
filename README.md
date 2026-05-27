@@ -48,6 +48,7 @@ To integrate with OpenID providers for authentication and authorization, follow 
 - [Configure ODM with an Azure Active Directory service](authentication/AzureAD/README.md)
 - [Configure ODM with a Keycloak service](authentication/Keycloak/README.md)
 - [Configure ODM with a Cognito User Pool](authentication/Cognito/README.md)
+- [Configure ODM with PingFederate](authentication/PingFederate/README.md)
 
 As an alternative to using OpenId Connect, it is also possible to execute Business Decisions securely using mTLS with or without authentication/authorization.
 Read more in [ODM Decision Server Runtime using mutual TLS](authentication/mutual-tls/README.md).
