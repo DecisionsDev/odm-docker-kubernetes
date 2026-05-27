@@ -34,7 +34,7 @@ For a standard starting point, we recommend the deployment mode. This creates a 
 * Create a new project: oc new-project otel-demo.
 * Go to Operators > Installed Operators > Red Hat build of OpenTelemetry.
 * Select the OpenTelemetry collector tab and select Create OpenTelemetryCollector.
-* Switch to the YAML view and use this basic deployment mode configuration:
+* Switch to the YAML view and create a default otel collector using [otel-collector.yaml](otel-collector.yaml)
 
 This configuration ensures your collector is ready to ingest data via the OpenTelemetry protocol (OTLP). Use oc logs to see your traces appearing in real time during the testing phase.
 
