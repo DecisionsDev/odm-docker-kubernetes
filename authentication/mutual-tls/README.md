@@ -126,7 +126,7 @@ Check that you can access the ODM charts:
 ```shell
 helm search repo ibm-odm-prod
 NAME                        CHART VERSION	APP VERSION DESCRIPTION
-ibm-helm/ibm-odm-prod       25.1.0       	9.5.0.1     IBM Operational Decision Manager  License By in...
+ibm-helm/ibm-odm-prod       26.0.0       	9.6.0.0     IBM Operational Decision Manager  License By in...
 ```
 
 ## Manage a server certificate for the ODM instance
@@ -176,7 +176,7 @@ openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout myserver.key \
 kubectl create secret generic my-server-secret --from-file=tls.crt=myserver.crt --from-file=tls.key=myserver.key
 ```
 
-The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://www.ibm.com/docs/en/odm/9.5.0?topic=production-defining-security-certificate).
+The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-defining-security-certificate).
 
 ## Manage a client certificate to communicate with the ODM Runtime
 
@@ -204,7 +204,7 @@ kubectl create secret generic my-client-secret --from-file=tls.crt=myclient.crt
 
 You can now install the product. We will use the PostgreSQL internal database and disable data persistence (`internalDatabase.persistence.enabled=false`) to avoid any platform complexity with persistent volume allocation.
 
-See the [Preparing to install](https://www.ibm.com/docs/en/odm/9.5.0?topic=production-preparing-install-operational-decision-manager) documentation for more information.
+See the [Preparing to install](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-preparing-install-operational-decision-manager) documentation for more information.
 
 Get the [ocp-values.yaml](./ocp-values.yaml) file and install your ODM instance:
 

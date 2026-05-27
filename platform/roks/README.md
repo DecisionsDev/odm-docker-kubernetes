@@ -14,7 +14,7 @@ The ODM on Kubernetes Docker images are available in the [IBM Cloud Container Re
 
 The project uses the following components:
 
-- [IBM Operational Decision Manager](https://ibmdocs-test.dcs.ibm.com/docs/en/odm/9.5.0?topic=operational-decision-manager-certified-kubernetes-950)
+- [IBM Operational Decision Manager](https://www.ibm.com/docs/en/odm/9.6.0?topic=operational-decision-manager-certified-kubernetes-960)
 - [IBM Cloud](https://cloud.ibm.com/login)
 
 ## Tested environment
@@ -95,7 +95,7 @@ helm repo update
 ```bash
 $ helm search repo ibm-odm-prod
 NAME                    CHART VERSION APP VERSION DESCRIPTION
-ibm-helm/ibm-odm-prod   25.1.0        9.5.0.1     IBM Operational Decision Manager
+ibm-helm/ibm-odm-prod   26.0.0        9.6.0.0     IBM Operational Decision Manager
 ```
 
 ### 3. Install an IBM Operational Decision Manager release (10 min)
@@ -139,7 +139,7 @@ oc get pods
 
 ### 4. Access the ODM services  
 
-Refer to [this documentation](https://www.ibm.com/docs/en/odm/9.5.0?topic=tasks-configuring-external-access) to retrieve the endpoints.
+Refer to [this documentation](https://www.ibm.com/docs/en/odm/9.6.0?topic=tasks-configuring-external-access) to retrieve the endpoints.
 For example, on OpenShift you can get the route names and hosts with:
 
 ```bash
