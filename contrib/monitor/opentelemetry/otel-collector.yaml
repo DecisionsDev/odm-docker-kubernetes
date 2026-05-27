@@ -1,0 +1,22 @@
+kind: OpenTelemetryCollector
+apiVersion: opentelemetry.io/v1beta1
+metadata:
+  name: otel
+  namespace: otel-demo
+spec:
+  config:
+    exporters:
+      debug:
+        verbosity: detailed
+    receivers:
+      otlp:
+        protocols:
+          grpc: {}
+          http: {}
+    service:
+      pipelines:
+        traces:
+          exporters:
+            - debug
+          receivers:
+            - otlp
