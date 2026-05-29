@@ -451,6 +451,7 @@ You should be able to see the address and other details about `ibm-licensing-svc
 NAME                             CLASS   HOSTS   ADDRESS                                                                 PORTS   AGE
 ibm-licensing-svc-ingress        alb     *       k8s-ibmlicen-ibmlicen-xxxxxxxx-yyyyyyy.<aws-region>.elb.amazonaws.com   80      44m
 ```
+You can find more information and use cases on [this page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.14.0?topic=configuring-kubernetes-ingress).
 
 > **Note**
 > If you choose to use the AWS Load Balancer with Gateway API, refer to [Deploying IBM Operational Decision Manager with AWS Load Balancer Controller supporting Gateway API on Amazon EKS](README-GATEWAY-API.md) tutorial.
