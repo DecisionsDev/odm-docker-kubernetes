@@ -8,6 +8,58 @@ Here is the Google Cloud home page: <https://cloud.google.com>
 
 ![Architecture](images/architecture.png)
 
+```mermaid
+graph TB
+    subgraph "Google Cloud Platform"
+        Client[Client/Browser]
+        LB[Cloud Load Balancing]
+
+        subgraph Zone["Zone"]
+            subgraph NEG1["Network Endpoint Group<br/>Decision Center"]
+                DC[Decision Center<br/>Container]
+            end
+
+            subgraph NEG2["Network Endpoint Group<br/>Decision Server Console"]
+                DSC[Decision Server Console<br/>Container]
+            end
+
+            subgraph NEG3["Network Endpoint Group<br/>Decision Server Runtime"]
+                DSR[Decision Server Runtime<br/>Container]
+            end
+
+            subgraph NEG4["Network Endpoint Group<br/>Decision Runner"]
+                DR[Decision Runner<br/>Container]
+            end
+        end
+
+        DB[(Google Cloud SQL<br/>PostgreSQL)]
+    end
+
+    Client -->|HTTPS| LB
+    LB -->|https://mycompany.com/decisioncenter| NEG1
+    LB -->|https://mycompany.com/res| NEG2
+    LB -->|https://mycompany.com/DecisionService| NEG3
+    LB -->|https://mycompany.com/DecisionRunner| NEG4
+
+    NEG1 --> DC
+    NEG2 --> DSC
+    NEG3 --> DSR
+    NEG4 --> DR
+
+    DC -.-> DB
+    DSC -.-> DB
+    DSR -.-> DB
+    DR -.-> DB
+
+    style LB fill:#4285f4,stroke:#333,stroke-width:2px,color:#fff
+    style DB fill:#4285f4,stroke:#333,stroke-width:2px,color:#fff
+    style Zone fill:#fff9e6,stroke:#333,stroke-width:2px
+    style NEG1 fill:#e8f4f8,stroke:#333,stroke-width:1px
+    style NEG2 fill:#e8f4f8,stroke:#333,stroke-width:1px
+    style NEG3 fill:#e8f4f8,stroke:#333,stroke-width:1px
+    style NEG4 fill:#e8f4f8,stroke:#333,stroke-width:1px
+```
+
 The ODM on Kubernetes Docker images are available in the [IBM Entitled Registry](https://www.ibm.com/cloud/container-registry). The ODM Helm chart is available in the [IBM Helm charts repository](https://github.com/IBM/charts).
 
 ## Included components
