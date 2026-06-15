@@ -13,4 +13,3 @@ jobs:
           fail_on_error: true
           filter_mode: nofilter
           show_stats: true
-

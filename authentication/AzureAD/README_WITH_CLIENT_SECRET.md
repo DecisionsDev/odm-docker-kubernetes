@@ -19,6 +19,7 @@
         - [Set up Rule Designer](#set-up-rule-designer)
         - [Getting Started with IBM Operational Decision Manager for Containers](#getting-started-with-ibm-operational-decision-manager-for-containers)
         - [Calling the ODM Runtime Service](#calling-the-odm-runtime-service)
+- [Configuring post logout redirect](#configuring-post-logout-redirect)
 - [Troubleshooting](#troubleshooting)
 - [License](#license)
 
@@ -249,26 +250,7 @@ Verify:
 
 ### Create secrets to configure ODM with Microsoft Entra ID
 
-1. Create a secret with the Microsoft Entra ID Server certificate.
-
-    To allow ODM services to access the Microsoft Entra ID Server, it is mandatory to provide the Microsoft Entra ID Server certificate.
-    You can create the secret as follows:
-
-    ```shell
-    keytool -printcert -sslserver login.microsoftonline.com -rfc > microsoft.crt
-    kubectl create secret generic ms-secret --from-file=tls.crt=microsoft.crt
-    ```
-
-    Introspecting the Microsoft Entra ID login.microsoftonline.com certificate, you can see it has been signed by the Digicert Root CA authorithy.
-
-    So we will also add the DigiCert Global Root CA from [this page](https://www.digicert.com/kb/digicert-root-certificates.htm):
-
-    ```shell
-    curl --silent --remote-name https://cacerts.digicert.com/DigiCertGlobalRootCA.crt.pem
-    kubectl create secret generic digicert-secret --from-file=tls.crt=DigiCertGlobalRootCA.crt.pem
-    ```
-
-2. Generate the ODM configuration file for Microsoft Entra ID.
+1. Generate the ODM configuration file for Microsoft Entra ID.
 
     If you have not yet done so, download the [azuread-odm-script.zip](azuread-odm-script.zip) file to your machine. This archive contains the [script](generateTemplate.sh) and the content of the [templates](templates) directory.
 
@@ -296,21 +278,20 @@ Verify:
     - openIdParameters.properties configures several features like allowed domains, logout, and some internal ODM OpenId features
     - OdmOidcProviders.json configures the client-credentials OpenId provider used by the Decision Center server configuration to connect Decision Center to the Decision Server console and Decision Center to Decision Runner
 
-3. Create the Microsoft Entra ID authentication secret.
+2. Create the Microsoft Entra ID authentication secret.
 
     ```shell
     kubectl create secret generic azuread-auth-secret \
-        --from-file=OdmOidcProviders.json=./output/OdmOidcProviders.json \
         --from-file=openIdParameters.properties=./output/openIdParameters.properties \
         --from-file=openIdWebSecurity.xml=./output/openIdWebSecurity.xml \
         --from-file=webSecurity.xml=./output/webSecurity.xml
     ```
 
-4. Create the secret allowing to synchronize Decision Center Users and Groups with Entra ID.
+3. Create the secret allowing to synchronize Decision Center Users and Groups with Entra ID.
 
     This section is optional.
 
-    ODM Decision Center allows to [manage users and groups from the Business console](https://www.ibm.com/docs/en/odm/9.5.0?topic=center-enabling-users-groups) in order to set access security on specific projects.
+    ODM Decision Center allows to [manage users and groups from the Business console](https://www.ibm.com/docs/en/odm/9.6.0?topic=center-enabling-users-groups) in order to set access security on specific projects.
     The Groups and Users import can be done using an LDAP connection.
     But, if the openId server also provides a SCIM server, then it can also be managed using a SCIM connection.
 
@@ -321,7 +302,7 @@ Verify:
     - [for users](https://learn.microsoft.com/en-us/graph/api/resources/users?view=graph-rest-1.0&preserve-view=true)
     - [for groups](https://learn.microsoft.com/en-us/graph/api/resources/groups-overview?view=graph-rest-1.0&tabs=http)
 
-    Then, it will generate a [group-security-configurations.xml](https://www.ibm.com/docs/en/odm/9.5.0?topic=access-optional-user-liberty-configurations#reference_w1b_xhq_2rb__title__3) file that will be consumed using the [Decision Center rest-api](https://www.ibm.com/docs/en/odm/9.5.0?topic=mufdc-creating-users-groups-roles-by-using-rest-api) to populate Groups and Users in the Administration Tab.
+    Then, it will generate a [group-security-configurations.xml](https://www.ibm.com/docs/en/odm/9.6.0?topic=access-optional-user-liberty-configurations#reference_w1b_xhq_2rb__title__3) file that will be consumed using the [Decision Center rest-api](https://www.ibm.com/docs/en/odm/9.6.0?topic=mufdc-creating-users-groups-roles-by-using-rest-api) to populate Groups and Users in the Administration Tab.
 
     In a kubernetes context, this script can be called by a CRON job.
     Using the new ODM sidecar container mechanism, it can also be managed by the Decision Center pod himself.
@@ -350,7 +331,7 @@ Verify:
   ```shell
   helm search repo ibm-odm-prod
   NAME                  	CHART VERSION	APP VERSION	DESCRIPTION
-  ibm-helm/ibm-odm-prod   25.1.0          9.5.0.1   	IBM Operational Decision Manager
+  ibm-helm/ibm-odm-prod   26.0.0          9.6.0.0   	IBM Operational Decision Manager
   ```
 
 ### Run the `helm install` command
@@ -359,7 +340,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 
 #### a. Installation on OpenShift using Routes
 
-  See the [Preparing to install](https://www.ibm.com/docs/en/odm/9.5.0?topic=production-preparing-install-operational-decision-manager) documentation for additional information.
+  See the [Preparing to install](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-preparing-install-operational-decision-manager) documentation for additional information.
   Get the [entraid-ocp-values.yaml](./entraid-ocp-values.yaml) file and run the command:
 
   ```shell
@@ -422,7 +403,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 
 1. Get the ODM endpoints.
 
-    Refer to the [documentation](https://www.ibm.com/docs/en/odm/9.5.0?topic=tasks-configuring-external-access) to retrieve the endpoints.
+    Refer to the [documentation](https://www.ibm.com/docs/en/odm/9.6.0?topic=tasks-configuring-external-access) to retrieve the endpoints.
     For example, on OpenShift you can get the route names and hosts with:
 
     ```shell
@@ -515,7 +496,7 @@ To be able to securely connect your Rule Designer to the Decision Server and Dec
 
 4. Restart Rule Designer.
 
-For more information, refer to the [documentation](https://www.ibm.com/docs/en/odm/9.5.0?topic=designer-importing-security-certificate-in-rule).
+For more information, refer to the [documentation](https://www.ibm.com/docs/en/odm/9.6.0?topic=designer-importing-security-certificate-in-rule).
 
 ### Getting Started with IBM Operational Decision Manager for Containers
 
@@ -535,7 +516,7 @@ Deploy the **Loan Validation Service** production_deployment ruleapps using the 
 
 You can retrieve the payload.json from the ODM Decision Server Console or use [the provided payload](payload.json).
 
-As explained in the ODM on Certified Kubernetes documentation [Configuring user access with OpenID](https://www.ibm.com/docs/en/odm/9.5.0?topic=access-configuring-user-openid), we advise to use basic authentication for the ODM runtime call for performance reasons and to avoid the issue of token expiration and revocation.
+As explained in the ODM on Certified Kubernetes documentation [Configuring user access with OpenID](https://www.ibm.com/docs/en/odm/9.6.0?topic=access-configuring-user-openid), we advise to use basic authentication for the ODM runtime call for performance reasons and to avoid the issue of token expiration and revocation.
 
 You can realize a basic authentication ODM runtime call the following way:
 
@@ -561,6 +542,41 @@ And use the retrieved access token in the following way:
 curl -H "Content-Type: application/json" -k --data @payload.json \
         -H "Authorization: Bearer <ACCESS_TOKEN>" \
         https://<DS_RUNTIME_HOST>/DecisionService/rest/production_deployment/1.0/loan_validation_production/1.0
+```
+
+# Configuring post logout redirect
+
+This configuration is optional.
+What is the interest of post logout redirect configuration ?
+
+When a user logs out:
+- The session is cleared.
+- Token is invalidated.
+- Decision Center logout redirect to Decision Center
+- Decision Server Console logout redirect to Decision Server Console
+
+To configure the post logout redirect, you have to add the following properties in the previously generated **./output/openIdParameters.properties** file:
+
+Using Routes:
+
+    OPENID_LOGOUT_TOKEN_PARAM=id_token_hint
+    DC_OPENID_POST_LOGOUT_REDIRECT_URI=https://<DC_HOST>/decisioncenter/t/home
+    DS_OPENID_POST_LOGOUT_REDIRECT_URI=https://<DSC_HOST>/res/home.jsp
+
+Using Ingress:
+
+    OPENID_LOGOUT_TOKEN_PARAM=id_token_hint
+    DC_OPENID_POST_LOGOUT_REDIRECT_URI=https://<INGRESS_ADDRESS>/decisioncenter/t/home
+    DS_OPENID_POST_LOGOUT_REDIRECT_URI=https://<INGRESS_ADDRESS>/res/home.jsp
+
+Delete the azuread-auth-secret secret and recreate it as explained [Create secrets to configure ODM with Microsoft Entra ID](#create-secrets-to-configure-odm-with-microsoft-entra-id).
+
+```shell
+kubectl delete secret azuread-auth-secret
+kubectl create secret generic azuread-auth-secret \
+        --from-file=openIdParameters.properties=./output/openIdParameters.properties \
+        --from-file=openIdWebSecurity.xml=./output/openIdWebSecurity.xml \
+        --from-file=webSecurity.xml=./output/webSecurity.xml
 ```
 
 # Troubleshooting

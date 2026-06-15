@@ -4,13 +4,13 @@ The following steps explain how to use a bastion host to mirror the ODM on Kuber
 A bastion host is a host connected to both the private registry (Amazon ECR) and the public container registry.
 
 The related instructions in the online documentation are:
-- [Setting up a host to mirror images to a private registry](https://www.ibm.com/docs/en/odm/9.5.0?topic=installation-setting-up-host-mirror-images-private-registry)
-- [Setting environment variables and downloading CASE files](https://www.ibm.com/docs/en/odm/9.5.0?topic=installation-setting-environment-variables-downloading-case-files)
-- [Option 1: Mirroring images to a private container registry with a bastion server](https://www.ibm.com/docs/en/odm/9.5.0?topic=mipr-option-1-mirroring-images-private-container-registry-bastion-server)
+- [Setting up a host to mirror images to a private registry](https://www.ibm.com/docs/en/odm/9.6.0?topic=installation-setting-up-host-mirror-images-private-registry)
+- [Setting environment variables and downloading CASE files](https://www.ibm.com/docs/en/odm/9.6.0?topic=installation-setting-environment-variables-downloading-case-files)
+- [Option 1: Mirroring images to a private container registry with a bastion server](https://www.ibm.com/docs/en/odm/9.6.0?topic=mipr-option-1-mirroring-images-private-container-registry-bastion-server)
 
 ## Prerequisites:
 
-- Install the following tools on your bastion host (if needed, refer to [Setting up a host to mirror images to a private registry](https://www.ibm.com/docs/en/odm/9.5.0?topic=installation-setting-up-host-mirror-images-private-registry)):
+- Install the following tools on your bastion host (if needed, refer to [Setting up a host to mirror images to a private registry](https://www.ibm.com/docs/en/odm/9.6.0?topic=installation-setting-up-host-mirror-images-private-registry)):
   - [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html)
   - Docker or Podman
   - OCP CLI (oc)
@@ -58,7 +58,7 @@ The related instructions in the online documentation are:
 
     The command creates a flat directory structure under `~/.ibm-pak/data/cases/$CASE_NAME/$CASE_VERSION` that contains the ibm-odm-prod.tgz CASE files, a folder that contains the ibm-odm-prod Helm charts, and two CSV files that contain the list of images and the list of charts associated with the CASE.
 
-    For more information about this step, refer to [Setting environment variables and downloading CASE files](https://www.ibm.com/docs/en/odm/9.5.0?topic=installation-setting-environment-variables-downloading-case-files).
+    For more information about this step, refer to [Setting environment variables and downloading CASE files](https://www.ibm.com/docs/en/odm/9.6.0?topic=installation-setting-environment-variables-downloading-case-files).
 
 ### b. Mirror the ODM images to the ECR registry
 
@@ -119,7 +119,7 @@ The related instructions in the online documentation are:
   > Note: 
   Only the container images needed for your architecture are uploaded into the registry when specifying the option `--filter-by-os ".*/${ARCHITECTURE}"`
 
-  For more information about these commands, see [Mirroring images to a private container registry](https://www.ibm.com/docs/en/odm/9.5.0?topic=installation-mirroring-images-private-registry.
+  For more information about these commands, see [Mirroring images to a private container registry](https://www.ibm.com/docs/en/odm/9.6.0?topic=installation-mirroring-images-private-registry).
 
   You can check the repositories and the images available using the commands below :
 
@@ -149,35 +149,35 @@ The related instructions in the online documentation are:
 ### d. Install ODM
 
 - Refer to [Install an IBM Operational Decision Manager release](README.md#5-install-an-ibm-operational-decision-manager-release-10-min) to choose the relevant `.yaml` file to use in the `helm install` command below depending on 
-  - the Ingress controller used (NGINX or ALB), 
+  - the Ingress or Gateway used, 
   - the database used (internal database or the RDS PostgreSQL database).
 
 - Find the Helm Chart version related to your CASE version:
 
-    For instance, if you choose the CASE version `2.0.0`, then the Helm chart version should be `25.0.0` and you should set:
+    For instance, if you choose the CASE version `2.2.0`, then the Helm chart version should be `26.0.0` and you should set:
     ```bash
-    export CHART_VERSION=25.0.0
+    export CHART_VERSION=26.0.0
     ```
 
     You can find the Helm chart version related to a given CASE version:
 
-    - For a release: in the page [Upgrading ODM releases on Certified Kubernetes](https://www.ibm.com/docs/en/odm/9.5.0?topic=950-upgrading-odm-releases-certified-kubernetes).
+    - For a release: in the page [Upgrading ODM releases on Certified Kubernetes](https://www.ibm.com/docs/en/odm/9.6.0?topic=960-upgrading-odm-releases-certified-kubernetes).
 
     - For an interim fix: click the link for your version of ODM in the page [Operational Decision Manager Interim Fixes](https://www.ibm.com/support/pages/operational-decision-manager-interim-fixes) and then check the table "Interim fix for ODM on Certified Kubernetes".
 
-    - Alternatively, you can also run the command `tree  ~/.ibm-pak/data/cases/ibm-odm-prod/` (on the bastion host), and you can find the chart version number corresponding to the file `ibm-odm-prod-<CHART_VERSION>.tgz`. Below is an example for CASE version `2.0.0` that corresponds to Helm chart version `25.0.0` :
+    - Alternatively, you can also run the command `tree  ~/.ibm-pak/data/cases/ibm-odm-prod/` (on the bastion host), and you can find the chart version number corresponding to the file `ibm-odm-prod-<CHART_VERSION>.tgz`. Below is an example for CASE version `2.2.0` that corresponds to Helm chart version `26.0.0` :
 
       ```bash
       /home/user/.ibm-pak/data/cases/ibm-odm-prod/
-      └── 2.0.0
+      └── 2.2.0
           ├── caseDependencyMapping.csv
           ├── charts
-          │   └── ibm-odm-prod-25.0.0.tgz
+          │   └── ibm-odm-prod-26.0.0.tgz
           ├── component-set-config.yaml
-          ├── ibm-odm-prod-2.0.0-airgap-metadata.yaml
-          ├── ibm-odm-prod-2.0.0-charts.csv
-          ├── ibm-odm-prod-2.0.0-images.csv
-          ├── ibm-odm-prod-2.0.0.tgz
+          ├── ibm-odm-prod-2.2.0-airgap-metadata.yaml
+          ├── ibm-odm-prod-2.2.0-charts.csv
+          ├── ibm-odm-prod-2.2.0-images.csv
+          ├── ibm-odm-prod-2.2.0.tgz
           └── resourceIndexes
               └── ibm-odm-prod-resourcesIndex.yaml
       ```
@@ -191,4 +191,4 @@ The related instructions in the online documentation are:
   ```
 
   > **Note:**
-  > By using `eks-values.yaml`, ODM with a PostgreSQL internal database will be installed. It requires an ALB ingress controller and a server certificate. For more information, see [Provision an AWS Load Balancer Controller](README.md#d-provision-an-aws-load-balancer-controller) and [Manage a digital certificate](README.md#4-manage-a-digital-certificate-10-min).
+  > By using `eks-values.yaml`, ODM with a PostgreSQL internal database will be installed. It requires an ALB ingress controller and a server certificate. For more information, see [Provision an AWS Load Balancer Controller](README.md#d-provision-an-aws-load-balancer-controller) and [Manage a digital certificate](README.md#4-manage-adigital-certificate-10-min).

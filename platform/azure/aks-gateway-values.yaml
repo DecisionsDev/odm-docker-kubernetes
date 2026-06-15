@@ -1,0 +1,15 @@
+license: true
+usersPassword: ${USERS_PASSWORD}
+
+image:
+  repository: cp.icr.io/cp/cp4a/odm
+  pullSecrets:
+  - ibm-entitlement-key
+
+internalDatabase:
+  populateSampleData: true
+  persistence:
+    enabled: false
+
+customization:
+  securitySecretRef: ${TLS_SECRET}

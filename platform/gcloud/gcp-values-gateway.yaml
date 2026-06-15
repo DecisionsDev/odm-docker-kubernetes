@@ -1,0 +1,18 @@
+license: true
+usersPassword: "odmAdmin"
+
+image:
+  repository: cp.icr.io/cp/cp4a/odm
+  pullSecrets:
+  - ibm-entitlement-key
+
+service:
+  enableTLS: false
+
+
+externalDatabase:
+  type: postgres
+  secretCredentials: odmdbsecret
+  port: 5432
+  serverName: <DB_ENDPOINT>
+  databaseName: postgres

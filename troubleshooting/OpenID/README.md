@@ -65,7 +65,7 @@ Each ODM component (Decision Center, Decision Runner, Decision Server Console an
 
 A default ConfigMap for each ODM component is automatically generated if no custom trace specification is specified in the Helm chart parameters.
 
-To change the trace specification of an ODM component, it is easiest to modify this default ConfigMap as explained in the [documentation](https://www.ibm.com/docs/en/odm/9.5.0?topic=kubernetes-customizing-log-levels), 
+To change the trace specification of an ODM component, it is easiest to modify this default ConfigMap as explained in the [documentation](https://www.ibm.com/docs/en/odm/9.6.0?topic=kubernetes-customizing-log-levels), 
 
 For instance add `com.ibm.ws.security.*=all:com.ibm.ws.webcontainer.security.*=all` to the value for the `traceSpecification` parameter of the `logging` element, eg. (for Decision Center):
 

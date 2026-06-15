@@ -12,6 +12,7 @@ internalDatabase:
 
 oidc:
   enabled: true
+  disableLoginPanel: true
 
 customization:
   authSecretRef: okta-auth-secret

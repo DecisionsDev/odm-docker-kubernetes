@@ -9,7 +9,7 @@ IBM Operational Decision Manager on Certified Kubernetes
 
 ##  Deploying IBM Operational Decision Manager on a Certified Kubernetes Cluster
 
-This repository centralizes materials to deploy [IBM® Operational Decision Manager](https://www.ibm.com/docs/en/odm/9.5.0) ODM on Certified Kubernetes. It is deployed in a clustered topology that uses WebSphere® Application Server Liberty on a Kubernetes cluster.
+This repository centralizes materials to deploy [IBM® Operational Decision Manager](https://www.ibm.com/docs/en/odm/9.6.0) ODM on Certified Kubernetes. It is deployed in a clustered topology that uses WebSphere® Application Server Liberty on a Kubernetes cluster.
 
 ODM is a decisioning platform to automate your business policies. Business rules are used at the heart of the platform to implement decision logic on a business vocabulary and run it as web decision services.
 
@@ -23,7 +23,8 @@ This repository provides materials for the following versions of IBM ODM:
 
 | ODM Version      |
 |--------------|
-| **[9.5 (Latest)](README.md)**    |
+| **[9.6 (Latest)](README.md)**    |
+| **[9.5.0.1](https://github.com/DecisionsDev/odm-docker-kubernetes/tree/9.5.0.1)**  |
 | **[9.0.0.1](https://github.com/DecisionsDev/odm-docker-kubernetes/tree/9.0.0.1)**  |
 | **[8.12.0.1](https://github.com/DecisionsDev/odm-docker-kubernetes/tree/8.12.0.1)**                               |
 | **[8.11.0.1](https://github.com/DecisionsDev/odm-docker-kubernetes/tree/8.11.0.1)**                               |
@@ -48,6 +49,7 @@ To integrate with OpenID providers for authentication and authorization, follow 
 - [Configure ODM with an Azure Active Directory service](authentication/AzureAD/README.md)
 - [Configure ODM with a Keycloak service](authentication/Keycloak/README.md)
 - [Configure ODM with a Cognito User Pool](authentication/Cognito/README.md)
+- [Configure ODM with PingFederate](authentication/PingFederate/README.md)
 
 As an alternative to using OpenId Connect, it is also possible to execute Business Decisions securely using mTLS with or without authentication/authorization.
 Read more in [ODM Decision Server Runtime using mutual TLS](authentication/mutual-tls/README.md).
@@ -77,7 +79,7 @@ To enable analytics and monitoring capabilities within your deployment, consider
 For issues relating specifically to the Dockerfiles and scripts, please use the [GitHub issue tracker](https://github.com/ODMDev/odm-docker-kubernetes/issues). For more general issue relating to IBM Operational Decision Manager you can [get help](https://community.ibm.com/community/user/automation/communities/community-home?communitykey=c0005a22-520b-4181-bfad-feffd8bdc022) through the ODMDev community or, if you have production licenses for Operational Decision Manager, via the usual support channels. We welcome contributions following [our guidelines](https://github.com/ODMDev/odm-docker-kubernetes/blob/master/CONTRIBUTING.md).
 
 # Notice
-© Copyright IBM Corporation 2025.
+© Copyright IBM Corporation 2026.
 
 ## License
 ```text

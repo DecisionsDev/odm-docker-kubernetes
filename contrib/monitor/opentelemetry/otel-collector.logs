@@ -1,0 +1,1029 @@
+2026-05-27T07:31:42.391Z	info	service@v0.144.0/service.go:239	Starting otelcol...	{"resource": {"service.instance.id": "8c476977-537e-421f-aac6-c05ce65be9c6", "service.name": "otelcol", "service.version": "0.144.0"}, "Version": "0.144.0", "NumCPU": 16}
+2026-05-27T07:31:42.391Z	info	extensions/extensions.go:40	Starting extensions...	{"resource": {"service.instance.id": "8c476977-537e-421f-aac6-c05ce65be9c6", "service.name": "otelcol", "service.version": "0.144.0"}}
+2026-05-27T07:31:42.391Z	info	otlpreceiver@v0.144.0/otlp.go:120	Starting GRPC server	{"resource": {"service.instance.id": "8c476977-537e-421f-aac6-c05ce65be9c6", "service.name": "otelcol", "service.version": "0.144.0"}, "otelcol.component.id": "otlp", "otelcol.component.kind": "receiver", "endpoint": "[::]:4317"}
+2026-05-27T07:31:42.392Z	info	otlpreceiver@v0.144.0/otlp.go:178	Starting HTTP server	{"resource": {"service.instance.id": "8c476977-537e-421f-aac6-c05ce65be9c6", "service.name": "otelcol", "service.version": "0.144.0"}, "otelcol.component.id": "otlp", "otelcol.component.kind": "receiver", "endpoint": "[::]:4318"}
+2026-05-27T07:31:42.392Z	info	service@v0.144.0/service.go:262	Everything is ready. Begin running and processing data.	{"resource": {"service.instance.id": "8c476977-537e-421f-aac6-c05ce65be9c6", "service.name": "otelcol", "service.version": "0.144.0"}}
+2026-05-27T07:31:43.200Z	info	Traces	{"resource": {"service.instance.id": "8c476977-537e-421f-aac6-c05ce65be9c6", "service.name": "otelcol", "service.version": "0.144.0"}, "otelcol.component.id": "debug", "otelcol.component.kind": "exporter", "otelcol.signal": "traces", "resource spans": 1, "spans": 1}
+2026-05-27T07:31:43.201Z	info	ResourceSpans #0
+Resource SchemaURL: https://opentelemetry.io/schemas/1.24.0
+Resource attributes:
+     -> container.id: Str(3c5eeff9dbb4397531b5ed88abce7666d145d29e7a957aee7bb5e400aa8fc1d7)
+     -> host.arch: Str(amd64)
+     -> host.name: Str(test-odm-decisionserverruntime-cc8d4dfc5-p46r7)
+     -> os.description: Str(Linux 5.14.0-570.107.1.el9_6.x86_64)
+     -> os.type: Str(linux)
+     -> os.version: Str(5.14.0-570.107.1.el9_6.x86_64)
+     -> process.command_args: Slice(["/opt/java/openjdk/bin/java","-javaagent:/opt/ibm/wlp/bin/tools/ws-javaagent.jar","-Djava.awt.headless=true","-Djdk.attach.allowAttachSelf=true","-Duser.timezone=Europe/Paris","-Dcom.ibm.jsse2.overrideDefaultTLS=true","-javaagent:/config/download/opentelemetry-javaagent.jar","-Dotel.sdk.disabled=false","-Dotel.exporter.otlp.endpoint=http://otel-collector.otel-demo.svc.cluster.local:4318","-Dotel.service.name=odm","-Dotel.javaagent.debug=true","-Dotel.traces.exporter=otlp","-Dotel.logs.exporter=otlp","-Dotel.metrics.exporter=otlp","--add-exports","java.base/sun.security.action=ALL-UNNAMED","--add-exports","java.naming/com.sun.jndi.ldap=ALL-UNNAMED","--add-exports","java.naming/com.sun.jndi.url.ldap=ALL-UNNAMED","--add-exports","jdk.naming.dns/com.sun.jndi.dns=ALL-UNNAMED","--add-exports","jdk.naming.dns/com.sun.jndi.url.dns=ALL-UNNAMED","--add-exports","java.security.jgss/sun.security.krb5.internal=ALL-UNNAMED","--add-exports","jdk.attach/sun.tools.attach=ALL-UNNAMED","--add-opens","java.base/java.util=ALL-UNNAMED","--add-opens","java.base/java.lang=ALL-UNNAMED","--add-opens","java.base/java.util.concurrent=ALL-UNNAMED","--add-opens","java.base/java.io=ALL-UNNAMED","--add-opens","java.base/java.nio=ALL-UNNAMED","--add-opens","java.base/sun.nio.ch=ALL-UNNAMED","--add-opens","java.naming/javax.naming.spi=ALL-UNNAMED","--add-opens","java.naming/com.sun.naming.internal=ALL-UNNAMED","--add-opens","jdk.naming.rmi/com.sun.jndi.url.rmi=ALL-UNNAMED","--add-opens","java.naming/javax.naming=ALL-UNNAMED","--add-opens","java.rmi/java.rmi=ALL-UNNAMED","--add-opens","java.sql/java.sql=ALL-UNNAMED","--add-opens","java.management/javax.management=ALL-UNNAMED","--add-opens","java.base/java.lang.reflect=ALL-UNNAMED","--add-opens","java.desktop/java.awt.image=ALL-UNNAMED","--add-opens","java.base/java.security=ALL-UNNAMED","--add-opens","java.base/java.net=ALL-UNNAMED","--add-opens","java.base/java.text=ALL-UNNAMED","--add-opens","java.base/sun.net.www.protocol.https=ALL-UNNAMED","--add-exports","jdk.management.agent/jdk.internal.agent=ALL-UNNAMED","--add-exports","java.base/jdk.internal.vm=ALL-UNNAMED","-jar","/opt/ibm/wlp/bin/tools/ws-server.jar","defaultServer"])
+     -> process.executable.path: Str(/opt/java/openjdk/bin/java)
+     -> process.pid: Int(1)
+     -> process.runtime.description: Str(Eclipse OpenJ9 Eclipse OpenJ9 VM 21.0.11+10-openj9-0.59.0)
+     -> process.runtime.name: Str(IBM Semeru Runtime Open Edition)
+     -> process.runtime.version: Str(21.0.11+10-LTS)
+     -> service.instance.id: Str(1407cfe0-2060-4484-ad91-312234e4022d)
+     -> service.name: Str(odm)
+     -> telemetry.distro.name: Str(opentelemetry-java-instrumentation)
+     -> telemetry.distro.version: Str(2.28.0)
+     -> telemetry.sdk.language: Str(java)
+     -> telemetry.sdk.name: Str(opentelemetry)
+     -> telemetry.sdk.version: Str(1.62.0)
+ScopeSpans #0
+ScopeSpans SchemaURL: https://opentelemetry.io/schemas/1.37.0
+InstrumentationScope io.opentelemetry.servlet-5.0 2.28.0-alpha
+Span #0
+    Trace ID       : adc8c5d4d23a71a687a4e66582de6b2f
+    Parent ID      : 
+    ID             : d022ae7e80f7fd9e
+    Name           : GET /DecisionService/*
+    Kind           : Server
+    Start time     : 2026-05-27 07:31:38.662285235 +0000 UTC
+    End time       : 2026-05-27 07:31:38.663106702 +0000 UTC
+    Status code    : Unset
+    Status message : 
+    DroppedAttributesCount: 0
+    DroppedEventsCount: 0
+    DroppedLinksCount: 0
+Attributes:
+     -> http.request.method: Str(GET)
+     -> network.protocol.version: Str(2.0)
+     -> network.peer.port: Int(34502)
+     -> http.route: Str(/DecisionService/*)
+     -> client.address: Str(10.254.12.2)
+     -> user_agent.original: Str(kube-probe/1.34)
+     -> thread.id: Int(15796)
+     -> network.peer.address: Str(10.254.12.2)
+     -> url.path: Str(/DecisionService/)
+     -> http.response.status_code: Int(200)
+     -> url.scheme: Str(https)
+     -> thread.name: Str(Default Executor-thread-12885)
+	{"resource": {"service.instance.id": "8c476977-537e-421f-aac6-c05ce65be9c6", "service.name": "otelcol", "service.version": "0.144.0"}, "otelcol.component.id": "debug", "otelcol.component.kind": "exporter", "otelcol.signal": "traces"}
+2026-05-27T07:32:21.072Z	info	Traces	{"resource": {"service.instance.id": "8c476977-537e-421f-aac6-c05ce65be9c6", "service.name": "otelcol", "service.version": "0.144.0"}, "otelcol.component.id": "debug", "otelcol.component.kind": "exporter", "otelcol.signal": "traces", "resource spans": 1, "spans": 4}
+2026-05-27T07:32:21.072Z	info	ResourceSpans #0
+Resource SchemaURL: https://opentelemetry.io/schemas/1.24.0
+Resource attributes:
+     -> container.id: Str(e78bf0e37af83672f000a919153bc597deac74676188bb860f016a6f467c888e)
+     -> host.arch: Str(amd64)
+     -> host.name: Str(test-odm-decisionserverruntime-cc8d4dfc5-ddvlm)
+     -> os.description: Str(Linux 5.14.0-570.107.1.el9_6.x86_64)
+     -> os.type: Str(linux)
+     -> os.version: Str(5.14.0-570.107.1.el9_6.x86_64)
+     -> process.command_args: Slice(["/opt/java/openjdk/bin/java","-javaagent:/opt/ibm/wlp/bin/tools/ws-javaagent.jar","-Djava.awt.headless=true","-Djdk.attach.allowAttachSelf=true","-Duser.timezone=Europe/Paris","-Dcom.ibm.jsse2.overrideDefaultTLS=true","-javaagent:/config/download/opentelemetry-javaagent.jar","-Dotel.sdk.disabled=false","-Dotel.exporter.otlp.endpoint=http://otel-collector.otel-demo.svc.cluster.local:4318","-Dotel.service.name=odm","-Dotel.javaagent.debug=true","-Dotel.traces.exporter=otlp","-Dotel.logs.exporter=otlp","-Dotel.metrics.exporter=otlp","--add-exports","java.base/sun.security.action=ALL-UNNAMED","--add-exports","java.naming/com.sun.jndi.ldap=ALL-UNNAMED","--add-exports","java.naming/com.sun.jndi.url.ldap=ALL-UNNAMED","--add-exports","jdk.naming.dns/com.sun.jndi.dns=ALL-UNNAMED","--add-exports","jdk.naming.dns/com.sun.jndi.url.dns=ALL-UNNAMED","--add-exports","java.security.jgss/sun.security.krb5.internal=ALL-UNNAMED","--add-exports","jdk.attach/sun.tools.attach=ALL-UNNAMED","--add-opens","java.base/java.util=ALL-UNNAMED","--add-opens","java.base/java.lang=ALL-UNNAMED","--add-opens","java.base/java.util.concurrent=ALL-UNNAMED","--add-opens","java.base/java.io=ALL-UNNAMED","--add-opens","java.base/java.nio=ALL-UNNAMED","--add-opens","java.base/sun.nio.ch=ALL-UNNAMED","--add-opens","java.naming/javax.naming.spi=ALL-UNNAMED","--add-opens","java.naming/com.sun.naming.internal=ALL-UNNAMED","--add-opens","jdk.naming.rmi/com.sun.jndi.url.rmi=ALL-UNNAMED","--add-opens","java.naming/javax.naming=ALL-UNNAMED","--add-opens","java.rmi/java.rmi=ALL-UNNAMED","--add-opens","java.sql/java.sql=ALL-UNNAMED","--add-opens","java.management/javax.management=ALL-UNNAMED","--add-opens","java.base/java.lang.reflect=ALL-UNNAMED","--add-opens","java.desktop/java.awt.image=ALL-UNNAMED","--add-opens","java.base/java.security=ALL-UNNAMED","--add-opens","java.base/java.net=ALL-UNNAMED","--add-opens","java.base/java.text=ALL-UNNAMED","--add-opens","java.base/sun.net.www.protocol.https=ALL-UNNAMED","--add-exports","jdk.management.agent/jdk.internal.agent=ALL-UNNAMED","--add-exports","java.base/jdk.internal.vm=ALL-UNNAMED","-jar","/opt/ibm/wlp/bin/tools/ws-server.jar","defaultServer"])
+     -> process.executable.path: Str(/opt/java/openjdk/bin/java)
+     -> process.pid: Int(1)
+     -> process.runtime.description: Str(Eclipse OpenJ9 Eclipse OpenJ9 VM 21.0.11+10-openj9-0.59.0)
+     -> process.runtime.name: Str(IBM Semeru Runtime Open Edition)
+     -> process.runtime.version: Str(21.0.11+10-LTS)
+     -> service.instance.id: Str(35ca7d5f-4c2c-43fd-b51d-66706039e99e)
+     -> service.name: Str(odm)
+     -> telemetry.distro.name: Str(opentelemetry-java-instrumentation)
+     -> telemetry.distro.version: Str(2.28.0)
+     -> telemetry.sdk.language: Str(java)
+     -> telemetry.sdk.name: Str(opentelemetry)
+     -> telemetry.sdk.version: Str(1.62.0)
+ScopeSpans #0
+ScopeSpans SchemaURL: 
+InstrumentationScope io.opentelemetry.jdbc 2.28.0-alpha
+Span #0
+    Trace ID       : a946a3a6f50e1f4a3cff7b76736c55cb
+    Parent ID      : 
+    ID             : 6eef7a6bdc51bde6
+    Name           : SELECT odmdb
+    Kind           : Client
+    Start time     : 2026-05-27 07:32:16.78014087 +0000 UTC
+    End time       : 2026-05-27 07:32:16.791928026 +0000 UTC
+    Status code    : Unset
+    Status message : 
+    DroppedAttributesCount: 0
+    DroppedEventsCount: 0
+    DroppedLinksCount: 0
+Attributes:
+     -> db.user: Str(odmusr)
+     -> server.port: Int(5432)
+     -> server.address: Str(test-dbserver)
+     -> db.connection_string: Str(postgresql://test-dbserver:5432)
+     -> db.system: Str(postgresql)
+     -> db.statement: Str(select current_catalog)
+     -> thread.id: Int(58)
+     -> db.operation: Str(SELECT)
+     -> db.name: Str(odmdb)
+     -> thread.name: Str(Default Executor-thread-6)
+Span #1
+    Trace ID       : 0f30c31765568be54ea3aa6bf9b885fd
+    Parent ID      : 
+    ID             : 23b5318ee2d5b18c
+    Name           : SELECT odmdb
+    Kind           : Client
+    Start time     : 2026-05-27 07:32:16.796019041 +0000 UTC
+    End time       : 2026-05-27 07:32:16.797246926 +0000 UTC
+    Status code    : Unset
+    Status message : 
+    DroppedAttributesCount: 0
+    DroppedEventsCount: 0
+    DroppedLinksCount: 0
+Attributes:
+     -> db.user: Str(odmusr)
+     -> server.port: Int(5432)
+     -> server.address: Str(test-dbserver)
+     -> db.connection_string: Str(postgresql://test-dbserver:5432)
+     -> db.system: Str(postgresql)
+     -> db.statement: Str(select current_schema())
+     -> thread.id: Int(58)
+     -> db.operation: Str(SELECT)
+     -> db.name: Str(odmdb)
+     -> thread.name: Str(Default Executor-thread-6)
+Span #2
+    Trace ID       : 4595a727a6e6265250eb34c880f31fa2
+    Parent ID      : 
+    ID             : d9691f18f27e6e95
+    Name           : odmdb
+    Kind           : Client
+    Start time     : 2026-05-27 07:32:16.797965231 +0000 UTC
+    End time       : 2026-05-27 07:32:16.798667076 +0000 UTC
+    Status code    : Unset
+    Status message : 
+    DroppedAttributesCount: 0
+    DroppedEventsCount: 0
+    DroppedLinksCount: 0
+Attributes:
+     -> db.user: Str(odmusr)
+     -> server.port: Int(5432)
+     -> server.address: Str(test-dbserver)
+     -> db.connection_string: Str(postgresql://test-dbserver:5432)
+     -> db.system: Str(postgresql)
+     -> db.statement: Str(SHOW TRANSACTION ISOLATION LEVEL)
+     -> thread.id: Int(58)
+     -> db.name: Str(odmdb)
+     -> thread.name: Str(Default Executor-thread-6)
+Span #3
+    Trace ID       : 6c00ad22ba6072299123e31bf2d304c8
+    Parent ID      : 
+    ID             : f8e215a65acbbb0c
+    Name           : odmdb
+    Kind           : Client
+    Start time     : 2026-05-27 07:32:16.94567889 +0000 UTC
+    End time       : 2026-05-27 07:32:16.946419006 +0000 UTC
+    Status code    : Unset
+    Status message : 
+    DroppedAttributesCount: 0
+    DroppedEventsCount: 0
+    DroppedLinksCount: 0
+Attributes:
+     -> db.user: Str(odmusr)
+     -> server.port: Int(5432)
+     -> server.address: Str(test-dbserver)
+     -> db.connection_string: Str(postgresql://test-dbserver:5432)
+     -> db.system: Str(postgresql)
+     -> db.statement: Str()
+     -> thread.id: Int(58)
+     -> db.name: Str(odmdb)
+     -> thread.name: Str(Default Executor-thread-6)
+	{"resource": {"service.instance.id": "8c476977-537e-421f-aac6-c05ce65be9c6", "service.name": "otelcol", "service.version": "0.144.0"}, "otelcol.component.id": "debug", "otelcol.component.kind": "exporter", "otelcol.signal": "traces"}
+2026-05-27T07:32:31.084Z	info	Traces	{"resource": {"service.instance.id": "8c476977-537e-421f-aac6-c05ce65be9c6", "service.name": "otelcol", "service.version": "0.144.0"}, "otelcol.component.id": "debug", "otelcol.component.kind": "exporter", "otelcol.signal": "traces", "resource spans": 1, "spans": 2}
+2026-05-27T07:32:31.084Z	info	ResourceSpans #0
+Resource SchemaURL: https://opentelemetry.io/schemas/1.24.0
+Resource attributes:
+     -> container.id: Str(e78bf0e37af83672f000a919153bc597deac74676188bb860f016a6f467c888e)
+     -> host.arch: Str(amd64)
+     -> host.name: Str(test-odm-decisionserverruntime-cc8d4dfc5-ddvlm)
+     -> os.description: Str(Linux 5.14.0-570.107.1.el9_6.x86_64)
+     -> os.type: Str(linux)
+     -> os.version: Str(5.14.0-570.107.1.el9_6.x86_64)
+     -> process.command_args: Slice(["/opt/java/openjdk/bin/java","-javaagent:/opt/ibm/wlp/bin/tools/ws-javaagent.jar","-Djava.awt.headless=true","-Djdk.attach.allowAttachSelf=true","-Duser.timezone=Europe/Paris","-Dcom.ibm.jsse2.overrideDefaultTLS=true","-javaagent:/config/download/opentelemetry-javaagent.jar","-Dotel.sdk.disabled=false","-Dotel.exporter.otlp.endpoint=http://otel-collector.otel-demo.svc.cluster.local:4318","-Dotel.service.name=odm","-Dotel.javaagent.debug=true","-Dotel.traces.exporter=otlp","-Dotel.logs.exporter=otlp","-Dotel.metrics.exporter=otlp","--add-exports","java.base/sun.security.action=ALL-UNNAMED","--add-exports","java.naming/com.sun.jndi.ldap=ALL-UNNAMED","--add-exports","java.naming/com.sun.jndi.url.ldap=ALL-UNNAMED","--add-exports","jdk.naming.dns/com.sun.jndi.dns=ALL-UNNAMED","--add-exports","jdk.naming.dns/com.sun.jndi.url.dns=ALL-UNNAMED","--add-exports","java.security.jgss/sun.security.krb5.internal=ALL-UNNAMED","--add-exports","jdk.attach/sun.tools.attach=ALL-UNNAMED","--add-opens","java.base/java.util=ALL-UNNAMED","--add-opens","java.base/java.lang=ALL-UNNAMED","--add-opens","java.base/java.util.concurrent=ALL-UNNAMED","--add-opens","java.base/java.io=ALL-UNNAMED","--add-opens","java.base/java.nio=ALL-UNNAMED","--add-opens","java.base/sun.nio.ch=ALL-UNNAMED","--add-opens","java.naming/javax.naming.spi=ALL-UNNAMED","--add-opens","java.naming/com.sun.naming.internal=ALL-UNNAMED","--add-opens","jdk.naming.rmi/com.sun.jndi.url.rmi=ALL-UNNAMED","--add-opens","java.naming/javax.naming=ALL-UNNAMED","--add-opens","java.rmi/java.rmi=ALL-UNNAMED","--add-opens","java.sql/java.sql=ALL-UNNAMED","--add-opens","java.management/javax.management=ALL-UNNAMED","--add-opens","java.base/java.lang.reflect=ALL-UNNAMED","--add-opens","java.desktop/java.awt.image=ALL-UNNAMED","--add-opens","java.base/java.security=ALL-UNNAMED","--add-opens","java.base/java.net=ALL-UNNAMED","--add-opens","java.base/java.text=ALL-UNNAMED","--add-opens","java.base/sun.net.www.protocol.https=ALL-UNNAMED","--add-exports","jdk.management.agent/jdk.internal.agent=ALL-UNNAMED","--add-exports","java.base/jdk.internal.vm=ALL-UNNAMED","-jar","/opt/ibm/wlp/bin/tools/ws-server.jar","defaultServer"])
+     -> process.executable.path: Str(/opt/java/openjdk/bin/java)
+     -> process.pid: Int(1)
+     -> process.runtime.description: Str(Eclipse OpenJ9 Eclipse OpenJ9 VM 21.0.11+10-openj9-0.59.0)
+     -> process.runtime.name: Str(IBM Semeru Runtime Open Edition)
+     -> process.runtime.version: Str(21.0.11+10-LTS)
+     -> service.instance.id: Str(35ca7d5f-4c2c-43fd-b51d-66706039e99e)
+     -> service.name: Str(odm)
+     -> telemetry.distro.name: Str(opentelemetry-java-instrumentation)
+     -> telemetry.distro.version: Str(2.28.0)
+     -> telemetry.sdk.language: Str(java)
+     -> telemetry.sdk.name: Str(opentelemetry)
+     -> telemetry.sdk.version: Str(1.62.0)
+ScopeSpans #0
+ScopeSpans SchemaURL: https://opentelemetry.io/schemas/1.37.0
+InstrumentationScope io.opentelemetry.servlet-5.0 2.28.0-alpha
+Span #0
+    Trace ID       : 879a0a82cfb87cd28f7aa433df2a6d35
+    Parent ID      : 
+    ID             : abbaf159495f4d10
+    Name           : GET /DecisionService/*
+    Kind           : Server
+    Start time     : 2026-05-27 07:32:29.105972003 +0000 UTC
+    End time       : 2026-05-27 07:32:30.389382914 +0000 UTC
+    Status code    : Unset
+    Status message : 
+    DroppedAttributesCount: 0
+    DroppedEventsCount: 0
+    DroppedLinksCount: 0
+Attributes:
+     -> url.path: Str(/DecisionService/)
+     -> network.peer.port: Int(60926)
+     -> client.address: Str(10.254.16.2)
+     -> user_agent.original: Str(kube-probe/1.34)
+     -> network.peer.address: Str(10.254.16.2)
+     -> http.response.status_code: Int(200)
+     -> network.protocol.version: Str(2.0)
+     -> http.route: Str(/DecisionService/*)
+     -> http.request.method: Str(GET)
+     -> thread.id: Int(89)
+     -> url.scheme: Str(https)
+     -> thread.name: Str(Default Executor-thread-7)
+Span #1
+    Trace ID       : c727a7f05268a0fff89e212f2ceb38da
+    Parent ID      : 
+    ID             : 4aad3cf6cd781c34
+    Name           : GET /DecisionService/*
+    Kind           : Server
+    Start time     : 2026-05-27 07:32:30.355329844 +0000 UTC
+    End time       : 2026-05-27 07:32:30.415474248 +0000 UTC
+    Status code    : Unset
+    Status message : 
+    DroppedAttributesCount: 0
+    DroppedEventsCount: 0
+    DroppedLinksCount: 0
+Attributes:
+     -> url.path: Str(/DecisionService/)
+     -> network.peer.port: Int(60938)
+     -> client.address: Str(10.254.16.2)
+     -> user_agent.original: Str(kube-probe/1.34)
+     -> network.peer.address: Str(10.254.16.2)
+     -> http.response.status_code: Int(200)
+     -> network.protocol.version: Str(2.0)
+     -> http.route: Str(/DecisionService/*)
+     -> http.request.method: Str(GET)
+     -> thread.id: Int(53)
+     -> url.scheme: Str(https)
+     -> thread.name: Str(Default Executor-thread-2)
+	{"resource": {"service.instance.id": "8c476977-537e-421f-aac6-c05ce65be9c6", "service.name": "otelcol", "service.version": "0.144.0"}, "otelcol.component.id": "debug", "otelcol.component.kind": "exporter", "otelcol.signal": "traces"}
+2026-05-27T07:32:41.102Z	info	Traces	{"resource": {"service.instance.id": "8c476977-537e-421f-aac6-c05ce65be9c6", "service.name": "otelcol", "service.version": "0.144.0"}, "otelcol.component.id": "debug", "otelcol.component.kind": "exporter", "otelcol.signal": "traces", "resource spans": 1, "spans": 27}
+2026-05-27T07:32:41.103Z	info	ResourceSpans #0
+Resource SchemaURL: https://opentelemetry.io/schemas/1.24.0
+Resource attributes:
+     -> container.id: Str(e78bf0e37af83672f000a919153bc597deac74676188bb860f016a6f467c888e)
+     -> host.arch: Str(amd64)
+     -> host.name: Str(test-odm-decisionserverruntime-cc8d4dfc5-ddvlm)
+     -> os.description: Str(Linux 5.14.0-570.107.1.el9_6.x86_64)
+     -> os.type: Str(linux)
+     -> os.version: Str(5.14.0-570.107.1.el9_6.x86_64)
+     -> process.command_args: Slice(["/opt/java/openjdk/bin/java","-javaagent:/opt/ibm/wlp/bin/tools/ws-javaagent.jar","-Djava.awt.headless=true","-Djdk.attach.allowAttachSelf=true","-Duser.timezone=Europe/Paris","-Dcom.ibm.jsse2.overrideDefaultTLS=true","-javaagent:/config/download/opentelemetry-javaagent.jar","-Dotel.sdk.disabled=false","-Dotel.exporter.otlp.endpoint=http://otel-collector.otel-demo.svc.cluster.local:4318","-Dotel.service.name=odm","-Dotel.javaagent.debug=true","-Dotel.traces.exporter=otlp","-Dotel.logs.exporter=otlp","-Dotel.metrics.exporter=otlp","--add-exports","java.base/sun.security.action=ALL-UNNAMED","--add-exports","java.naming/com.sun.jndi.ldap=ALL-UNNAMED","--add-exports","java.naming/com.sun.jndi.url.ldap=ALL-UNNAMED","--add-exports","jdk.naming.dns/com.sun.jndi.dns=ALL-UNNAMED","--add-exports","jdk.naming.dns/com.sun.jndi.url.dns=ALL-UNNAMED","--add-exports","java.security.jgss/sun.security.krb5.internal=ALL-UNNAMED","--add-exports","jdk.attach/sun.tools.attach=ALL-UNNAMED","--add-opens","java.base/java.util=ALL-UNNAMED","--add-opens","java.base/java.lang=ALL-UNNAMED","--add-opens","java.base/java.util.concurrent=ALL-UNNAMED","--add-opens","java.base/java.io=ALL-UNNAMED","--add-opens","java.base/java.nio=ALL-UNNAMED","--add-opens","java.base/sun.nio.ch=ALL-UNNAMED","--add-opens","java.naming/javax.naming.spi=ALL-UNNAMED","--add-opens","java.naming/com.sun.naming.internal=ALL-UNNAMED","--add-opens","jdk.naming.rmi/com.sun.jndi.url.rmi=ALL-UNNAMED","--add-opens","java.naming/javax.naming=ALL-UNNAMED","--add-opens","java.rmi/java.rmi=ALL-UNNAMED","--add-opens","java.sql/java.sql=ALL-UNNAMED","--add-opens","java.management/javax.management=ALL-UNNAMED","--add-opens","java.base/java.lang.reflect=ALL-UNNAMED","--add-opens","java.desktop/java.awt.image=ALL-UNNAMED","--add-opens","java.base/java.security=ALL-UNNAMED","--add-opens","java.base/java.net=ALL-UNNAMED","--add-opens","java.base/java.text=ALL-UNNAMED","--add-opens","java.base/sun.net.www.protocol.https=ALL-UNNAMED","--add-exports","jdk.management.agent/jdk.internal.agent=ALL-UNNAMED","--add-exports","java.base/jdk.internal.vm=ALL-UNNAMED","-jar","/opt/ibm/wlp/bin/tools/ws-server.jar","defaultServer"])
+     -> process.executable.path: Str(/opt/java/openjdk/bin/java)
+     -> process.pid: Int(1)
+     -> process.runtime.description: Str(Eclipse OpenJ9 Eclipse OpenJ9 VM 21.0.11+10-openj9-0.59.0)
+     -> process.runtime.name: Str(IBM Semeru Runtime Open Edition)
+     -> process.runtime.version: Str(21.0.11+10-LTS)
+     -> service.instance.id: Str(35ca7d5f-4c2c-43fd-b51d-66706039e99e)
+     -> service.name: Str(odm)
+     -> telemetry.distro.name: Str(opentelemetry-java-instrumentation)
+     -> telemetry.distro.version: Str(2.28.0)
+     -> telemetry.sdk.language: Str(java)
+     -> telemetry.sdk.name: Str(opentelemetry)
+     -> telemetry.sdk.version: Str(1.62.0)
+ScopeSpans #0
+ScopeSpans SchemaURL: 
+InstrumentationScope io.opentelemetry.jdbc 2.28.0-alpha
+Span #0
+    Trace ID       : 914029e493a16d5d71352479e27f64ec
+    Parent ID      : a9c5fcd129ff3524
+    ID             : bf4de5f54fad8783
+    Name           : odmdb
+    Kind           : Client
+    Start time     : 2026-05-27 07:32:37.358157078 +0000 UTC
+    End time       : 2026-05-27 07:32:37.360421315 +0000 UTC
+    Status code    : Unset
+    Status message : 
+    DroppedAttributesCount: 0
+    DroppedEventsCount: 0
+    DroppedLinksCount: 0
+Attributes:
+     -> db.user: Str(odmusr)
+     -> server.port: Int(5432)
+     -> server.address: Str(test-dbserver)
+     -> db.connection_string: Str(postgresql://test-dbserver:5432)
+     -> db.system: Str(postgresql)
+     -> db.statement: Str()
+     -> thread.id: Int(89)
+     -> db.name: Str(odmdb)
+     -> thread.name: Str(Default Executor-thread-7)
+Span #1
+    Trace ID       : 914029e493a16d5d71352479e27f64ec
+    Parent ID      : a9c5fcd129ff3524
+    ID             : 8e81944663271123
+    Name           : odmdb
+    Kind           : Client
+    Start time     : 2026-05-27 07:32:37.380594966 +0000 UTC
+    End time       : 2026-05-27 07:32:37.381414333 +0000 UTC
+    Status code    : Unset
+    Status message : 
+    DroppedAttributesCount: 0
+    DroppedEventsCount: 0
+    DroppedLinksCount: 0
+Attributes:
+     -> db.user: Str(odmusr)
+     -> server.port: Int(5432)
+     -> server.address: Str(test-dbserver)
+     -> db.connection_string: Str(postgresql://test-dbserver:5432)
+     -> db.system: Str(postgresql)
+     -> db.statement: Str()
+     -> thread.id: Int(89)
+     -> db.name: Str(odmdb)
+     -> thread.name: Str(Default Executor-thread-7)
+Span #2
+    Trace ID       : 914029e493a16d5d71352479e27f64ec
+    Parent ID      : a9c5fcd129ff3524
+    ID             : 2c1c86f8930b9ce2
+    Name           : odmdb
+    Kind           : Client
+    Start time     : 2026-05-27 07:32:37.399585421 +0000 UTC
+    End time       : 2026-05-27 07:32:37.400754406 +0000 UTC
+    Status code    : Unset
+    Status message : 
+    DroppedAttributesCount: 0
+    DroppedEventsCount: 0
+    DroppedLinksCount: 0
+Attributes:
+     -> db.user: Str(odmusr)
+     -> server.port: Int(5432)
+     -> server.address: Str(test-dbserver)
+     -> db.connection_string: Str(postgresql://test-dbserver:5432)
+     -> db.system: Str(postgresql)
+     -> db.statement: Str()
+     -> thread.id: Int(89)
+     -> db.name: Str(odmdb)
+     -> thread.name: Str(Default Executor-thread-7)
+Span #3
+    Trace ID       : 914029e493a16d5d71352479e27f64ec
+    Parent ID      : a9c5fcd129ff3524
+    ID             : 82af3643e74c3796
+    Name           : SELECT odmdb.RS_ENABLED_VIEW
+    Kind           : Client
+    Start time     : 2026-05-27 07:32:37.489026886 +0000 UTC
+    End time       : 2026-05-27 07:32:37.496791547 +0000 UTC
+    Status code    : Unset
+    Status message : 
+    DroppedAttributesCount: 0
+    DroppedEventsCount: 0
+    DroppedLinksCount: 0
+Attributes:
+     -> server.port: Int(5432)
+     -> server.address: Str(test-dbserver)
+     -> db.connection_string: Str(postgresql://test-dbserver:5432)
+     -> db.system: Str(postgresql)
+     -> db.statement: Str(SELECT RA_NAME, RA_MAJVERS, RA_MINVERS, RS_NAME, RS_MAJVERS, RS_MINVERS FROM RS_ENABLED_VIEW WHERE RA_NAME = ? AND RA_MAJVERS = ? AND RA_MINVERS = ? AND RS_NAME = ? AND RS_MAJVERS = ? AND RS_MINVERS = ? ORDER BY RA_MAJVERS DESC, RA_MINVERS DESC, RS_MAJVERS DESC, RS_MINVERS DESC)
+     -> thread.id: Int(89)
+     -> db.sql.table: Str(RS_ENABLED_VIEW)
+     -> db.operation: Str(SELECT)
+     -> db.name: Str(odmdb)
+     -> thread.name: Str(Default Executor-thread-7)
+Span #4
+    Trace ID       : 914029e493a16d5d71352479e27f64ec
+    Parent ID      : a9c5fcd129ff3524
+    ID             : 60d77632ddfe3764
+    Name           : odmdb
+    Kind           : Client
+    Start time     : 2026-05-27 07:32:37.501311632 +0000 UTC
+    End time       : 2026-05-27 07:32:37.502248091 +0000 UTC
+    Status code    : Unset
+    Status message : 
+    DroppedAttributesCount: 0
+    DroppedEventsCount: 0
+    DroppedLinksCount: 0
+Attributes:
+     -> db.user: Str(odmusr)
+     -> server.port: Int(5432)
+     -> server.address: Str(test-dbserver)
+     -> db.connection_string: Str(postgresql://test-dbserver:5432)
+     -> db.system: Str(postgresql)
+     -> db.statement: Str()
+     -> thread.id: Int(89)
+     -> db.name: Str(odmdb)
+     -> thread.name: Str(Default Executor-thread-7)
+Span #5
+    Trace ID       : 914029e493a16d5d71352479e27f64ec
+    Parent ID      : a9c5fcd129ff3524
+    ID             : 7a6b54518a62604f
+    Name           : SELECT odmdb
+    Kind           : Client
+    Start time     : 2026-05-27 07:32:37.505957389 +0000 UTC
+    End time       : 2026-05-27 07:32:37.507040901 +0000 UTC
+    Status code    : Unset
+    Status message : 
+    DroppedAttributesCount: 0
+    DroppedEventsCount: 0
+    DroppedLinksCount: 0
+Attributes:
+     -> server.port: Int(5432)
+     -> server.address: Str(test-dbserver)
+     -> db.connection_string: Str(postgresql://test-dbserver:5432)
+     -> db.system: Str(postgresql)
+     -> db.statement: Str(SELECT RS.ID FROM RULESETS RS, RULEAPPS RA WHERE RA.NAME = ? AND RA.MAJOR_VERSION = ? AND RA.MINOR_VERSION = ? AND RS.NAME = ? AND RS.MAJOR_VERSION = ? AND RS.MINOR_VERSION = ? AND RA.ID = RS.RULEAPP_ID)
+     -> thread.id: Int(89)
+     -> db.operation: Str(SELECT)
+     -> db.name: Str(odmdb)
+     -> thread.name: Str(Default Executor-thread-7)
+Span #6
+    Trace ID       : 914029e493a16d5d71352479e27f64ec
+    Parent ID      : a9c5fcd129ff3524
+    ID             : e3975eebb0142435
+    Name           : SELECT odmdb.RULESET_PROPERTIES
+    Kind           : Client
+    Start time     : 2026-05-27 07:32:37.508835679 +0000 UTC
+    End time       : 2026-05-27 07:32:37.509938292 +0000 UTC
+    Status code    : Unset
+    Status message : 
+    DroppedAttributesCount: 0
+    DroppedEventsCount: 0
+    DroppedLinksCount: 0
+Attributes:
+     -> server.port: Int(5432)
+     -> server.address: Str(test-dbserver)
+     -> db.connection_string: Str(postgresql://test-dbserver:5432)
+     -> db.system: Str(postgresql)
+     -> db.statement: Str(SELECT NAME, VALUE FROM RULESET_PROPERTIES WHERE RULESET_ID = ?)
+     -> thread.id: Int(89)
+     -> db.sql.table: Str(RULESET_PROPERTIES)
+     -> db.operation: Str(SELECT)
+     -> db.name: Str(odmdb)
+     -> thread.name: Str(Default Executor-thread-7)
+Span #7
+    Trace ID       : 914029e493a16d5d71352479e27f64ec
+    Parent ID      : a9c5fcd129ff3524
+    ID             : 58d25b1865ba347d
+    Name           : odmdb
+    Kind           : Client
+    Start time     : 2026-05-27 07:32:37.511398112 +0000 UTC
+    End time       : 2026-05-27 07:32:37.512073806 +0000 UTC
+    Status code    : Unset
+    Status message : 
+    DroppedAttributesCount: 0
+    DroppedEventsCount: 0
+    DroppedLinksCount: 0
+Attributes:
+     -> db.user: Str(odmusr)
+     -> server.port: Int(5432)
+     -> server.address: Str(test-dbserver)
+     -> db.connection_string: Str(postgresql://test-dbserver:5432)
+     -> db.system: Str(postgresql)
+     -> db.statement: Str()
+     -> thread.id: Int(89)
+     -> db.name: Str(odmdb)
+     -> thread.name: Str(Default Executor-thread-7)
+Span #8
+    Trace ID       : 914029e493a16d5d71352479e27f64ec
+    Parent ID      : a9c5fcd129ff3524
+    ID             : 166bfc64c2617bc2
+    Name           : SELECT odmdb.RULEAPPS
+    Kind           : Client
+    Start time     : 2026-05-27 07:32:37.51465361 +0000 UTC
+    End time       : 2026-05-27 07:32:37.515585779 +0000 UTC
+    Status code    : Unset
+    Status message : 
+    DroppedAttributesCount: 0
+    DroppedEventsCount: 0
+    DroppedLinksCount: 0
+Attributes:
+     -> server.port: Int(5432)
+     -> server.address: Str(test-dbserver)
+     -> db.connection_string: Str(postgresql://test-dbserver:5432)
+     -> db.system: Str(postgresql)
+     -> db.statement: Str(SELECT ID FROM RULEAPPS WHERE NAME = ? AND MAJOR_VERSION = ? AND MINOR_VERSION = ?)
+     -> thread.id: Int(89)
+     -> db.sql.table: Str(RULEAPPS)
+     -> db.operation: Str(SELECT)
+     -> db.name: Str(odmdb)
+     -> thread.name: Str(Default Executor-thread-7)
+Span #9
+    Trace ID       : 914029e493a16d5d71352479e27f64ec
+    Parent ID      : a9c5fcd129ff3524
+    ID             : 9d2838f79fdcba08
+    Name           : SELECT odmdb.RULEAPP_PROPERTIES
+    Kind           : Client
+    Start time     : 2026-05-27 07:32:37.517496499 +0000 UTC
+    End time       : 2026-05-27 07:32:37.518599852 +0000 UTC
+    Status code    : Unset
+    Status message : 
+    DroppedAttributesCount: 0
+    DroppedEventsCount: 0
+    DroppedLinksCount: 0
+Attributes:
+     -> server.port: Int(5432)
+     -> server.address: Str(test-dbserver)
+     -> db.connection_string: Str(postgresql://test-dbserver:5432)
+     -> db.system: Str(postgresql)
+     -> db.statement: Str(SELECT NAME, VALUE FROM RULEAPP_PROPERTIES WHERE RULEAPP_ID = ?)
+     -> thread.id: Int(89)
+     -> db.sql.table: Str(RULEAPP_PROPERTIES)
+     -> db.operation: Str(SELECT)
+     -> db.name: Str(odmdb)
+     -> thread.name: Str(Default Executor-thread-7)
+Span #10
+    Trace ID       : 914029e493a16d5d71352479e27f64ec
+    Parent ID      : a9c5fcd129ff3524
+    ID             : 2122c76657f48ea2
+    Name           : odmdb
+    Kind           : Client
+    Start time     : 2026-05-27 07:32:37.524212939 +0000 UTC
+    End time       : 2026-05-27 07:32:37.524868903 +0000 UTC
+    Status code    : Unset
+    Status message : 
+    DroppedAttributesCount: 0
+    DroppedEventsCount: 0
+    DroppedLinksCount: 0
+Attributes:
+     -> db.user: Str(odmusr)
+     -> server.port: Int(5432)
+     -> server.address: Str(test-dbserver)
+     -> db.connection_string: Str(postgresql://test-dbserver:5432)
+     -> db.system: Str(postgresql)
+     -> db.statement: Str()
+     -> thread.id: Int(89)
+     -> db.name: Str(odmdb)
+     -> thread.name: Str(Default Executor-thread-7)
+Span #11
+    Trace ID       : 914029e493a16d5d71352479e27f64ec
+    Parent ID      : a9c5fcd129ff3524
+    ID             : 696298e34811b8ad
+    Name           : SELECT odmdb
+    Kind           : Client
+    Start time     : 2026-05-27 07:32:37.52618964 +0000 UTC
+    End time       : 2026-05-27 07:32:37.527190211 +0000 UTC
+    Status code    : Unset
+    Status message : 
+    DroppedAttributesCount: 0
+    DroppedEventsCount: 0
+    DroppedLinksCount: 0
+Attributes:
+     -> server.port: Int(5432)
+     -> server.address: Str(test-dbserver)
+     -> db.connection_string: Str(postgresql://test-dbserver:5432)
+     -> db.system: Str(postgresql)
+     -> db.statement: Str(SELECT RS.ID FROM RULESETS RS, RULEAPPS RA WHERE RA.NAME = ? AND RA.MAJOR_VERSION = ? AND RA.MINOR_VERSION = ? AND RS.NAME = ? AND RS.MAJOR_VERSION = ? AND RS.MINOR_VERSION = ? AND RA.ID = RS.RULEAPP_ID)
+     -> thread.id: Int(89)
+     -> db.operation: Str(SELECT)
+     -> db.name: Str(odmdb)
+     -> thread.name: Str(Default Executor-thread-7)
+Span #12
+    Trace ID       : 914029e493a16d5d71352479e27f64ec
+    Parent ID      : a9c5fcd129ff3524
+    ID             : 69ef0dc7cbc90ba3
+    Name           : SELECT odmdb.RULESET_PROPERTIES
+    Kind           : Client
+    Start time     : 2026-05-27 07:32:37.52808543 +0000 UTC
+    End time       : 2026-05-27 07:32:37.529092891 +0000 UTC
+    Status code    : Unset
+    Status message : 
+    DroppedAttributesCount: 0
+    DroppedEventsCount: 0
+    DroppedLinksCount: 0
+Attributes:
+     -> server.port: Int(5432)
+     -> server.address: Str(test-dbserver)
+     -> db.connection_string: Str(postgresql://test-dbserver:5432)
+     -> db.system: Str(postgresql)
+     -> db.statement: Str(SELECT NAME, VALUE FROM RULESET_PROPERTIES WHERE RULESET_ID = ?)
+     -> thread.id: Int(89)
+     -> db.sql.table: Str(RULESET_PROPERTIES)
+     -> db.operation: Str(SELECT)
+     -> db.name: Str(odmdb)
+     -> thread.name: Str(Default Executor-thread-7)
+Span #13
+    Trace ID       : 914029e493a16d5d71352479e27f64ec
+    Parent ID      : a9c5fcd129ff3524
+    ID             : 9f74b489ba4ac4b7
+    Name           : SELECT odmdb
+    Kind           : Client
+    Start time     : 2026-05-27 07:32:37.534058784 +0000 UTC
+    End time       : 2026-05-27 07:32:37.547254379 +0000 UTC
+    Status code    : Unset
+    Status message : 
+    DroppedAttributesCount: 0
+    DroppedEventsCount: 0
+    DroppedLinksCount: 0
+Attributes:
+     -> server.port: Int(5432)
+     -> server.address: Str(test-dbserver)
+     -> db.connection_string: Str(postgresql://test-dbserver:5432)
+     -> db.system: Str(postgresql)
+     -> db.statement: Str(SELECT ARCHIVE FROM RULESET_RESOURCES WHERE RULESET_ID = (SELECT RS.ID FROM RULESETS RS, RULEAPPS RA WHERE RA.NAME = ? AND RA.MAJOR_VERSION = ? AND RA.MINOR_VERSION = ? AND RS.NAME = ? AND RS.MAJOR_VERSION = ? AND RS.MINOR_VERSION = ? AND RA.ID = RS.RULEAPP_ID))
+     -> thread.id: Int(89)
+     -> db.operation: Str(SELECT)
+     -> db.name: Str(odmdb)
+     -> thread.name: Str(Default Executor-thread-7)
+Span #14
+    Trace ID       : 914029e493a16d5d71352479e27f64ec
+    Parent ID      : a9c5fcd129ff3524
+    ID             : 73e04b143d97efe7
+    Name           : odmdb
+    Kind           : Client
+    Start time     : 2026-05-27 07:32:37.594359761 +0000 UTC
+    End time       : 2026-05-27 07:32:37.595187658 +0000 UTC
+    Status code    : Unset
+    Status message : 
+    DroppedAttributesCount: 0
+    DroppedEventsCount: 0
+    DroppedLinksCount: 0
+Attributes:
+     -> db.user: Str(odmusr)
+     -> server.port: Int(5432)
+     -> server.address: Str(test-dbserver)
+     -> db.connection_string: Str(postgresql://test-dbserver:5432)
+     -> db.system: Str(postgresql)
+     -> db.statement: Str()
+     -> thread.id: Int(89)
+     -> db.name: Str(odmdb)
+     -> thread.name: Str(Default Executor-thread-7)
+Span #15
+    Trace ID       : 914029e493a16d5d71352479e27f64ec
+    Parent ID      : a9c5fcd129ff3524
+    ID             : 596cfbde7e039e33
+    Name           : SELECT odmdb
+    Kind           : Client
+    Start time     : 2026-05-27 07:32:37.596330452 +0000 UTC
+    End time       : 2026-05-27 07:32:37.597224411 +0000 UTC
+    Status code    : Unset
+    Status message : 
+    DroppedAttributesCount: 0
+    DroppedEventsCount: 0
+    DroppedLinksCount: 0
+Attributes:
+     -> server.port: Int(5432)
+     -> server.address: Str(test-dbserver)
+     -> db.connection_string: Str(postgresql://test-dbserver:5432)
+     -> db.system: Str(postgresql)
+     -> db.statement: Str(SELECT RS.ID FROM RULESETS RS, RULEAPPS RA WHERE RA.NAME = ? AND RA.MAJOR_VERSION = ? AND RA.MINOR_VERSION = ? AND RS.NAME = ? AND RS.MAJOR_VERSION = ? AND RS.MINOR_VERSION = ? AND RA.ID = RS.RULEAPP_ID)
+     -> thread.id: Int(89)
+     -> db.operation: Str(SELECT)
+     -> db.name: Str(odmdb)
+     -> thread.name: Str(Default Executor-thread-7)
+Span #16
+    Trace ID       : 914029e493a16d5d71352479e27f64ec
+    Parent ID      : a9c5fcd129ff3524
+    ID             : 2a4ab441572d67c0
+    Name           : SELECT odmdb.RULESET_PROPERTIES
+    Kind           : Client
+    Start time     : 2026-05-27 07:32:37.597810743 +0000 UTC
+    End time       : 2026-05-27 07:32:37.598442596 +0000 UTC
+    Status code    : Unset
+    Status message : 
+    DroppedAttributesCount: 0
+    DroppedEventsCount: 0
+    DroppedLinksCount: 0
+Attributes:
+     -> server.port: Int(5432)
+     -> server.address: Str(test-dbserver)
+     -> db.connection_string: Str(postgresql://test-dbserver:5432)
+     -> db.system: Str(postgresql)
+     -> db.statement: Str(SELECT NAME, VALUE FROM RULESET_PROPERTIES WHERE RULESET_ID = ?)
+     -> thread.id: Int(89)
+     -> db.sql.table: Str(RULESET_PROPERTIES)
+     -> db.operation: Str(SELECT)
+     -> db.name: Str(odmdb)
+     -> thread.name: Str(Default Executor-thread-7)
+Span #17
+    Trace ID       : 914029e493a16d5d71352479e27f64ec
+    Parent ID      : a9c5fcd129ff3524
+    ID             : cf57f1808ea93c56
+    Name           : odmdb
+    Kind           : Client
+    Start time     : 2026-05-27 07:32:37.603317588 +0000 UTC
+    End time       : 2026-05-27 07:32:37.603755137 +0000 UTC
+    Status code    : Unset
+    Status message : 
+    DroppedAttributesCount: 0
+    DroppedEventsCount: 0
+    DroppedLinksCount: 0
+Attributes:
+     -> db.user: Str(odmusr)
+     -> server.port: Int(5432)
+     -> server.address: Str(test-dbserver)
+     -> db.connection_string: Str(postgresql://test-dbserver:5432)
+     -> db.system: Str(postgresql)
+     -> db.statement: Str()
+     -> thread.id: Int(89)
+     -> db.name: Str(odmdb)
+     -> thread.name: Str(Default Executor-thread-7)
+Span #18
+    Trace ID       : 914029e493a16d5d71352479e27f64ec
+    Parent ID      : a9c5fcd129ff3524
+    ID             : 5b5c89df5cd69cbc
+    Name           : SELECT odmdb.XOM_LIBRARIES
+    Kind           : Client
+    Start time     : 2026-05-27 07:32:37.605077085 +0000 UTC
+    End time       : 2026-05-27 07:32:37.60630944 +0000 UTC
+    Status code    : Unset
+    Status message : 
+    DroppedAttributesCount: 0
+    DroppedEventsCount: 0
+    DroppedLinksCount: 0
+Attributes:
+     -> server.port: Int(5432)
+     -> server.address: Str(test-dbserver)
+     -> db.connection_string: Str(postgresql://test-dbserver:5432)
+     -> db.system: Str(postgresql)
+     -> db.statement: Str(SELECT NAME, MAJOR_VERSION, MINOR_VERSION, CREATION_DATE FROM XOM_LIBRARIES WHERE NAME = ?)
+     -> thread.id: Int(89)
+     -> db.sql.table: Str(XOM_LIBRARIES)
+     -> db.operation: Str(SELECT)
+     -> db.name: Str(odmdb)
+     -> thread.name: Str(Default Executor-thread-7)
+Span #19
+    Trace ID       : 914029e493a16d5d71352479e27f64ec
+    Parent ID      : a9c5fcd129ff3524
+    ID             : 82627c07378fb34c
+    Name           : odmdb
+    Kind           : Client
+    Start time     : 2026-05-27 07:32:37.608128018 +0000 UTC
+    End time       : 2026-05-27 07:32:37.6087112 +0000 UTC
+    Status code    : Unset
+    Status message : 
+    DroppedAttributesCount: 0
+    DroppedEventsCount: 0
+    DroppedLinksCount: 0
+Attributes:
+     -> db.user: Str(odmusr)
+     -> server.port: Int(5432)
+     -> server.address: Str(test-dbserver)
+     -> db.connection_string: Str(postgresql://test-dbserver:5432)
+     -> db.system: Str(postgresql)
+     -> db.statement: Str()
+     -> thread.id: Int(89)
+     -> db.name: Str(odmdb)
+     -> thread.name: Str(Default Executor-thread-7)
+Span #20
+    Trace ID       : 914029e493a16d5d71352479e27f64ec
+    Parent ID      : a9c5fcd129ff3524
+    ID             : a15c9347b26f61ac
+    Name           : SELECT odmdb.XOM_LIBRARIES
+    Kind           : Client
+    Start time     : 2026-05-27 07:32:37.610726542 +0000 UTC
+    End time       : 2026-05-27 07:32:37.611687242 +0000 UTC
+    Status code    : Unset
+    Status message : 
+    DroppedAttributesCount: 0
+    DroppedEventsCount: 0
+    DroppedLinksCount: 0
+Attributes:
+     -> server.port: Int(5432)
+     -> server.address: Str(test-dbserver)
+     -> db.connection_string: Str(postgresql://test-dbserver:5432)
+     -> db.system: Str(postgresql)
+     -> db.statement: Str(SELECT ID FROM XOM_LIBRARIES WHERE NAME = ? AND MAJOR_VERSION = ? AND MINOR_VERSION = ?)
+     -> thread.id: Int(89)
+     -> db.sql.table: Str(XOM_LIBRARIES)
+     -> db.operation: Str(SELECT)
+     -> db.name: Str(odmdb)
+     -> thread.name: Str(Default Executor-thread-7)
+Span #21
+    Trace ID       : 914029e493a16d5d71352479e27f64ec
+    Parent ID      : a9c5fcd129ff3524
+    ID             : 5e3d0ba377609535
+    Name           : SELECT odmdb.XOM_LIBRARY_VALUES
+    Kind           : Client
+    Start time     : 2026-05-27 07:32:37.614338398 +0000 UTC
+    End time       : 2026-05-27 07:32:37.615720796 +0000 UTC
+    Status code    : Unset
+    Status message : 
+    DroppedAttributesCount: 0
+    DroppedEventsCount: 0
+    DroppedLinksCount: 0
+Attributes:
+     -> server.port: Int(5432)
+     -> server.address: Str(test-dbserver)
+     -> db.connection_string: Str(postgresql://test-dbserver:5432)
+     -> db.system: Str(postgresql)
+     -> db.statement: Str(SELECT ID, URL FROM XOM_LIBRARY_VALUES WHERE LIBRARY_ID = ?)
+     -> thread.id: Int(89)
+     -> db.sql.table: Str(XOM_LIBRARY_VALUES)
+     -> db.operation: Str(SELECT)
+     -> db.name: Str(odmdb)
+     -> thread.name: Str(Default Executor-thread-7)
+Span #22
+    Trace ID       : 914029e493a16d5d71352479e27f64ec
+    Parent ID      : a9c5fcd129ff3524
+    ID             : 64a7c26518b249ac
+    Name           : odmdb
+    Kind           : Client
+    Start time     : 2026-05-27 07:32:37.617870681 +0000 UTC
+    End time       : 2026-05-27 07:32:37.618353461 +0000 UTC
+    Status code    : Unset
+    Status message : 
+    DroppedAttributesCount: 0
+    DroppedEventsCount: 0
+    DroppedLinksCount: 0
+Attributes:
+     -> db.user: Str(odmusr)
+     -> server.port: Int(5432)
+     -> server.address: Str(test-dbserver)
+     -> db.connection_string: Str(postgresql://test-dbserver:5432)
+     -> db.system: Str(postgresql)
+     -> db.statement: Str()
+     -> thread.id: Int(89)
+     -> db.name: Str(odmdb)
+     -> thread.name: Str(Default Executor-thread-7)
+Span #23
+    Trace ID       : 914029e493a16d5d71352479e27f64ec
+    Parent ID      : a9c5fcd129ff3524
+    ID             : 710c21e74929966d
+    Name           : SELECT odmdb.XOM_RESOURCES
+    Kind           : Client
+    Start time     : 2026-05-27 07:32:37.620504346 +0000 UTC
+    End time       : 2026-05-27 07:32:37.62163628 +0000 UTC
+    Status code    : Unset
+    Status message : 
+    DroppedAttributesCount: 0
+    DroppedEventsCount: 0
+    DroppedLinksCount: 0
+Attributes:
+     -> server.port: Int(5432)
+     -> server.address: Str(test-dbserver)
+     -> db.connection_string: Str(postgresql://test-dbserver:5432)
+     -> db.system: Str(postgresql)
+     -> db.statement: Str(SELECT MAJOR_VERSION, MINOR_VERSION, CREATION_DATE, SHA1 FROM XOM_RESOURCES WHERE NAME = ? AND MAJOR_VERSION = ? AND MINOR_VERSION = ?)
+     -> thread.id: Int(89)
+     -> db.sql.table: Str(XOM_RESOURCES)
+     -> db.operation: Str(SELECT)
+     -> db.name: Str(odmdb)
+     -> thread.name: Str(Default Executor-thread-7)
+Span #24
+    Trace ID       : 914029e493a16d5d71352479e27f64ec
+    Parent ID      : a9c5fcd129ff3524
+    ID             : 556692c05ce0fbd6
+    Name           : odmdb
+    Kind           : Client
+    Start time     : 2026-05-27 07:32:37.625276756 +0000 UTC
+    End time       : 2026-05-27 07:32:37.625673634 +0000 UTC
+    Status code    : Unset
+    Status message : 
+    DroppedAttributesCount: 0
+    DroppedEventsCount: 0
+    DroppedLinksCount: 0
+Attributes:
+     -> db.user: Str(odmusr)
+     -> server.port: Int(5432)
+     -> server.address: Str(test-dbserver)
+     -> db.connection_string: Str(postgresql://test-dbserver:5432)
+     -> db.system: Str(postgresql)
+     -> db.statement: Str()
+     -> thread.id: Int(89)
+     -> db.name: Str(odmdb)
+     -> thread.name: Str(Default Executor-thread-7)
+Span #25
+    Trace ID       : 914029e493a16d5d71352479e27f64ec
+    Parent ID      : a9c5fcd129ff3524
+    ID             : 07c266b4e9b55fce
+    Name           : SELECT odmdb.XOM_RESOURCES
+    Kind           : Client
+    Start time     : 2026-05-27 07:32:37.626866379 +0000 UTC
+    End time       : 2026-05-27 07:32:37.628782769 +0000 UTC
+    Status code    : Unset
+    Status message : 
+    DroppedAttributesCount: 0
+    DroppedEventsCount: 0
+    DroppedLinksCount: 0
+Attributes:
+     -> server.port: Int(5432)
+     -> server.address: Str(test-dbserver)
+     -> db.connection_string: Str(postgresql://test-dbserver:5432)
+     -> db.system: Str(postgresql)
+     -> db.statement: Str(SELECT DATA FROM XOM_RESOURCES WHERE NAME = ? AND MAJOR_VERSION = ? AND MINOR_VERSION = ?)
+     -> thread.id: Int(89)
+     -> db.sql.table: Str(XOM_RESOURCES)
+     -> db.operation: Str(SELECT)
+     -> db.name: Str(odmdb)
+     -> thread.name: Str(Default Executor-thread-7)
+ScopeSpans #1
+ScopeSpans SchemaURL: https://opentelemetry.io/schemas/1.37.0
+InstrumentationScope io.opentelemetry.servlet-5.0 2.28.0-alpha
+Span #0
+    Trace ID       : 914029e493a16d5d71352479e27f64ec
+    Parent ID      : 
+    ID             : a9c5fcd129ff3524
+    Name           : POST /DecisionService/rest/*
+    Kind           : Server
+    Start time     : 2026-05-27 07:32:37.282860188 +0000 UTC
+    End time       : 2026-05-27 07:32:38.207108573 +0000 UTC
+    Status code    : Unset
+    Status message : 
+    DroppedAttributesCount: 0
+    DroppedEventsCount: 0
+    DroppedLinksCount: 0
+Attributes:
+     -> url.path: Str(/DecisionService/rest/production_deployment/1.0/loan_validation_production/1.0)
+     -> network.peer.port: Int(46614)
+     -> client.address: Str(10.254.12.2)
+     -> user_agent.original: Str(curl/8.19.0)
+     -> network.peer.address: Str(10.254.12.2)
+     -> http.response.status_code: Int(200)
+     -> network.protocol.version: Str(2.0)
+     -> http.route: Str(/DecisionService/rest/*)
+     -> http.request.method: Str(POST)
+     -> thread.id: Int(89)
+     -> url.scheme: Str(https)
+     -> thread.name: Str(Default Executor-thread-7)
+	{"resource": {"service.instance.id": "8c476977-537e-421f-aac6-c05ce65be9c6", "service.name": "otelcol", "service.version": "0.144.0"}, "otelcol.component.id": "debug", "otelcol.component.kind": "exporter", "otelcol.signal": "traces"}
+2026-05-27T07:32:51.111Z	info	Traces	{"resource": {"service.instance.id": "8c476977-537e-421f-aac6-c05ce65be9c6", "service.name": "otelcol", "service.version": "0.144.0"}, "otelcol.component.id": "debug", "otelcol.component.kind": "exporter", "otelcol.signal": "traces", "resource spans": 1, "spans": 1}
+2026-05-27T07:32:51.111Z	info	ResourceSpans #0
+Resource SchemaURL: https://opentelemetry.io/schemas/1.24.0
+Resource attributes:
+     -> container.id: Str(e78bf0e37af83672f000a919153bc597deac74676188bb860f016a6f467c888e)
+     -> host.arch: Str(amd64)
+     -> host.name: Str(test-odm-decisionserverruntime-cc8d4dfc5-ddvlm)
+     -> os.description: Str(Linux 5.14.0-570.107.1.el9_6.x86_64)
+     -> os.type: Str(linux)
+     -> os.version: Str(5.14.0-570.107.1.el9_6.x86_64)
+     -> process.command_args: Slice(["/opt/java/openjdk/bin/java","-javaagent:/opt/ibm/wlp/bin/tools/ws-javaagent.jar","-Djava.awt.headless=true","-Djdk.attach.allowAttachSelf=true","-Duser.timezone=Europe/Paris","-Dcom.ibm.jsse2.overrideDefaultTLS=true","-javaagent:/config/download/opentelemetry-javaagent.jar","-Dotel.sdk.disabled=false","-Dotel.exporter.otlp.endpoint=http://otel-collector.otel-demo.svc.cluster.local:4318","-Dotel.service.name=odm","-Dotel.javaagent.debug=true","-Dotel.traces.exporter=otlp","-Dotel.logs.exporter=otlp","-Dotel.metrics.exporter=otlp","--add-exports","java.base/sun.security.action=ALL-UNNAMED","--add-exports","java.naming/com.sun.jndi.ldap=ALL-UNNAMED","--add-exports","java.naming/com.sun.jndi.url.ldap=ALL-UNNAMED","--add-exports","jdk.naming.dns/com.sun.jndi.dns=ALL-UNNAMED","--add-exports","jdk.naming.dns/com.sun.jndi.url.dns=ALL-UNNAMED","--add-exports","java.security.jgss/sun.security.krb5.internal=ALL-UNNAMED","--add-exports","jdk.attach/sun.tools.attach=ALL-UNNAMED","--add-opens","java.base/java.util=ALL-UNNAMED","--add-opens","java.base/java.lang=ALL-UNNAMED","--add-opens","java.base/java.util.concurrent=ALL-UNNAMED","--add-opens","java.base/java.io=ALL-UNNAMED","--add-opens","java.base/java.nio=ALL-UNNAMED","--add-opens","java.base/sun.nio.ch=ALL-UNNAMED","--add-opens","java.naming/javax.naming.spi=ALL-UNNAMED","--add-opens","java.naming/com.sun.naming.internal=ALL-UNNAMED","--add-opens","jdk.naming.rmi/com.sun.jndi.url.rmi=ALL-UNNAMED","--add-opens","java.naming/javax.naming=ALL-UNNAMED","--add-opens","java.rmi/java.rmi=ALL-UNNAMED","--add-opens","java.sql/java.sql=ALL-UNNAMED","--add-opens","java.management/javax.management=ALL-UNNAMED","--add-opens","java.base/java.lang.reflect=ALL-UNNAMED","--add-opens","java.desktop/java.awt.image=ALL-UNNAMED","--add-opens","java.base/java.security=ALL-UNNAMED","--add-opens","java.base/java.net=ALL-UNNAMED","--add-opens","java.base/java.text=ALL-UNNAMED","--add-opens","java.base/sun.net.www.protocol.https=ALL-UNNAMED","--add-exports","jdk.management.agent/jdk.internal.agent=ALL-UNNAMED","--add-exports","java.base/jdk.internal.vm=ALL-UNNAMED","-jar","/opt/ibm/wlp/bin/tools/ws-server.jar","defaultServer"])
+     -> process.executable.path: Str(/opt/java/openjdk/bin/java)
+     -> process.pid: Int(1)
+     -> process.runtime.description: Str(Eclipse OpenJ9 Eclipse OpenJ9 VM 21.0.11+10-openj9-0.59.0)
+     -> process.runtime.name: Str(IBM Semeru Runtime Open Edition)
+     -> process.runtime.version: Str(21.0.11+10-LTS)
+     -> service.instance.id: Str(35ca7d5f-4c2c-43fd-b51d-66706039e99e)
+     -> service.name: Str(odm)
+     -> telemetry.distro.name: Str(opentelemetry-java-instrumentation)
+     -> telemetry.distro.version: Str(2.28.0)
+     -> telemetry.sdk.language: Str(java)
+     -> telemetry.sdk.name: Str(opentelemetry)
+     -> telemetry.sdk.version: Str(1.62.0)
+ScopeSpans #0
+ScopeSpans SchemaURL: https://opentelemetry.io/schemas/1.37.0
+InstrumentationScope io.opentelemetry.servlet-5.0 2.28.0-alpha
+Span #0
+    Trace ID       : f4beed2753426e88fbfda85065124bea
+    Parent ID      : 
+    ID             : b973a1b771d0a942
+    Name           : GET /DecisionService/*
+    Kind           : Server
+    Start time     : 2026-05-27 07:32:48.093467383 +0000 UTC
+    End time       : 2026-05-27 07:32:48.103451071 +0000 UTC
+    Status code    : Unset
+    Status message : 
+    DroppedAttributesCount: 0
+    DroppedEventsCount: 0
+    DroppedLinksCount: 0
+Attributes:
+     -> url.path: Str(/DecisionService/)
+     -> network.peer.port: Int(55154)
+     -> client.address: Str(10.254.16.2)
+     -> user_agent.original: Str(kube-probe/1.34)
+     -> network.peer.address: Str(10.254.16.2)
+     -> http.response.status_code: Int(200)
+     -> network.protocol.version: Str(2.0)
+     -> http.route: Str(/DecisionService/*)
+     -> http.request.method: Str(GET)
+     -> thread.id: Int(99)
+     -> url.scheme: Str(https)
+     -> thread.name: Str(Default Executor-thread-12)
+	{"resource": {"service.instance.id": "8c476977-537e-421f-aac6-c05ce65be9c6", "service.name": "otelcol", "service.version": "0.144.0"}, "otelcol.component.id": "debug", "otelcol.component.kind": "exporter", "otelcol.signal": "traces"}
+2026-05-27T07:33:01.117Z	info	Traces	{"resource": {"service.instance.id": "8c476977-537e-421f-aac6-c05ce65be9c6", "service.name": "otelcol", "service.version": "0.144.0"}, "otelcol.component.id": "debug", "otelcol.component.kind": "exporter", "otelcol.signal": "traces", "resource spans": 1, "spans": 1}
+2026-05-27T07:33:01.118Z	info	ResourceSpans #0
+Resource SchemaURL: https://opentelemetry.io/schemas/1.24.0
+Resource attributes:
+     -> container.id: Str(e78bf0e37af83672f000a919153bc597deac74676188bb860f016a6f467c888e)
+     -> host.arch: Str(amd64)
+     -> host.name: Str(test-odm-decisionserverruntime-cc8d4dfc5-ddvlm)
+     -> os.description: Str(Linux 5.14.0-570.107.1.el9_6.x86_64)
+     -> os.type: Str(linux)
+     -> os.version: Str(5.14.0-570.107.1.el9_6.x86_64)
+     -> process.command_args: Slice(["/opt/java/openjdk/bin/java","-javaagent:/opt/ibm/wlp/bin/tools/ws-javaagent.jar","-Djava.awt.headless=true","-Djdk.attach.allowAttachSelf=true","-Duser.timezone=Europe/Paris","-Dcom.ibm.jsse2.overrideDefaultTLS=true","-javaagent:/config/download/opentelemetry-javaagent.jar","-Dotel.sdk.disabled=false","-Dotel.exporter.otlp.endpoint=http://otel-collector.otel-demo.svc.cluster.local:4318","-Dotel.service.name=odm","-Dotel.javaagent.debug=true","-Dotel.traces.exporter=otlp","-Dotel.logs.exporter=otlp","-Dotel.metrics.exporter=otlp","--add-exports","java.base/sun.security.action=ALL-UNNAMED","--add-exports","java.naming/com.sun.jndi.ldap=ALL-UNNAMED","--add-exports","java.naming/com.sun.jndi.url.ldap=ALL-UNNAMED","--add-exports","jdk.naming.dns/com.sun.jndi.dns=ALL-UNNAMED","--add-exports","jdk.naming.dns/com.sun.jndi.url.dns=ALL-UNNAMED","--add-exports","java.security.jgss/sun.security.krb5.internal=ALL-UNNAMED","--add-exports","jdk.attach/sun.tools.attach=ALL-UNNAMED","--add-opens","java.base/java.util=ALL-UNNAMED","--add-opens","java.base/java.lang=ALL-UNNAMED","--add-opens","java.base/java.util.concurrent=ALL-UNNAMED","--add-opens","java.base/java.io=ALL-UNNAMED","--add-opens","java.base/java.nio=ALL-UNNAMED","--add-opens","java.base/sun.nio.ch=ALL-UNNAMED","--add-opens","java.naming/javax.naming.spi=ALL-UNNAMED","--add-opens","java.naming/com.sun.naming.internal=ALL-UNNAMED","--add-opens","jdk.naming.rmi/com.sun.jndi.url.rmi=ALL-UNNAMED","--add-opens","java.naming/javax.naming=ALL-UNNAMED","--add-opens","java.rmi/java.rmi=ALL-UNNAMED","--add-opens","java.sql/java.sql=ALL-UNNAMED","--add-opens","java.management/javax.management=ALL-UNNAMED","--add-opens","java.base/java.lang.reflect=ALL-UNNAMED","--add-opens","java.desktop/java.awt.image=ALL-UNNAMED","--add-opens","java.base/java.security=ALL-UNNAMED","--add-opens","java.base/java.net=ALL-UNNAMED","--add-opens","java.base/java.text=ALL-UNNAMED","--add-opens","java.base/sun.net.www.protocol.https=ALL-UNNAMED","--add-exports","jdk.management.agent/jdk.internal.agent=ALL-UNNAMED","--add-exports","java.base/jdk.internal.vm=ALL-UNNAMED","-jar","/opt/ibm/wlp/bin/tools/ws-server.jar","defaultServer"])
+     -> process.executable.path: Str(/opt/java/openjdk/bin/java)
+     -> process.pid: Int(1)
+     -> process.runtime.description: Str(Eclipse OpenJ9 Eclipse OpenJ9 VM 21.0.11+10-openj9-0.59.0)
+     -> process.runtime.name: Str(IBM Semeru Runtime Open Edition)
+     -> process.runtime.version: Str(21.0.11+10-LTS)
+     -> service.instance.id: Str(35ca7d5f-4c2c-43fd-b51d-66706039e99e)
+     -> service.name: Str(odm)
+     -> telemetry.distro.name: Str(opentelemetry-java-instrumentation)
+     -> telemetry.distro.version: Str(2.28.0)
+     -> telemetry.sdk.language: Str(java)
+     -> telemetry.sdk.name: Str(opentelemetry)
+     -> telemetry.sdk.version: Str(1.62.0)
+ScopeSpans #0
+ScopeSpans SchemaURL: https://opentelemetry.io/schemas/1.37.0
+InstrumentationScope io.opentelemetry.servlet-5.0 2.28.0-alpha
+Span #0
+    Trace ID       : bfec5638c335d7110585bdf19c10a43e
+    Parent ID      : 
+    ID             : 1f5647d810b1c247
+    Name           : GET /DecisionService/*
+    Kind           : Server
+    Start time     : 2026-05-27 07:33:00.334189762 +0000 UTC
+    End time       : 2026-05-27 07:33:00.35088155 +0000 UTC
+    Status code    : Unset
+    Status message : 
+    DroppedAttributesCount: 0
+    DroppedEventsCount: 0
+    DroppedLinksCount: 0
+Attributes:
+     -> url.path: Str(/DecisionService/)
+     -> network.peer.port: Int(37444)
+     -> client.address: Str(10.254.16.2)
+     -> user_agent.original: Str(kube-probe/1.34)
+     -> network.peer.address: Str(10.254.16.2)
+     -> http.response.status_code: Int(200)
+     -> network.protocol.version: Str(2.0)
+     -> http.route: Str(/DecisionService/*)
+     -> http.request.method: Str(GET)
+     -> thread.id: Int(103)
+     -> url.scheme: Str(https)
+     -> thread.name: Str(Default Executor-thread-15)
+	{"resource": {"service.instance.id": "8c476977-537e-421f-aac6-c05ce65be9c6", "service.name": "otelcol", "service.version": "0.144.0"}, "otelcol.component.id": "debug", "otelcol.component.kind": "exporter", "otelcol.signal": "traces"}

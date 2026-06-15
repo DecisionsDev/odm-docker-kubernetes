@@ -19,11 +19,12 @@
     - [Create secrets to configure ODM with Okta](#create-secrets-to-configure-odm-with-okta)
   - [Install your ODM Helm release](#install-your-odm-helm-release)
   - [Complete post-deployment tasks](#complete-post-deployment-tasks)
-    - [Register the ODM redirect URLs](#register-the-odm-redirect-urls)
+    - [Register the ODM redirect URIs](#register-the-odm-redirect-uris)
     - [Access the ODM services](#access-the-odm-services)
     - [Set up Rule Designer](#set-up-rule-designer)
     - [Getting Started with IBM Operational Decision Manager for Containers](#getting-started-with-ibm-operational-decision-manager-for-containers)
     - [Calling the ODM Runtime Service](#calling-the-odm-runtime-service)
+- [Configuring post logout redirect](#configuring-post-logout-redirect)
 - [Troubleshooting](#troubleshooting)
 - [License](#license)
 
@@ -71,7 +72,7 @@ Auth Code flow width:
 
 First, install the following software on your machine:
 
-- [Helm v3](https://helm.sh/docs/intro/install/)
+- [Helm v3](https://helm.sh/docs/v3/intro/install/) or [Helm v4](https://helm.sh/docs/intro/install/)
 - [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl)
 - Access to an Operational Decision Manager product
 - A CNCF Kubernetes cluster
@@ -295,12 +296,30 @@ In this step, we augment the token with meta-information that is required by the
 
     The files are generated into a directory named `output`.
 
-#### 4. Create the Okta authentication secret.
+#### 4. Add the consoles logout redirect URIs in ODM configuration files (Optional)
+
+This step is optional. If you implement it:
+
+  1. When logging out the Business Console or the RES console, OKTA logging page will be displayed
+  1. If the user logs in the OKTA logging page, they will be redirected back to the console they left (either the Business console or RES console).
+
+  Do the following:
+  - add the lines below in the file `openIdParameters.properties` generated at the previous step:
+      ```
+      DC_OPENID_POST_LOGOUT_REDIRECT_URI=https://DC_HOST/decisioncenter
+      DS_OPENID_POST_LOGOUT_REDIRECT_URI=https://DS_CONSOLE_HOST/res/home.jsp
+      ```
+      Where:
+      - *DC_HOST* should be replaced by the fully qualified hostname of Decision Center
+      - *DS_CONSOLE_HOST* should be replaced by the fully qualified hostname of Decision Server Console (aka RES console)
+  
+  Alternatively, if you do not know the *DC_HOST* and *DS_CONSOLE_HOST* yet at this point, you can skip this part for now to deploy ODM without logout redirect URIs, and add them later on and redeploy ODM. This is what is explained in [Configuring post logout redirect](#configuring-post-logout-redirect).
+
+#### 5. Create the Okta authentication secret.
 
   - run the command below to create a secret containing the configuration files generated at the previous step:
     ```
     kubectl create secret generic okta-auth-secret \
-        --from-file=OdmOidcProviders.json=./output/OdmOidcProviders.json \
         --from-file=openIdParameters.properties=./output/openIdParameters.properties \
         --from-file=openIdWebSecurity.xml=./output/openIdWebSecurity.xml \
         --from-file=webSecurity.xml=./output/webSecurity.xml
@@ -322,7 +341,7 @@ In this step, we augment the token with meta-information that is required by the
     ```
     ```
     NAME                    CHART VERSION APP VERSION DESCRIPTION
-    ibm-helm/ibm-odm-prod   25.1.0        9.5.0.1     IBM Operational Decision Manager
+    ibm-helm/ibm-odm-prod   26.0.0        9.6.0.0     IBM Operational Decision Manager
     ```
 
 3. Run the `helm install` command.
@@ -338,7 +357,7 @@ In this step, we augment the token with meta-information that is required by the
     > ```
     > --set internalDatabase.runAsUser='' --set customization.runAsUser='' --set service.enableRoute=true
     > ```
-    > - See [Preparing to install](https://www.ibm.com/docs/en/odm/9.5.0?topic=production-preparing-install-operational-decision-manager) documentation for additional information.
+    > - See [Preparing to install](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-preparing-install-operational-decision-manager) documentation for additional information.
     > 
     > - The above command installs the **latest available version** of the chart.  
     > If you want to install a **specific version**, add the `--version` option:
@@ -355,10 +374,10 @@ In this step, we augment the token with meta-information that is required by the
 
 ## Complete post-deployment tasks
 
-### Register the ODM redirect URLs
+### Register the ODM redirect URIs
 
 1. Get the ODM endpoints.
-    You can refer to the [documentation](https://www.ibm.com/docs/en/odm/9.5.0?topic=tasks-configuring-external-access) to retrieve the ODM endpoints.
+    You can refer to the [documentation](https://www.ibm.com/docs/en/odm/9.6.0?topic=tasks-configuring-external-access) to retrieve the ODM endpoints.
     For example, on OpenShift you can get the route names and hosts with:
 
     ```
@@ -375,7 +394,7 @@ In this step, we augment the token with meta-information that is required by the
 
 2. Register the redirect URIs into your Okta application.
 
-    The redirect URIs are built in the following way:
+    The Sign-in redirect URIs are built in the following way:
 
       - Decision Center redirect URI:  `https://<DC_HOST>/decisioncenter/openid/redirect/odm`
       - Decision Runner redirect URI:  `https://<DR_HOST>/DecisionRunner/openid/redirect/odm`
@@ -383,18 +402,28 @@ In this step, we augment the token with meta-information that is required by the
       - Decision Server Runtime redirect URI:  `https://<DS_RUNTIME_HOST>/DecisionService/openid/redirect/odm`
       - Rule Designer redirect URI: `https://127.0.0.1:9081/oidcCallback`
 
+    The Sign-out redirect URIs are built in the following way:
+
+      - Decision Center post-logout redirect URI:  `https://<DC_HOST>/decisioncenter`
+      - Decision Server Console post-logout redirect URI:  `https://<DS_CONSOLE_HOST>/res/home.jsp`
+
+        >Note:
+        >Those two Sign-out redirect URIs must match the URIs defined at the step [4. Add the consoles logout redirect URIs in ODM configuration files (Optional)](#4-add-the-consoles-logout-redirect-uris-in-odm-configuration-files-optional)
+
     In **Applications** / **Applications**:
       - Select **ODM Application**.
       - In the **General** tab, click **Edit** on the **General Settings** section.
-      - In the **LOGIN** section, click **+ Add URI** in the **Sign-in redirect URIs** section and add the Decision Center redirect URI you got earlier (`https://<DC_HOST>/decisioncenter/openid/redirect/odm` -- do not forget to replace <DC_HOST> by your actual host name!)
-      - Repeat the previous step for all other redirect URIs.
+      - In the **LOGIN** section, click **+ Add URI** in the **Sign-in redirect URIs** section and add the Sign-in redirect URI `https://<DC_HOST>/decisioncenter/openid/redirect/odm` (do not forget to replace <DC_HOST> by your actual host name!)
+        - Repeat the previous step for all other redirect URIs.
+      - In the **LOGIN** section, click **+ Add URI** in the **Sign-out redirect URIs** section and add the Sign-out redirect URI `https://<DC_HOST>/decisioncenter` (do not forget to replace <DC_HOST> by your actual host name!)
+        - Repeat the previous step for the Decision Server Console post-logout redirect URI:  `https://<DS_CONSOLE_HOST>/res/home.jsp` (do not forget to replace <DS_CONSOLE_HOST> by your actual host name!)
       - Click **Save** at the bottom of the **General Settings** section.
 
     ![Sign-in redirect URIs](images/Sign-in_redirect_URIs.png)
 
 ### Access the ODM services
 
-Well done!  You can now connect to ODM using the endpoints you got [earlier](#register-the-odm-redirect-urls), and log in as an ODM admin with the account you created in [the first step](#manage-groups-and-users).
+Well done!  You can now connect to ODM using the endpoints you got [earlier](#register-the-odm-redirect-uris), and log in as an ODM admin with the account you created in [the first step](#manage-groups-and-users).
 
 ### Set up Rule Designer
 
@@ -419,7 +448,7 @@ To be able to securely connect your Rule Designer to the Decision Server and Dec
 
 4. Restart Rule Designer.
 
-For more information, refer to the [documentation](https://www.ibm.com/docs/en/odm/9.5.0?topic=designer-importing-security-certificate-in-rule).
+For more information, refer to the [documentation](https://www.ibm.com/docs/en/odm/9.6.0?topic=designer-importing-security-certificate-in-rule).
 
 ### Getting Started with IBM Operational Decision Manager for Containers
 
@@ -440,7 +469,7 @@ Deploy the **Loan Validation Service** production_deployment ruleapps using the 
 
 You can retrieve the payload.json from the ODM Decision Server Console or use [the provided payload](payload.json)
 
-As explained in the ODM on Certified Kubernetes documentation [Configuring user access with OpenID](https://www.ibm.com/docs/en/odm/9.5.0?topic=access-configuring-user-openid), we advise to use basic authentication for the ODM runtime call for performance reasons and to avoid the issue of token expiration and revocation.
+As explained in the ODM on Certified Kubernetes documentation [Configuring user access with OpenID](https://www.ibm.com/docs/en/odm/9.6.0?topic=access-configuring-user-openid), we advise to use basic authentication for the ODM runtime call for performance reasons and to avoid the issue of token expiration and revocation.
 
 You can realize a basic authentication ODM runtime call in the following way:
 
@@ -467,6 +496,30 @@ But if you want to execute a bearer authentication ODM runtime call using the Cl
          -H "Authorization: Bearer <ACCESS_TOKEN>" \
          https://<DS_RUNTIME_HOST>/DecisionService/rest/production_deployment/1.0/loan_validation_production/1.0
   ```
+
+# Configuring post logout redirect
+
+This configuration is optional, and you might have already configured post logout redirect URIs at this point if you followed the instructions at the step [4. Add the consoles logout redirect URIs in ODM configuration files (Optional)](#4-add-the-consoles-logout-redirect-uris-in-odm-configuration-files-optional)
+
+To configure the post logout redirect URIs, you need to:
+
+- add the following properties in the previously generated `./output/openIdParameters.properties` file:
+  ```
+  DC_OPENID_POST_LOGOUT_REDIRECT_URI=https://<DC_HOST>/decisioncenter
+  DS_OPENID_POST_LOGOUT_REDIRECT_URI=https://<DS_CONSOLE_HOST>/res/home.jsp
+  ```
+
+- delete the okta-auth-secret secret and recreate it as explained in [Create secrets to configure ODM with Okta](#create-secrets-to-configure-odm-with-okta).
+
+  ```shell
+  kubectl delete secret okta-auth-secret
+  kubectl create secret generic okta-auth-secret \
+          --from-file=openIdParameters.properties=./output/openIdParameters.properties \
+          --from-file=openIdWebSecurity.xml=./output/openIdWebSecurity.xml \
+          --from-file=webSecurity.xml=./output/webSecurity.xml
+  ```
+
+- define the post logout redirect URIs in Okta as explained in [Register the ODM redirect URIs](#register-the-odm-redirect-uris)
 
 # Troubleshooting
 

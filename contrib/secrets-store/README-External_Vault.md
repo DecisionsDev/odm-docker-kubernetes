@@ -1,6 +1,6 @@
 # Install, configure and use HashiCorp Vault on Ubuntu
 
-We provide here some installation hints about the installation and the configuration of a test instance for HashiCorp Vault so that it can be used as a secrets store on OpenShift Container Platform.
+We provide here some installation hints for setting up and configuring a test instance of HashiCorp Vault so that it can be used as a secrets store on OpenShift Container Platform.
 
 ## Installation
 
@@ -13,7 +13,7 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashi
 sudo apt update && sudo apt install vault
 ```
 
-Edit its configuration file in order to enable HTTP connectivity instead of HTTPS (it will be enough for this demonstration). The configuration file should look like this:
+Edit its configuration file (usually in /etc/vault.d/vault.hcl) to enable HTTP connectivity instead of HTTPS (this will be sufficient for this demonstration). The configuration file should look like this:
 
 ```text
 ui = true
@@ -24,7 +24,7 @@ storage "file" {
 
 # HTTP listener
 listener "tcp" {
-  address = "0.0.0.0:8200"
+  address = "0.0.0.0:8200"  # <- Either set to 0.0.0.0 (all network interfaces) or the IP address of the network interface allowing to connect to the Vault instance
   tls_disable = 1
 }
 ```
@@ -43,7 +43,7 @@ export VAULT_ADDR=http://<serverfqdn>:8200
 vault operator init
 ```
 
-Make sure you keep the unseal keys and token that will be displayed in a safe place! They can't be retrieved afterwards.
+Make sure you keep the unseal keys and token that will be displayed in a safe place! They cannot be retrieved afterwards.
 
 Unseal the vault:
 
@@ -51,7 +51,7 @@ Unseal the vault:
 vault operator unseal
 ```
 
-It will ask for any unseal key (displayed above). You have to run the same command three times (with different keys!) before the vault is actually unsealed.
+It will prompt for any unseal key (displayed above). You must run the same command three times (with different keys) before the vault is actually unsealed.
 
 You can then log into the vault:
 
@@ -61,7 +61,7 @@ vault login
 
 Just enter the root token displayed at the end of the init step.
 
-Activate the kv-2 secrets engine which allows to keep simple secrets such as passwords and certificates along with their history:
+Activate the kv-2 secrets engine, which allows you to store simple secrets such as passwords and certificates along with their history:
 
 ```shell
 vault secrets enable -version=2 -path <secretspath> kv
@@ -69,7 +69,7 @@ vault secrets enable -version=2 -path <secretspath> kv
 
 ## Secrets Store CSI driver and provider
 
-The installation of the Secrets Store CSI driver is straightforward on OpenShift 4.14+: Go the OperatorHub, look for "Secrets Store CSI Driver Operator" and deploy the operator with its defaults.
+The installation of the Secrets Store CSI driver is straightforward on OpenShift 4.14+: Go to the OperatorHub, search for "Secrets Store CSI Driver Operator" and deploy the operator with its default settings.
 
 Then create the CSI Driver itself:
 

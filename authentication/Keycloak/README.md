@@ -100,14 +100,7 @@ If you already have an Openshift cluster, you can skip the section [Before you s
   ```shell
   oc new-project keycloak
   ```
-- To install Keycloak on Openshift, continue from the section [Start Keycloak](https://www.keycloak.org/getting-started/getting-started-openshift#_start_keycloak) using the file [keycloak.yaml](keycloak.yaml) instead of the one online as suggested at the first step (which may prevent from accessing the console behind a proxy), ie.:
-  ```shell
-  oc process -f keycloak.yaml \
-      -p KEYCLOAK_ADMIN=admin \
-      -p KEYCLOAK_ADMIN_PASSWORD=admin \
-      -p NAMESPACE=keycloak \
-  | oc create -f -
-  ```
+- To install Keycloak on Openshift, continue from the section [Start Keycloak](https://www.keycloak.org/getting-started/getting-started-openshift#_start_keycloak).
 
 - If you want to install Keycloak on another Kubernetes platform than Openshift, follow these instructions: [Get started with Keycloak on Kubernetes](https://www.keycloak.org/getting-started/getting-started-kube).
 
@@ -175,7 +168,7 @@ In the Menu **Manage** / **Realm roles**:
       * resDeployers
       * resExecutors
 
-    For more information about ODM groups and roles, refer to the [ODM on Kubernetes documentation](https://www.ibm.com/docs/en/odm/9.5.0?topic=access-user-roles-groups).
+    For more information about ODM groups and roles, refer to the [ODM on Kubernetes documentation](https://www.ibm.com/docs/en/odm/9.6.0?topic=access-user-roles-groups).
 
 
 ### 2. Create a group for ODM administrators.
@@ -459,7 +452,7 @@ In the Menu **Manage** / **Users**:
   The output should look like:
   ```shell
   NAME                      CHART VERSION  APP VERSION  DESCRIPTION
-  ibm-helm/ibm-odm-prod     25.1.0         9.5.0.1      IBM Operational Decision Manager
+  ibm-helm/ibm-odm-prod     26.0.0         9.6.0.0      IBM Operational Decision Manager
   ```
 
 ### 3. Run the `helm install` command
@@ -482,7 +475,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 
 #### a. Installation on OpenShift using Routes
 
-  See the [Preparing to install](https://www.ibm.com/docs/en/odm/9.5.0?topic=production-preparing-install-operational-decision-manager) documentation for more information. Inspect [keycloak-values.yaml](keycloak-values.yaml) for the parameters that have been defined for this installation.
+  See the [Preparing to install](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-preparing-install-operational-decision-manager) documentation for more information. Inspect [keycloak-values.yaml](keycloak-values.yaml) for the parameters that have been defined for this installation.
 
   ```shell
   helm install my-odm-release ibm-helm/ibm-odm-prod -f keycloak-values.yaml
@@ -507,7 +500,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 
 
 1. Get the ODM endpoints.
-    Refer to [this documentation](https://www.ibm.com/docs/en/odm/9.5.0?topic=tasks-configuring-external-access) to retrieve the endpoints.
+    Refer to [this documentation](https://www.ibm.com/docs/en/odm/9.6.0?topic=tasks-configuring-external-access) to retrieve the endpoints.
     For example, on OpenShift you can get the route names and hosts with:
 
     ```shell
@@ -569,7 +562,7 @@ Well done!  You can now connect to ODM using the endpoints you got [earlier](#re
 
 ### Set up Rule Designer
 
-First set up Rule Designer following [these instructions](https://www.ibm.com/docs/en/odm/9.5.0?topic=designer-installing-rule-online).
+First set up Rule Designer following [these instructions](https://www.ibm.com/docs/en/odm/9.6.0?topic=designer-installing-rule-online).
 
 To be able to securely connect your Rule Designer to the Decision Server and Decision Center services that are running in Certified Kubernetes, you need to establish a TLS connection through a security certificate in addition to the OpenID configuration.
 
@@ -592,7 +585,7 @@ To be able to securely connect your Rule Designer to the Decision Server and Dec
 
 4. Restart Rule Designer.
 
-For more information, refer to [this documentation](https://www.ibm.com/docs/en/odm/9.5.0?topic=designer-importing-security-certificate-in-rule).
+For more information, refer to [this documentation](https://www.ibm.com/docs/en/odm/9.6.0?topic=designer-importing-security-certificate-in-rule).
 
 ### Getting Started with IBM Operational Decision Manager for Containers
 
@@ -612,7 +605,7 @@ Deploy the **Loan Validation Service** production_deployment ruleapp using the *
 
 You can retrieve the payload.json from the ODM Decision Server Console or use [the provided payload](payload.json).
 
-As explained in the ODM on Certified Kubernetes documentation [Configuring user access with OpenID](https://www.ibm.com/docs/en/odm/9.5.0?topic=access-configuring-user-openid), we advise you to use basic authentication for the ODM runtime call for better performance and to avoid token expiration and revocation.
+As explained in the ODM on Certified Kubernetes documentation [Configuring user access with OpenID](https://www.ibm.com/docs/en/odm/9.6.0?topic=access-configuring-user-openid), we advise you to use basic authentication for the ODM runtime call for better performance and to avoid token expiration and revocation.
 
 You perform a basic authentication ODM runtime call in the following way:
 

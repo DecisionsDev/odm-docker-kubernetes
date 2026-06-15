@@ -2,9 +2,12 @@
 
 This page provides instructions on setting up IBM® Operational Decision Manager (ODM) with Azure SQL Managed Instance (MI).
 
-Search for 'Azure SQL' among the available services and create a **SQL Managed Instance** with Resource type: `Single instance`:
+1. Search for **Azure SQL** among the available services, 
+1. then select **SQL Managed instances** in the menu in the left pane, 
+1. then click **Create** 
+1. then click **SQL Managed instance** in the drop-down menu:
 
-![Single instance](images/sqlmi-select_offer.png)
+![Single instance](images/sqlmi-creating.png)
 
 Choose the desired Resource Group for deploying the SQL Managed Instance and specify the Managed Instance name:
 
@@ -86,7 +89,7 @@ Other deployment options (especially using NGINX) and IBM License Service usage 
 
 ## Troubleshooting
 
-If your ODM instances are not running properly, refer to [our dedicated troubleshooting page](https://www.ibm.com/docs/en/odm/9.5.0?topic=950-troubleshooting-support).
+If your ODM instances are not running properly, refer to [our dedicated troubleshooting page](https://www.ibm.com/docs/en/odm/9.6.0?topic=960-troubleshooting-support).
 
 ## Getting Started with IBM Operational Decision Manager for Containers
 

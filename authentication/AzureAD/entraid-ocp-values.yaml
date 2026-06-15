@@ -1,11 +1,9 @@
 oidc:
   enabled: true
+  disableLoginPanel: true
 customization:
   runAsUser: ''
   authSecretRef: azuread-auth-secret
-  trustedCertificateList:
-  - ms-secret
-  - digicert-secret
 image:
   repository: cp.icr.io/cp/cp4a/odm
   pullSecrets:

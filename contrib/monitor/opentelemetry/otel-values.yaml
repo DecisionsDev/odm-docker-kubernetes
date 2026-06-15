@@ -2,7 +2,7 @@ customization:
   runAsUser: ''
 decisionServerRuntime:
   downloadUrl:
-    - https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v2.16.0/opentelemetry-javaagent.jar
+    - https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v2.28.0/opentelemetry-javaagent.jar
   jvmOptionsRef: otel-runtime-jvm-options-configmap
   monitorRef: runtime-monitor-configuration
 image:

@@ -1,3 +1,17 @@
+# ⚠️ DEPRECATION NOTICE
+
+**This vault-initcontainer approach is deprecated and has been replaced by a more streamlined CSI-based solution.**
+
+Please refer to the [Secrets Store CSI Driver setup](../secrets-store/README.md) for the recommended method of integrating ODM with Vault and other secret stores. The new approach offers:
+- Simplified configuration with reduced setup complexity
+- Direct CSI volume mounting without custom init containers
+- Better alignment with Kubernetes best practices
+- Improved maintainability and support
+
+For new deployments, we strongly recommend using the [secrets-store](../secrets-store/README.md) implementation instead of this vault-initcontainer method.
+
+---
+
 # Introduction
 
 In the rapidly evolving world of Kubernetes (K8s), securing sensitive information remains a paramount concern. Traditional methods, like using K8s secrets, often fall short in providing the necessary security measures.
@@ -58,7 +72,7 @@ The diagram visually represents the secure flow of secrets data from the central
    * [Vault client](https://developer.hashicorp.com/vault/install)
    * [Helm v3](https://helm.sh/docs/intro/install/)
    * [Kustomize](https://github.com/kubernetes-sigs/kustomize/releases)
-   * Operational Decision Manager on Container 9.5
+   * Operational Decision Manager on Container 9.6
 
 > Note: This documentation has been tested with a HashiCorp evaluation instance. We assume that the procedure will remain the same for the commercial product.
 
@@ -176,7 +190,7 @@ helm repo update
 ```
 helm search repo ibm-odm-prod
 NAME                  	CHART VERSION   APP VERSION     DESCRIPTION
-ibm-helm/ibm-odm-prod	25.1.0          9.5.0.1        IBM Operational Decision Manager
+ibm-helm/ibm-odm-prod	26.0.0          9.6.0.0        IBM Operational Decision Manager
 ```
 
 

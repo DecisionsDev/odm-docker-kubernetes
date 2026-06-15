@@ -8,6 +8,10 @@ ignorePatterns:
   - pattern: '^https://localhost*$'
   - pattern: '^https://dummyUrl$'
   - pattern: '^https://cognito-idp.COGNITO_REGION.amazonaws.com/COGNITO_USER_POOL_ID/.*$'
+  - pattern: '^https://xxx.xxx.xxx.xxx$'
+  - pattern: '^https://yyy.yyy.yyy.yyy$'
+  - pattern: '^https://zzz.zzz.zzz.zzz$'
+  - pattern: '^https://uuu.uuu.uuu.uuu$'
 replacementPatterns:
   - pattern: "https://www.ibm.com/docs"
     replacement: 'https://ibmdocs-test.dcs.ibm.com/docs'

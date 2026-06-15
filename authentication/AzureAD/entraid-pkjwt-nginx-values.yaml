@@ -1,10 +1,8 @@
 oidc:
   enabled: true
+  disableLoginPanel: true
 customization:
   authSecretRef: azuread-auth-secret
-  trustedCertificateList:
-  - ms-secret
-  - digicert-secret
   privateCertificateList:
   - myodmcompany
 image:

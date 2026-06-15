@@ -1,5 +1,9 @@
 # Deploying IBM Operational Decision Manager with NGINX Ingress Controller on Amazon EKS
 
+> **WARNING** 
+> The NGINX Ingress Controller is **DEPRECATED**. For more information, see [Ingress NGINX Retirement: What You Need to Know](https://kubernetes.io/blog/2025/11/11/ingress-nginx-retirement/).
+> This documentation is kept for reference purposes only for existing deployments and will be removed in the coming months.
+
 The aim of this complementary documentation is to explain how to replace the **AWS Load Balancer Controller** usage with an **NGINX Ingress Controller**.
 
 ## Prerequisites
@@ -65,11 +69,52 @@ helm install mycompany ibm-helm/ibm-odm-prod -f eks-rds-nginx-values.yaml
 > helm install mycompany ibm-helm/ibm-odm-prod -f eks-nginx-values.yaml
 > ```
 
-## Track ODM usage with the IBM License Service with NGINX Ingress Controller
 
-Install the IBM License Service following *7a.* section of [Track ODM usage with the IBM License Service](README.md#7-track-odm-usage-with-the-ibm-license-service) step of the documentation.
+## Track ODM usage
 
-### Patch the IBM Licensing instance with Nginx configuration
+### Install the IBM Usage Metering service
+
+IBM Usage Metering Service gathers metrics to monitor compliance and create reports. It captures business value metrics for auditing purposes and to visualize metric usage in reporting tools, and sends the information to IBM Software Central. For more details, see [Collecting and sending usage metrics](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-collecting-sending-usage-metrics)
+
+From ODM 9.6.0 onwards, it is required to install this metering service in the same namespace as ODM. ODM will systematically reports usage metrics to the metering service through a CronJob. If the service is not installed, the job fails when it runs. For more information about the installation and configuration of UMS, see [Installing the usage metering service](https://www.ibm.com/docs/en/odm/9.6.0?topic=metrics-installing-metering).
+
+#### Expose IBM Usage Metering service using an ingress. 
+
+- Edit the [nginx-ums-ingress.yaml](./nginx-ums-ingress.yaml) file and update `<UMS_NAMESPACE>` with the namespace that you installed UMS. Save the file.
+
+- Run the command to create UMS's Ingress
+
+```bash
+kubectl apply -f nginx-ums-ingress.yaml
+```
+
+- Run the following command to see the status of Ingress `usage-metering-svc-ingress` instance:
+
+```bash
+$ kubectl get ingress
+NAME                         CLASS   HOSTS   ADDRESS                                                                         PORTS   AGE
+mycompany-odm-ingress        nginx   *       abcdefghijklmnopqrstuvqxyz-xxxxxxxyyyyyyzzzzzz.elb.<aws-region>.amazonaws.com   80      30m
+usage-metering-svc-ingress   nginx   *       abcdefghijklmnopqrstuvqxyz-xxxxxxxyyyyyyzzzzzz.elb.<aws-region>.amazonaws.com   80      1m
+```
+- Note down the address of the `usage-metering-svc-ingress` instance. It will be use to retrieve the metering usage report in the next step.
+
+#### Retrieve metering usage
+
+To get the Usage Metering report, run the command below:
+
+```bash
+UMS_TOKEN=$(kubectl get secret ibm-usage-metering-upload-token -n "${NAMESPACE}" -o jsonpath='{.data.token}' 2>/dev/null | base64 -d || echo "")
+
+curl -k --output report.zip \
+        --header "Authorization: Bearer ${UMS_TOKEN}" \
+        --url "https://abcdefghijklmnopqrstuvqxyz-xxxxxxxyyyyyyzzzzzz.elb.<aws-region>.amazonaws.com/ibm-usage-metering-instance/api/v1/snapshot"
+```
+
+### Install IBM License Service
+
+Install the IBM License Service following *7.2* section of [Track ODM usage](README.md#72-install-the-ibm-license-service) step of the documentation.
+
+#### Patch the IBM Licensing instance with Nginx configuration
 
 Get the [licensing-instance-nginx.yaml](./licensing-instance-nginx.yaml) file and run the command:
 
@@ -106,5 +151,7 @@ Otherwise, you can also retrieve the licensing report .zip file by running:
 ```bash
 curl "http://${LICENSING_URL}/snapshot?token=${TOKEN}" --output report.zip
 ```
+
+IBM License Service can optionally send collected license usage data directly to IBM Software Central. For more information about the configuration, see [Reporting license usage to IBM Software Central](https://www.ibm.com/docs/en/odm/9.6.0?topic=metering-reporting-license-usage-software-central).
 
 If your IBM License Service instance is not running properly, refer to this [troubleshooting page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.14.0?topic=service-troubleshooting-license).

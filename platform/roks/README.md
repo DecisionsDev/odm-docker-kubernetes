@@ -14,7 +14,7 @@ The ODM on Kubernetes Docker images are available in the [IBM Cloud Container Re
 
 The project uses the following components:
 
-- [IBM Operational Decision Manager](https://ibmdocs-test.dcs.ibm.com/docs/en/odm/9.5.0?topic=operational-decision-manager-certified-kubernetes-950)
+- [IBM Operational Decision Manager](https://www.ibm.com/docs/en/odm/9.6.0?topic=operational-decision-manager-certified-kubernetes-960)
 - [IBM Cloud](https://cloud.ibm.com/login)
 
 ## Tested environment
@@ -95,7 +95,7 @@ helm repo update
 ```bash
 $ helm search repo ibm-odm-prod
 NAME                    CHART VERSION APP VERSION DESCRIPTION
-ibm-helm/ibm-odm-prod   25.1.0        9.5.0.1     IBM Operational Decision Manager
+ibm-helm/ibm-odm-prod   26.0.0        9.6.0.0     IBM Operational Decision Manager
 ```
 
 ### 3. Install an IBM Operational Decision Manager release (10 min)
@@ -139,7 +139,7 @@ oc get pods
 
 ### 4. Access the ODM services  
 
-Refer to [this documentation](https://www.ibm.com/docs/en/odm/9.5.0?topic=tasks-configuring-external-access) to retrieve the endpoints.
+Refer to [this documentation](https://www.ibm.com/docs/en/odm/9.6.0?topic=tasks-configuring-external-access) to retrieve the endpoints.
 For example, on OpenShift you can get the route names and hosts with:
 
 ```bash
@@ -163,7 +163,7 @@ Follow the **Installation** section of the [Manual installation without the Oper
 
 The ODM Decision Center component requires a sticky session, also known as [session affinity](https://kubernetes.io/docs/reference/networking/virtual-ips/#session-affinity). This is necessary when using more than **one** replica for the Decision Center to ensure that each user's requests are consistently routed to the same pod.
 
-According to the [OpenShift documentation](https://docs.openshift.com/container-platform/4.15/networking/routes/route-configuration.html#nw-using-cookies-keep-route-statefulness_route-configuration), using a passthrough route for Decision Center is not sufficient to enable a sticky session. Therefore, we need to use a [reencrypt route](https://docs.openshift.com/container-platform/4.15/networking/routes/secured-routes.html#nw-ingress-creating-a-reencrypt-route-with-a-custom-certificate_secured-routes).
+According to the [OpenShift documentation](https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/networking/configuring-routes#route-configuration), using a passthrough route for Decision Center is not sufficient to enable a sticky session. Therefore, we need to use a [reencrypt route](https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/networking/configuring-routes#nw-ingress-creating-a-reencrypt-route-with-a-custom-certificate_secured-routes).
 
 Using a reencrypt route, ROKS requires the route to use a valid domain certificate. Below are the steps to achieve this:
 
