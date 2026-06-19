@@ -95,20 +95,43 @@ To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
 
 #### d. Provision an AWS Load Balancer Controller
 
-Provision an AWS Load Balancer Controller to your EKS cluster:
+Provision an AWS Load Balancer Controller to your EKS cluster.
+The Helm command to run differs depending on the type of nodes the Controller will be running on (EC2 or Fargate).
 
-```bash
-helm repo add eks https://aws.github.io/eks-charts
-helm repo update
-helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
-  -n kube-system \
-  --set clusterName=<CLUSTER_NAME>
-```
+- EC2 nodes (EKS in standard mode (with or without Autoscaling) or managed mode)
 
-For more information, refer to [Installing the AWS Load Balancer Controller add-on](https://docs.aws.amazon.com/eks/latest/userguide/aws-load-balancer-controller.html).
+    ```bash
+    helm repo add eks https://aws.github.io/eks-charts
+    helm repo update
 
-> **Note**
-> This tutorial illustrates accessing the services using Ingress. Since AWS Load Balancer now supports Gateway API, if you prefer to use Gateway API instead of Ingress, see the [Deploying IBM Operational Decision Manager with AWS Load Balancer Controller supporting Gateway API on Amazon EKS](README-GATEWAY-API.md) tutorial for more information.
+    helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
+        -n kube-system \
+        --set clusterName=<CLUSTER_NAME>
+    ```
+
+    For more information, refer to [Installing the AWS Load Balancer Controller add-on](https://docs.aws.amazon.com/eks/latest/userguide/aws-load-balancer-controller.html).
+
+- Fargate nodes (EKS with Fargate)
+
+    The AWS Load Balancer Controller is running on Fargate nodes if a Fargate profile specifies that the pods in the `kube-system` namespace should run on Fargate. A Fargate profile like that is automatically created if the EKS cluster is created with the `--fargate` option.
+
+    In that case, additional Helm chart parameters must be specified:
+    ```bash
+    helm repo add eks https://aws.github.io/eks-charts
+    helm repo update
+
+    helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
+        -n kube-system \
+        --set clusterName=<CLUSTER_NAME> \
+        --set region=<region-code> \
+        --set vpcId=vpc-xxxxxxxx \
+        --set serviceAccount.create=false \
+        --set serviceAccount.name=aws-load-balancer-controller
+    ```
+
+    Before running the Helm command above, you need to:
+    - find the VPC ID and region code of the EKS cluster, and
+    - create an IAM service account for the AWS Load Balancer Controller. You can find instructions in [Install AWS Load Balancer Controller with Helm](https://docs.aws.amazon.com/eks/latest/userguide/lbc-helm.html).
 
 ### 2. Create an RDS database (10 min)
 
@@ -414,17 +437,28 @@ Follow the **Installation** section of the [Installation License Service without
 > 7. Update the License Service instance that was created during installation to accept the license. At the same time, the default gateway configuration must be deactivated. We will create an Ingress that is adapted for AWS Load Balancer controller.
 > - Create the `accept-license.yaml` file with the following content:
 >
->```bash
->spec:
->  gatewayEnabled: false
->  license:
->    accept: true
->```
+>    - if the IBM License Service will be running on **EC2 Nodes**:
+>       ```bash
+>       spec:
+>         gatewayEnabled: false
+>         license:
+>           accept: true
+>       ```
+>    - if the IBM License Service will be running on **Fargate Nodes**:
+>       ```bash
+>       spec:
+>         gatewayEnabled: false
+>         license:
+>           accept: true
+>           resources:
+>             requests:
+>               memory: 300Mi
+>       ```
 > 
 > - Patch the IBM Licensing instance
->```bash
->kubectl patch IBMLicensing instance --type merge --patch-file accept-license.yaml
->```
+>   ```bash
+>   kubectl patch IBMLicensing instance --type merge --patch-file accept-license.yaml
+>   ```
 
 ##### 7.2.1. Expose the IBM Licensing service using an ingress
 
