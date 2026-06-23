@@ -450,9 +450,9 @@ Follow the **Installation** section of the [Installation License Service without
 >         gatewayEnabled: false
 >         license:
 >           accept: true
->           resources:
->             requests:
->               memory: 300Mi
+>         resources:
+>           requests:
+>             memory: 300Mi
 >       ```
 > 
 > - Patch the IBM Licensing instance
