@@ -13,8 +13,7 @@
         issuerIdentifier="${ServerHost}"
         jwkEndpointUrl="${ServerHost}/protocol/openid-connect/certs"
         authorizationEndpointUrl="${ServerHost}/protocol/openid-connect/auth"
-        tokenEndpointUrl="${ServerHost}/protocol/openid-connect/token"
-        validationEndpointUrl="${ServerHost}/protocol/openid-connect/token/introspect"/>
+        tokenEndpointUrl="${ServerHost}/protocol/openid-connect/token"/>
 
   <!-- Client with inbound propagation set to required -->
   <openidConnectClient authFilterRef="apiAuthFilter" id="odmapi" scope="openid"
@@ -26,6 +25,5 @@
         issuerIdentifier="${ServerHost}"
         jwkEndpointUrl="${ServerHost}/protocol/openid-connect/certs"
         authorizationEndpointUrl="${ServerHost}/protocol/openid-connect/auth"
-        tokenEndpointUrl="${ServerHost}/protocol/openid-connect/token"
-        validationEndpointUrl="${ServerHost}/protocol/openid-connect/token/introspect"/>
+        tokenEndpointUrl="${ServerHost}/protocol/openid-connect/token"/>
 </server>
