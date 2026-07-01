@@ -289,6 +289,14 @@ to receive an ID token due to [Failed to reach endpoint .../token because of the
 <p>The requested URL .../token was not found on this server.</p>
 </body></html>].
 ````
+
+Or you may see different errors if you are invoking the REST API:
+```
+[3/17/26, 18:03:55:906 CET] 000001d0 OidcClientReq E   CWWKS1739E: A signing key required by signature algorithm [RS256] was not available. <...>: Name or service not known
+
+[3/17/26, 18:03:55:907 CET] 000001d0 Jose4jUtil    E   CWWKS1737E: The OpenID Connect client [null] failed to validate the JSON Web Token. The cause of the error was: [CWWKS1739E: A signing key required by signature algorithm [RS256] was not available. <...>: Name or service not known]
+```
+
 ### 5.2) Cause
 A proxy is preventing to connect to the OpenId Connect Provider.
 
