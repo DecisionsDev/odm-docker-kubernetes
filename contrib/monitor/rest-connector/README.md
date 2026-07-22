@@ -15,7 +15,6 @@
   - [3. Run the `helm install` command](#3-run-the-helm-install-command)
   - [4. Check the /IBMJMXConnectorREST endpoints](#4-check-the-ibmjmxconnectorrest-endpoints)
     - [List all available MBeans](#list-all-available-mbeans)
-    - [Filter by domain or type](#filter-by-domain-or-type)
     - [Read all attributes of a single MBean](#read-all-attributes-of-a-single-mbean)
   - [5. Use-Cases](#5-use-cases)
     - [Generate a JVM dump file](#generate-a-jvm-dump-file)
@@ -200,24 +199,28 @@ The response is a JSON array of every registered MBean ObjectName, for example:
 
 ```json
 [
-  { "objectName": "WebSphere:type=ServerInfo,name=BasicServerInfo" },
-  { "objectName": "WebSphere:type=JvmStats,name=JvmStats" },
-  { "objectName": "RES:type=RuleApp,name=..." }
+  {
+    "objectName": "com.ibm.lang.management:type=JvmCpuMonitor",
+    "className": "com.ibm.lang.management.internal.JvmCpuMonitor",
+    "URL": "/IBMJMXConnectorREST/mbeans/com.ibm.lang.management%3Atype%3DJvmCpuMonitor"
+  },
+  {
+    "objectName": "WebSphere:type=JvmStats",
+    "className": "com.ibm.ws.monitors.helper.JvmStats",
+    "URL": "/IBMJMXConnectorREST/mbeans/WebSphere%3Atype%3DJvmStats"
+  },
+  {
+    "objectName": "java.lang:type=Memory",
+    "className": "com.ibm.lang.management.internal.ExtendedMemoryMXBeanImpl",
+    "URL": "/IBMJMXConnectorREST/mbeans/java.lang%3Atype%3DMemory"
+  },
+  ...
+  {
+    "objectName": "WebSphere:service=com.ibm.websphere.application.ApplicationMBean,name=res",
+    "className": "com.ibm.ws.app.manager.internal.ApplicationConfigurator$NamedApplication$2",
+    "URL": "/IBMJMXConnectorREST/mbeans/WebSphere%3Aname%3Dres%2Cservice%3Dcom.ibm.websphere.application.ApplicationMBean"
+  },
 ]
-```
-
-#### Filter by domain or type
-
-Append an `objectName` query parameter using standard JMX wildcard syntax:
-
-```bash
-# All MBeans in the RES domain (ODM rule execution)
-curl -k -u odmAdmin:<password> \
-  "https://<ROUTE>/IBMJMXConnectorREST/mbeans?objectName=RES%3A*"
-
-# JVM stats MBean only
-curl -k -u odmAdmin:<password> \
-  "https://<ROUTE>/IBMJMXConnectorREST/mbeans?objectName=WebSphere%3Atype%3DJvmStats%2C*"
 ```
 
 #### Read all attributes of a single MBean
@@ -225,7 +228,7 @@ curl -k -u odmAdmin:<password> \
 URL-encode the full ObjectName and call its `/attributes` sub-resource:
 
 ```bash
-MBEAN="WebSphere%3Atype%3DJvmStats%2Cname%3DJvmStats"
+MBEAN="WebSphere%3Atype%3DJvmStats"
 
 curl -k -u odmAdmin:<password> \
   "https://<ROUTE>/IBMJMXConnectorREST/mbeans/${MBEAN}/attributes"
@@ -238,8 +241,6 @@ curl -k -u odmAdmin:<password> \
 #### Generate a JVM dump file
 
 ODM on Liberty runs on the **OpenJ9 JVM**. All dump types (thread, heap, system) are triggered through the same `triggerDump` operation on the `openj9.lang.management:type=OpenJ9Diagnostics` MBean.
-
-> **Note:** `com.sun.management:type=HotSpotDiagnostic` is present on OpenJ9 but its `dumpHeap` operation throws `UnsupportedOperationException` — it is a HotSpot-specific method and does not work on ODM containers.
 
 The only accepted parameter is the dump type name. OpenJ9 chooses the output path automatically — it **cannot** be set through this operation.
 
@@ -388,7 +389,7 @@ Response:
 
 ```json
 {
-  "value": "154993552",
+  "value": "88742240",
   "type": "java.lang.Long"
 }
 ```
