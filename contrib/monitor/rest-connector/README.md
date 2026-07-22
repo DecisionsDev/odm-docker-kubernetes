@@ -187,7 +187,7 @@ The JSON response as an example:
 #### List all available MBeans
 
 ```bash
-curl -k -u odmAdmin:<password> https://<ROUTE/IBMJMXConnectorREST/mbeans | jq
+curl -k -u odmAdmin:<password> https://<ROUTE>/IBMJMXConnectorREST/mbeans | jq
 ```
 
 The response is a JSON array of every registered MBean ObjectName, for example:
@@ -207,11 +207,11 @@ Append an `objectName` query parameter using standard JMX wildcard syntax:
 ```bash
 # All MBeans in the RES domain (ODM rule execution)
 curl -k -u odmAdmin:<password> \
-  "https://localhost:9443/IBMJMXConnectorREST/mbeans?objectName=RES%3A*"
+  "https://<ROUTE>/IBMJMXConnectorREST/mbeans?objectName=RES%3A*"
 
 # JVM stats MBean only
 curl -k -u odmAdmin:<password> \
-  "https://localhost:9443/IBMJMXConnectorREST/mbeans?objectName=WebSphere%3Atype%3DJvmStats%2C*"
+  "https://<ROUTE>/IBMJMXConnectorREST/mbeans?objectName=WebSphere%3Atype%3DJvmStats%2C*"
 ```
 
 #### Read all attributes of a single MBean
@@ -222,7 +222,7 @@ URL-encode the full ObjectName and call its `/attributes` sub-resource:
 MBEAN="WebSphere%3Atype%3DJvmStats%2Cname%3DJvmStats"
 
 curl -k -u odmAdmin:<password> \
-  "https://localhost:9443/IBMJMXConnectorREST/mbeans/${MBEAN}/attributes"
+  "https://<ROUTE>/IBMJMXConnectorREST/mbeans/${MBEAN}/attributes"
 ```
 
 > **Tip:** Add `-v` to any `curl` call to see the full TLS handshake and HTTP exchange — useful for diagnosing authentication or certificate errors.
@@ -253,7 +253,7 @@ curl -k -u odmAdmin:odmAdmin \
   -X POST \
   -H "Content-Type: application/json" \
   -d '{"params":[{"value":"java","type":"java.lang.String"}],"signature":["java.lang.String"]}' \
-  "https://$ROUTE/IBMJMXConnectorREST/mbeans/${MBEAN}/operations/triggerDump"
+  "https://<ROUTE>/IBMJMXConnectorREST/mbeans/${MBEAN}/operations/triggerDump"
 ```
 
 ##### Heap dump
@@ -266,7 +266,7 @@ curl -k -u odmAdmin:odmAdmin \
   -X POST \
   -H "Content-Type: application/json" \
   -d '{"params":[{"value":"heap","type":"java.lang.String"}],"signature":["java.lang.String"]}' \
-  "https://$ROUTE/IBMJMXConnectorREST/mbeans/${MBEAN}/operations/triggerDump"
+  "https://<ROUTE>/IBMJMXConnectorREST/mbeans/${MBEAN}/operations/triggerDump"
 ```
 
 Both operations return `{"value":null,"type":null}` — `triggerDump` is `void`. The dump **has been triggered**. Retrieve the file path from the pod log:
@@ -295,7 +295,7 @@ ENCODED_PATH=$(python3 -c "import urllib.parse, sys; print(urllib.parse.quote(sy
 # 3. Download
 curl -k -u odmAdmin:odmAdmin \
   -o dump.txt \
-  "https://$ROUTE/IBMJMXConnectorREST/file/${ENCODED_PATH}"
+  "https://<ROUTE>/IBMJMXConnectorREST/file/${ENCODED_PATH}"
 ```
 
 > **Note:** The dump file is written inside the container. If the pod is ephemeral (no persistent volume), retrieve the file immediately after the dump before the pod restarts.
