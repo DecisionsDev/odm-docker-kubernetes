@@ -5,7 +5,8 @@
 - [Introduction](#introduction)
   - [What the `restConnector` feature does](#what-the-restconnector-feature-does)
   - [Why it matters for ODM monitoring](#why-it-matters-for-odm-monitoring)
-- [How to expose ODM metrics in OCP](#how-to-expose-odm-metrics-in-ocp)
+- [Prerequisites](#prerequisites)
+- [How to expose ODM restConnector in OCP](#how-to-expose-odm-restconnector-in-ocp)
   - [Create a secret to use the Entitled Registry](#create-a-secret-to-use-the-entitled-registry)
   - [Create a secret to configure rest-connector](#create-a-secret-to-configure-rest-connector)
 - [Install your ODM Helm release](#install-your-odm-helm-release)
@@ -21,11 +22,17 @@
       - [Thread dump (javacore)](#thread-dump-javacore)
       - [Heap dump](#heap-dump)
       - [Retrieve the dump file](#retrieve-the-dump-file)
-- [Further reading](#further-reading)
 
 ## Introduction
 
-The `restConnector-2.0` feature is an Open Liberty feature that exposes a **JMX-over-REST** endpoint on your Liberty server. It enables remote monitoring and management of Liberty runtime components — including IBM Operational Decision Manager (ODM) — through standard HTTP/HTTPS calls, without requiring a native JMX connection or an open RMI port.
+The [Open Liberty – restConnector-2.0](https://openliberty.io/docs/latest/reference/feature/restConnector-2.0.html) feature is an Open Liberty feature that exposes a **JMX-over-REST** endpoint on your Liberty server. It enables remote monitoring and management of Liberty runtime components — including IBM Operational Decision Manager (ODM) — through standard HTTP/HTTPS calls, without requiring a native JMX connection or an open RMI port.
+
+## Prerequisites
+
+- [Helm 3.1](https://helm.sh/docs/intro/install/)
+- [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl)
+- Access to an Operational Decision Manager product
+- Access to an Openshift cluster
 
 ### What the `restConnector` feature does
 
@@ -44,8 +51,7 @@ ODM on Kubernetes publishes MBeans for key runtime metrics such as rule executio
 - Integrate with monitoring agents (Prometheus JMX exporter, Instana, Dynatrace) that speak HTTP
 - Query or invoke MBean operations from scripts and CI pipelines using plain `curl` or any HTTP client
 
-
-## How to expose ODM metrics in OCP
+## How to expose ODM restConnector in OCP
 
 ### Create a secret to use the Entitled Registry
 
@@ -293,9 +299,3 @@ curl -k -u odmAdmin:odmAdmin \
 ```
 
 > **Note:** The dump file is written inside the container. If the pod is ephemeral (no persistent volume), retrieve the file immediately after the dump before the pod restarts.
-
-### Further reading
-
-- [Open Liberty – restConnector-2.0 feature documentation](https://openliberty.io/docs/latest/reference/feature/restConnector-2.0.html)
-- [JMX REST connector API reference](https://openliberty.io/docs/latest/reference/rest-api/rest-api-docs.html)
-- [ODM on Kubernetes – monitoring overview](../README.md)
