@@ -119,6 +119,8 @@ You can now install the product. We will use the PostgreSQL internal database an
 
 See the [Preparing to install](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-preparing-install-operational-decision-manager) documentation for more information.
 
+Set <password> in [rest-connector-values.yaml](rest-connector-values.yaml) and run:
+
 ```shell
 helm install my-odm-release ibm-helm/ibm-odm-prod -f rest-connector-values.yaml
 ```
@@ -249,7 +251,7 @@ Useful for diagnosing hangs and high-CPU issues.
 
 ```bash
 export MBEAN="openj9.lang.management%3Atype%3DOpenJ9Diagnostics"
-curl -k -u odmAdmin:odmAdmin \
+curl -k -u odmAdmin:<password> \
   -X POST \
   -H "Content-Type: application/json" \
   -d '{"params":[{"value":"java","type":"java.lang.String"}],"signature":["java.lang.String"]}' \
@@ -262,7 +264,7 @@ Useful for diagnosing memory leaks and `OutOfMemoryError` conditions.
 
 ```bash
 export MBEAN="openj9.lang.management%3Atype%3DOpenJ9Diagnostics"
-curl -k -u odmAdmin:odmAdmin \
+curl -k -u odmAdmin:<password> \
   -X POST \
   -H "Content-Type: application/json" \
   -d '{"params":[{"value":"heap","type":"java.lang.String"}],"signature":["java.lang.String"]}' \
@@ -293,7 +295,7 @@ REMOTE_PATH=$(kubectl logs <pod-name> | grep "JVMDUMP010I Java dump written" | t
 ENCODED_PATH=$(python3 -c "import urllib.parse, sys; print(urllib.parse.quote(sys.argv[1]))" "$REMOTE_PATH")
 
 # 3. Download
-curl -k -u odmAdmin:odmAdmin \
+curl -k -u odmAdmin:<password> \
   -o dump.txt \
   "https://<ROUTE>/IBMJMXConnectorREST/file/${ENCODED_PATH}"
 ```

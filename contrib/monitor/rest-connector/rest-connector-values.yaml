@@ -13,5 +13,5 @@ internalDatabase:
 license: true
 service:
   enableRoute: true
-usersPassword:
+usersPassword: <password>
 
