@@ -1,0 +1,5 @@
+<server>
+   <administrator-role>
+      <user>odmAdmin</user>
+   </administrator-role>
+</server>
