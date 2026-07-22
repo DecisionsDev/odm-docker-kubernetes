@@ -22,6 +22,10 @@
       - [Thread dump (javacore)](#thread-dump-javacore)
       - [Heap dump](#heap-dump)
       - [Retrieve the dump file](#retrieve-the-dump-file)
+    - [Read a JVM metric — FreeMemory from JvmStats](#read-a-jvm-metric--freememory-from-jvmstats)
+      - [Read all JvmStats attributes](#read-all-jvmstats-attributes)
+      - [Read only the FreeMemory attribute](#read-only-the-freememory-attribute)
+      - [Convert to megabytes with jq](#convert-to-megabytes-with-jq)
 
 ## Introduction
 
@@ -301,3 +305,99 @@ curl -k -u odmAdmin:<password> \
 ```
 
 > **Note:** The dump file is written inside the container. If the pod is ephemeral (no persistent volume), retrieve the file immediately after the dump before the pod restarts.
+
+#### Read a JVM metric — FreeMemory from JvmStats
+
+The `WebSphere:type=JvmStats` MBean exposes live JVM memory metrics. Reading its `FreeMemory` attribute gives the current amount of free heap memory in bytes — useful for alerting and health checks without a full heap dump.
+
+##### Read all JvmStats attributes
+
+```bash
+MBEAN="WebSphere%3Atype%3DJvmStats"
+
+curl -k -u odmAdmin:<password> \
+  "https://<ROUTE>/IBMJMXConnectorREST/mbeans/${MBEAN}/attributes" | jq
+```
+
+Example response :
+
+```json
+[
+  {
+    "name": "Heap",
+    "value": {
+      "value": "288292864",
+      "type": "java.lang.Long"
+    }
+  },
+  {
+    "name": "FreeMemory",
+    "value": {
+      "value": "139614920",
+      "type": "java.lang.Long"
+    }
+  },
+  {
+    "name": "ProcessCPU",
+    "value": {
+      "value": "0.9142000000000001",
+      "type": "java.lang.Double"
+    }
+  },
+  {
+    "name": "UsedMemory",
+    "value": {
+      "value": "148677944",
+      "type": "java.lang.Long"
+    }
+  },
+  {
+    "name": "GcTime",
+    "value": {
+      "value": "2406",
+      "type": "java.lang.Long"
+    }
+  },
+  {
+    "name": "UpTime",
+    "value": {
+      "value": "17674142",
+      "type": "java.lang.Long"
+    }
+  },
+  {
+    "name": "GcCount",
+    "value": {
+      "value": "135",
+      "type": "java.lang.Long"
+    }
+  }
+]
+```
+
+##### Read only the FreeMemory attribute
+
+```bash
+MBEAN="WebSphere%3Atype%3DJvmStats"
+
+curl -k -u odmAdmin:<password> \
+  "https://<ROUTE>/IBMJMXConnectorREST/mbeans/${MBEAN}/attributes/FreeMemory" | jq
+```
+
+Response:
+
+```json
+{
+  "value": "154993552",
+  "type": "java.lang.Long"
+}
+```
+
+##### Convert to megabytes with jq
+
+```bash
+curl -k -u odmAdmin:<password> \
+  "https://<ROUTE>/IBMJMXConnectorREST/mbeans/${MBEAN}/attributes/FreeMemory" \
+  | jq '.value | tonumber / 1024 / 1024 | floor | tostring + " MB"'
+# "488 MB"
+```
