@@ -1,5 +1,28 @@
 # REST Connector for ODM on Kubernetes
 
+## Table of Contents
+
+- [Introduction](#introduction)
+  - [What the `restConnector` feature does](#what-the-restconnector-feature-does)
+  - [Why it matters for ODM monitoring](#why-it-matters-for-odm-monitoring)
+- [How to expose ODM metrics in OCP](#how-to-expose-odm-metrics-in-ocp)
+  - [Create a secret to use the Entitled Registry](#create-a-secret-to-use-the-entitled-registry)
+  - [Create a secret to configure rest-connector](#create-a-secret-to-configure-rest-connector)
+- [Install your ODM Helm release](#install-your-odm-helm-release)
+  - [1. Add the public IBM Helm charts repository](#1-add-the-public-ibm-helm-charts-repository)
+  - [2. Check that you can access the ODM chart](#2-check-that-you-can-access-the-odm-chart)
+  - [3. Run the `helm install` command](#3-run-the-helm-install-command)
+  - [4. Check the /IBMJMXConnectorREST endpoints](#4-check-the-ibmjmxconnectorrest-endpoints)
+    - [List all available MBeans](#list-all-available-mbeans)
+    - [Filter by domain or type](#filter-by-domain-or-type)
+    - [Read all attributes of a single MBean](#read-all-attributes-of-a-single-mbean)
+  - [5. Use-Cases](#5-use-cases)
+    - [Generate a JVM dump file](#generate-a-jvm-dump-file)
+      - [Thread dump (javacore)](#thread-dump-javacore)
+      - [Heap dump](#heap-dump)
+      - [Retrieve the dump file](#retrieve-the-dump-file)
+- [Further reading](#further-reading)
+
 ## Introduction
 
 The `restConnector-2.0` feature is an Open Liberty feature that exposes a **JMX-over-REST** endpoint on your Liberty server. It enables remote monitoring and management of Liberty runtime components — including IBM Operational Decision Manager (ODM) — through standard HTTP/HTTPS calls, without requiring a native JMX connection or an open RMI port.
