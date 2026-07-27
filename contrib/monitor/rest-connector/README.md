@@ -99,6 +99,10 @@ Create a secret with the monitor.xml file :
 kubectl create secret generic rest-connector-secret --from-file=monitor.xml
 ```
 
+> [!NOTE]
+> JMX restConnector liberty feature is only supporting basic authentication
+> oauth is not supported.
+
 ## Install your ODM Helm release
 
 ### 1. Add the public IBM Helm charts repository
@@ -287,6 +291,12 @@ kubectl logs <pod-name> | grep "JVMDUMP010I Java dump written"
 kubectl logs <pod-name> | grep "JVMDUMP010I Heap dump written"
 # JVMDUMP010I Heap dump written to /opt/ibm/wlp/output/defaultServer/heapdump.20260722.121515.1.0003.phd
 ```
+
+> **Note:**
+> If you don't want to search for dump file name generated in the log file, you can set it using JVM options
+> Example : -Xdump:heap:file=/tmp/heapdump.phd for the Heap dump
+> -Xdump:java:file for the Java dump / thread dump (.txt)
+> and -Xdump:system:file for the sytem/core dump
 
 ##### Retrieve the dump file
 
