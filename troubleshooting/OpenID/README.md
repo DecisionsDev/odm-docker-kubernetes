@@ -343,47 +343,28 @@ This needs to be done for each ODM component as the JVM parameters are individua
 
 ## #6 Rule Designer
 
-When trying to request and validate an access token in order to synchronize the Rule Designer with Decision Center or to deploy a rule app on the Decision Server Console, it happens you face several issue that are complex to understand.
-Here is the way to add debug information to understand what happen.
-First, you have to understand the openId connect client used by ODM containers have 2 sections you will retrieve in the various templates delivered in the openIdWebSecurity.xml files:
+Rule Designer may fail to request an access token to synchronize with Decision Center or to deploy a rule app on the Decision Server for various reasons.
 
-```
-<server description="ODM server">
-  
-      <openidConnectClient authFilterRef="browserAuthFilter" id="odm" scope="openid"
-      clientId="CLIENT_ID" clientSecret="CLIENT_SECRET" inboundPropagation="supported"
-      .../>
+One possible cause is that the OIDC provider is behind a proxy, in which case adding `-Djava.net.useSystemProxies` in `eclipse.ini` to let Rule Designer use the proxy settings configured in the OS could solve the problem.
 
-      <openidConnectClient authFilterRef="apiAuthFilter" id="odmapi" scope="openid"
-      inboundPropagation="required"
-       .../>
-</server>
-```
+Should this not help, you can configure verbose logging in Rule Designer to help troubleshoot by 
+1. creating a **debug.txt** file containing:
 
-The first **openidConnectClient** section with the **odm** id is dedicated to the ODM consoles and it will be managed by the authentication flow in order to request the id_token (it can be the access_token using the **tokenOrderToFetchCallerClaims** parameter). Here an identity is essential as we are dealing with a user that is establishing SSO.
+    ```
+    ilog.rules.studio.shared/debug/oidc/code_flow_traces=true
+    ilog.rules.studio.shared/debug/oidc/tokencache_traces=true
+    ```
 
-The second **openidConnectClient** section with the **odmapi** id is dedicated to the validation of an access_token when you are dealing with ODM rest-api and the Decision Center remote session. Here, the access_token is not requested by the ODM container as it's already part of the request through the **Bearer Authorization** header.
-As the Rule Designer is using the Decision Center remote session to manage the synchronization and the Decision Server rest-api to deploy a ruleapp, it's this section that will be used to connect.
+1. adding the lines below in the Rule Designer **eclipse.ini** file before the `-vmargs` line:
 
-This separation between the 2 sections is managed by the [authentication filters](https://github.com/DecisionsDev/odm-ondocker/blob/master/common/config/authOidc/authFilters.xml)
+    ```
+    -debug
+    <PATH>/debug.txt
+    ```
 
-In order to check that an access_token is well obtained when requested to the openId server and to check it contains the relevant claims by decoding it, you can debug it by creating a **debug.txt** file containing:
+1. restarting Rule Designer to let the changes be taken into account
 
-```
-ilog.rules.studio.shared/debug/oidc/code_flow_traces=true
-ilog.rules.studio.shared/debug/oidc/tokencache_traces=true
-```
-
-Add it in the Rule Designer **eclipse.ini** file:
-
-```
--debug
-<PATH>/debug.txt
-```
-
->Note: Don't forget to restart the Rule Designer before to test a new connection to the Decision Center or the Decision Server RES Console
-
-Now, if everything is fine, you get some traces in the Rule Designer **Error log** panel that look like:
+With this verbose logging configuration, you should get traces in the Rule Designer **Error log** panel that look like:
 
 ```
 TRACE: Loading TLS certificate for callback server from embedded JKS file
@@ -398,7 +379,7 @@ TRACE: TokenCache: put(AccessToken(provider='<YOUR_PROVIDER_NAME>', expiration=2
 ```
 
 You can see the first step is the TLS connection with the openId Server. 
-If it fails, check the truststore.jks file is well containing the full certificate chain to this openId server (leaf, intermediate until root certificate, certificate authority)
+If it fails, check the **truststore.jks** file is well containing the full certificate chain to this openId server (leaf, intermediate until root certificate, certificate authority)
 
 The second step is the access_token request using the OpenId provider json file that you provided. If **clientSecret** information is provided, then there is just one **/token** request. If **clientSecret** is not provided, the PKCE protocol is used and there is first **/authorize** request with a **code_challenge**, before the **/token** request.
 
@@ -414,4 +395,29 @@ If you need a specific scope to retrieve some claims, then you can change by add
 
 > Note: <YOUR_SCOPE> can contains several scope separated by a space:
 > 
-> -Dcom.ibm.rules.studio.oidc.synchro.scopes=openid my_first_specific_scope my_other_scope
+> `-Dcom.ibm.rules.studio.oidc.synchro.scopes=openid my_first_specific_scope my_other_scope`
+
+
+Additionally here is some background on how things work:
+- ODM containers have a file `/config/authOidc/openIdWebSecurity.xml` configuring Liberty OIDC client, that looks like:
+
+  ```
+  <server description="ODM server">
+    
+        <openidConnectClient authFilterRef="browserAuthFilter" id="odm" scope="openid"
+        clientId="CLIENT_ID" clientSecret="CLIENT_SECRET" inboundPropagation="supported"
+        .../>
+
+        <openidConnectClient authFilterRef="apiAuthFilter" id="odmapi" scope="openid"
+        inboundPropagation="required"
+        .../>
+  </server>
+  ```
+
+- In the file above, the first **openidConnectClient** section with the **odm** id is dedicated to the ODM consoles and it will be managed by the authentication flow in order to request the id_token (it can be the access_token using the **tokenOrderToFetchCallerClaims** parameter). Here an identity is essential as we are dealing with a user that is establishing SSO.
+
+- The second **openidConnectClient** section with the **odmapi** id is dedicated to the validation of an access_token when you are dealing with ODM rest-api and the Decision Center remote session. Here, the access_token is not requested by the ODM container as it's already part of the request through the **Bearer Authorization** header.
+As the Rule Designer is using the Decision Center remote session to manage the synchronization and the Decision Server rest-api to deploy a ruleapp, it's this section that will be used to connect.
+
+- Liberty chooses which **openidConnectClient** is relevant for each request received based on rules defined in the file `/config/authOidc/authFilters.xml`. Click [authFilters.xml](https://github.com/DecisionsDev/odm-ondocker/blob/master/common/config/authOidc/authFilters.xml) to see the content of this file.
+
