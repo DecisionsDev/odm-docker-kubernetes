@@ -5,7 +5,7 @@ When applications are made observable, operations teams can more easily identify
 In the [Monitor ODM liberty metrics with mpMetrics and Prometheus](../mpmetrics/README.md) tutorial, we detailed how to enable Liberty metrics that depict the internal state of various Liberty components. In this document, we will discuss how to utilize MicroProfile Telemetry, which assists in collecting data on the paths that application requests take through services. More details on the usage of Microprofile Telemetry can be found in the [Liberty documentation](https://openliberty.io/docs/latest/microprofile-telemetry.html).
 
 The goal of this tutorial is to demonstrate how to configure ODM on Kubernetes to enable communication with an OpenTelemetry collector that can process generated traces. This is not an in-depth OpenTelemetry tutorial. Therefore, it is advisable to familiarize yourself with the [Open Telemetry liberty configuration](https://openliberty.io/docs/latest/microprofile-telemetry.html#ol-config) before proceeding with this tutorial.
-We will explain how to configure the OpenTelemetry collector to receive traces from the ODM instance. However, we will not manage the traces visulaization using the OpenTelemetry UI like Tempo or Graphana.
+We will explain how to configure the OpenTelemetry collector to receive traces from the ODM instance. However, we will not manage the traces visualization using the OpenTelemetry UI like Tempo or Graphana.
 
 ![Architecture](./images/otel_architecture.png) 
 
