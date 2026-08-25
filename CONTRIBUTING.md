@@ -224,7 +224,7 @@ $ git push
 ## 6. Issue a Pull Request
 
 In order to have your commits merged into the main repository, you need to create a pull request.  The instructions for
-this can be found in the GitHub Help Article [Creating a Pull Request][].  Essentially you do the following:
+this can be found in the GitHub Help Article [Creating a Pull Request](https://docs.github.com/en/pull-requests/how-tos/create-pull-requests/creating-a-pull-request). Essentially you do the following:
 
 1. Go to the site for your repository.
 2. Click the Pull Request button.
@@ -241,11 +241,16 @@ Your request will be reviewed.  It may be merged directly, or you may receive fe
 request.
 
 
-[help documentation]: http://help.github.com/send-pull-requests
-[bug database]: https://github.com/DecisionsDev/odm-docker-kubernetes/issues
-[ml-users]: mailto:odmdev_open_source_user@wwpdl.vnet.ibm.com
-[Creating a Pull Request]: https://help.github.com/articles/creating-a-pull-request
-[Fork a Repo]: https://help.github.com/articles/fork-a-repo
-[coding guidelines]: https://github.com/ibm-js/sdk/blob/master/GUIDELINES.md
-[interactive rebase]: http://git-scm.com/book/en/Git-Tools-Rewriting-History#Changing-Multiple-Commit-Messages
-[rebasing]: https://git-scm.com/book/en/v2/Git-Branching-Rebasing
+## Useful links
+
+- GitHub Documentation
+  - [Pull Requests](https://docs.github.com/en/pull-requests/reference/pull-requests)
+  - [Creating a Pull Request](https://docs.github.com/en/pull-requests/how-tos/create-pull-requests/creating-a-pull-request)
+- Other GitHub Resources
+  - [Fork a Repo](https://help.github.com/articles/fork-a-repo)
+  - [coding guidelines](https://github.com/ibm-js/sdk/blob/master/GUIDELINES.md)
+- Git Documentation
+  - [interactive rebase](http://git-scm.com/book/en/Git-Tools-Rewriting-History#Changing-Multiple-Commit-Messages)
+  - [rebasing](https://git-scm.com/book/en/v2/Git-Branching-Rebasing)
+- [Open issues](https://github.com/DecisionsDev/odm-docker-kubernetes/issues)
+- [ml-users](mailto:odmdev_open_source_user@wwpdl.vnet.ibm.com)
