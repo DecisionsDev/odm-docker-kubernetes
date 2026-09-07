@@ -1,0 +1,12 @@
+# Binary / packaged Helm charts
+repo/stable/*.tgz
+
+# Generated output from template scripts
+authentication/*/output/
+
+# Images
+images/
+**/images/
+
+# Git internals
+.git/
