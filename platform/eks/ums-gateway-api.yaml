@@ -8,7 +8,7 @@ spec:
   controllerName: gateway.k8s.aws/alb
 ---
 # LoadBalancerConfiguration - AWS-specific configuration for the UMS ALB
-apiVersion: gateway.k8s.aws/v1beta1
+apiVersion: gateway.k8s.aws/v1
 kind: LoadBalancerConfiguration
 metadata:
   name: ums-alb-config
@@ -19,8 +19,8 @@ spec:
       #Provide the ARN of the certificate created in ACM/IAM
       defaultCertificate: arn:aws:iam::<AWS-AccountId>:server-certificate/mycompany
 ---
-# TargetGroupConfiguration for IBM Usage Metering Service
-apiVersion: gateway.k8s.aws/v1beta1
+# TargetGroupConfiguration for IBM Usage Metering Service (ibm-usage-metering-fetch)
+apiVersion: gateway.k8s.aws/v1
 kind: TargetGroupConfiguration
 metadata:
   name: ibm-usage-metering-tgc
@@ -36,6 +36,28 @@ spec:
     healthCheckConfig:
       healthCheckProtocol: HTTPS
       healthCheckPath: /ready
+      healthCheckInterval: 30
+      healthCheckTimeout: 5
+      healthyThresholdCount: 2
+      unhealthyThresholdCount: 2
+---
+# TargetGroupConfiguration for IBM Licensing Service (ls-port)
+apiVersion: gateway.k8s.aws/v1
+kind: TargetGroupConfiguration
+metadata:
+  name: ibm-licensing-tgc
+spec:
+  targetReference:
+    kind: Service
+    name: ibm-usage-metering-instance
+  defaultConfiguration:
+    # Using IP target type to support ClusterIP service
+    targetType: ip
+    protocol: HTTPS
+    protocolVersion: HTTP1
+    healthCheckConfig:
+      healthCheckProtocol: HTTPS
+      healthCheckPath: /
       healthCheckInterval: 30
       healthCheckTimeout: 5
       healthyThresholdCount: 2
@@ -61,7 +83,7 @@ spec:
       namespaces:
         from: Same
 ---
-# HTTPRoute for IBM Usage Metering Service
+# HTTPRoute for IBM Usage Metering Service and IBM Licensing Service
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
@@ -71,12 +93,31 @@ spec:
   - name: ums-gateway
     sectionName: https
   rules:
-  # Match all paths and pass through to backend
+  # IBM Licensing Service
   - matches:
     - path:
         type: PathPrefix
-        value: /
+        value: /ibm-licensing
+    filters:
+    - type: URLRewrite
+      urlRewrite:
+        path:
+          type: ReplacePrefixMatch
+          replacePrefixMatch: /
+    backendRefs:
+    - name: ibm-usage-metering-instance
+      port: 8082
+  # IBM Usage Metering Service
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /ibm-usage-metering-instance
+    filters:
+    - type: URLRewrite
+      urlRewrite:
+        path:
+          type: ReplacePrefixMatch
+          replacePrefixMatch: /
     backendRefs:
     - name: ibm-usage-metering-instance
       port: 8080
-
