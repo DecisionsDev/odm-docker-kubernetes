@@ -76,7 +76,7 @@ Apply the changes to the Gateway:
 kubectl apply -f odm-gateway-api.yaml
 ```
 
-You should see the Gatewayclass, AWS Load Balancer configuration, Target Group configurations for each ODM components, Gateway and Httproute being created:
+You should see the Gatewayclass, AWS Load Balancer configuration, Target Group configurations for each ODM component, Gateway and Httproute being created:
 ```bash
 gatewayclass.gateway.networking.k8s.io/odm-alb-gateway-class created
 loadbalancerconfiguration.gateway.k8s.aws/odm-alb-config created
@@ -129,15 +129,38 @@ IBM Usage Metering Service (UMS) gathers adoption metrics and creates reports. I
 
 The IBM License Service (ILS) discovers the software that is installed in your infrastructure and generates reports containing contractual details. These metrics directly affect licensing obligations and are required for calculating license usage in compliance with IBM licensing requirements.
 
-With UMS 1.0.8 onwards, an ILS side-car can be activated by setting `--set ibmUsageMetering.executionMode=PROCESSOR_CAPACITY_ENABLED` to UMS instance. This allows UMS to capture two metrics: contractual metrics for compliance purposes, and adoption metrics for various scenarios related to usage analysis. 
+An ILS side-car can be activated by setting `--set ibmUsageMetering.executionMode=PROCESSOR_CAPACITY_ENABLED` to UMS instance. This allows UMS to capture two metrics: contractual metrics for compliance purposes, and adoption metrics for various scenarios related to usage analysis. 
 
-Since ODM 9.6.0, it is required to install UMS in the same namespace as ODM. ODM will systematically report the usage metrics to the metering service through a CronJob. If the service is not installed, the job fails when it runs. 
+It is required to install UMS in the same namespace as ODM. ODM will systematically report the usage metrics to the metering service through a CronJob. If the service is not installed, the job fails when it runs. 
 
 To install and configure UMS, follow the information at [Installing the usage metering service](https://www.ibm.com/docs/en/odm/9.6.0?topic=metrics-installing-metering) **TODO some KC articles need to be updated.** 
 
 In this tutorial, we assume that ODM, UMS, and ILS are installed in the same namespace `default`. As such, it is no longer required to install ILS separately. 
 
-#### 3.1.1 Create the Gateway for the IBM Usage Metering instance
+#### 3.1.1. Data transmission options
+
+Choose one of the following modes to transmit the data to IBM Software Central based on your environment:
+
+1. **Online mode** (Recommended): Automatic data transmission to IBM Software Central
+2. **Offline mode** (Air-gapped): Manual data download and upload process
+
+##### 3.1.1.1. Online mode (Recommended)
+
+In online mode, the Usage Metering Service automatically sends *both adoption and contractual* data to IBM Software Central on a scheduled basis every 24 hours. This is the recommended configuration for environments with internet connectivity.
+
+*Configuration requirements*:
+- IBM Entitlement Key (required for authentication)
+- Network connectivity to IBM Software Central (`swc.saas.ibm.com`)
+
+For complete step-by-step instructions on configuring online mode, see [Automatic data transmission to IBM Software Central](https://www.ibm.com/docs/en/odm/9.6.0?topic=metrics-automatic-data-transmission).
+
+##### 3.1.1.2. Offline mode (Air-gapped environments)
+
+For offline/air-gapped environments where the Usage Metering Service cannot connect directly to IBM Software Central, you need to manually download and upload usage data. 
+
+###### 3.1.1.2.1. Create the Gateway for the IBM Usage Metering instance
+
+You must expose the service to access and download the metering usage reports.
 
 After UMS is installed, run this command to have a look at the services' ports:
 ```bash
@@ -186,7 +209,7 @@ spec:
     targetPort: 8082
 ```
 
-The [ums-gateway-api.yaml](./ums-gateway-api.yaml) file is provided to create the routes for `ibm-usage-metering-fetch` and `ls-port`.
+The [ums-gateway-api.yaml](./ums-gateway-api.yaml) file is provided to help you create the routes for `ibm-usage-metering-fetch` and `ls-port`.
 Edit the [ums-gateway-api.yaml](./ums-gateway-api.yaml) file and replace the `<AWS-AccountId>` placeholder with your account ID. This can be found at the `defaultCertificate` parameter of `LoadBalancerConfiguration`. Save the file.
 
 > **Note**
@@ -198,7 +221,7 @@ Run the command to create UMS's gateway:
 kubectl apply -f ums-gateway-api.yaml
 ```
 
-You should see the Gatewayclass, AWS Load Balancer configuration, Target Group configurations, Gateway and Httproute being created:
+You should see the Gatewayclass, AWS Load Balancer configuration, Target Group configurations, Gateway and HTTPRoute being created:
 
 ```bash
 gatewayclass.gateway.networking.k8s.io/ums-alb-gateway-class created
@@ -223,55 +246,9 @@ odm-gateway   odm-alb-gateway-class   k8s-default-odmgatew-abcdefgh-123456789.<a
 ums-gateway   ums-alb-gateway-class   k8s-default-umsgatew-ijklmnop-987654321.<aws-region>.elb.amazonaws.com   True         1m
 ```
 
-#### 3.1.2. Troubleshooting
+###### 3.1.1.2.2. Retrieve metering usage reports
 
-If the ODM CronJob fails even after UMS is installed, check the pod logs:
-```bash
-kubectl logs -n <namespace> -l job-name=<cronjob-name>
-```
-
-#### 3.1.3. Access IBM License Service page
-
-You can retrieve the IBM License Service's URL with this command:
-
-```bash
-export UMS_TOKEN=$(kubectl get secret ibm-usage-metering-upload-token -o jsonpath='{.data.token}' | base64 -d)
-export UMS_URL=$(kubectl get gateway ums-gateway -o jsonpath='{.status.addresses[*].value}')
-echo https://${UMS_URL}/ibm-licensing/status?token=${UMS_TOKEN}
-```
-
-To directly view the licensing usage status, access the URL `https://${UMS_URL}/ibm-licensing/status?token=${UMS_TOKEN}`. 
-
-Otherwise, you can also retrieve the licensing snapshot by running:
-
-```bash
-curl -k "https://${UMS_URL}/ibm-licensing/snapshot?token=${UMS_TOKEN}" --output ils_snapshot_report.zip
-```
-
-#### 3.1.4. Data transmission options
-
-Choose one of the following modes to transmit the data to IBM Software Central based on your environment:
-
-1. **Online mode** (Recommended): Automatic data transmission to IBM Software Central
-2. **Offline mode** (Air-gapped): Manual data download and upload process
-
-##### 3.1.4.1. Online mode (Recommended)
-
-In online mode, the Usage Metering Service automatically sends *both adoption and contractual* data to IBM Software Central on a scheduled basis every 24 hours. This is the recommended configuration for environments with internet connectivity.
-
-*Configuration requirements*:
-- IBM Entitlement Key (required for authentication)
-- Network connectivity to IBM Software Central (`swc.saas.ibm.com`)
-
-For complete step-by-step instructions on configuring online mode, see [Automatic data transmission to IBM Software Central](https://www.ibm.com/docs/en/odm/9.6.0?topic=metrics-automatic-data-transmission).
-
-##### 3.1.4.2. Offline mode (Air-gapped environments)
-
-For offline/air-gapped environments where the Usage Metering Service cannot connect directly to IBM Software Central, you need to manually download and upload usage data. 
-
-###### 3.1.4.2.1. Retrieve metering usage reports
-
-To get the UMS and ILS reports, run the command below:
+To get the UMS report archive file, run the command below:
 
 ```bash
 export UMS_URL=$(kubectl get gateway ums-gateway -o jsonpath='{.status.addresses[*].value}')
@@ -287,7 +264,7 @@ The `swc_payload.tar.gz` contains the following files:
 
 The `usage.json` file contains both adoption (`"metricType": "adoption"`) and contractual (`"metricType": "contract"`) metrics.
 
-###### 3.1.4.2.2. Sending data to IBM Software Central
+###### 3.1.1.2.3. Upload data to IBM Software Central
 
 Transfer the downloaded `swc_payload.tar.gz` file to a system with internet connectivity.
 
@@ -302,7 +279,35 @@ curl -X POST "https://swc.saas.ibm.com/metering/api/v2/metrics" \
 
 For complete instructions, see [Uploading usage metrics to IBM Software Central](https://www.ibm.com/docs/en/odm/9.6.0?topic=metrics-uploading-usage-software-central).
 
-#### 3.1.5. Additional resources
+
+#### 3.1.2. Access IBM License Service page
+
+If you want to view the licensing usage status, you can retrieve its URL with this command:
+
+```bash
+export UMS_TOKEN=$(kubectl get secret ibm-usage-metering-upload-token -o jsonpath='{.data.token}' | base64 -d)
+export UMS_URL=$(kubectl get gateway ums-gateway -o jsonpath='{.status.addresses[*].value}')
+echo https://${UMS_URL}/ibm-licensing/status?token=${UMS_TOKEN}
+```
+> [!NOTE]
+> The route must be created as described in [3.1.1.2.1. Create the Gateway for the IBM Usage Metering instance](#31121-create-the-gateway-for-the-ibm-usage-metering-instance).
+
+Access the page via this URL: `https://${UMS_URL}/ibm-licensing/status?token=${UMS_TOKEN}`. 
+
+Otherwise, you can also retrieve the licensing snapshot by running:
+
+```bash
+curl -k "https://${UMS_URL}/ibm-licensing/snapshot?token=${UMS_TOKEN}" --output ils_snapshot_report.zip
+```
+
+#### 3.1.3. Troubleshooting
+
+If the ODM CronJob fails even after UMS is installed, check the pod logs:
+```bash
+kubectl logs -n <namespace> -l job-name=<cronjob-name>
+```
+
+#### 3.1.4. Additional resources
 
 For general information about collecting and sending usage metrics, see [Collecting and sending usage metrics](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-collecting-sending-usage-metrics).
 
