@@ -10,13 +10,12 @@ The ODM on Kubernetes Docker images are available in the [IBM Cloud Container Re
 > [!IMPORTANT]
 > **Deployment Options:**
 >
-> There are three ways to expose ODM services on EKS:
+> There are two ways to expose ODM services on EKS:
 >
 > 1. **AWS Application Load Balancer (ALB) Ingress (Default - Documented in this README):** Uses the [AWS Load Balancer Controller](https://github.com/kubernetes-sigs/aws-load-balancer-controller#aws-load-balancer-controller) with Kubernetes [Ingress resources](https://kubernetes.io/docs/concepts/services-networking/ingress/). This is the standard approach documented in the steps below.
 >
 > 2. **AWS Application Load Balancer (ALB) Gateway API (Recommended for Advanced Features):** Uses the AWS Load Balancer Controller with [Gateway resources](https://gateway-api.sigs.k8s.io/). This approach provides more advanced routing capabilities and better session affinity management. It is the future direction for Kubernetes networking. See the [Deploying IBM Operational Decision Manager with AWS Load Balancer Controller supporting Gateway API on Amazon EKS](README-GATEWAY-API.md) guide.
->
-> 3. **NGINX Ingress Controller (Deprecated):** The [Deploying IBM Operational Decision Manager with NGINX Ingress Controller on Amazon EKS](README-NGINX.md) guide is deprecated and will be removed in the coming months. Please use AWS ALB Ingress or AWS ALB Gateway API instead.
+
 
 ## Included components
 The project uses the following components:
