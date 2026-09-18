@@ -45,7 +45,7 @@ Then, create an [AWS Account](https://aws.amazon.com/getting-started/).
 - [4. Manage a digital certificate (10 min)](#4-manage-adigital-certificate-10-min)
 - [5. Install an IBM Operational Decision Manager release (10 min)](#5-install-an-ibm-operational-decision-manager-release-10-min)
 - [6. Access the ODM services](#6-access-the-odm-services)
-- [7. Track ODM usage](#7-track-odm-usage)
+- [7. Track ODM Adoption and Contractual metrics](#7-track-odm-adoption-and-contractual-metrics)
 
 <!-- /TOC -->
 
@@ -214,7 +214,7 @@ helm repo update
 ```bash
 $ helm search repo ibm-odm-prod
 NAME                             	CHART VERSION	APP VERSION	DESCRIPTION
-ibm-helm/ibm-odm-prod           	26.0.0       	9.6.0.0   	IBM Operational Decision Manager
+ibm-helm/ibm-odm-prod           	27.0.0       	9.7.0.0   	IBM Operational Decision Manager
 ```
 
 ### 4. Manage a digital certificate (10 min)
@@ -261,7 +261,7 @@ Install a Kubernetes release with the default configuration and a name of `mycom
 To install ODM with the AWS RDS PostgreSQL database created in [step 2](#2-create-an-rds-database-10-min):
 
 - Get the [eks-rds-values.yaml](./eks-rds-values.yaml) file and replace the following keys:
-  - `<AWS-AccountId>` is your AWS Account Id
+  - `<AWS-AccountId>` is your AWS account ID
   - `<RDS_DB_ENDPOINT>` is your database server endpoint
   - `<RDS_DATABASE_NAME>` is the initial database name defined when creating the RDS database
 
@@ -283,7 +283,7 @@ helm install mycompany ibm-helm/ibm-odm-prod -f eks-rds-values.yaml
 > ```
 >
 > - If you prefer to install ODM to prototype (not for production purpose) with the ODM PostgreSQL internal database. Get the [eks-values.yaml](./eks-values.yaml) file and replace the following key:
->   - `<AWS-AccountId>` is your AWS Account Id
+>   - `<AWS-AccountId>` is your AWS account ID
 >
 >```bash
 >helm install mycompany ibm-helm/ibm-odm-prod -f eks-values.yaml
@@ -331,17 +331,25 @@ The ODM services are accessible from the following URLs:
 | Decision Server Runtime | https://${ROOTURL}/DecisionService | odmAdmin/odmAdmin |
 | Decision Runner | https://${ROOTURL}/DecisionRunner | odmAdmin/odmAdmin |
 
-### 7. Track ODM usage
+### 7. Track ODM Adoption and Contractual metrics
 
-#### 7.1. Install the IBM Usage Metering service
+#### 7.1. Install IBM Usage Metering Service & IBM License Service
 
-IBM Usage Metering Service gathers metrics to monitor compliance and create reports. It captures business value metrics for auditing purposes and to visualize metric usage in reporting tools, and sends the information to IBM Software Central. For more details, see [Collecting and sending usage metrics](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-collecting-sending-usage-metrics)
+IBM Usage Metering Service (UMS) gathers adoption metrics and creates reports. It captures business value metrics for auditing purposes and to visualize metric usage in reporting tools, and sends the information to IBM Software Central. For more details, see [Collecting and sending usage metrics](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-collecting-sending-usage-metrics).
 
-From ODM 9.6.0 onwards, it is required to install this metering service in the same namespace as ODM. ODM will systematically report usage metrics to the metering service through a CronJob. If the service is not installed, the job fails when it runs. For more information about the installation and configuration of UMS, see [Installing the usage metering service](https://www.ibm.com/docs/en/odm/9.6.0?topic=metrics-installing-metering).
+The IBM License Service (ILS) discovers the software that is installed in your infrastructure and generates reports containing contractual details. These metrics directly affect licensing obligations and are required for calculating license usage in compliance with IBM licensing requirements.
+
+An ILS side-car can be activated by setting `--set ibmUsageMetering.executionMode=PROCESSOR_CAPACITY_ENABLED` to UMS instance. This allows UMS to capture two metrics: contractual metrics for compliance purposes, and adoption metrics for various scenarios related to usage analysis. 
+
+It is required to install UMS in the same namespace as ODM. ODM will systematically report the usage metrics to the metering service through a CronJob. If the service is not installed, the job fails when it runs. 
+
+To install and configure UMS, follow the information at [Installing the usage metering service](https://www.ibm.com/docs/en/odm/9.6.0?topic=metrics-installing-metering).
+
+In this tutorial, we assume that ODM, UMS, and ILS are installed in the same namespace: `default`. The ILS side car will be enabled with *namespace scope* to monitor only `default` namespace.
 
 #### 7.1.1. Troubleshooting
 
-If the CronJob fails, check the pod logs:
+If the ODM CronJob fails, check the pod logs:
 ```bash
 kubectl logs -n <namespace> -l job-name=<cronjob-name>
 ```
@@ -355,7 +363,7 @@ After installing the IBM Usage Metering service, choose one of the following mod
 
 ##### 7.1.2.1. Online mode (Recommended)
 
-In online mode, the Usage Metering Service automatically sends usage data to IBM Software Central on a scheduled basis every 24 hours. This is the recommended configuration for environments with internet connectivity.
+In online mode, the Usage Metering Service automatically sends *both adoption and contractual* data to IBM Software Central on a scheduled basis every 24 hours. This is the recommended configuration for environments with internet connectivity.
 
 *Configuration requirements*:
 - IBM Entitlement Key (required for authentication)
@@ -365,37 +373,40 @@ For complete step-by-step instructions on configuring online mode, see [Automati
 
 ##### 7.1.2.2. Offline mode (Air-gapped environments)
 
-For offline/air-gapped environments where the Usage Metering Service cannot connect directly to IBM Software Central, you need to manually download and upload usage data.
+For offline/air-gapped environments where the Usage Metering Service cannot connect directly to IBM Software Central, you need to manually download and upload metrics data.
 
-###### 7.1.2.2.1. Expose the IBM Usage Metering service using an ingress 
+###### 7.1.2.2.1. Expose the IBM Usage Metering service and Licensing service using an ingress 
 
-Edit the [ums-alb-ingress.yaml](./ums-alb-ingress.yaml) file.
-  - Update `<AWS-AccountId>` with your AWS Account Id. The certificate is the one that was created in Step 4a.
+You must expose the service to access and download the metering usage reports.
+
+Open and edit the [ums-alb-ingress.yaml](./ums-alb-ingress.yaml) file. It defines two ingresses: `ibm-licensing-svc-ingress` (port 8082) and `usage-metering-svc-ingress` (port 8080), both routing to the IBM Usage Metering service.
+  - Replace `<AWS-AccountId>` with your AWS account ID in the `certificate-arn` annotation of both ingresses. Use the certificate ARN created in step `4a`.
   - Save the file.
 
-Run the command to create UMS's Ingress:
+Run the command to create the ingresses:
 
 ```bash
 kubectl apply -f ums-alb-ingress.yaml
 ```
 
-Run the following command to see the status of Ingress instance:
+Run the following command to see the status of Ingress instances:
 
 ```bash
 kubectl get ingress
 ```
 
-You should be able to see the address and other details about `usage-metering-svc-ingress` instance:
+You should be able to see the address and other details about `ibm-licensing-svc-ingress` and `usage-metering-svc-ingress` instances:
 
 ```bash
 NAME                         CLASS   HOSTS   ADDRESS                                                                PORTS   AGE
-mycompany-odm-ingress        alb      *      abcdefghijklmnopqrstuvqxyz.elb.<aws-region>.amazonaws.com              80      30m
-usage-metering-svc-ingress   alb      *      xxxxxxxyyyyyyzzzzzz.elb.<aws-region>.amazonaws.com                     80      1m
+ibm-licensing-svc-ingress    alb     *       k8s-default-ibmlicen-xxxxxxx-yyyyyyy.<aws-region>.elb.amazonaws.com    80      2m
+mycompany-odm-ingress        alb     *       k8s-default-mycompan-xxxxxxx-yyyyyyy.<aws-region>.elb.amazonaws.com    80      30m
+usage-metering-svc-ingress   alb     *       k8s-default-usagemet-xxxxxxx-yyyyyyy.<aws-region>.elb.amazonaws.com    80      2m
 ```
 
 ###### 7.1.2.2.2. Retrieve metering usage
 
-To get the Usage Metering report, run the command below:
+To get the UMS report archive file, run the command below:
 
 ```bash
 export UMS_TOKEN=$(kubectl get secret ibm-usage-metering-upload-token -n "${NAMESPACE}" -o jsonpath='{.data.token}' 2>/dev/null | base64 -d || echo "")
@@ -408,6 +419,9 @@ curl -k --output "swc_payload.tar.gz" \
 The `swc_payload.tar.gz` contains the following files:
 - manifest.json
 - usage.json
+
+The `usage.json` file contains both adoption (`"metricType": "adoption"`) and contractual (`"metricType": "contract"`) metrics.
+
 
 ###### 7.1.2.2.3. Sending data to IBM Software Central
 
@@ -424,121 +438,28 @@ curl -X POST "https://swc.saas.ibm.com/metering/api/v2/metrics" \
 
 For complete instructions, see [Uploading usage metrics to IBM Software Central](https://www.ibm.com/docs/en/odm/9.6.0?topic=metrics-uploading-usage-software-central).
 
-#### 7.1.3. Additional resources
+#### 7.1.3. Access IBM License Service page
 
-For general information about collecting and sending usage metrics, see [Collecting and sending usage metrics](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-collecting-sending-usage-metrics).
+> [!NOTE]
+> The Ingress must be created as described in [Expose the IBM Usage Metering service and Licensing service using an ingress](#71221-expose-the-ibm-usage-metering-service-and-licensing-service-using-an-ingress).
 
-
-#### 7.2. Install the IBM License Service
-
-Follow the **Installation** section of the [Installation License Service without Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.x_cd?topic=ilsfpcr-installing-license-service-without-operator-lifecycle-manager-olm) documentation, **except for the step 7** which must be replaced by the following:
-
-> 7. Update the License Service instance that was created during installation to accept the license. At the same time, the default gateway configuration must be deactivated. We will create an Ingress that is adapted for AWS Load Balancer controller.
-> - Create the `accept-license.yaml` file with the following content:
->
->    - if the IBM License Service will be running on **EC2 Nodes**:
->       ```bash
->       spec:
->         gatewayEnabled: false
->         license:
->           accept: true
->       ```
->    - if the IBM License Service will be running on **Fargate Nodes**:
->       ```bash
->       spec:
->         gatewayEnabled: false
->         license:
->           accept: true
->         resources:
->           requests:
->             memory: 300Mi
->       ```
-> 
-> - Patch the IBM Licensing instance
->   ```bash
->   kubectl patch IBMLicensing instance --type merge --patch-file accept-license.yaml
->   ```
-
-##### 7.2.1. Expose the IBM Licensing service using an ingress
-
-Edit the [ils-alb-ingress.yaml](./ils-alb-ingress.yaml) file.
-  - Update `<AWS-AccountId>` with your AWS Account Id. The certificate is the one that was created in Step 4a.
-  - Save the file.
-
-Run the following command to create the ingress:
+If you want to view the product licensing status, you can retrieve its URL with this command:
 
 ```bash
-kubectl apply -f ils-alb-ingress.yaml -n ibm-licensing
-```
-
-Wait a couple of minutes for the changes to be applied. 
-
-Run the following command to see the status of Ingress instance:
-
-```bash
-kubectl get ingress -n ibm-licensing
-```
-
-You should be able to see the address and other details about `ibm-licensing-svc-ingress`.
-```
-NAME                             CLASS   HOSTS   ADDRESS                                                                 PORTS   AGE
-ibm-licensing-svc-ingress        alb     *       k8s-ibmlicen-ibmlicen-xxxxxxxx-yyyyyyy.<aws-region>.elb.amazonaws.com   80      44m
-```
-You can find more information and use cases on [this page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.14.0?topic=configuring-kubernetes-ingress).
-
-> **Note**
-> If you choose to use the AWS Load Balancer with Gateway API, refer to [Deploying IBM Operational Decision Manager with AWS Load Balancer Controller supporting Gateway API on Amazon EKS](README-GATEWAY-API.md) tutorial.
-
-> **NGINX Ingress Controller (Deprecated):** The [NGINX Ingress Controller deployment guide](README-NGINX.md) is deprecated and will be removed in the coming months. For more information, see [Ingress NGINX Retirement: What You Need to Know](https://kubernetes.io/blog/2025/11/11/ingress-nginx-retirement/).
-
-##### 7.2.2. Retrieving license usage
-
-The ALB address should be reflected in the Ingress configuration. You will be able to access the IBM License Service by retrieving the URL with this command:
-
-```bash
-export LICENSING_URL=$(kubectl get ingress ibm-licensing-svc-ingress -n ibm-licensing -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
-export TOKEN=$(kubectl get secret ibm-licensing-token -n ibm-licensing -o jsonpath='{.data.token}' |base64 -d)
+export LICENSING_URL=$(kubectl get ingress ibm-licensing-svc-ingress -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+export TOKEN=$(kubectl get secret ibm-usage-metering-upload-token -o jsonpath='{.data.token}' | base64 -d)
 echo https://${LICENSING_URL}/status?token=${TOKEN}
 ```
 
-You can access the `https://${LICENSING_URL}/status?token=${TOKEN}` URL to view the licensing usage or retrieve the licensing report .zip file by running:
+You can access the `https://${LICENSING_URL}/status?token=${TOKEN}` URL to view the licensing usage or retrieve the licensing snapshot report `.zip` file by running:
 
 ```bash
-curl -k "https://${LICENSING_URL}/snapshot?token=${TOKEN}" --output report.zip
+curl -k "https://${LICENSING_URL}/snapshot?token=${TOKEN}" --output ils_snapshot_report.zip
 ```
 
-##### 7.2.3. Reporting license usage to IBM Software Central
+#### 7.1.4. Additional resources
 
-IBM License Service can optionally send collected license usage data directly to IBM Software Central. For more information about the configuration, see [Reporting license usage to IBM Software Central](https://www.ibm.com/docs/en/odm/9.6.0?topic=metering-reporting-license-usage-software-central).
-
-##### 7.2.3.1. Online mode
-
-For detailed steps on configuring online mode (automatic data transmission), including creating the IBM Entitlement Key secret, configuring the IBMLicensing Custom Resource, and verifying the setup, refer to the [online mode documentation](https://www.ibm.com/docs/en/odm/9.6.0?topic=central-online-mode-configuration).
-
-
-##### 7.2.3.2. Offline mode (Air-gapped environments)
-
-For air-gapped environments where ILS cannot directly connect to IBM Software Central, download the usage data using these commands below:
-
-```bash
-export TOKEN=$(kubectl get secret ibm-licensing-token -n ibm-licensing -o jsonpath='{.data.token}' |base64 -d)
-export LICENSING_URL=$(kubectl get ingress ibm-licensing-svc-ingress -n ibm-licensing -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
-curl --insecure --output "ils_swc_payload.tar.gz" \
-     "https://${LICENSING_URL}/swc_aggregations?token=${TOKEN}"
-```
-
-Transfer the downloaded `ils_swc_payload.tar.gz` file to a system with internet connectivity.
-
-Run the command to upload the file to IBM Software Central:
-```bash
-curl -X POST "https://swc.saas.ibm.com/metering/api/v2/metrics" \
-     -H "Authorization: Bearer <IEK>" \
-     -F "file=@ils_swc_payload.tar.gz;type=application/gzip"
-```
-> **Note**
-> Replace the `<IEK>` placeholder with IBM Entitlement Key. You can obtain it from [IBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary).
-
-For complete instructions, see the [offline mode documentation](https://www.ibm.com/docs/en/odm/9.6.0?topic=central-offline-mode-air-gapped-environments).
+For general information about collecting and sending usage metrics, see [Collecting and sending usage metrics](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-collecting-sending-usage-metrics).
 
 
 ## Troubleshooting
