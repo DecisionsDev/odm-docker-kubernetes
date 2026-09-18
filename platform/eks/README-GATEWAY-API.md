@@ -133,9 +133,9 @@ An ILS side-car can be activated by setting `--set ibmUsageMetering.executionMod
 
 It is required to install UMS in the same namespace as ODM. ODM will systematically report the usage metrics to the metering service through a CronJob. If the service is not installed, the job fails when it runs. 
 
-To install and configure UMS, follow the information at [Installing the usage metering service](https://www.ibm.com/docs/en/odm/9.6.0?topic=metrics-installing-metering) **TODO some KC articles need to be updated.** 
+To install and configure UMS, follow the information at [Installing the usage metering service](https://www.ibm.com/docs/en/odm/9.6.0?topic=metrics-installing-metering).
 
-In this tutorial, we assume that ODM, UMS, and ILS are installed in the same namespace `default`. As such, it is no longer required to install ILS separately. 
+In this tutorial, we assume that ODM, UMS, and ILS are installed in the same namespace: `default`. The ILS side car will be enabled with *namespace scope* to monitor only `default` namespace.
 
 #### 3.1.1. Data transmission options
 
@@ -156,7 +156,7 @@ For complete step-by-step instructions on configuring online mode, see [Automati
 
 ##### 3.1.1.2. Offline mode (Air-gapped environments)
 
-For offline/air-gapped environments where the Usage Metering Service cannot connect directly to IBM Software Central, you need to manually download and upload usage data. 
+For offline/air-gapped environments where the Usage Metering Service cannot connect directly to IBM Software Central, you need to manually download and upload metrics data. 
 
 ###### 3.1.1.2.1. Create the Gateway for the IBM Usage Metering instance
 
@@ -279,20 +279,20 @@ curl -X POST "https://swc.saas.ibm.com/metering/api/v2/metrics" \
 
 For complete instructions, see [Uploading usage metrics to IBM Software Central](https://www.ibm.com/docs/en/odm/9.6.0?topic=metrics-uploading-usage-software-central).
 
-
 #### 3.1.2. Access IBM License Service page
 
-If you want to view the licensing usage status, you can retrieve its URL with this command:
+> [!NOTE]
+> The route must be created as described in [3.1.1.2.1. Create the Gateway for the IBM Usage Metering instance](#31121-create-the-gateway-for-the-ibm-usage-metering-instance).
+
+If you want to view the product licensing status, you can retrieve its URL with this command:
 
 ```bash
 export UMS_TOKEN=$(kubectl get secret ibm-usage-metering-upload-token -o jsonpath='{.data.token}' | base64 -d)
 export UMS_URL=$(kubectl get gateway ums-gateway -o jsonpath='{.status.addresses[*].value}')
 echo https://${UMS_URL}/ibm-licensing/status?token=${UMS_TOKEN}
 ```
-> [!NOTE]
-> The route must be created as described in [3.1.1.2.1. Create the Gateway for the IBM Usage Metering instance](#31121-create-the-gateway-for-the-ibm-usage-metering-instance).
 
-Access the page via this URL: `https://${UMS_URL}/ibm-licensing/status?token=${UMS_TOKEN}`. 
+Access the page via this URL: `https://${UMS_URL}/ibm-licensing/status?token=${UMS_TOKEN}`. In the Licensing status page, that `Namespace Scope is enabled. Current cluster configuration restricts License Service to query pods that are only in these namespaces: default` 
 
 Otherwise, you can also retrieve the licensing snapshot by running:
 
