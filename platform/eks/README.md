@@ -347,21 +347,14 @@ To install and configure UMS, follow the information at [Installing the usage me
 
 In this tutorial, we assume that ODM, UMS, and ILS are installed in the same namespace: `default`. The ILS side car will be enabled with *namespace scope* to monitor only `default` namespace.
 
-#### 7.1.1. Troubleshooting
-
-If the ODM CronJob fails, check the pod logs:
-```bash
-kubectl logs -n <namespace> -l job-name=<cronjob-name>
-```
-
-#### 7.1.2. Data transmission options
+#### 7.1.1. Data transmission options
 
 After installing the IBM Usage Metering service, choose one of the following modes to transmit the usage metering data based on your environment:
 
 1. **Online mode** (Recommended): Automatic data transmission to IBM Software Central
 2. **Offline mode** (Air-gapped): Manual data download and upload process
 
-##### 7.1.2.1. Online mode (Recommended)
+##### 7.1.1.1. Online mode (Recommended)
 
 In online mode, the Usage Metering Service automatically sends *both adoption and contractual* data to IBM Software Central on a scheduled basis every 24 hours. This is the recommended configuration for environments with internet connectivity.
 
@@ -371,11 +364,11 @@ In online mode, the Usage Metering Service automatically sends *both adoption an
 
 For complete step-by-step instructions on configuring online mode, see [Automatic data transmission to IBM Software Central](https://www.ibm.com/docs/en/odm/9.6.0?topic=metrics-automatic-data-transmission).
 
-##### 7.1.2.2. Offline mode (Air-gapped environments)
+##### 7.1.1.2. Offline mode (Air-gapped environments)
 
 For offline/air-gapped environments where the Usage Metering Service cannot connect directly to IBM Software Central, you need to manually download and upload metrics data.
 
-###### 7.1.2.2.1. Expose the IBM Usage Metering service and Licensing service using an ingress 
+###### 7.1.1.2.1. Expose the IBM Usage Metering service and Licensing service using an ingress
 
 You must expose the service to access and download the metering usage reports.
 
@@ -404,7 +397,7 @@ mycompany-odm-ingress        alb     *       k8s-default-mycompan-xxxxxxx-yyyyyy
 usage-metering-svc-ingress   alb     *       k8s-default-usagemet-xxxxxxx-yyyyyyy.<aws-region>.elb.amazonaws.com    80      2m
 ```
 
-###### 7.1.2.2.2. Retrieve metering usage
+###### 7.1.1.2.2. Retrieve metering usage
 
 To get the UMS report archive file, run the command below:
 
@@ -423,7 +416,7 @@ The `swc_payload.tar.gz` contains the following files:
 The `usage.json` file contains both adoption (`"metricType": "adoption"`) and contractual (`"metricType": "contract"`) metrics.
 
 
-###### 7.1.2.2.3. Sending data to IBM Software Central
+###### 7.1.1.2.3. Sending data to IBM Software Central
 
 Transfer the downloaded `swc_payload.tar.gz` file to a system with internet connectivity.
 
@@ -438,10 +431,10 @@ curl -X POST "https://swc.saas.ibm.com/metering/api/v2/metrics" \
 
 For complete instructions, see [Uploading usage metrics to IBM Software Central](https://www.ibm.com/docs/en/odm/9.6.0?topic=metrics-uploading-usage-software-central).
 
-#### 7.1.3. Access IBM License Service page
+#### 7.1.2. Access IBM License Service page
 
 > [!NOTE]
-> The Ingress must be created as described in [Expose the IBM Usage Metering service and Licensing service using an ingress](#71221-expose-the-ibm-usage-metering-service-and-licensing-service-using-an-ingress).
+> The Ingress must be created as described in [Expose the IBM Usage Metering service and Licensing service using an ingress](#71121-expose-the-ibm-usage-metering-service-and-licensing-service-using-an-ingress).
 
 If you want to view the product licensing status, you can retrieve its URL with this command:
 
@@ -457,16 +450,20 @@ You can access the `https://${LICENSING_URL}/status?token=${TOKEN}` URL to view 
 curl -k "https://${LICENSING_URL}/snapshot?token=${TOKEN}" --output ils_snapshot_report.zip
 ```
 
-#### 7.1.4. Additional resources
+#### 7.1.3. Additional resources
 
 For general information about collecting and sending usage metrics, see [Collecting and sending usage metrics](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-collecting-sending-usage-metrics).
-
 
 ## Troubleshooting
 
 - If your ODM instances are not running properly, check the logs with the following command:
   ```bash
   kubectl logs <your-pod-name>
+  ```
+
+- If the ODM CronJob fails, check the pod logs:
+  ```bash
+  kubectl logs -n <namespace> -l job-name=<cronjob-name>
   ```
 
 - If the `ROOTURL` is empty, it means that the ALB controller did not deliver an address to the ODM Ingress instance (mycompany-odm-ingress).
