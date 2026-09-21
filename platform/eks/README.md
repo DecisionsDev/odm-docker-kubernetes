@@ -71,11 +71,8 @@ eksctl create cluster <CLUSTER_NAME> --version 1.34 --nodes 3 --alb-ingress-acce
 > [!NOTE]
 > The tutorial has been tested with the Kubernetes version 1.34. Check the supported kubernetes version in the [Detailed System Requirements](https://www.ibm.com/software/reports/compatibility/clarity/product.html?id=C88B83D2853E4A628442E38C1194FF8F) page.
 
-> **Warning**
-> If you prefer to use the **Deprecated** NGINX Ingress Controller instead of the AWS Load Balancer to expose ODM services, don't use the --alb-ingress-access option during the creation of the cluster.
-
-> **New**
-> Instead of the NGINX Ingress Controller, it is possible to use the AWS Load Balancer with Gateway API instead. Refer to the new [Deploying IBM Operational Decision Manager with AWS Load Balancer Controller supporting Gateway API on Amazon EKS](README-GATEWAY-API.md) tutorial.
+> [!TIP]
+> As an alternative to the ALB Ingress approach, you can use the AWS Load Balancer Controller with Gateway API for more advanced routing capabilities. See the [Deploying IBM Operational Decision Manager with AWS Load Balancer Controller supporting Gateway API on Amazon EKS](README-GATEWAY-API.md) guide.
 
 To see the options that you can specify when creating a cluster with `eksctl`, use the `eksctl create cluster --help` command. For more information, refer to [Creating an Amazon EKS cluster](https://docs.aws.amazon.com/eks/latest/userguide/create-cluster.html).
 
