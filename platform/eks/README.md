@@ -68,7 +68,7 @@ Where you provide your `AWS Access Key ID`, `AWS Secret Access Key` and the `Def
 eksctl create cluster <CLUSTER_NAME> --version 1.34 --nodes 3 --alb-ingress-access
 ```
 
-> **Note**
+> [!NOTE]
 > The tutorial has been tested with the Kubernetes version 1.34. Check the supported kubernetes version in the [Detailed System Requirements](https://www.ibm.com/software/reports/compatibility/clarity/product.html?id=C88B83D2853E4A628442E38C1194FF8F) page.
 
 > **Warning**
@@ -157,7 +157,7 @@ Use the following command to get the RDS instance's endpoint:
 aws rds describe-db-instances | jq -r ".DBInstances[].Endpoint.Address"
 ```
 
-> **Note**
+> [!NOTE]
 > If `jq` is not installed, remove the second part above and look for the endpoint address; it looks like `<INSTANCE_NAME>.xxxxxxxx.<REGION>.rds.amazonaws.com`.
 
 #### c. Create the database secret
@@ -170,7 +170,7 @@ kubectl create secret generic odm-db-secret \
         --from-literal=db-password=<PG_PASSWORD>
 ```
 
-> **Note**
+> [!NOTE]
 > ODM on Kubernetes is provided with an internal PostgreSQL database that can be used empty or with pre-populated samples.
 > If you want to install an ODM demo quickly, you can use this internal database. It is dedicated to prototyping, not for production.
 
@@ -198,7 +198,7 @@ Where:
 * `<ENTITLEMENT_KEY>` is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
 * `<USER_EMAIL>` is the email address associated with your IBMid.
 
-> Note: 
+> [!NOTE]
 > 1. The **cp.icr.io** value for the docker-server parameter is the only registry domain name that contains the images. You must set the *docker-username* to **cp** to use an entitlement key as *docker-password*.
 > 2. The `ibm-entitlement-key` secret name will be used for the `image.pullSecrets` parameter when you run a Helm install of your containers. The `image.repository` parameter is also set by default to `cp.icr.io/cp/cp4a/odm`.
 
@@ -251,7 +251,7 @@ The output of the command is:
 }
 ```
 
-> **Note** 
+> [!NOTE]
 > "Arn": "arn:aws:iam::\<AWS-AccountId\>:server-certificate/mycompany" is used later to configure the Ingress ALB certificate annotation.
 
 ### 5. Install an IBM Operational Decision Manager release (10 min)
@@ -269,7 +269,7 @@ To install ODM with the AWS RDS PostgreSQL database created in [step 2](#2-creat
 helm install mycompany ibm-helm/ibm-odm-prod -f eks-rds-values.yaml
 ```
 
-> **Note**
+> [!NOTE]
 > - The above command installs the **latest available version** of the chart. If you want to install a **specific version**, add the `--version` option:
 >
 > ```bash
@@ -316,7 +316,7 @@ export ROOTURL=$(kubectl get ingress mycompany-odm-ingress --no-headers |awk '{p
 echo $ROOTURL
 ```
 
-> **Note**
+> [!NOTE]
 > If `ROOTURL` is empty, take a look at the [troubleshooting](#troubleshooting) section.
 
 With this ODM topology in place, you can access web applications to author, deploy, and test your rule-based decision services.
@@ -433,7 +433,7 @@ curl -X POST "https://swc.saas.ibm.com/metering/api/v2/metrics" \
      -H "Authorization: Bearer <IEK>" \
      -F "file=@swc_payload.tar.gz;type=application/gzip"
 ```
-> **Note**
+> [!NOTE]
 > Replace the `<IEK>` placeholder with IBM Entitlement Key. You can obtain it from [IBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary).
 
 For complete instructions, see [Uploading usage metrics to IBM Software Central](https://www.ibm.com/docs/en/odm/9.6.0?topic=metrics-uploading-usage-software-central).

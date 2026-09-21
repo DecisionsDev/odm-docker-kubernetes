@@ -41,7 +41,7 @@ To install ODM with the AWS RDS PostgreSQL database created in [step 2](README.m
 helm install mycompany ibm-helm/ibm-odm-prod -f eks-rds-gateway-values.yaml
 ```
 
-> **Note**
+> [!NOTE]
 > 
 > - The above command installs the **latest available version** of the chart. If you want to install a **specific version**, add the `--version` option:
 >
@@ -65,7 +65,7 @@ After ODM is installed, you will proceed to create the relevant Gateway using [o
 
 Edit the [odm-gateway-api.yaml](./odm-gateway-api.yaml) file and replace the `<AWS-AccountId>` placeholder with your account ID. This can be found at the `defaultCertificate` parameter of `LoadBalancerConfiguration`. Save the file.
 
-> **Note**
+> [!NOTE]
 > - You can replace the `defaultCertificate` value with the ARN of the digital certificate that you have created in [Manage a digital certificate](README.md#4-manage-adigital-certificate-10-min) section. If you have an existing digital certificate in ACM, you can use it instead of creating a new one.
 > - The `odm-gateway-api.yaml` file assumes ODM's release name is `mycompany`. If you used a different release name during installation, you must update all service name references in the file:
 >   - In each `TargetGroupConfiguration`, update the `targetReference.name` field (e.g., `mycompany-odm-decisionserverconsole` to `<your-release-name>-odm-decisionserverconsole`).
@@ -212,7 +212,7 @@ spec:
 The [ums-gateway-api.yaml](./ums-gateway-api.yaml) file is provided to help you create the routes for `ibm-usage-metering-fetch` and `ls-port`.
 Edit the [ums-gateway-api.yaml](./ums-gateway-api.yaml) file and replace the `<AWS-AccountId>` placeholder with your account ID. This can be found at the `defaultCertificate` parameter of `LoadBalancerConfiguration`. Save the file.
 
-> **Note**
+> [!NOTE]
 >  You can replace the `defaultCertificate` value with the ARN of the digital certificate that you have created in [Manage a digital certificate](README.md#4-manage-adigital-certificate-10-min) section. If you have an existing digital certificate in ACM, you can use it instead of creating a new one.
 
 Run the command to create UMS's gateway:
