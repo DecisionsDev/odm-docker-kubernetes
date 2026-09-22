@@ -4,7 +4,7 @@ metadata:
   name: ibm-licensing-svc-ingress
   annotations:
     alb.ingress.kubernetes.io/backend-protocol: HTTPS
-    alb.ingress.kubernetes.io/certificate-arn: arn:aws:iam::<AWS-AccountId>:server-certificate/mycompany
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:iam::<AWS-AccountId>:server-certificate/myodmcompany
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
@@ -27,7 +27,7 @@ metadata:
   name: usage-metering-svc-ingress
   annotations:
     alb.ingress.kubernetes.io/backend-protocol: HTTPS
-    alb.ingress.kubernetes.io/certificate-arn: arn:aws:iam::<AWS-AccountId>:server-certificate/mycompany
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:iam::<AWS-AccountId>:server-certificate/myodmcompany
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip

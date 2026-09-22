@@ -219,19 +219,19 @@ ibm-helm/ibm-odm-prod           	27.0.0       	9.7.0.0   	IBM Operational Decisi
 #### a. Generate a self-signed certificate
 
 If you have a trusted certificate, you can use it to access the ODM container. Otherwise you can use OpenSSL and other cryptography and certificate management libraries to generate a `.crt` certificate file and a private key, to define the domain name, and to set the expiration date.
-The following command creates a self-signed certificate (`.crt` file) and a private key (`.key` file) that accept the domain name `.mycompany.com`. The expiration is set to 1000 days:
+The following command creates a self-signed certificate (`.crt` file) and a private key (`.key` file) that accept the domain name `.myodmcompany.com`. The expiration is set to 1000 days:
 
 ```bash
-openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mycompany.key \
-  -out mycompany.crt -subj "/CN=*.mycompany.com/OU=it/O=mycompany/L=Paris/C=FR"
+openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout myodmcompany.key \
+  -out myodmcompany.crt -subj "/CN=*.myodmcompany.com/OU=it/O=myodmcompany/L=Paris/C=FR"
 ```
 
 #### b. Upload the certificate to the AWS IAM service
 
 Run the following command:
 ```bash
-aws iam upload-server-certificate --server-certificate-name mycompany \
-  --certificate-body file://mycompany.crt --private-key file://mycompany.key
+aws iam upload-server-certificate --server-certificate-name myodmcompany \
+  --certificate-body file://myodmcompany.crt --private-key file://myodmcompany.key
 ```
 
 The output of the command is:
@@ -239,9 +239,9 @@ The output of the command is:
 {
   "ServerCertificateMetadata": {
     "Path": "/",
-    "ServerCertificateName": "mycompany",
+    "ServerCertificateName": "myodmcompany",
     "ServerCertificateId": "ASCA4GCFYJYN5C35DTU5X",
-    "Arn": "arn:aws:iam::<AWS-AccountId>:server-certificate/mycompany",
+    "Arn": "arn:aws:iam::<AWS-AccountId>:server-certificate/myodmcompany",
     "UploadDate": "2020-04-08T13:52:49+00:00",
     "Expiration": "2023-01-03T13:39:08+00:00"
   }
@@ -249,7 +249,7 @@ The output of the command is:
 ```
 
 > [!NOTE]
-> "Arn": "arn:aws:iam::\<AWS-AccountId\>:server-certificate/mycompany" is used later to configure the Ingress ALB certificate annotation.
+> "Arn": "arn:aws:iam::\<AWS-AccountId\>:server-certificate/myodmcompany" is used later to configure the Ingress ALB certificate annotation.
 
 ### 5. Install an IBM Operational Decision Manager release (10 min)
 
@@ -334,13 +334,13 @@ IBM Usage Metering Service (UMS) gathers adoption metrics and creates reports. I
 
 The IBM License Service (ILS) discovers the software that is installed in your infrastructure and generates reports containing contractual details. These metrics directly affect licensing obligations and are required for calculating license usage in compliance with IBM licensing requirements.
 
-An ILS side-car can be activated by setting `--set ibmUsageMetering.executionMode=PROCESSOR_CAPACITY_ENABLED` to UMS instance. This allows UMS to capture two metrics: contractual metrics for compliance purposes, and adoption metrics for various scenarios related to usage analysis. 
+An ILS side-car must be activated when installing UMS. This allows UMS to capture two metrics: contractual metrics for compliance purposes, and adoption metrics for various scenarios related to usage analysis. 
 
 It is required to install UMS in the same namespace as ODM. ODM will systematically report the usage metrics to the metering service through a CronJob. If the service is not installed, the job fails when it runs. 
 
 To install and configure UMS, follow the information at [Installing the usage metering service](https://www.ibm.com/docs/en/odm/9.6.0?topic=metrics-installing-metering).
 
-In this tutorial, we assume that ODM, UMS, and ILS are installed in the same namespace: `default`. The ILS side car will be enabled with *namespace scope* to monitor only `default` namespace.
+In this tutorial, we assume that ODM, UMS, and ILS are installed in the same namespace: `default`. The ILS side car is enabled with *namespace scope* to monitor only `default` namespace.
 
 #### 7.1.1. Data transmission options
 
@@ -426,7 +426,7 @@ curl -X POST "https://swc.saas.ibm.com/metering/api/v2/metrics" \
 
 For complete instructions, see [Uploading usage metrics to IBM Software Central](https://www.ibm.com/docs/en/odm/9.6.0?topic=metrics-uploading-usage-software-central).
 
-#### 7.1.2. Access IBM License Service page
+#### 7.1.2. [Optional] Access IBM License Service page
 
 > [!NOTE]
 > The Ingress must be created as described in [Expose the IBM Usage Metering service and Licensing service using an ingress](#71121-expose-the-ibm-usage-metering-service-and-licensing-service-using-an-ingress).

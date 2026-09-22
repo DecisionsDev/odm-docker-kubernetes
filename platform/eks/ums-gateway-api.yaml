@@ -17,7 +17,7 @@ spec:
   listenerConfigurations:
     - protocolPort: HTTPS:443
       #Provide the ARN of the certificate created in ACM/IAM
-      defaultCertificate: arn:aws:iam::<AWS-AccountId>:server-certificate/mycompany
+      defaultCertificate: arn:aws:iam::<AWS-AccountId>:server-certificate/myodmcompany
 ---
 # TargetGroupConfiguration for IBM Usage Metering Service (ibm-usage-metering-fetch)
 apiVersion: gateway.k8s.aws/v1
