@@ -285,8 +285,6 @@ helm install mycompany ibm-helm/ibm-odm-prod -f eks-rds-values.yaml
 >```bash
 >helm install mycompany ibm-helm/ibm-odm-prod -f eks-values.yaml
 >```
->
-> - If you choose to use the NGINX Ingress Controller, refer to [Install an ODM release with NGINX Ingress Controller](README-NGINX.md#install-an-odm-release-with-nginx-ingress-controller).
 
 
 #### Check the topology

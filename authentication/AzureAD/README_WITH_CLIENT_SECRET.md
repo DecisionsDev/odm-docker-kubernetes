@@ -368,7 +368,6 @@ You can now install the product. We will use the PostgreSQL internal database an
 
   Refer to the following documentation to install an NGINX Ingress Controller on:
   - [Microsoft Azure Kubernetes Service](../../platform/azure/README-NGINX.md)
-  - [Amazon Elastic Kubernetes Service](../../platform/eks/README-NGINX.md)
   - [Google Kubernetes Engine](../../platform/gcloud/README_NGINX.md)
 
   When the NGINX Ingress Controller is ready, get the [entraid-nginx-values.yaml](./entraid-nginx-values.yaml) file and run the command:
