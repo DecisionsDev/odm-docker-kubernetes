@@ -1,20 +1,18 @@
 # Deploying IBM Operational Decision Manager on Azure AKS
 
 This project demonstrates how to deploy an IBM® Operational Decision Manager (ODM) clustered topology on the Azure Kubernetes Service (AKS) cloud service. This deployment implements Kubernetes and Docker technologies.
-Here is the home page of Microsoft Azure: https://portal.azure.com/#home
 
 ![AKS schema](images/aks-schema.png)
 
 > [!IMPORTANT]
 > **Deployment Options:**
 >
-> There are three ways to expose ODM services on AKS:
+> There are two ways to expose ODM services on AKS:
 >
 > 1. **AKS default Load Balancer (Documented in this tutorial):** Uses the [AKS Load Balancer](https://learn.microsoft.com/en-us/azure/aks/load-balancer-standard) with container-native load balancing. This is the standard approach documented in the steps below.
 >
 > 2. **Gateway API (Recommended for Advanced Features):** Uses the [Application Gateway for Containers](https://learn.microsoft.com/en-us/azure/application-gateway/for-containers/overview) which provides more advanced routing capabilities, better session affinity management, and is the future direction for Kubernetes networking. See our tutorial [Deploying IBM Operational Decision Manager with Application Gateway for Containers (AGC) supporting Gateway API on Azure AKS](README-GATEWAY.md).
->
-> 3. **AKS Ingress Controller** (**Deprecated** due to [Ingress NGINX Retirement](https://kubernetes.io/blog/2025/11/11/ingress-nginx-retirement)): Our tutorial [Deploying IBM Operational Decision Manager with NGINX Ingress Controller on Azure AKS](README-NGINX.md) is deprecated and will be removed in the coming months. Please use AKS Load Balancer or AKS Gateway API instead.
+
 
 The ODM on Kubernetes Docker images are available in the [IBM Entitled Registry](https://www.ibm.com/cloud/container-registry). The ODM Helm chart is available in the [IBM Helm charts repository](https://github.com/IBM/charts).
 
@@ -26,7 +24,6 @@ The project comes with the following components:
 - [Azure Database for PostgreSQL](https://docs.microsoft.com/en-us/azure/postgresql/)
 - [Azure Kubernetes Service (AKS)](https://docs.microsoft.com/en-us/azure/aks/)
 - [Network concepts for applications in AKS](https://docs.microsoft.com/en-us/azure/aks/concepts-network)
-- [IBM License Service](https://github.com/IBM/ibm-licensing-operator)
 
 ## Tested environment
 The commands and tools have been tested on macOS and Linux.
@@ -49,12 +46,11 @@ Then, [create an Azure account and pay as you go](https://azure.microsoft.com/en
 - [Tested environment](#tested-environment)
 - [Prerequisites](#prerequisites)
 - [Steps to deploy ODM on Kubernetes to Azure AKS](#steps-to-deploy-odm-on-kubernetes-to-azure-aks)
-- [Prepare your AKS instance 30 min](#prepare-your-aks-instance-30-min)
-- [Create the PostgreSQL Azure instance 10 min](#create-the-postgresql-azure-instance-10-min)
+- [Prepare your AKS instance (30 min)](#prepare-your-aks-instance-30-min)
+- [Create the PostgreSQL Azure instance (10 min)](#create-the-postgresql-azure-instance-10-min)
 - [Prepare your environment for the ODM installation](#prepare-your-environment-for-the-odm-installation)
-- [Install an ODM Helm release and expose it with the service type LoadBalancer 10 min](#install-an-odm-helm-release-and-expose-it-with-the-service-type-loadbalancer-10-min)
+- [Install an ODM Helm release and expose it with the service type LoadBalancer (10 min)](#install-an-odm-helm-release-and-expose-it-with-the-service-type-loadbalancer-10-min)
 - [IBM Usage Metering service](#ibm-usage-metering-service)
-- [Install the IBM License Service and retrieve license usage](#install-the-ibm-license-service-and-retrieve-license-usage)
 - [Troubleshooting](#troubleshooting)
 - [Getting Started with IBM Operational Decision Manager for Containers](#getting-started-with-ibm-operational-decision-manager-for-containers)
 
@@ -62,7 +58,7 @@ Then, [create an Azure account and pay as you go](https://azure.microsoft.com/en
 
 ## Prepare your AKS instance (30 min)
 
-Source: https://docs.microsoft.com/en-us/azure/aks/kubernetes-walkthrough
+For more information, see [Kubernetes walkthrough for AKS](https://docs.microsoft.com/en-us/azure/aks/kubernetes-walkthrough).
 
 ### Log into Azure
 
@@ -87,7 +83,7 @@ az account list-locations -o table
 Then, create a resource group by running the following command:
 
 ```shell
-az group create --name <resourcegroup> --location <azurelocation> --tags Owner=<email> Team=<team> Usage=demo Usage_desc="Azure customers support" Delete_date=2026-12-31
+az group create --name <resourcegroup> --location <azurelocation> --tags Owner=<email> Team=<team> Usage=demo Usage_desc="Azure customers support" Delete_date=2027-12-31
 ```
 
 The following example output shows that the resource group has been created successfully:
@@ -102,7 +98,7 @@ The following example output shows that the resource group has been created succ
     "provisioningState": "Succeeded"
   },
   "tags": {
-    "Delete_date": "2026-12-31",
+    "Delete_date": "2027-12-31",
     "Owner": "<email>",
     "Team": "<team>",
     "Usage": "demo",
@@ -129,7 +125,7 @@ Make a note of the newly-created Resource Group that is displayed in the JSON ou
 
 ```shell
 az group update --name <noderesourcegroup> \
-    --tags Owner=<email> Team=<team> Usage=demo Usage_desc="Azure customers support" Delete_date=2026-12-31
+    --tags Owner=<email> Team=<team> Usage=demo Usage_desc="Azure customers support" Delete_date=2027-12-31
 ```
 
 ### Set up your environment to this cluster
@@ -156,8 +152,8 @@ The following example output shows the single node created in the previous steps
 
 ```
 NAME                                STATUS   ROLES   AGE   VERSION
-aks-nodepool1-27504729-vmss000000   Ready    agent   21m   v1.34.6
-aks-nodepool1-27504729-vmss000001   Ready    agent   21m   v1.34.6
+aks-nodepool1-27504729-vmss000000   Ready    agent   21m   v1.35.8
+aks-nodepool1-27504729-vmss000001   Ready    agent   21m   v1.35.8
 ```
 
 ## Create the PostgreSQL Azure instance (10 min)
@@ -284,7 +280,8 @@ az postgres flexible-server firewall-rule create --resource-group <resourcegroup
             --rule-name <rule-name> --start-ip-address 0.0.0.0 --end-ip-address 255.255.255.255
 ```
 
->Note: if you use azure-cli version **2.86.0** or higher (released on May 2026), the --name/-n argument has been repurposed to specify the firewall rule name and the --server-name/-s argument was introduced to specify the server name. As a result, the command to run is:
+> [!NOTE] 
+> If you use azure-cli version **2.86.0** or higher (released on May 2026), the --name/-n argument has been repurposed to specify the firewall rule name and the --server-name/-s argument was introduced to specify the server name. As a result, the command to run is:
 >```shell
 >az postgres flexible-server firewall-rule create --resource-group <resourcegroup> --server-name <postgresqlserver> \
 >            --name <rule-name> --start-ip-address 0.0.0.0 --end-ip-address 255.255.255.255
@@ -323,7 +320,7 @@ Where:
 * `<API_KEY_GENERATED>` is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
 * `<USER_EMAIL>` is the email address associated with your IBMid.
 
-> Note: 
+> [!NOTE]
 > 1. The **cp.icr.io** value for the docker-server parameter is the only registry domain name that contains the images. You must set the *docker-username* to **cp** to use an entitlement key as *docker-password*.
 > 2. The `ibm-entitlement-key` secret name will be used for the `image.pullSecrets` parameter when you run a Helm install of your containers. The `image.repository` parameter is also set by default to `cp.icr.io/cp/cp4a/odm`.
 
@@ -340,7 +337,7 @@ Check that you can access the ODM charts:
 ```shell
 helm search repo ibm-odm-prod
 NAME                        CHART VERSION	APP VERSION DESCRIPTION
-ibm-helm/ibm-odm-prod       26.0.0       	9.6.0.0     IBM Operational Decision Manager  License By in...
+ibm-helm/ibm-odm-prod       26.3.0       	9.7.0.0     IBM Operational Decision Manager  License By in...
 ```
 
 ### Manage a digital certificate (10 min)
@@ -369,7 +366,7 @@ The certificate must be the same as the one you used to enable TLS connections i
 ## Install an ODM Helm release and expose it with the service type LoadBalancer (10 min)
 
 > [!NOTE]
-> There are three different options to expose the ODM services. The current tutorial uses the default AKS Load Balancer.
+> There are two different options to expose the ODM services. The current tutorial uses the default AKS Load Balancer.
 >
 > Please refer to the [beginning of this tutorial](#deploying-ibm-operational-decision-manager-on-azure-aks) to read about the other options.
 
@@ -393,7 +390,7 @@ You can now install the product.
 helm install <release> ibm-helm/ibm-odm-prod -f aks-values.yaml
 ```
 
-> **Note:**  
+> [!NOTE]
 > The above command installs the **latest available version** of the chart.  
 > If you want to install a **specific version**, add the `--version` option:
 >
@@ -457,9 +454,17 @@ Where:
 
 ### 1. Install the IBM Usage Metering service
 
-IBM Usage Metering Service gathers metrics to monitor compliance and create reports. It captures business value metrics for auditing purposes and to visualize metric usage in reporting tools, and sends the information to IBM Software Central.
+IBM Usage Metering Service (UMS) gathers adoption metrics and creates reports. It captures business value metrics for auditing purposes and to visualize metric usage in reporting tools, and sends the information to IBM Software Central. For more details, see [Collecting and sending usage metrics](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-collecting-sending-usage-metrics).
 
-From ODM 9.6.0 onwards, it is required to install this metering service in the same namespace as ODM. ODM will systematically reports usage metrics to the metering service through a CronJob. If the service is not installed, the job fails when it runs. For more information about the installation and configuration of UMS, see [Installing the usage metering service](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-installing-metering).
+The IBM License Service (ILS) discovers the software that is installed in your infrastructure and generates reports containing contractual details. These metrics directly affect licensing obligations and are required for calculating license usage in compliance with IBM licensing requirements.
+
+An ILS side-car must be activated when installing UMS. This allows UMS to capture two metrics: contractual metrics for compliance purposes, and adoption metrics for various scenarios related to usage analysis. 
+
+It is required to install UMS in the same namespace as ODM. ODM will systematically report the usage metrics to the metering service through a CronJob. If the service is not installed, the job fails when it runs. 
+
+To install and configure UMS, follow the information at [Installing the usage metering service](https://www.ibm.com/docs/en/odm/9.6.0?topic=metrics-installing-metering).
+
+In this tutorial, we assume that ODM, UMS, and ILS are installed in the same namespace: `default`. The ILS side car is enabled with *namespace scope* to monitor only `default` namespace.
 
 ### 2. Troubleshooting
 
@@ -477,7 +482,7 @@ After installing the IBM Usage Metering service, choose one of the following mod
 
 #### 3.1 Online mode (Recommended)
 
-In online mode, the Usage Metering Service automatically sends usage data to IBM Software Central on a scheduled basis every 24 hours. This is the recommended configuration for environments with internet connectivity.
+In online mode, the Usage Metering Service automatically sends *both adoption and contractual* data to IBM Software Central on a scheduled basis every 24 hours. This is the recommended configuration for environments with internet connectivity.
 
 **Configuration requirements**:
 - IBM Entitlement Key (required for authentication).
@@ -485,11 +490,16 @@ In online mode, the Usage Metering Service automatically sends usage data to IBM
 
 For complete step-by-step instructions on configuring online mode, see [Automatic data transmission to IBM Software Central](https://www.ibm.com/docs/en/odm/9.6.0?topic=metrics-automatic-data-transmission).
 
+The usage metrics are automatically sent to IBM Software Central and you can see them at https://swc.saas.ibm.com/en-us/software-central (the next day):
+- Click **Log in** (create an account if needed)
+- Click **Workspace** in the menu tab. This unfolds a drop-down list.
+- Click **Usage** in the drop-down list
+
 #### 3.2 Offline mode (Air-gapped environments)
 
-For offline/air-gapped environments where the Usage Metering Service cannot connect directly to IBM Software Central, you need to manually download and upload usage data.
+For offline/air-gapped environments where the Usage Metering Service cannot connect directly to IBM Software Central, you need to manually download and upload usage data. You will need to access the service to retrieve the report.
 
-### 4. Expose the IBM Usage Metering service using the LoadBalancer
+##### 3.2.1. Expose the IBM Usage Metering service using the LoadBalancer
 
 To expose the IBM Usage Metering service using the AKS LoadBalancer, run:
 
@@ -497,12 +507,7 @@ To expose the IBM Usage Metering service using the AKS LoadBalancer, run:
 kubectl apply -f usage-metering-svc-loadbalancer.yaml
 ```
 
-If you went through all the steps in [Installing the usage metering service](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-installing-metering) including the connection to IBM Software Central, then the usage metrics are automatically sent to IBM Software Central and you can see them at https://swc.saas.ibm.com/en-us/software-central :
-- Click **Log in** (create an account if needed)
-- Click **Workspace** in the menu tab. This unfolds a drop-down list.
-- Click **Usage** in the drop-down list
-
-### 5. Retrieve usage metrics
+##### 3.2.2. Retrieve usage metrics
 
 If your cluster is not connected to internet, you can generate a usage report and manually upload it to Software Central.
 
@@ -510,114 +515,60 @@ To generate a Usage report:
 
 1. run the command below to get the external IP address of the UMS service (if you just created the service and the IP address is not set, try again after a while):
 
-    ```bash
-    EXTERNAL_IP=$(kubectl get service ibm-usage-metering-instance-loadbalancer -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-    echo "EXTERNAL_IP=${EXTERNAL_IP}"
-    ```
+  ```bash
+  EXTERNAL_IP=$(kubectl get service ibm-usage-metering-instance-loadbalancer -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  echo "EXTERNAL_IP=${EXTERNAL_IP}"
+  ```
 
 1. run:
-    ```bash
-    UMS_TOKEN=$(kubectl get secret ibm-usage-metering-upload-token -n "${NAMESPACE}" -o jsonpath='{.data.token}' 2>/dev/null | base64 -d || echo "")
-    curl -k --output report.zip \
-          --header "Authorization: Bearer ${UMS_TOKEN}" \
-          --url "https://${EXTERNAL_IP}:8080/api/v1/snapshot"
-    ```
+  ```bash
+  UMS_TOKEN=$(kubectl get secret ibm-usage-metering-upload-token -o jsonpath='{.data.token}' 2>/dev/null | base64 -d || echo "")
+  curl -k --output swc_payload.tar.gz \
+        --header "Authorization: Bearer ${UMS_TOKEN}" \
+        --url "https://${EXTERNAL_IP}:8080/api/v1/swc"
+  ```
 
-Then follow the instructions in [Uploading usage metrics to IBM Software Central](https://www.ibm.com/docs/en/cloud-paks/cp-biz-automation/26.0.0?topic=metrics-uploading-usage-software-central).
+The `swc_payload.tar.gz` contains the following files:
+- manifest.json
+- usage.json
 
-## Install the IBM License Service and retrieve license usage
+The `usage.json` file contains both adoption (`"metricType": "adoption"`) and contractual (`"metricType": "contract"`) metrics.
 
-This section explains how to track ODM usage with the IBM License Service.
+##### 3.2.3. Send data to IBM Software Central
 
-Follow the **Installation** section of the [Installation License Service without Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.14.0?topic=ilsfpcr-installing-license-service-without-operator-lifecycle-manager-olm) documentation.
+Transfer the downloaded `swc_payload.tar.gz` file to a system with internet connectivity.
 
-### 1. Expose the licensing service using the AKS LoadBalancer
-
-To expose the licensing service using the AKS LoadBalancer, run the command:
-
-```bash
-kubectl patch svc ibm-licensing-service-instance -p '{"spec": { "type": "LoadBalancer"}}' -n ibm-licensing
-```
-
-Wait a couple of minutes for the changes to be applied.
-Then, you should see an EXTERNAL-IP available for the exposed licensing service.
-
-```shell
-kubectl get service -n ibm-licensing
-NAME                                        TYPE           CLUSTER-IP     EXTERNAL-IP       PORT(S)          AGE
-ibm-licensing-service-instance              LoadBalancer   10.0.58.142    xxx.xxx.xxx.xxx   8080:32301/TCP   10m
-```
-
-### 2. Patch the IBM Licensing instance
-
-Get the [licensing-instance.yaml](./licensing-instance.yaml) file and run the command:
+Run the command to upload the file to IBM Software Central through its API:
 
 ```bash
-kubectl patch IBMLicensing instance --type merge --patch-file licensing-instance.yaml -n ibm-licensing 
+curl -X POST "https://swc.saas.ibm.com/metering/api/v2/metrics" \
+     -H "Authorization: Bearer <IEK>" \
+     -F "file=@swc_payload.tar.gz;type=application/gzip"
 ```
 
-Wait a couple of minutes for the changes to be applied. 
+> [!NOTE]
+> Replace the `<IEK>` placeholder with your IBM Entitlement Key. You can obtain it from [IBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary).
 
-You can find more information and use cases on [this page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.14.0?topic=configuring-kubernetes-ingress).
+For complete instructions, see [Uploading usage metrics to IBM Software Central](https://www.ibm.com/docs/en/odm/9.6.0?topic=metrics-uploading-usage-software-central).
 
-> **Note**
-> If you chose to use the NGINX Ingress Controller, you must use the [licensing-instance-nginx.yaml](./licensing-instance-nginx.yaml) file. Refer to [Deploying IBM Operational Decision Manager with NGINX Ingress Controller on Azure AKS](README-NGINX.md#install-the-ibm-license-service-and-retrieve-license-usage).
 
-### 3. Retrieve license usage
+### 4. [Optional] Access IBM License Service
 
 You will be able to access the IBM License Service by retrieving the URL and the required token with this command:
 
 ```bash
-export LICENSING_URL=$(kubectl get service ibm-licensing-service-instance -n ibm-licensing -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-export TOKEN=$(kubectl get secret ibm-licensing-token -n ibm-licensing -o jsonpath='{.data.token}' |base64 -d)
+export LICENSING_URL=$(kubectl get service ibm-usage-metering-instance-loadbalancer -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+export TOKEN=$(kubectl get secret ibm-usage-metering-upload-token -o jsonpath='{.data.token}' |base64 -d)
+echo https://${LICENSING_URL}:8082/status?token=${TOKEN}
 ```
 
-> **Note**
-> If `LICENSING_URL` is empty, take a look at the [troubleshooting](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.14.0?topic=service-troubleshooting-license) page.
-
-You can access the `http://${LICENSING_URL}:8080/status?token=${TOKEN}` URL to view the licensing usage.
+You can access the `https://${LICENSING_URL}:8082/status?token=${TOKEN}` URL to view the licensing status.
 
 Alternatively you can retrieve the licensing report .zip file by running:
 
 ```shell
-curl "http://${LICENSING_URL}:8080/snapshot?token=${TOKEN}" --output report.zip
+curl -k "https://${LICENSING_URL}:8082/snapshot?token=${TOKEN}" --output ils_report.zip
 ```
-
-### 4. Reporting License Usage to IBM Software Central
-
-IBM License Service can optionally send the license usage data collected directly to IBM Software Central. For more information about the configuration, see [Reporting license usage to IBM Software Central](https://www.ibm.com/docs/en/odm/9.6.0?topic=metering-reporting-license-usage-software-central).
-
-#### 4.1 Online mode
-
-For detailed steps on configuring online mode (automatic data transmission), including creating the IBM Entitlement Key secret, configuring the IBMLicensing Custom Resource, and verifying the setup, refer to the [online mode documentation](https://www.ibm.com/docs/en/odm/9.6.0?topic=central-online-mode-configuration).
-
-#### 4.2 Offline mode (Air-gapped environments)
-
-For air-gapped environments where ILS cannot directly connect to IBM Software Central, download the usage data using the commands below:
-
-```bash
-export LICENSING_URL=$(kubectl get service ibm-licensing-service-instance -n ibm-licensing -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-export TOKEN=$(kubectl get secret ibm-licensing-token -n ibm-licensing -o jsonpath='{.data.token}' |base64 -d)
-curl --insecure --output "ils_swc_payload.tar.gz" \
-     "https://${LICENSING_URL}:8080/swc_aggregations?token=${TOKEN}"
-```
-
-Transfer the downloaded `ils_swc_payload.tar.gz` file to a system with internet connectivity.
-
-Run the command to upload the file to IBM Software Central:
-```bash
-curl -X POST "https://swc.saas.ibm.com/metering/api/v2/metrics" \
-     -H "Authorization: Bearer <ENTITLEMENT_KEY>" \
-     -F "file=@ils_swc_payload.tar.gz;type=application/gzip"
-```
-> **Note**
-> Replace the `<ENTITLEMENT_KEY>` placeholder with IBM Entitlement Key. You can obtain it from [IBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary).
-
-For complete instructions on uploading the downloaded file to IBM Software Central, see the [offline mode documentation](https://www.ibm.com/docs/en/odm/9.6.0?topic=central-offline-mode-air-gapped-environments).
-
-### 5. Troubleshooting IBM License Service
-
-If your IBM License Service instance is not running properly, refer to this [troubleshooting page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.14.0?topic=service-troubleshooting-license).
 
 ## Troubleshooting
 
