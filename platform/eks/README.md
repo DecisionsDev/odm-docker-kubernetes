@@ -211,7 +211,7 @@ helm repo update
 ```bash
 $ helm search repo ibm-odm-prod
 NAME                             	CHART VERSION	APP VERSION	DESCRIPTION
-ibm-helm/ibm-odm-prod           	27.0.0       	9.7.0.0   	IBM Operational Decision Manager
+ibm-helm/ibm-odm-prod           	26.3.0       	9.7.0.0   	IBM Operational Decision Manager
 ```
 
 ### 4. Manage a digital certificate (10 min)
@@ -397,7 +397,7 @@ usage-metering-svc-ingress   alb     *       k8s-default-usagemet-xxxxxxx-yyyyyy
 To get the UMS report archive file, run the command below:
 
 ```bash
-export UMS_TOKEN=$(kubectl get secret ibm-usage-metering-upload-token -n "${NAMESPACE}" -o jsonpath='{.data.token}' 2>/dev/null | base64 -d || echo "")
+export UMS_TOKEN=$(kubectl get secret ibm-usage-metering-upload-token -o jsonpath='{.data.token}' 2>/dev/null | base64 -d || echo "")
 export UMS_URL=$(kubectl get ingress usage-metering-svc-ingress --no-headers |awk '{print $4}')
 curl -k --output "swc_payload.tar.gz" \
      --header "Authorization: Bearer ${UMS_TOKEN}" \
