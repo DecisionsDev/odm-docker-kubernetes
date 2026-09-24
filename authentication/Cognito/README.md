@@ -526,8 +526,6 @@ In the **Container software library** tile, verify your entitlement on the **Vie
 #### b. Installation using Ingress
 
   Refer to the following documentation to install an NGINX Ingress Controller on:
-  - [Microsoft Azure Kubernetes Service](../../platform/azure/README-NGINX.md)
-  - [Amazon Elastic Kubernetes Service](../../platform/eks/README-NGINX.md)
   - [Google Kubernetes Engine](../../platform/gcloud/README_NGINX.md)
 
   When the NGINX Ingress Controller is ready, you can install the ODM release using [cognito-nginx-values.yaml](cognito-nginx-values.yaml) (See the `service.ingress.annotations`):
