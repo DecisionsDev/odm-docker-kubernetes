@@ -518,12 +518,12 @@ To generate a Usage report:
 1. run:
     ```bash
     UMS_TOKEN=$(kubectl get secret ibm-usage-metering-upload-token -n "${NAMESPACE}" -o jsonpath='{.data.token}' 2>/dev/null | base64 -d || echo "")
-    curl -k --output report.zip \
+    curl -k --output swc_payload.tar.gz \
           --header "Authorization: Bearer ${UMS_TOKEN}" \
-          --url "https://${EXTERNAL_IP}:8080/api/v1/snapshot"
+          --url "https://${EXTERNAL_IP}:8080/api/v1/swc"
     ```
 
-Then follow the instructions in [Uploading usage metrics to IBM Software Central](https://www.ibm.com/docs/en/cloud-paks/cp-biz-automation/26.0.0?topic=metrics-uploading-usage-software-central).
+Then follow the instructions in [Uploading usage metrics to IBM Software Central](https://www.ibm.com/docs/en/odm/9.6.0?topic=metrics-uploading-usage-software-central).
 
 ## Install the IBM License Service and retrieve license usage
 
