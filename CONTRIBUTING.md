@@ -241,7 +241,7 @@ Your request will be reviewed.  It may be merged directly, or you may receive fe
 request.
 
 
-[help documentation]: http://help.github.com/send-pull-requests
+[help documentation]: https://docs.github.com/en/pull-requests/reference/pull-requests
 [bug database]: https://github.com/DecisionsDev/odm-docker-kubernetes/issues
 [ml-users]: mailto:odmdev_open_source_user@wwpdl.vnet.ibm.com
 [Creating a Pull Request]: https://help.github.com/articles/creating-a-pull-request
