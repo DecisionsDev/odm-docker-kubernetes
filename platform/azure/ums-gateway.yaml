@@ -55,7 +55,7 @@ spec:
     http:
       path: /ready
       match:
-        statusCodes: 
+        statusCodes:
         - start: 200
           end: 200
     useTLS: true
@@ -71,7 +71,8 @@ spec:
     group: ""
     kind: Service
     name: ibm-usage-metering-instance
+    namespace: ${NAMESPACE}
   default:
     sni: ibm-usage-metering-instance.${NAMESPACE}.svc.cluster.local
     ports:
-    - port: 8080  # service port
+    - port: 8080
