@@ -1,9 +1,9 @@
-# Gateway API configuration for ILS (IBM License Service)
+# Gateway API configuration for ILS (IBM License Service sidecar on port 8082)
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
   name: ils-gateway
-  namespace: ${LICENSING_NAMESPACE}
+  namespace: ${NAMESPACE}
   annotations:
     alb.networking.azure.io/alb-namespace: ${NAMESPACE}   # the ApplicationLoadBalancer is defined in the namespace where ODM is deployed
     alb.networking.azure.io/alb-name: shared-alb
@@ -20,26 +20,26 @@ spec:
       mode: Terminate
       certificateRefs:
       - kind : Secret
-        name: ibm-license-service-cert-internal
-        namespace: ${LICENSING_NAMESPACE}
+        group: ""
+        name: ibm-usage-metering-instance
 ---
 # HTTPRoute for IBM Licensing Service
-# Based on IBM documentation: path /ibm-licensing-service-instance with URL rewrite to /
+# Path /ibm-licensing/* rewritten to /* before forwarding to port 8082
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: ils-httproute
-  namespace: ${LICENSING_NAMESPACE}
+  namespace: ${NAMESPACE}
 spec:
   parentRefs:
   - name: ils-gateway
-    namespace: ${LICENSING_NAMESPACE}
+    namespace: ${NAMESPACE}
     sectionName: https
   rules:
   - matches:
     - path:
         type: PathPrefix
-        value: /ibm-licensing-service-instance
+        value: /ibm-licensing
     filters:
     - type: URLRewrite
       urlRewrite:
@@ -47,27 +47,27 @@ spec:
           type: ReplacePrefixMatch
           replacePrefixMatch: /
     backendRefs:
-    - name: ibm-licensing-service-instance
-      port: 8080
+    - name: ibm-usage-metering-instance
+      port: 8082
 ---
 # https://learn.microsoft.com/en-us/azure/application-gateway/for-containers/api-specification-kubernetes
 apiVersion: alb.networking.azure.io/v1
 kind: HealthCheckPolicy
 metadata:
   name: ils-gateway-health-check-policy
-  namespace: ${LICENSING_NAMESPACE}
+  namespace: ${NAMESPACE}
 spec:
   targetRef:
     group: ""
     kind: Service
-    name: ibm-licensing-service-instance
-    namespace: ${LICENSING_NAMESPACE}
+    name: ibm-usage-metering-instance
+    namespace: ${NAMESPACE}
   default:
-    port: 8080  # pod port
+    port: 8082  # pod port — GET / returns 200
     http:
       path: /
       match:
-        statusCodes: 
+        statusCodes:
         - start: 200
           end: 200
     useTLS: true
@@ -77,14 +77,14 @@ apiVersion: alb.networking.azure.io/v1
 kind: BackendTLSPolicy
 metadata:
   name: ils-tls-policy
-  namespace: ${LICENSING_NAMESPACE}
+  namespace: ${NAMESPACE}
 spec:
   targetRef:
     group: ""
     kind: Service
-    name: ibm-licensing-service-instance
-    namespace: ${LICENSING_NAMESPACE}
+    name: ibm-usage-metering-instance
+    namespace: ${NAMESPACE}
   default:
-    sni: ibm-licensing-service-instance.${LICENSING_NAMESPACE}.svc.cluster.local
+    sni: ibm-usage-metering-instance.${NAMESPACE}.svc.cluster.local
     ports:
-    - port: 8080  # service port
+    - port: 8082
