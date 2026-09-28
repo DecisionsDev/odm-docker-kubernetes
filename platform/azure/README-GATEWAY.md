@@ -11,6 +11,7 @@ First, install the following software on your machine:
 
 - [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)
 - [Helm v3](https://helm.sh/docs/v3/intro/install/) or [Helm v4](https://helm.sh/docs/intro/install/)
+- [gettext](https://www.gnu.org/software/gettext/)
 
 Then, [create an Azure account and pay as you go](https://azure.microsoft.com/en-us/pricing/purchase-options/pay-as-you-go/).
 
@@ -117,8 +118,8 @@ The following example output shows the single node created in the previous steps
 
 ```
 NAME                                STATUS   ROLES   AGE   VERSION
-aks-nodepool1-27504729-vmss000000   Ready    agent   21m   v1.34.6
-aks-nodepool1-27504729-vmss000001   Ready    agent   21m   v1.34.6
+aks-nodepool1-32493714-vmss000000   Ready    <none>  21m   v1.35.8
+aks-nodepool1-32493714-vmss000001   Ready    <none>  21m   v1.35.8
 ```
 
 ### 2. Deploy Application Gateway for Containers ALB Controller using AKS Add-on
@@ -143,13 +144,25 @@ aks-nodepool1-27504729-vmss000001   Ready    agent   21m   v1.34.6
 
   - [Add prerequisites to an existing cluster](https://learn.microsoft.com/en-us/azure/application-gateway/for-containers/quickstart-deploy-application-gateway-for-containers-alb-controller-addon?toc=%2Fazure%2Faks%2Ftoc.json&bc=%2Fazure%2Faks%2Fbreadcrumb%2Ftoc.json&tabs=azure-cli%2Cazure-cli2#add-prerequisites-to-an-existing-cluster)
     ```shell
-    az aks update --resource-group resourcegroup --name cluster --enable-oidc-issuer --enable-workload-identity --no-wait
+    az aks update --resource-group <resourcegroup> --name <cluster> --enable-oidc-issuer --enable-workload-identity --no-wait
+    ```
+
+    This update might take a while. To check its progress, run:
+    ```shell
+    az aks show \
+      --resource-group <resourcegroup> \
+      --name <cluster> \
+      --query "provisioningState" \
+      --output table
     ```
 
   - [Install Managed Gateway API CRDs on an existing AKS cluster](https://learn.microsoft.com/en-us/azure/aks/managed-gateway-api#install-managed-gateway-api-crds-on-an-existing-aks-cluster) and [Install ALB Controller add-on](https://learn.microsoft.com/en-us/azure/application-gateway/for-containers/quickstart-deploy-application-gateway-for-containers-alb-controller-addon#install-alb-controller-add-on)
+  
+    When the update is succeeded, run:
     ```shell
-    az aks update --resource-group resourcegroup --name cluster --enable-gateway-api --enable-application-load-balancer
+    az aks update --resource-group <resourcegroup> --name <cluster> --enable-gateway-api --enable-application-load-balancer
     ```
+    Wait for the update to complete before proceeding to the next step.
 
 - Verification:
 
@@ -168,8 +181,9 @@ aks-nodepool1-27504729-vmss000001   Ready    agent   21m   v1.34.6
       ```
 
   - [Validate Add-on Resources in Azure portal](https://learn.microsoft.com/en-us/azure/application-gateway/for-containers/quickstart-deploy-application-gateway-for-containers-alb-controller-addon?toc=%2Fazure%2Faks%2Ftoc.json&bc=%2Fazure%2Faks%2Fbreadcrumb%2Ftoc.json&tabs=azure-cli%2Cazure-cli2#validate-add-on-resources-in-azure-portal):
-    - An identity named `applicationloadbalancer-<cluster-name>` should be created and granted three roles
-    - a subnet named `aks-appgateway` is automatically created with delegation enabled for `Microsoft.ServiceNetworking/TrafficController`
+
+    - A managed identity named `applicationloadbalancer-<cluster-name>` should be created and granted three roles `Network Contributor`, `AppGw for Containers Configuration Manager`, and `Reader`
+    - A subnet named `aks-appgateway` (found under your Virtual network `aks-vnet-xxxxxx`) is automatically created with delegation enabled for `Microsoft.ServiceNetworking/TrafficController`
 
 ## Install an ODM release and expose it with Gateway API
 
@@ -199,7 +213,7 @@ Where:
 * `<API_KEY_GENERATED>` is the entitlement key from the previous step. Make sure you enclose the key in double-quotes.
 * `<USER_EMAIL>` is the email address associated with your IBMid.
 
-> Note: 
+> [!NOTE]
 > 1. The **cp.icr.io** value for the docker-server parameter is the only registry domain name that contains the images. You must set the *docker-username* to **cp** to use an entitlement key as *docker-password*.
 > 2. The `ibm-entitlement-key` secret name will be used for the `image.pullSecrets` parameter when you run a Helm install of your containers. The `image.repository` parameter is also set by default to `cp.icr.io/cp/cp4a/odm`.
 
@@ -217,7 +231,7 @@ Check that you can access the ODM charts:
 ```shell
 helm search repo ibm-odm-prod
 NAME                        CHART VERSION	APP VERSION DESCRIPTION
-ibm-helm/ibm-odm-prod       26.0.0       	9.6.0.0     IBM Operational Decision Manager  License By in...
+ibm-helm/ibm-odm-prod       26.3.0       	9.7.0.0     IBM Operational Decision Manager  License By in...
 ```
 
 #### 2.3 (optional) Generate a self-signed certificate
@@ -236,7 +250,7 @@ openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mynicecompany.key \
 #### 2.4 Create a Kubernetes secret containing the key and certificate to use to secure the communication (TLS)
 
 ```shell
-kubectl create secret tls <mynicecompanytlssecret> --cert=tls.crt=mynicecompany.crt --key=tls.key=mynicecompany.key
+kubectl create secret tls <mynicecompanytlssecret> --cert=mynicecompany.crt --key=mynicecompany.key
 ```
 
 The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-defining-security-certificate).
@@ -257,8 +271,8 @@ The certificate must be the same as the one you used to enable TLS connections i
     export USERS_PASSWORD="odmAdmin"
     export DOMAIN="mynicecompany.com"
     export TLS_SECRET="mynicecompanytlssecret"
-    export CLUSTER_NAME="cluster"           # AKS cluster name
-    export RESOURCE_GROUP="resourcegroup"   # Azure resource group
+    export CLUSTER_NAME=<cluster>           # Your AKS cluster name
+    export RESOURCE_GROUP=<resourcegroup>   # Your Azure resource group
     export NAMESPACE="default"              # Namespace where ODM is installed
     ```
 
@@ -283,7 +297,8 @@ You can either:
   envsubst < aks-gateway-external-db-values.yaml | helm install ${HELM_RELEASE} ibm-helm/ibm-odm-prod -f - -n ${NAMESPACE}
   ```
 
-> **Note:** The above command installs the **latest version** of the chart (possibly an iFix). To install an alternative version:
+> [!NOTE] 
+> The above command installs the **latest version** of the chart (possibly an iFix). To install an alternative version:
 > 
 >   - List all versions available by running:
 >
@@ -380,9 +395,17 @@ The ODM services are then accessible from the following URLs:
 
 ### 1. Install the IBM Usage Metering service
 
-IBM Usage Metering Service gathers metrics to monitor compliance and create reports. It captures business value metrics for auditing purposes and to visualize metric usage in reporting tools, and sends the information to IBM Software Central. For more details, see [Collecting and sending usage metrics](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-collecting-sending-usage-metrics)
+IBM Usage Metering Service (UMS) gathers adoption metrics and creates reports. It captures business value metrics for auditing purposes and to visualize metric usage in reporting tools, and sends the information to IBM Software Central. For more details, see [Collecting and sending usage metrics](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-collecting-sending-usage-metrics).
 
-From ODM 9.6.0 onwards, it is required to install this metering service in the **same namespace as ODM**. ODM will systematically report usage metrics to the metering service through a CronJob. If the service is not installed, the job fails when it runs. For more information about the installation and configuration of UMS, see [Installing the usage metering service](https://www.ibm.com/docs/en/odm/9.6.0?topic=metrics-installing-metering). In this tutorial, we assume that ODM and UMS are installed in the same namespace.
+The IBM License Service (ILS) discovers the software that is installed in your infrastructure and generates reports containing contractual details. These metrics directly affect licensing obligations and are required for calculating license usage in compliance with IBM licensing requirements.
+
+An ILS side-car must be activated when installing UMS. This allows UMS to capture two metrics: contractual metrics for compliance purposes, and adoption metrics for various scenarios related to usage analysis. 
+
+It is required to install UMS in the same namespace as ODM. ODM will systematically report the usage metrics to the metering service through a CronJob. If the service is not installed, the job fails when it runs. 
+
+To install and configure UMS, follow the information at [Installing the usage metering service](https://www.ibm.com/docs/en/odm/9.6.0?topic=metrics-installing-metering).
+
+In this tutorial, we assume that ODM, UMS, and ILS are installed in the same namespace: `default`. The ILS side car is enabled with *namespace scope* to monitor only `default` namespace.
 
 ### 2. Troubleshooting
 
@@ -400,7 +423,7 @@ After installing the IBM Usage Metering service, choose one of the following mod
 
 #### 3.1 Online mode (Recommended)
 
-In online mode, the Usage Metering Service automatically sends usage data to IBM Software Central on a scheduled basis every 24 hours. This is the recommended configuration for environments with internet connectivity.
+In online mode, the Usage Metering Service automatically sends  *both adoption and contractual* data to IBM Software Central on a scheduled basis every 24 hours. This is the recommended configuration for environments with internet connectivity.
 
 **Configuration requirements**:
 - IBM Entitlement Key (required for authentication).
