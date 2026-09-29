@@ -13,6 +13,10 @@ spec:
       port: 8081
       protocol: TCP
       targetPort: 8081
+    - name: ls-port
+      port: 8082
+      protocol: TCP
+      targetPort: 8082
   selector:
     app.kubernetes.io/component: ibm-usage-metering-instance
     app.kubernetes.io/name: ibm-usage-metering
