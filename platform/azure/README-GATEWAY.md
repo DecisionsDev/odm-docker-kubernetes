@@ -74,7 +74,7 @@ The following example output shows that the resource group has been created succ
 
 #### 1.3 Create an AKS cluster
 
-This tutorial was tested using an AKS cluster version 1.34.
+This tutorial was tested using an AKS cluster version 1.35.8.
 
 Use the `az aks create` command to create an AKS cluster. The following example creates a cluster named <cluster> with two nodes. Azure Monitor for containers can also be enabled by using the `--enable-addons monitoring` parameter.  The operation takes several minutes to complete.
 
@@ -352,7 +352,7 @@ healthcheckpolicy.alb.networking.azure.io/odmchart-odm-decisionserverruntime-hea
 backendtlspolicy.alb.networking.azure.io/odmchart-odm-decisioncenter-tls-policy created
 backendtlspolicy.alb.networking.azure.io/odmchart-odm-decisionrunner-tls-policy created
 backendtlspolicy.alb.networking.azure.io/odmchart-odm-decisionserverconsole-tls-policy created
-backendtlspolicy.alb.networking.azure.io/odmchart-odm-decisionserverruntime-tls-policy created```
+backendtlspolicy.alb.networking.azure.io/odmchart-odm-decisionserverruntime-tls-policy created
 
 Waiting for the Application Load Balancer to be programmed...
 gateway.gateway.networking.k8s.io/odmchart-odm-gateway condition met
@@ -423,7 +423,7 @@ After installing the IBM Usage Metering service, choose one of the following mod
 
 #### 3.1 Online mode (Recommended)
 
-In online mode, the Usage Metering Service automatically sends  *both adoption and contractual* data to IBM Software Central on a scheduled basis every 24 hours. This is the recommended configuration for environments with internet connectivity.
+In online mode, the Usage Metering Service automatically sends *both adoption and contractual* data to IBM Software Central on a scheduled basis every 24 hours. This is the recommended configuration for environments with internet connectivity.
 
 **Configuration requirements**:
 - IBM Entitlement Key (required for authentication).
@@ -435,62 +435,72 @@ For complete step-by-step instructions on configuring online mode, see [Automati
 
 For offline/air-gapped environments where the Usage Metering Service cannot connect directly to IBM Software Central, you need to manually download and upload usage data.
 
-#### 3.2.1 Expose the IBM Usage Metering service using a Gateway API
+#### 3.2.1 Expose the IBM Usage Metering service and IBM License Service using a Gateway API
 
-The script below defines Gateway API Kubernetes resources that enable to expose the Usage Metering service.
+The IBM License Service (ILS) is integrated as a sidecar in the UMS pod and exposed through the same gateway. The script below creates:
+- A dedicated `ClusterIP` service (`ibm-license-service-agc-target`) pointing to the ILS sidecar port
+- A single Gateway with two HTTPRoutes — one for UMS (`/ibm-usage-metering-instance`) and one for ILS (`/ibm-licensing-service-instance`)
+- Independent health check and TLS policies for each service
 
-- Make sure you have set the environment variables (see [step](#3-configure-your-environment-and-set-environment-variables)).
-- Then run the script
+Make sure you have set the environment variables (see [step](#3-configure-your-environment-and-set-environment-variables)), then run:
 
 ```bash
-# uncomment the line below if you are running this script a second time to update the Gateway API k8s resources (safer)
+# uncomment the lines below if you are running this script a second time to update the Gateway API k8s resources (safer)
+# envsubst < ils-service.yaml | kubectl delete -f -
 # envsubst < ums-gateway.yaml | kubectl delete -f -
 
+envsubst < ils-service.yaml | kubectl apply -f -
 envsubst < ums-gateway.yaml | kubectl apply -f -
 
 echo "Waiting for the Application Load Balancer to be programmed..."
-kubectl wait --for=condition=Programmed gateway/ums-gateway -n ${NAMESPACE} --timeout=5m
+kubectl wait --for=condition=Programmed gateway/ibm-usage-metering-gateway -n ${NAMESPACE} --timeout=5m
 ```
 
 You should see the traces below:
 ```bash
-gateway.gateway.networking.k8s.io/ums-gateway created
-httproute.gateway.networking.k8s.io/ums-httproute created
-healthcheckpolicy.alb.networking.azure.io/ums-gateway-health-check-policy created
-backendtlspolicy.alb.networking.azure.io/ums-tls-policy created
+service/ibm-license-service-agc-target created
+gateway.gateway.networking.k8s.io/ibm-usage-metering-gateway created
+httproute.gateway.networking.k8s.io/ibm-usage-metering-routes created
+healthcheckpolicy.alb.networking.azure.io/ums-health-check-policy created
+healthcheckpolicy.alb.networking.azure.io/ils-health-check-policy created
+backendtlspolicy.alb.networking.azure.io/ums-backend-tls-policy created
+backendtlspolicy.alb.networking.azure.io/ils-backend-tls-policy created
 
 Waiting for the Application Load Balancer to be programmed...
-gateway.gateway.networking.k8s.io/ums-gateway condition met
+gateway.gateway.networking.k8s.io/ibm-usage-metering-gateway condition met
 ```
 
-It may take a couple of minutes for the gateway to be programmed. 
+It may take a couple of minutes for the gateway to be programmed.
 
-Run this command to see the status of Gateway instance:
+Run this command to see the status of the Gateway instance:
 ```bash
 kubectl get gateway
 ```
+
 ```bash
-NAME                  CLASS                ADDRESS                               PROGRAMMED   AGE
-odmchart-odm-gateway  azure-alb-external   hvf6h8c5f4fdhcbk.fz46.alb.azure.com   True         20m
-ums-gateway           azure-alb-external   asayd2eue7efc3ea.fz25.alb.azure.com   True         1m
+NAME                         CLASS                ADDRESS                               PROGRAMMED   AGE
+odmchart-odm-gateway         azure-alb-external   hvf6h8c5f4fdhcbk.fz46.alb.azure.com   True         20m
+ibm-usage-metering-gateway   azure-alb-external   asayd2eue7efc3ea.fz25.alb.azure.com   True         1m
 ```
 
-Wait for the Gateway to be programmed (`True`) to access the UMS service to retrieve the report.
+Wait for the Gateway to be programmed (`True`) to access the UMS and ILS services.
 
 #### 3.2.2 Retrieve metering usage data
 
-To get the Usage Metering report, run the command below:
+To get the report, run the command below:
 ```bash
-UMS_URL=$(kubectl get gateway ums-gateway -n ${NAMESPACE} -o jsonpath='{.status.addresses[*].value}')
-UMS_TOKEN=$(kubectl get secret ibm-usage-metering-upload-token -n ${NAMESPACE} -o jsonpath='{.data.token}' | base64 -d)
+GW_URL=$(kubectl get gateway ibm-usage-metering-gateway -n ${NAMESPACE} -o jsonpath='{.status.addresses[*].value}')
+TOKEN=$(kubectl get secret ibm-usage-metering-upload-token -n ${NAMESPACE} -o jsonpath='{.data.token}' | base64 -d)
 curl -k --output "swc_payload.tar.gz" \
-     --header "Authorization: Bearer ${UMS_TOKEN}" \
-     --url "https://${UMS_URL}/api/v1/swc"
+     --header "Authorization: Bearer ${TOKEN}" \
+     "https://${GW_URL}/ibm-usage-metering-instance/api/v1/swc"
 ```
 
 The `swc_payload.tar.gz` contains the following files:
 - manifest.json
 - usage.json
+
+The `usage.json` file contains both adoption (`"metricType": "adoption"`) and contractual (`"metricType": "contract"`) metrics.
 
 #### 3.2.3 Sending data to IBM Software Central
 
@@ -502,7 +512,7 @@ curl -X POST "https://swc.saas.ibm.com/metering/api/v2/metrics" \
      -H "Authorization: Bearer <ENTITLEMENT_KEY>" \
      -F "file=@swc_payload.tar.gz;type=application/gzip"
 ```
-> **Note**
+> [!NOTE]
 > Replace the `<ENTITLEMENT_KEY>` placeholder with IBM Entitlement Key. You can obtain it from [IBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary).
 
 For complete instructions, see [Uploading usage metrics to IBM Software Central](https://www.ibm.com/docs/en/odm/9.6.0?topic=metrics-uploading-usage-software-central).
@@ -511,118 +521,21 @@ For complete instructions, see [Uploading usage metrics to IBM Software Central]
 
 For general information about collecting and sending usage metrics, see [Collecting and sending usage metrics](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-collecting-sending-usage-metrics).
 
-## Install IBM License Service
+### 4. [Optional] Access IBM License Service
 
-Follow the **Installation** section of the [Installation License Service without Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.x_cd?topic=ilsfpcr-installing-license-service-without-operator-lifecycle-manager-olm) documentation, **except for the step 7** which must be replaced by the following:
-
-> 7. Update the License Service instance that was created during installation to accept the license. At the same time, the default gateway configuration must be deactivated. We will apply the configuration that is adapted for AWS Load Balancer controller.
-> - Create the `accept-license.yaml` file with the following content:
->
->   ```yaml
->   spec:
->     gatewayEnabled: false
->     license:
->       accept: true
->   ```
-> 
-> - Patch the IBM Licensing instance
->   ```bash
->   kubectl patch IBMLicensing instance --type merge --patch-file accept-license.yaml
->   ```
-
-### 1. Expose the IBM License Service instance using the Gateway API
-
-The script below defines Gateway API Kubernetes resources to expose the License service.
-
-- Make sure you have set the environment variables (see [step](#3-configure-your-environment-and-set-environment-variables)),
-- change the value of the environment variable `LICENSING_NAMESPACE` if the License Service is not installed in the `ibm-licensing` namespace,
-- then run the script
+ILS is exposed through the same gateway as UMS (deployed in [section 3.2.1](#321-expose-the-ibm-usage-metering-service-and-ibm-license-service-using-a-gateway-api)). You will be able to access its dashboard by retrieving the URL and the required token with this command:
 
 ```bash
-export LICENSING_NAMESPACE="ibm-licensing"
+GW_URL=$(kubectl get gateway ibm-usage-metering-gateway -n ${NAMESPACE} -o jsonpath='{.status.addresses[*].value}')
+TOKEN=$(kubectl get secret ibm-usage-metering-upload-token -n ${NAMESPACE} -o jsonpath='{.data.token}' | base64 -d)
 
-# uncomment the line below if you are running this script a second time to update the Gateway API k8s resources (safer)
-# envsubst < ils-gateway.yaml | kubectl delete -f -
-
-envsubst < ils-gateway.yaml | kubectl apply -f -
-
-echo "Waiting for the Application Load Balancer to be programmed..."
-kubectl wait --for=condition=Programmed gateway/ils-gateway -n ${LICENSING_NAMESPACE} --timeout=5m
-````
-
-You should then see the traces below:
-
-```bash
-gateway.gateway.networking.k8s.io/ils-gateway created
-httproute.gateway.networking.k8s.io/ils-httproute created
-healthcheckpolicy.alb.networking.azure.io/ils-gateway-health-check-policy created
-backendtlspolicy.alb.networking.azure.io/ils-tls-policy created
-
-Waiting for the Application Load Balancer to be programmed...
-gateway.gateway.networking.k8s.io/ils-gateway condition met
+# View license usage status
+echo "https://${GW_URL}/ibm-licensing-service-instance/status?token=${TOKEN}"
 ```
+Alternatively you can retrieve the licensing report .zip file by running:
 
-It may take a couple of minutes for the gateway to be programmed (ready). 
-
-Run the following command to see the status of Gateway instance:
-
-```bash
-kubectl get gateway -n ${LICENSING_NAMESPACE}
+```shell
+# Download license snapshot
+curl -k --output "ils_report.zip" \
+     "https://${GW_URL}/ibm-licensing-service-instance/snapshot?token=${TOKEN}"
 ```
-
-You will find the address and other details about `ibm-licensing-service-gateway`.
-```bash
-NAME                  CLASS                ADDRESS                               PROGRAMMED   AGE
-ils-gateway           azure-alb-external   bzetc7augqbqdadh.fz85.alb.azure.com   True         3m30s
-```
-
-When the Gateway is programmed (set to `True`), you will be able to access the IBM License Service by retrieving the URL with this command:
-
-```bash
-export TOKEN=$(kubectl get secret ibm-licensing-token -n ${LICENSING_NAMESPACE} -o jsonpath='{.data.token}' |base64 -d)
-export LICENSING_URL=$(kubectl get gateway ils-gateway -n ${LICENSING_NAMESPACE} -o jsonpath='{.status.addresses[*].value}')/ibm-licensing-service-instance
-echo "https://${LICENSING_URL}/status?token=${TOKEN}"
-```
-
-You can access the `https://${LICENSING_URL}/status?token=${TOKEN}` URL to view the licensing usage. 
-
-Alternatively, you can also retrieve the licensing report .zip file by running:
-
-```bash
-curl -k "https://${LICENSING_URL}/snapshot?token=${TOKEN}" --output report.zip
-```
-
-### 2. Reporting License Usage to IBM Software Central
-
-IBM License Service can optionally send collected license usage data directly to IBM Software Central. For more information about the configuration, see [Reporting license usage to IBM Software Central](https://www.ibm.com/docs/en/odm/9.6.0?topic=metering-reporting-license-usage-software-central).
-
-### 2.1 Online mode
-
-For detailed steps on configuring online mode (automatic data transmission), including creating the IBM Entitlement Key secret, configuring the IBMLicensing Custom Resource, and verifying the setup, refer to the [online mode documentation](https://www.ibm.com/docs/en/odm/9.6.0?topic=central-online-mode-configuration).
-
-
-### 2.2 Offline mode (Air-gapped environments)
-
-For air-gapped environments where ILS cannot directly connect to IBM Software Central, download the usage data using the Gateway-specific commands below:
-
-```bash
-export TOKEN=$(kubectl get secret ibm-licensing-token -n ${LICENSING_NAMESPACE} -o jsonpath='{.data.token}' |base64 -d)
-export LICENSING_URL=$(kubectl get gateway ils-gateway -n ${LICENSING_NAMESPACE} -o jsonpath='{.status.addresses[*].value}')/ibm-licensing-service-instance
-curl --insecure --output "ils_swc_payload.tar.gz" \
-     "https://${LICENSING_URL}/swc_aggregations?token=${TOKEN}"
-```
-
-Transfer the downloaded `ils_swc_payload.tar.gz` file to a system with internet connectivity.
-
-Run the command to upload the file to IBM Software Central:
-```bash
-curl -X POST "https://swc.saas.ibm.com/metering/api/v2/metrics" \
-     -H "Authorization: Bearer <ENTITLEMENT_KEY>" \
-     -F "file=@ils_swc_payload.tar.gz;type=application/gzip"
-```
-> **Note**
-> Replace the `<ENTITLEMENT_KEY>` placeholder with IBM Entitlement Key. You can obtain it from [IBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary).
-
-For complete instructions on uploading the downloaded file to IBM Software Central, see the [offline mode documentation](https://www.ibm.com/docs/en/odm/9.6.0?topic=central-offline-mode-air-gapped-environments).
-
-If your IBM License Service instance is not running properly, refer to this [troubleshooting page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.x_cd?topic=service-troubleshooting-license).

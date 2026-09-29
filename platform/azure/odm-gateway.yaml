@@ -1,8 +1,11 @@
+# =============================================================================
 # Gateway API descriptor for AKS native Gateway Controller
+# =============================================================================
 # Uses AKS built-in Gateway API support (no additional CRDs needed)
 # Requires that you have:
 #   - installed the ALB Controller on your cluster, and
 #   - deployed the Application Gateway for Containers resources in Azure
+# =============================================================================
 
 apiVersion: alb.networking.azure.io/v1
 kind: ApplicationLoadBalancer
@@ -260,6 +263,7 @@ spec:
     group: ""
     kind: Service
     name: ${HELM_RELEASE}-odm-decisionserverconsole
+    namespace: ${NAMESPACE}
   default:
     sni: ${HELM_RELEASE}-odm-decisionserverconsole.${NAMESPACE}.svc.cluster.local
     ports:
