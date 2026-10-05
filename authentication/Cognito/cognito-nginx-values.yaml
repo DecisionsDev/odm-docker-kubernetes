@@ -30,3 +30,7 @@ service:
       nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
       nginx.ingress.kubernetes.io/affinity: "cookie"
     enabled: true
+  ingressMcp:
+    annotations:
+      kubernetes.io/ingress.class: nginx
+    enabled: true
