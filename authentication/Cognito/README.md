@@ -362,7 +362,7 @@ export const handler = async (event, context) => {
 > [!WARNING]
 > Do not forget to click the **Deploy** button !
 
-3. Associate the Lamda function to the Pre token generation Lambda trigger
+3. Associate the Lambda function to the Pre token generation Lambda trigger
 
 * Back to the **Pre token generation Lambda trigger** creation dashboard
    * Click the Refresh Icon button under **Assign Lambda function**
@@ -371,7 +371,29 @@ export const handler = async (event, context) => {
 
 ![Add Lambda Trigger](images/AddLambdaTrigger.png)
 
+## Create a resource server for the Management MCP server
 
+A resource server is not a running component inside Cognito. It represents a backend that is allowed to interact with your Cognito App clients.
+
+The Management MCP Server implements the Model Context Protocol (MCP) OAuth 2.1 Authorization Framework, whereby the MCP client uses the Authorization Code flow with PKCE to authorize the user, then request a token to the OIDC Provider and finally pass it to the MCP server so it can impersonate the user when connecting to ODM.
+
+A resource server representing the Management MCP Server must be defined in the user pool so that Cognito accepts to deliver tokens intended to the Management MCP Server.
+
+To create the resource server:
+
+* Select the **odmuserpool** User Pool:
+  * Select the **Resource servers** tab in the left pane:
+    * Click the **Create resource server** button
+   
+  * In the **Resource server name** field:
+     * Enter **Management MCP server**
+
+  * In the **Resource server identifier** field:
+     * Enter the URL of the Management MCP server, eg. `https://k8s-default-odmchart-d1808b963c-1750078425.eu-west-3.elb.amazonaws.com`
+
+  * Click the **Create resource server** button
+
+![Create Resource Server for Management MCP server](images/CreateResourceServer_MCP.png)
 
 # Deploy ODM on a container configured with Cognito (Part 2)
 
@@ -545,23 +567,26 @@ In the **Container software library** tile, verify your entitlement on the **Vie
   - on OpenShift you can get the route names and hosts by running `oc get routes`:
 
     ```
-    NAME                                  HOST/PORT
-    my-odm-release-odm-dc-route           <DC_HOST>
-    my-odm-release-odm-dr-route           <DR_HOST>
-    my-odm-release-odm-ds-console-route   <DS_CONSOLE_HOST>
-    my-odm-release-odm-ds-runtime-route   <DS_RUNTIME_HOST>
+    NAME                                      HOST/PORT
+    my-odm-release-odm-dc-route               <DC_HOST>
+    my-odm-release-odm-dr-route               <DR_HOST>
+    my-odm-release-odm-ds-console-route       <DS_CONSOLE_HOST>
+    my-odm-release-odm-ds-runtime-route       <DS_RUNTIME_HOST>
+    my-odm-release-odm-decision-mcp-route     <DECISION_MCP_HOST>
+    my-odm-release-odm-management-mcp-route   <MANAGEMENT_MCP_HOST>
     ```
 
-  - When using an Ingress, the endpoint is the address of the ODM ingress and is the same for all components. You can get it with:
+  - When using Ingress, there are two ingresses, one for the ODM consoles and other backends and one for the MCP servers. You can get them with:
 
     ```
-    kubectl get ingress my-odm-release-odm-ingress
+    kubectl get ingress
     ```
 
-    You get the following ingress address:
+    You get the following ingress addresses:
     ```
-    NAME                       CLASS    HOSTS   ADDRESS          PORTS   AGE
-    my-odm-release-odm-ingress <none>   *       <INGRESS_ADDRESS>   80      14d
+    NAME                            CLASS    HOSTS   ADDRESS                 PORTS   AGE
+    my-odm-release-odm-ingress      alb      *       <INGRESS_ADDRESS>       80      14d
+    my-odm-release-odm-ingress-mcp  alb      *       <INGRESS_ADDRESS_MCP>   80      14d
     ```
 
 ### Register the ODM redirect URL
@@ -584,6 +609,9 @@ Register the redirect URIs into your Cognito App Client.
       - Decision Server Runtime redirect URI:  `https://<INGRESS_ADDRESS>/DecisionService/openid/redirect/odm`
       - Rule Designer redirect URI: `https://127.0.0.1:9081/oidcCallback`
 
+    - Plus in both cases:
+      - Management MCP server redirect URI: defined by the MCP client, eg. `http://localhost:34206/oauth/callback` if you use `mcp-remote` as proxy in the MCP client and configure it as suggested in [User authentication in remote mode](https://github.com/DecisionsDev/ibm-odm-management-mcp-server/blob/main/docs/Auth-remote-mode.md)
+
   - From the Cognito admin console, in **odmuserpool** / **App clients** / **odm** 
     - Select the **Login pages** tab
     - Click the **Edit** button in the *Managed login pages configuration*
@@ -593,6 +621,21 @@ Register the redirect URIs into your Cognito App Client.
 > [!WARNING]
 > Do not forget to replace <DC_HOST> with your actual host name
 
+### Configure the Management MCP server external URL
+
+You can skip this step if you use Openshift routes, as the configuration is automatic in that case.
+
+The Management MCP Server implements the Model Context Protocol (MCP) OAuth 2.1 Authorization Framework, and needs to publish its external URL (in the field `resource`) in the response to a request to the path `.well-known/oauth-protected-resource`.
+
+For that, run the command below to modify the Management MCP server configuration accordingly:
+
+  ```
+  helm upgrade my-odm-release ibm-helm/ibm-odm-prod -f cognito-nginx-values.yaml --set managementMcpServer.openid.mcpExtUrl=<MCP_INGRESS_ADDRESS>
+  ```
+
+  where `<MCP_INGRESS_ADDRESS>` is the address of the ingress for the MCP servers, for instance `https://k8s-default-odmchart-d1808b963c-1750078425.eu-west-3.elb.amazonaws.com`
+  
+> [!NOTE] This address must be declared as a resource server in [Create a resource server for the Management MCP server](#create-a-resource-server-for-the-management-mcp-server).
 
 ### Set up Rule Designer
 
