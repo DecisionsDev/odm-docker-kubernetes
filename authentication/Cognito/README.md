@@ -511,6 +511,24 @@ In the **Container software library** tile, verify your entitlement on the **Vie
         --from-file=openIdWebSecurity.xml=./output/openIdWebSecurity.xml \
         --from-file=webSecurity.xml=./output/webSecurity.xml
     ```
+5. Create the Decision MCP server auth secret
+
+The Decision MCP server needs the details (client_id, client_secret and scope) of the App client used for the client_credentials grant type.
+
+If you followed the instructions, those details are available in `OdmOidcProviders.json` and the Decision MCP server is able to extract those information from that file automatically during its startup, and therefore no auth secret is needed for the Decision MCP server.
+
+But if the file `OdmOidcProviders.json` is missing in the secret `cognito-auth-secret` or does not contain the client_credentials details, then you need to:
+
+1. store those details in a secret for the Decision MCP server:
+
+    ```
+    kubectl create secret generic decision-mcp-auth-secret \
+        --from-literal=CLIENT_ID=${COGNITO_CC_CLIENT_ID} \
+        --from-literal=CLIENT_SECRET=${COGNITO_CC_CLIENT_SECRET} \
+        --from-literal=SCOPE=${COGNITO_CC_DEFAULT_CUSTOM_SCOPE}
+    ```
+
+1. run the `helm install` command (in the next step) with the additional parameter `--set decisionMcpServer.authSecretRef=decision-mcp-auth-secret`
 
 
 ## Install your ODM Helm release
@@ -526,7 +544,7 @@ In the **Container software library** tile, verify your entitlement on the **Vie
   ```shell
   helm search repo ibm-odm-prod
   NAME                          CHART VERSION   APP VERSION     DESCRIPTION
-  ibm-helm/ibm-odm-prod         26.0.0          9.6.0.0        IBM Operational Decision Manager
+  ibm-helm/ibm-odm-prod         26.0.3          9.7.0.0        IBM Operational Decision Manager
   ```
 
 ### 3. Run the `helm install` command
@@ -534,7 +552,7 @@ In the **Container software library** tile, verify your entitlement on the **Vie
 
 #### a. Installation on OpenShift using Routes
 
-  See the [Preparing to install](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-preparing-install-operational-decision-manager) documentation for more information. Inspect [cognito-values.yaml](cognito-values.yaml) for the parameters that have been defined for this installation.
+  See the [Preparing to install](https://www.ibm.com/docs/en/odm/9.7.0?topic=production-preparing-install-operational-decision-manager) documentation for more information. Inspect [cognito-values.yaml](cognito-values.yaml) for the parameters that have been defined for this installation.
 
   ```shell
   helm install my-odm-release ibm-helm/ibm-odm-prod -f cognito-values.yaml
@@ -542,7 +560,7 @@ In the **Container software library** tile, verify your entitlement on the **Vie
 
 > **Note:**  
 > This command installs the **latest available version** of the chart (possibly an interim fix).  
-> If you want to install a **specific version**, add the `--version <CHART_VERSION>` option, eg. `--version 26.0.0`
+> If you want to install a **specific version**, add the `--version <CHART_VERSION>` option, eg. `--version 26.0.3`
 >
 
 #### b. Installation using Ingress
@@ -562,7 +580,7 @@ In the **Container software library** tile, verify your entitlement on the **Vie
 
 ### Access the ODM services
 
-  Refer to [this documentation](https://www.ibm.com/docs/en/odm/9.6.0?topic=tasks-configuring-external-access) to retrieve the endpoints.
+  Refer to [this documentation](https://www.ibm.com/docs/en/odm/9.7.0?topic=tasks-configuring-external-access) to retrieve the endpoints.
 
   - on OpenShift you can get the route names and hosts by running `oc get routes`:
 
@@ -585,8 +603,8 @@ In the **Container software library** tile, verify your entitlement on the **Vie
     You get the following ingress addresses:
     ```
     NAME                            CLASS    HOSTS   ADDRESS                 PORTS   AGE
-    my-odm-release-odm-ingress      alb      *       <INGRESS_ADDRESS>       80      14d
-    my-odm-release-odm-ingress-mcp  alb      *       <INGRESS_ADDRESS_MCP>   80      14d
+    my-odm-release-odm-ingress      <none>   *       <INGRESS_ADDRESS>       80      14d
+    my-odm-release-odm-ingress-mcp  <none>   *       <INGRESS_ADDRESS_MCP>   80      14d
     ```
 
 ### Register the ODM redirect URL
@@ -660,7 +678,7 @@ For that, run the command below to modify the Management MCP server configuratio
 
 4. Restart Rule Designer.
 
-For more information, refer to [this documentation](https://www.ibm.com/docs/en/odm/9.6.0?topic=designer-importing-security-certificate-in-rule).
+For more information, refer to [this documentation](https://www.ibm.com/docs/en/odm/9.7.0?topic=designer-importing-security-certificate-in-rule).
 
 ### Getting Started with IBM Operational Decision Manager for Containers
 
@@ -680,7 +698,7 @@ Deploy the **Loan Validation Service** production_deployment ruleapps using the 
 
 You can retrieve the payload.json from the ODM Decision Server Console or use [the provided payload](payload.json).
 
-As explained in the ODM on Certified Kubernetes documentation [Configuring user access with OpenID](https://www.ibm.com/docs/en/odm/9.6.0?topic=access-configuring-user-openid), we advise you to use basic authentication for the ODM runtime call for better performance and to avoid token expiration and revocation.
+As explained in the ODM on Certified Kubernetes documentation [Configuring user access with OpenID](https://www.ibm.com/docs/en/odm/9.7.0?topic=access-configuring-user-openid), we advise you to use basic authentication for the ODM runtime call for better performance and to avoid token expiration and revocation.
 
 You perform a basic authentication ODM runtime call in the following way:
 
