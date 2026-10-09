@@ -27,6 +27,7 @@
             - [b. Installation using Ingress](#b-installation-using-ingress)
     - [Complete post-deployment tasks](#complete-post-deployment-tasks)
         - [Register the ODM redirect URL](#register-the-odm-redirect-url)
+        - [Configure the Management MCP server external URL](#configure-the-management-mcp-server-external-url)
         - [Access the ODM services](#access-the-odm-services)
         - [Set up Rule Designer](#set-up-rule-designer)
         - [Getting Started with IBM Operational Decision Manager for Containers](#getting-started-with-ibm-operational-decision-manager-for-containers)
