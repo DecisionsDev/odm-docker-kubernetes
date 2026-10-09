@@ -4,6 +4,11 @@ OpenID Client Credentials with a private key is a robust and secure way for clie
 
 For additional information regarding the implement in Liberty, please refer to this [link](https://openliberty.io/blog/2023/09/19/23.0.0.9.html#jwt).
 
+> [!NOTE]
+> - The Model Context Protocol (MCP) OAuth 2.1 Authorization Framework does not currently support PKJWT.
+> - As a consequence, the Management MCP server cannot impersonate the users who interact with it when connecting to ODM. All the actions are done with the credentials of the MCP server itself.
+> - Only the setup with a Client Secret enables the Management MCP server to impersonate the users who use it.
+
 # Set up a Microsoft Entra ID application using a private key JWT
 
 <!-- TOC -->
@@ -227,7 +232,7 @@ Then, click Save.
   ```shell
   helm search repo ibm-odm-prod
   NAME                  	CHART VERSION	APP VERSION	DESCRIPTION
-  ibm-helm/ibm-odm-prod	26.0.0       	9.6.0.0   	IBM Operational Decision Manager
+  ibm-helm/ibm-odm-prod	26.0.3       	9.7.0.0   	IBM Operational Decision Manager
   ```
 
 ### Run the `helm install` command
@@ -236,7 +241,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 
 #### a. Installation on OpenShift using Routes
 
-  See the [Preparing to install](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-preparing-install-operational-decision-manager) documentation for additional information.
+  See the [Preparing to install](https://www.ibm.com/docs/en/odm/9.7.0?topic=production-preparing-install-operational-decision-manager) documentation for additional information.
   Get the [entraid-pkjwt-ocp-values.yaml](./entraid-pkjwt-ocp-values.yaml) file and run the command:
 
   ```shell
@@ -292,7 +297,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 
 1. Get the ODM endpoints.
 
-    Refer to the [documentation](https://www.ibm.com/docs/en/odm/9.6.0?topic=tasks-configuring-external-access) to retrieve the endpoints.
+    Refer to the [documentation](https://www.ibm.com/docs/en/odm/9.7.0?topic=tasks-configuring-external-access) to retrieve the endpoints.
     For example, on OpenShift you can get the route names and hosts with:
 
     ```shell
@@ -302,23 +307,26 @@ You can now install the product. We will use the PostgreSQL internal database an
     You get the following hosts:
 
     ```
-    my-odm-release-odm-dc-route           <DC_HOST>
-    my-odm-release-odm-dr-route           <DR_HOST>
-    my-odm-release-odm-ds-console-route   <DS_CONSOLE_HOST>
-    my-odm-release-odm-ds-runtime-route   <DS_RUNTIME_HOST>
+    my-odm-release-odm-dc-route               <DC_HOST>
+    my-odm-release-odm-dr-route               <DR_HOST>
+    my-odm-release-odm-ds-console-route       <DS_CONSOLE_HOST>
+    my-odm-release-odm-ds-runtime-route       <DS_RUNTIME_HOST>
+    my-odm-release-odm-decision-mcp-route     <DECISION_MCP_HOST>
+    my-odm-release-odm-management-mcp-route   <MANAGEMENT_MCP_HOST>
     ```
 
-    Using an Ingress, the endpoint is the address of the ODM ingress and is the same for all components. You can get it with:
+   Using Ingresses, there are two ingresses, one for the ODM consoles and other backends and one for the MCP servers. You can get them with:
 
     ```shell
-    kubectl get ingress my-odm-release-odm-ingress
+    kubectl get ingress my-odm-release-odm-ingress my-odm-release-odm-ingress-mcp
     ```
 
    You get the following ingress address:
 
     ```
-    NAME                       CLASS    HOSTS   ADDRESS          PORTS   AGE
-    my-odm-release-odm-ingress <none>   *       <INGRESS_ADDRESS>   80      14d
+    NAME                           CLASS    HOSTS   ADDRESS             PORTS   AGE
+    my-odm-release-odm-ingress     <none>   *       <INGRESS_ADDRESS>   80      14d
+    my-odm-release-odm-ingress-mcp <none>   *       <INGRESS_ADDRESS>   80      14d
     ```
 
 3. Register the redirect URIs into your Microsoft Entra ID application.
@@ -397,7 +405,7 @@ To be able to securely connect your Rule Designer to the Decision Server and Dec
 
 4. Restart Rule Designer.
 
-For more information, refer to the [documentation](https://www.ibm.com/docs/en/odm/9.6.0?topic=designer-importing-security-certificate-in-rule).
+For more information, refer to the [documentation](https://www.ibm.com/docs/en/odm/9.7.0?topic=designer-importing-security-certificate-in-rule).
 
 ### Getting Started with IBM Operational Decision Manager for Containers
 
@@ -438,7 +446,7 @@ openssl pkcs12 -export -out myodmcompany.p12 -inkey myodmcompany.key -in myodmco
 keytool -importkeystore -srckeystore myodmcompany.p12 -srcstoretype pkcs12 -srcalias 1 -srcstorepass changeme -destkeystore myodmcompany.jks -deststoretype jks -deststorepass changeme -destalias myalias
 ```
 
-Now you can generate the client_assertion following the [ODM documentation](https://www.ibm.com/docs/en/odm/9.6.0?topic=960-generating-json-web-token-client-assertion).
+Now you can generate the client_assertion following the [ODM documentation](https://www.ibm.com/docs/en/odm/9.7.0?topic=970-generating-json-web-token-client-assertion).
 
 ```shell
 java -cp $DCLIB/jrules-teamserver.jar:$DCLIB/jose4j-0.9.5.jar:$DCLIB/slf4j-api-1.7.25.jar com.ibm.rules.oauth.ClientAssertionHelper -clientId <CLIENT_ID> -tokenEndpoint https://login.microsoftonline.com/<TENANT_ID>/oauth2/v2.0/token -keyAliasName myalias -keyStorePwd changeme -keyStoreLocation ./myodmcompany.jks
