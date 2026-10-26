@@ -222,7 +222,7 @@ Verify:
 
 ## 9. Expose the Management MCP server URL as an API
 
-Under "Expose an API", Click "Add" and set the Application ID URI to the Management MCP server URL (without the ending `/mcp` path) eg. `https://{mnanagement-mcp-server-url}`.
+Under "Expose an API", Click "Add" and set the Application ID URI to the Management MCP server URL (without the ending `/mcp` path) eg. `https://{management-mcp-server-url}`.
 
 This step is required to enable a MCP client (in a AI agent) to connect to a Management MCP server configured for MCP Oauth 2.1. 
 
