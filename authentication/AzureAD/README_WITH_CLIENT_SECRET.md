@@ -15,6 +15,7 @@
             - [b. Installation using Ingress](#b-installation-using-ingress)
     - [Complete post-deployment tasks](#complete-post-deployment-tasks)
         - [Register the ODM redirect URLs](#register-the-odm-redirect-urls)
+        - [Configure the Management MCP server external URL](#configure-the-management-mcp-server-external-url)
         - [Access the ODM services](#access-the-odm-services)
         - [Set up Rule Designer](#set-up-rule-designer)
         - [Getting Started with IBM Operational Decision Manager for Containers](#getting-started-with-ibm-operational-decision-manager-for-containers)
@@ -219,6 +220,16 @@ Verify:
 
 > If this command failed, try to log in to the [Azure portal](https://portal.azure.com/). You may have to enable 2FA and/or change the password for the first time.
 
+## 9. Expose the Management MCP server URL as an API
+
+Under "Expose an API", Click "Add" and set the Application ID URI to the Management MCP server URL (without the ending `/mcp` path) eg. `https://{management-mcp-server-url}`.
+
+This step is required to enable a MCP client (in a AI agent) to connect to a Management MCP server configured for MCP Oauth 2.1. 
+
+In this configuration the Management MCP server requires that the MCP clients present a valid token. The MCP clients use the Authorization Code flow to get a token from Entra ID. As a MCP client requests a token, it may send the URL of the MCP server as the resource (that will consume the token). Entra ID rejects this request unless the resource is defined as an application resource in "Expose an API".
+
+Read more about the MCP Oauth 2.1 configuration in the MCP Management server in [User authentication in remote mode](https://github.com/DecisionsDev/ibm-odm-management-mcp-server/blob/main/docs/Auth-remote-mode.md).
+
 # Deploy ODM on a container configured with Microsoft Entra ID (Part 2)
 
 ## Prepare your environment for the ODM installation
@@ -291,7 +302,7 @@ Verify:
 
     This section is optional.
 
-    ODM Decision Center allows to [manage users and groups from the Business console](https://www.ibm.com/docs/en/odm/9.6.0?topic=center-enabling-users-groups) in order to set access security on specific projects.
+    ODM Decision Center allows to [manage users and groups from the Business console](https://www.ibm.com/docs/en/odm/9.7.0?topic=center-enabling-users-groups) in order to set access security on specific projects.
     The Groups and Users import can be done using an LDAP connection.
     But, if the openId server also provides a SCIM server, then it can also be managed using a SCIM connection.
 
@@ -302,7 +313,7 @@ Verify:
     - [for users](https://learn.microsoft.com/en-us/graph/api/resources/users?view=graph-rest-1.0&preserve-view=true)
     - [for groups](https://learn.microsoft.com/en-us/graph/api/resources/groups-overview?view=graph-rest-1.0&tabs=http)
 
-    Then, it will generate a [group-security-configurations.xml](https://www.ibm.com/docs/en/odm/9.6.0?topic=access-optional-user-liberty-configurations#reference_w1b_xhq_2rb__title__3) file that will be consumed using the [Decision Center rest-api](https://www.ibm.com/docs/en/odm/9.6.0?topic=mufdc-creating-users-groups-roles-by-using-rest-api) to populate Groups and Users in the Administration Tab.
+    Then, it will generate a [group-security-configurations.xml](https://www.ibm.com/docs/en/odm/9.7.0?topic=access-optional-user-liberty-configurations#reference_w1b_xhq_2rb__title__3) file that will be consumed using the [Decision Center rest-api](https://www.ibm.com/docs/en/odm/9.7.0?topic=mufdc-creating-users-groups-roles-by-using-rest-api) to populate Groups and Users in the Administration Tab.
 
     In a kubernetes context, this script can be called by a CRON job.
     Using the new ODM sidecar container mechanism, it can also be managed by the Decision Center pod himself.
@@ -331,7 +342,7 @@ Verify:
   ```shell
   helm search repo ibm-odm-prod
   NAME                  	CHART VERSION	APP VERSION	DESCRIPTION
-  ibm-helm/ibm-odm-prod   26.0.0          9.6.0.0   	IBM Operational Decision Manager
+  ibm-helm/ibm-odm-prod   26.0.3          9.7.0.0   	IBM Operational Decision Manager
   ```
 
 ### Run the `helm install` command
@@ -340,7 +351,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 
 #### a. Installation on OpenShift using Routes
 
-  See the [Preparing to install](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-preparing-install-operational-decision-manager) documentation for additional information.
+  See the [Preparing to install](https://www.ibm.com/docs/en/odm/9.7.0?topic=production-preparing-install-operational-decision-manager) documentation for additional information.
   Get the [entraid-ocp-values.yaml](./entraid-ocp-values.yaml) file and run the command:
 
   ```shell
@@ -403,7 +414,7 @@ You can now install the product. We will use the PostgreSQL internal database an
 
 1. Get the ODM endpoints.
 
-    Refer to the [documentation](https://www.ibm.com/docs/en/odm/9.6.0?topic=tasks-configuring-external-access) to retrieve the endpoints.
+    Refer to the [documentation](https://www.ibm.com/docs/en/odm/9.7.0?topic=tasks-configuring-external-access) to retrieve the endpoints.
     For example, on OpenShift you can get the route names and hosts with:
 
     ```shell
@@ -413,26 +424,29 @@ You can now install the product. We will use the PostgreSQL internal database an
     You get the following hosts:
 
     ```
-    my-odm-release-odm-dc-route           <DC_HOST>
-    my-odm-release-odm-dr-route           <DR_HOST>
-    my-odm-release-odm-ds-console-route   <DS_CONSOLE_HOST>
-    my-odm-release-odm-ds-runtime-route   <DS_RUNTIME_HOST>
+    my-odm-release-odm-dc-route               <DC_HOST>
+    my-odm-release-odm-dr-route               <DR_HOST>
+    my-odm-release-odm-ds-console-route       <DS_CONSOLE_HOST>
+    my-odm-release-odm-ds-runtime-route       <DS_RUNTIME_HOST>
+    my-odm-release-odm-decision-mcp-route     <DECISION_MCP_HOST>
+    my-odm-release-odm-management-mcp-route   <MANAGEMENT_MCP_HOST>
     ```
 
-    Using an Ingress, the endpoint is the address of the ODM ingress and is the same for all components. You can get it with:
+    Using Ingresses, there are two ingresses, one for the ODM consoles and other backends and one for the MCP servers. You can get them with:
 
     ```shell
-    kubectl get ingress my-odm-release-odm-ingress
+    kubectl get ingress my-odm-release-odm-ingress my-odm-release-odm-ingress-mcp
     ```
 
-   You get the following ingress address:
+   You get the following ingress and address:
 
     ```
-    NAME                       CLASS    HOSTS   ADDRESS          PORTS   AGE
-    my-odm-release-odm-ingress <none>   *       <INGRESS_ADDRESS>   80      14d
+    NAME                           CLASS    HOSTS   ADDRESS             PORTS   AGE
+    my-odm-release-odm-ingress     <none>   *       <INGRESS_ADDRESS>   80      14d
+    my-odm-release-odm-ingress-mcp <none>   *       <INGRESS_ADDRESS>   80      14d
     ```
 
-3. Register the redirect URIs into your Microsoft Entra ID application.
+1. Register the redirect URIs into your Microsoft Entra ID application.
 
     The redirect URIs are built the following way:
 
@@ -450,6 +464,9 @@ You can now install the product. We will use the PostgreSQL internal database an
       - Decision Server Runtime redirect URI:  `https://<INGRESS_ADDRESS>/DecisionService/openid/redirect/odm`
       - Rule Designer redirect URI: `https://127.0.0.1:9081/oidcCallback`
 
+      Plus, in both cases:
+      - Management MCP server redirect URI: defined by the MCP client, eg. `http://localhost:34206/oauth/callback` if you use `mcp-remote` as MCP client and configure it as suggested in [User authentication in remote mode](https://github.com/DecisionsDev/ibm-odm-management-mcp-server/blob/main/docs/Auth-remote-mode.md)
+
    From the Microsoft Azure console, in **Microsoft Entra Id** / **Manage** / **App Registrations** / **ODM Application**:
 
     - Click the `Add a Redirect URI` link
@@ -463,6 +480,22 @@ You can now install the product. We will use the PostgreSQL internal database an
 
     - Click **Save** at the bottom of the page.
     ![Add URI](images/AddURI.png)
+
+### Configure the Management MCP server external URL
+
+You can skip this step if you use Openshift routes, as the configuration is automatic in that case.
+
+The Management MCP Server implements the Model Context Protocol (MCP) OAuth 2.1 Authorization Framework, and needs to publish **its external URL** (in the field `resource`) in the response to a request to the path `.well-known/oauth-protected-resource`.
+
+To update the Management MCP server configuration, run the command:
+
+  ```
+  helm upgrade my-odm-release ibm-helm/ibm-odm-prod --version <version> -f entraid-nginx-values.yaml --set managementMcpServer.openid.mcpExtUrl=<MCP_INGRESS_ADDRESS>
+  ```
+
+  where `<MCP_INGRESS_ADDRESS>` is the address of the ingress for the MCP servers
+  
+> [!NOTE] This address must be declared in Entra ID under "Expose an API": see [Expose the Management MCP server URL as an API](#9-expose-the-management-mcp-server-url-as-an-api).
 
 ### Access the ODM services
 
@@ -496,7 +529,7 @@ To be able to securely connect your Rule Designer to the Decision Server and Dec
 
 4. Restart Rule Designer.
 
-For more information, refer to the [documentation](https://www.ibm.com/docs/en/odm/9.6.0?topic=designer-importing-security-certificate-in-rule).
+For more information, refer to the [documentation](https://www.ibm.com/docs/en/odm/9.7.0?topic=designer-importing-security-certificate-in-rule).
 
 ### Getting Started with IBM Operational Decision Manager for Containers
 
@@ -516,7 +549,7 @@ Deploy the **Loan Validation Service** production_deployment ruleapps using the 
 
 You can retrieve the payload.json from the ODM Decision Server Console or use [the provided payload](payload.json).
 
-As explained in the ODM on Certified Kubernetes documentation [Configuring user access with OpenID](https://www.ibm.com/docs/en/odm/9.6.0?topic=access-configuring-user-openid), we advise to use basic authentication for the ODM runtime call for performance reasons and to avoid the issue of token expiration and revocation.
+As explained in the ODM on Certified Kubernetes documentation [Configuring user access with OpenID](https://www.ibm.com/docs/en/odm/9.7.0?topic=access-configuring-user-openid), we advise to use basic authentication for the ODM runtime call for performance reasons and to avoid the issue of token expiration and revocation.
 
 You can realize a basic authentication ODM runtime call the following way:
 

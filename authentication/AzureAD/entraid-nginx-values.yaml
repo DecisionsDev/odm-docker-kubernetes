@@ -17,6 +17,9 @@ service:
     annotations:
     - "kubernetes.io/ingress.class: nginx"
     - "nginx.ingress.kubernetes.io/backend-protocol: HTTPS"
+  ingressMcp:
+    annotations:
+    - "kubernetes.io/ingress.class: nginx"
 #decisionCenter:
 #  sidecar:
 #    enabled: true
