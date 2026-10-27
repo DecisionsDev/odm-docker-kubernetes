@@ -250,7 +250,7 @@ openssl req -x509 -nodes -days 1000 -newkey rsa:2048 -keyout mynicecompany.key \
 #### 2.4 Create a Kubernetes secret containing the key and certificate to use to secure the communication (TLS)
 
 ```shell
-kubectl create secret tls <mynicecompanytlssecret> --cert=mynicecompany.crt --key=mynicecompany.key
+kubectl create secret tls mynicecompanytlssecret --cert=mynicecompany.crt --key=mynicecompany.key
 ```
 
 The certificate must be the same as the one you used to enable TLS connections in your ODM release. For more information, see [Server certificates](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-defining-security-certificate).
@@ -266,15 +266,15 @@ The certificate must be the same as the one you used to enable TLS connections i
 
 - Set the environment variables below (change their values if needed):
 
-    ```bash
-    export HELM_RELEASE="odmchart"
-    export USERS_PASSWORD="odmAdmin"
-    export DOMAIN="mynicecompany.com"
-    export TLS_SECRET="mynicecompanytlssecret"
-    export CLUSTER_NAME=<cluster>           # Your AKS cluster name
-    export RESOURCE_GROUP=<resourcegroup>   # Your Azure resource group
-    export NAMESPACE="default"              # Namespace where ODM is installed
-    ```
+  ```bash
+  export HELM_RELEASE="odmchart"
+  export USERS_PASSWORD="odmAdmin"
+  export DOMAIN="mynicecompany.com"
+  export TLS_SECRET="mynicecompanytlssecret"
+  export CLUSTER_NAME=<cluster>           # Your AKS cluster name
+  export RESOURCE_GROUP=<resourcegroup>   # Your Azure resource group
+  export NAMESPACE="default"              # Namespace where ODM is installed
+  ```
 
 ### 4. Deploy ODM
 
@@ -284,9 +284,9 @@ You can either:
 
 - deploy ODM with an **internal ephemeral database** (for a quick test):
 
-  ```bash
-  envsubst < aks-gateway-values.yaml | helm install ${HELM_RELEASE} ibm-helm/ibm-odm-prod -f - -n ${NAMESPACE}
-  ```
+```bash
+envsubst < aks-gateway-values.yaml | helm install ${HELM_RELEASE} ibm-helm/ibm-odm-prod -f - -n ${NAMESPACE}
+```
 
 - or deploy ODM with the **PostgreSQL Azure database**:
 
