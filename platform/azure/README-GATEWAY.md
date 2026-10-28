@@ -291,8 +291,8 @@ envsubst < aks-gateway-values.yaml | helm install ${HELM_RELEASE} ibm-helm/ibm-o
 - or deploy ODM with the **PostgreSQL Azure database**:
 
   ```bash
-  export POSTGRESQL_SERVER_NAME="postgresqlserver" # not the FQDN - the FQDN is ${POSTGRESQL_SERVER_NAME}.postgres.database.azure.com
-  export POSTGRESQL_CREDENTIALS_SECRET="odmdbsecret"
+  export POSTGRESQL_SERVER_NAME=<postgresqlserver> # Your PostgreSQL instance name. Not the FQDN - the FQDN is <postgresqlserver>.postgres.database.azure.com
+  export POSTGRESQL_CREDENTIALS_SECRET=<odmdbsecret> # The secret containing your PostgreSQL credentials
 
   envsubst < aks-gateway-external-db-values.yaml | helm install ${HELM_RELEASE} ibm-helm/ibm-odm-prod -f - -n ${NAMESPACE}
   ```
