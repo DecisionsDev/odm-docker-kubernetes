@@ -1,0 +1,26 @@
+# =============================================================================
+# Dedicated ClusterIP Service for ILS (IBM License Service sidecar on port 8082)
+# ============================================================================= 
+# Points to the same pods as ibm-usage-metering-instance via selector.
+# This gives AGC an independent Service target, thus HealthCheckPolicy and
+# BackendTLSPolicy for ILS do not conflict with those for UMS.
+# 
+# NOTE: Update the selectors of UMS instance if they are changed after upgrade
+# =============================================================================
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: ibm-license-service-agc-target
+  namespace: ${NAMESPACE}
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/component: ibm-usage-metering-instance
+    app.kubernetes.io/managed-by: ibm-usage-metering-operator
+    app.kubernetes.io/name: ibm-usage-metering
+  ports:
+  - name: ls-port
+    protocol: TCP
+    port: 8082
+    targetPort: 8082
