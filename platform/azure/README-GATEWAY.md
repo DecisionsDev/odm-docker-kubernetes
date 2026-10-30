@@ -11,7 +11,8 @@ First, install the following software on your machine:
 
 - [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)
 - [Helm v3](https://helm.sh/docs/v3/intro/install/) or [Helm v4](https://helm.sh/docs/intro/install/)
-- [gettext](https://www.gnu.org/software/gettext/)
+<!-- linkspector-disable-next-line -->
+- [GNU Gettext](https://www.gnu.org/software/gettext/)
 
 Then, [create an Azure account and pay as you go](https://azure.microsoft.com/en-us/pricing/purchase-options/pay-as-you-go/).
 
