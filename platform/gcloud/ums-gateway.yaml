@@ -1,0 +1,138 @@
+# Gateway API descriptor to expose the IBM Usage Metering Service (UMS) and the
+# IBM License Service (ls-port) on GKE with the native Gateway Controller.
+# Requires: gcloud container clusters update CLUSTER_NAME --gateway-api=standard
+
+# The ibm-usage-metering-instance service is managed by the UMS operator and does not declare
+# appProtocol. UMS and ls-port serve HTTPS, so we create one dedicated ClusterIP service per port,
+# targeting the same pods, to tell the GKE load balancer to use HTTPS towards the backend.
+apiVersion: v1
+kind: Service
+metadata:
+  name: ibm-usage-metering-fetch-svc
+spec:
+  type: ClusterIP
+  ports:
+  - name: ibm-usage-metering-fetch
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+    appProtocol: HTTPS
+  selector:
+    app.kubernetes.io/component: ibm-usage-metering-instance
+    app.kubernetes.io/name: ibm-usage-metering
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ibm-licensing-ls-svc
+spec:
+  type: ClusterIP
+  ports:
+  - name: ls-port
+    port: 8082
+    protocol: TCP
+    targetPort: 8082
+    appProtocol: HTTPS
+  selector:
+    app.kubernetes.io/component: ibm-usage-metering-instance
+    app.kubernetes.io/name: ibm-usage-metering
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: ums-gateway
+spec:
+  # Use GKE's native Gateway Controller
+  # Options: gke-l7-global-external-managed, gke-l7-regional-external-managed, gke-l7-rilb
+  gatewayClassName: gke-l7-global-external-managed
+  listeners:
+  - name: https
+    protocol: HTTPS
+    port: 443
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        name: ibm-usage-metering-instance
+    allowedRoutes:
+      namespaces:
+        from: Same
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: usage-metering-route
+spec:
+  parentRefs:
+  - name: ums-gateway
+    sectionName: https
+  rules:
+  # IBM Usage Metering Service - fetch port
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /ibm-usage-metering-instance
+    filters:
+    - type: URLRewrite
+      urlRewrite:
+        path:
+          type: ReplacePrefixMatch
+          replacePrefixMatch: /
+    backendRefs:
+    - name: ibm-usage-metering-fetch-svc
+      port: 8080
+  # IBM License Service - ls-port
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /ibm-licensing
+    filters:
+    - type: URLRewrite
+      urlRewrite:
+        path:
+          type: ReplacePrefixMatch
+          replacePrefixMatch: /
+    backendRefs:
+    - name: ibm-licensing-ls-svc
+      port: 8082
+---
+# Health checks - the backends serve HTTPS, and GKE defaults to an HTTP check on GET /
+apiVersion: networking.gke.io/v1
+kind: HealthCheckPolicy
+metadata:
+  name: ibm-usage-metering-fetch-healthcheck
+spec:
+  default:
+    checkIntervalSec: 15
+    timeoutSec: 10
+    healthyThreshold: 1
+    unhealthyThreshold: 2
+    config:
+      type: HTTPS
+      httpsHealthCheck:
+        port: 8080
+        requestPath: /ready
+  targetRef:
+    group: ""
+    kind: Service
+    name: ibm-usage-metering-fetch-svc
+---
+apiVersion: networking.gke.io/v1
+kind: HealthCheckPolicy
+metadata:
+  name: ibm-licensing-ls-healthcheck
+spec:
+  default:
+    checkIntervalSec: 15
+    timeoutSec: 10
+    healthyThreshold: 1
+    unhealthyThreshold: 2
+    config:
+      type: HTTPS
+      httpsHealthCheck:
+        port: 8082
+        requestPath: /
+  targetRef:
+    group: ""
+    kind: Service
+    name: ibm-licensing-ls-svc
