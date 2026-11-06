@@ -1,8 +1,18 @@
-# Gateway API configuration for UMS
+# =============================================================================
+# Azure Application Gateway for Containers (AGC)
+# IBM Usage Metering Service (UMS) + IBM License Service (ILS)
+# =============================================================================
+# - One AGC Gateway / one HTTPS frontend
+# - UMS exposed through service port 8080
+# - ILS exposed through service port 8082
+# - Separate health checks scoped to the corresponding named Service ports
+# - One BackendTLSPolicy enabling TLS to both backend ports
+# =============================================================================
+
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
-  name: ums-gateway
+  name: ibm-usage-metering-gateway
   namespace: ${NAMESPACE}
   annotations:
     alb.networking.azure.io/alb-namespace: ${NAMESPACE}
@@ -10,39 +20,86 @@ metadata:
 spec:
   gatewayClassName: azure-alb-external
   listeners:
-  - name: https
-    port: 443
-    protocol: HTTPS
-    allowedRoutes:
-      namespaces:
-        from: Same
-    tls:
-      mode: Terminate
-      certificateRefs:
-      - kind : Secret
-        group: ""
-        name: ibm-usage-metering-instance
+    - name: https
+      port: 443
+      protocol: HTTPS
+      allowedRoutes:
+        namespaces:
+          from: Same
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            group: ""
+            name: ibm-usage-metering-instance
+
 ---
-# HTTPRoute for IBM Usage Metering Service
+# HTTPRoute for IBM Usage Metering Service and IBM Licensing Service
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  name: ums-httproute
+  name: ibm-usage-metering-routes
   namespace: ${NAMESPACE}
 spec:
   parentRefs:
-  - name: ums-gateway
-    sectionName: https
+    - name: ibm-usage-metering-gateway
+      namespace: ${NAMESPACE}
+      sectionName: https
+
   rules:
-  - backendRefs:
-    - name: ibm-usage-metering-instance
-      port: 8080
+    # -------------------------------------------------------------------------
+    # IBM Usage Metering Service (UMS)
+    # Public URL:
+    #   https://<AGC-FQDN>/ibm-usage-metering-instance/...
+    # -------------------------------------------------------------------------
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /ibm-usage-metering-instance
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /
+      backendRefs:
+        - group: ""
+          kind: Service
+          name: ibm-usage-metering-instance
+          port: 8080
+          weight: 1
+
+    # -------------------------------------------------------------------------
+    # IBM License Service (ILS)
+    # Public URL:
+    #   https://<AGC-FQDN>/ibm-licensing-service-instance/...
+    # -------------------------------------------------------------------------
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /ibm-licensing-service-instance
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /
+      backendRefs:
+        - group: ""
+          kind: Service
+          name: ibm-license-service-agc-target
+          port: 8082
+          weight: 1
+
 ---
+# =============================================================================
+# UMS HealthCheckPolicy — targets ibm-usage-metering-instance (port 8080)
 # https://learn.microsoft.com/en-us/azure/application-gateway/for-containers/api-specification-kubernetes
+# =============================================================================
 apiVersion: alb.networking.azure.io/v1
 kind: HealthCheckPolicy
 metadata:
-  name: ums-gateway-health-check-policy
+  name: ums-health-check-policy
   namespace: ${NAMESPACE}
 spec:
   targetRef:
@@ -51,27 +108,77 @@ spec:
     name: ibm-usage-metering-instance
     namespace: ${NAMESPACE}
   default:
-    port: 8080  # pod port
+    port: 8080
     http:
       path: /ready
       match:
-        statusCodes: 
-        - start: 200
-          end: 200
+        statusCodes:
+          - start: 200
+            end: 200
     useTLS: true
+
 ---
+# =============================================================================
+# ILS HealthCheckPolicy — targets ibm-license-service-agc-target (port 8082)
+# =============================================================================
+apiVersion: alb.networking.azure.io/v1
+kind: HealthCheckPolicy
+metadata:
+  name: ils-health-check-policy
+  namespace: ${NAMESPACE}
+spec:
+  targetRef:
+    group: ""
+    kind: Service
+    name: ibm-license-service-agc-target
+    namespace: ${NAMESPACE}
+  default:
+    port: 8082
+    http:
+      path: /
+      match:
+        statusCodes:
+          - start: 200
+            end: 200
+    useTLS: true
+
+---
+# =============================================================================
+# UMS BackendTLSPolicy — targets ibm-usage-metering-instance (port 8080)
 # https://learn.microsoft.com/en-us/azure/application-gateway/for-containers/api-specification-kubernetes#alb.networking.azure.io/v1.BackendTLSPolicy
+# =============================================================================
 apiVersion: alb.networking.azure.io/v1
 kind: BackendTLSPolicy
 metadata:
-  name: ums-tls-policy
+  name: ums-backend-tls-policy
   namespace: ${NAMESPACE}
 spec:
   targetRef:
     group: ""
     kind: Service
     name: ibm-usage-metering-instance
+    namespace: ${NAMESPACE}
   default:
     sni: ibm-usage-metering-instance.${NAMESPACE}.svc.cluster.local
     ports:
-    - port: 8080  # service port
+      - port: 8080
+
+---
+# =============================================================================
+# ILS BackendTLSPolicy — targets ibm-license-service-agc-target (port 8082)
+# =============================================================================
+apiVersion: alb.networking.azure.io/v1
+kind: BackendTLSPolicy
+metadata:
+  name: ils-backend-tls-policy
+  namespace: ${NAMESPACE}
+spec:
+  targetRef:
+    group: ""
+    kind: Service
+    name: ibm-license-service-agc-target
+    namespace: ${NAMESPACE}
+  default:
+    sni: ibm-usage-metering-instance.${NAMESPACE}.svc.cluster.local
+    ports:
+      - port: 8082

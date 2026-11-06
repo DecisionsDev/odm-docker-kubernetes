@@ -85,7 +85,6 @@ helm install <release> ibm-helm/ibm-odm-prod -f aks-sqlmi-values.yaml
 > helm search repo ibm-helm/ibm-odm-prod -l
 > ```
 
-Other deployment options (especially using NGINX) and IBM License Service usage are explained in the [NGINX README](README-NGINX.md).
 
 ## Troubleshooting
 

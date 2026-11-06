@@ -1,5 +1,5 @@
-# Gateway API descriptor for GKE native Gateway Controller
-# This uses GKE's built-in Gateway API support (no additional CRDs needed)
+# Gateway API descriptor for GKE native Gateway Controller with End-to-End TLS
+# Target release: myodmsample
 # Requires: gcloud container clusters update CLUSTER_NAME --gateway-api=standard
 
 apiVersion: gateway.networking.k8s.io/v1
@@ -39,7 +39,7 @@ spec:
         value: /res
     backendRefs:
     - name: myodmsample-odm-decisionserverconsole
-      port: 80
+      port: 443
       weight: 1
   
   # Decision Center - /decisioncenter
@@ -49,7 +49,7 @@ spec:
         value: /decisioncenter
     backendRefs:
     - name: myodmsample-odm-decisioncenter
-      port: 80
+      port: 443
       weight: 1
   
   # Decision Center API - /decisioncenter-api
@@ -59,7 +59,7 @@ spec:
         value: /decisioncenter-api
     backendRefs:
     - name: myodmsample-odm-decisioncenter
-      port: 80
+      port: 443
       weight: 1
   
   # Decision Server Runtime - /DecisionService
@@ -69,7 +69,7 @@ spec:
         value: /DecisionService
     backendRefs:
     - name: myodmsample-odm-decisionserverruntime
-      port: 80
+      port: 443
       weight: 1
   
   # Decision Runner - /DecisionRunner
@@ -79,11 +79,31 @@ spec:
         value: /DecisionRunner
     backendRefs:
     - name: myodmsample-odm-decisionrunner
-      port: 80
+      port: 443
+      weight: 1
+
+  # Decision MCP Server - /mcp/decision
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /mcp/decision
+    backendRefs:
+    - name: myodmsample-odm-decisionmcpserver
+      port: 443
+      weight: 1
+
+  # Management MCP Server - /mcp/management
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /mcp/management
+    backendRefs:
+    - name: myodmsample-odm-managementmcpserver
+      port: 443
       weight: 1
 
 ---
-# Health checks — required because GKE defaults to GET / which returns 302 on Liberty
+# HTTPS Health checks — GKE requires correct health checks on secure target ports
 apiVersion: networking.gke.io/v1
 kind: HealthCheckPolicy
 metadata:
@@ -95,9 +115,9 @@ spec:
     healthyThreshold: 1
     unhealthyThreshold: 2
     config:
-      type: HTTP
-      httpHealthCheck:
-        port: 9060
+      type: HTTPS
+      httpsHealthCheck:
+        port: 9453
         requestPath: /decisioncenter/healthCheck
   targetRef:
     group: ""
@@ -116,9 +136,9 @@ spec:
     healthyThreshold: 1
     unhealthyThreshold: 2
     config:
-      type: HTTP
-      httpHealthCheck:
-        port: 9080
+      type: HTTPS
+      httpsHealthCheck:
+        port: 9443
         requestPath: /res/login.jsp
   targetRef:
     group: ""
@@ -137,9 +157,9 @@ spec:
     healthyThreshold: 1
     unhealthyThreshold: 2
     config:
-      type: HTTP
-      httpHealthCheck:
-        port: 9080
+      type: HTTPS
+      httpsHealthCheck:
+        port: 9443
         requestPath: /DecisionService/
   targetRef:
     group: ""
@@ -158,14 +178,59 @@ spec:
     healthyThreshold: 1
     unhealthyThreshold: 2
     config:
-      type: HTTP
-      httpHealthCheck:
-        port: 9080
+      type: HTTPS
+      httpsHealthCheck:
+        port: 9443
         requestPath: /DecisionRunner/
   targetRef:
     group: ""
     kind: Service
     name: myodmsample-odm-decisionrunner
+
+---
+# MCP servers listen on container port 3000 (TLS enabled)
+apiVersion: networking.gke.io/v1
+kind: HealthCheckPolicy
+metadata:
+  name: odm-decisionmcpserver-healthcheck
+spec:
+  default:
+    checkIntervalSec: 15
+    timeoutSec: 10
+    healthyThreshold: 1
+    unhealthyThreshold: 2
+    config:
+      type: HTTPS
+      httpsHealthCheck:
+        port: 3000
+        requestPath: /mcp/decision/healthcheck
+  targetRef:
+    group: ""
+    kind: Service
+    name: myodmsample-odm-decisionmcpserver
+
+---
+# NOTE: without a token, /mcp/management answers 401 (200-401 accepted on other platforms),
+# but a GKE health check only treats 200 as healthy.
+apiVersion: networking.gke.io/v1
+kind: HealthCheckPolicy
+metadata:
+  name: odm-managementmcpserver-healthcheck
+spec:
+  default:
+    checkIntervalSec: 15
+    timeoutSec: 10
+    healthyThreshold: 1
+    unhealthyThreshold: 2
+    config:
+      type: HTTPS
+      httpsHealthCheck:
+        port: 3000
+        requestPath: /mcp/management/healthcheck
+  targetRef:
+    group: ""
+    kind: Service
+    name: myodmsample-odm-managementmcpserver
 
 ---
 apiVersion: networking.gke.io/v1
@@ -179,4 +244,4 @@ spec:
     name: myodmsample-odm-decisioncenter
   default:
     sessionAffinity:
-      type: GENERATED_COOKIE      # ← matches your pod's C
+      type: GENERATED_COOKIE
