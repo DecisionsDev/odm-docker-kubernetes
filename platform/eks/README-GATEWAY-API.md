@@ -279,22 +279,24 @@ curl -X POST "https://swc.saas.ibm.com/metering/api/v2/metrics" \
 
 For complete instructions, see [Uploading usage metrics to IBM Software Central](https://www.ibm.com/docs/en/odm/9.6.0?topic=metrics-uploading-usage-software-central).
 
-#### 3.1.2. [Optional] Access IBM License Service page
+#### 3.1.2. [Optional] Access UMS Data and Serviceability page
 
 > [!NOTE]
 > The route must be created as described in [3.1.1.2.1. Create the Gateway for the IBM Usage Metering instance](#31121-create-the-gateway-for-the-ibm-usage-metering-instance).
 
-If you want to view the product licensing status, you can retrieve its URL with this command:
+To view the UMS Data page and the UMS Serviceability page, run:
 
 ```bash
-export UMS_TOKEN=$(kubectl get secret ibm-usage-metering-upload-token -o jsonpath='{.data.token}' | base64 -d)
-export UMS_URL=$(kubectl get gateway ums-gateway -o jsonpath='{.status.addresses[*].value}')
-echo https://${UMS_URL}/ibm-licensing/status?token=${UMS_TOKEN}
+# Print the URL to open in a browser
+echo "https://${UMS_URL}/ibm-usage-metering-instance/status?token=${UMS_TOKEN}"
 ```
 
-Access the page via this URL: `https://${UMS_URL}/ibm-licensing/status?token=${UMS_TOKEN}`. In the Licensing status page, that `Namespace Scope is enabled. Current cluster configuration restricts License Service to query pods that are only in these namespaces: default` 
+Open this URL in a browser: `https://${UMS_URL}/ibm-usage-metering-instance/status?token=${UMS_TOKEN}`.
 
-Otherwise, you can also retrieve the licensing snapshot by running:
+- **UMS Data tab**: It displays the condition `Namespace Scope is enabled. Current cluster configuration restricts License Service to query pods that are only in these namespaces: default`. It also displays the contractual metrics of the product, such as PVU or VPC, for each Decision component.
+- **UMS Serviceability tab**: It displays the details of the last five adoption payloads, the number of exports to IBM Software Central, and other information.
+
+On the other hand, you can also retrieve the licensing snapshot by running:
 
 ```bash
 curl -k "https://${UMS_URL}/ibm-licensing/snapshot?token=${UMS_TOKEN}" --output ils_snapshot_report.zip

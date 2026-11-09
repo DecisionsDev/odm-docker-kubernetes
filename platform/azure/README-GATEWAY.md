@@ -522,20 +522,26 @@ For complete instructions, see [Uploading usage metrics to IBM Software Central]
 
 For general information about collecting and sending usage metrics, see [Collecting and sending usage metrics](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-collecting-sending-usage-metrics).
 
-### 4. [Optional] Access IBM License Service
+### 4. [Optional] Access UMS Data and Serviceability page
 
-ILS is exposed through the same gateway as UMS (deployed in [section 3.2.1](#321-expose-the-ibm-usage-metering-service-and-ibm-license-service-using-a-gateway-api)). You will be able to access its dashboard by retrieving the URL and the required token with this command:
+ILS is exposed through the same gateway as UMS (deployed in [section 3.2.1](#321-expose-the-ibm-usage-metering-service-and-ibm-license-service-using-a-gateway-api)).
+
+To view the UMS Data page and the UMS Serviceability page, run:
 
 ```bash
-GW_URL=$(kubectl get gateway ibm-usage-metering-gateway -n ${NAMESPACE} -o jsonpath='{.status.addresses[*].value}')
-TOKEN=$(kubectl get secret ibm-usage-metering-upload-token -n ${NAMESPACE} -o jsonpath='{.data.token}' | base64 -d)
-
-# View license usage status
-echo "https://${GW_URL}/ibm-licensing-service-instance/status?token=${TOKEN}"
+# Print the URL to open in a browser
+echo "https://${GW_URL}/ibm-usage-metering-instance/status?token=${TOKEN}"
 ```
+
+Open this URL in a browser: `https://${GW_URL}/ibm-usage-metering-instance/status?token=${TOKEN}`.
+
+- **UMS Data tab**: It displays the condition `Namespace Scope is enabled. Current cluster configuration restricts License Service to query pods that are only in these namespaces: default`. It also displays the contractual metrics of the product, such as PVU or VPC, for each Decision component.
+- **UMS Serviceability tab**: It displays the details of the last five adoption payloads, the number of exports to IBM Software Central, and other information.
+
+
 Alternatively you can retrieve the licensing report .zip file by running:
 
-```shell
+```bash
 # Download license snapshot
 curl -k --output "ils_report.zip" \
      "https://${GW_URL}/ibm-licensing-service-instance/snapshot?token=${TOKEN}"

@@ -465,14 +465,25 @@ curl -k --output "swc_payload.tar.gz" \
      --url "https://${UMS_URL}/ibm-usage-metering-instance/api/v1/swc"
 ```
 
-To view UMS data and also UMS Serviceability page:
+The `swc_payload.tar.gz` contains the following files:
+- manifest.json
+- usage.json
+
+The `usage.json` file contains both adoption (`"metricType": "adoption"`) and contractual (`"metricType": "contract"`) metrics.
+
+To view the UMS Data page and the UMS Serviceability page, run:
 
 ```bash
-# The URL to access UMS data and serviceability page. To open it in a browser.
+# Print the URL to open in a browser
 echo "https://${UMS_URL}/ibm-usage-metering-instance/status?token=${UMS_TOKEN}"
 ```
 
-To retrieve the licensing snapshot from the IBM License Service (`ls-port`), run:
+Open this URL in a browser: `https://${UMS_URL}/ibm-usage-metering-instance/status?token=${UMS_TOKEN}`.
+
+- **UMS Data tab**: It displays the condition `Namespace Scope is enabled. Current cluster configuration restricts License Service to query pods that are only in these namespaces: default`. It also displays the contractual metrics of the product, such as PVU or VPC, for each Decision component.
+- **UMS Serviceability tab**: It displays the details of the last five adoption payloads, the number of exports to IBM Software Central, and other information.
+
+To retrieve the licensing snapshot from the IBM License Service (via `ls-port`), run:
 
 ```bash
 # Retrieve licensing snapshot
