@@ -29,6 +29,7 @@ First, install the following software on your machine:
 
 - [gcloud CLI](https://cloud.google.com/sdk/gcloud)
 - [kubectl](https://kubernetes.io/docs/tasks/tools/)
+- [gke-gcloud-auth-plugin](https://cloud.google.com/kubernetes-engine/docs/how-to/cluster-access-for-kubectl#install_plugin): required by `kubectl` to authenticate to GKE clusters.
 - [Helm v3](https://helm.sh/docs/intro/install/)
 
 Then, perform the following tasks:
@@ -66,43 +67,44 @@ Refer to the [GKE quickstart](https://cloud.google.com/kubernetes-engine/docs/qu
 
 #### Log into Google Cloud
 
-After installing the `gcloud` tool, use the following command line:
+After installing the `gcloud` tool, run the initialization wizard. This will authenticate your account, set your active project, and configure your default region and zone (e.g. europe-west9 / europe-west9-b):
+```shell
+gcloud init
+```
 
+If you have already initialized your environment and only need to re-authenticate an expired session or switch user accounts, use the login command instead:
 ```shell
 gcloud auth login
+```
+
+To inspect your existing configuration, you can run this command:
+```shell
+gcloud config list
 ```
 
 #### Create a GKE cluster
 
 There are several [types of clusters](https://docs.cloud.google.com/kubernetes-engine/docs/concepts/configuration-overview#availability).
 In this article, we chose to create a [regional cluster](https://cloud.google.com/kubernetes-engine/docs/how-to/creating-a-regional-cluster).
-Regions and zones (used below) can be listed respectively with `gcloud compute regions list` and `gcloud compute zones list`.
 
-- Set the project (associated to a billing account):
+Run the following command to create a highly available regional cluster with [autoscaling](https://cloud.google.com/kubernetes-engine/docs/how-to/cluster-autoscaler) enabled. The cluster starts with 6 nodes (2 in each of the 3 zones present in the region) and can scale up to 16 nodes in total. The `--gateway-api=standard` option enables the GKE Gateway API on the cluster:
 
-  ```shell
-  gcloud config set project <PROJECT_ID>
-  ```
+```shell
+gcloud container clusters create <CLUSTER_NAME> \
+  --location=<REGION (ex: europe-west9)> \
+  --release-channel=regular \
+  --cluster-version=1.35 \
+  --enable-autoscaling \
+  --num-nodes=2 \
+  --total-min-nodes=1 \
+  --total-max-nodes=16 \
+  --gateway-api=standard
+```
 
-- Set the region:
-
-  ```shell
-  gcloud config set compute/region <REGION (ex: europe-west9)>
-  ```
-
-- Set the zone:
-
-  ```shell
-  gcloud config set compute/zone <ZONE (ex: europe-west9-b)>
-  ```
-
-- Create a cluster and [enable autoscaling](https://cloud.google.com/kubernetes-engine/docs/how-to/cluster-autoscaler). Here, we start with 6 nodes (16 max):
-
-  ```shell
-  gcloud container clusters create <CLUSTER_NAME> \
-    --release-channel=regular --cluster-version=1.34 \
-    --enable-autoscaling --num-nodes=6 --total-min-nodes=1 --total-max-nodes=16 --gateway-api=standard
-  ```
+> [!TIP]
+> The cluster is created in the project selected during `gcloud init`.
+> - To use another project, run `gcloud config set project <PROJECT_ID>` first.
+> - To use another region, change the `--location` value above. Available regions can be listed with `gcloud compute regions list`.
 
 > [!NOTE]
 > You can also create your cluster from the Google Cloud Platform using the **Kubernetes Engine** > **Clusters** panel and clicking the **Create** button
@@ -110,14 +112,16 @@ Regions and zones (used below) can be listed respectively with `gcloud compute r
 
 #### Set up your environment
 
-- Create a kubeconfig to connect to your cluster:
+When you create the cluster with the `gcloud` CLI, your `kubeconfig` is updated automatically and `kubectl` targets the new cluster. 
 
-  ```shell
-  gcloud container clusters get-credentials <CLUSTER_NAME>
-  ```
+If you created the cluster from the Google Cloud console or from another machine, or if you work with several clusters, run the following command to create or switch to the `kubeconfig` entry of your cluster:
+
+```shell
+gcloud container clusters get-credentials <CLUSTER_NAME> --location=<REGION (ex: europe-west9)>
+```
 
 > [!NOTE]
-> You can also retrieve the command line to configure `kubectl` from the Google Cloud Console using the **Kubernetes Engine** > **Clusters** panel and clicking **Connect** on the dedicated cluster.
+> You can also retrieve the command line to configure `kubectl` from the Google Cloud Console using the **Kubernetes Engine** > **Clusters** panel, clicking the dedicated cluster to go into its details, and then clicking the **Connect** button.
 > ![Connection](images/connection.png)
 
 - Check your environment
@@ -134,17 +138,18 @@ Regions and zones (used below) can be listed respectively with `gcloud compute r
 
 We will use the Google Cloud Platform console to create the database instance.
 
-- Go to the [SQL context](https://console.cloud.google.com/sql), and then click the **CREATE INSTANCE** button
-- Click **Choose PostgreSQL**
+- Go to the [SQL context](https://console.cloud.google.com/sql), and then click the **CREATE INSTANCE** button.
+- Click **Choose PostgreSQL** button.
+  - Choose your Cloud SQL edition (`Enterprise Plus` / `Enterprise`) depending on your needs.
   - Database version: `PostgreSQL 18`
-  - Instance ID: ``<YourInstanceName>``
-  - Password: ``<PASSWORD>`` - Take note of this password.
-  - Region: ``<REGION>`` (must be the same as the cluster for the communication to be optimal between the database and the ODM instance)
-  - Eventually select **Multiple zones** for Zonal availability for redundancy
+  - Instance ID: `<YourInstanceName>`
+  - Password: `<PASSWORD>` - Take note of this password.
+  - Region: `<REGION>` - Must be the same zone as the cluster for the communication to be optimal between the database and the ODM instance.
+  - Eventually select **Multiple zones** for Zonal availability for redundancy.
   - Expand **Show customization option** and expand **Connections**
-    - As *Public IP* is selected by default, in Authorized networks, click the **ADD NETWORK** button, put a name and add *0.0.0.0/0* for Network, then click **DONE**.
+    - As *Public IP* is selected by default, in Authorized networks, click the **ADD NETWORK** button, put a name and add *0.0.0.0/0* for Network, acknowledge the risk, and then click **DONE**.
       > NOTE: It is not recommended to use a public IP. In a production environment, you should use a private IP.
-- Click **CREATE INSTANCE**
+- Click **Create Instance**.
 
 After the database instance is created, you can drill on the SQL instance overview to retrieve needed information to connect to this instance, like the IP address and the connection name. Take note of the **Public IP address**.
 
@@ -202,7 +207,7 @@ helm repo update
 ```shell
 helm search repo ibm-odm-prod
 NAME                  CHART VERSION   APP VERSION     DESCRIPTION
-ibm-helm/ibm-odm-prod 26.0.0          9.6.0.0         IBM Operational Decision Manager
+ibm-helm/ibm-odm-prod 26.3.0          9.7.0.0         IBM Operational Decision Manager
 ```
 
 ### 4. Manage a digital certificate (2 min)
@@ -319,11 +324,9 @@ The Gateway will remain in *Provisioning* state for several minutes until all ba
 When the Gateway shows a *Programmed* status, all ODM services are accessible.
 
 > [!NOTE]
-> The Gateway API automatically handles session affinity for Decision Center through the HealthCheckPolicy configuration, eliminating the need for manual BackendConfig annotations.
-
-> [!NOTE]
-> The Gateway API configuration is the recommended approach for this deployment. If you prefer to use the traditional Ingress approach instead, please refer to the main [README.md](README.md).
-
+> - The Gateway API automatically handles session affinity for Decision Center through the HealthCheckPolicy configuration, eliminating the need for manual BackendConfig annotations.
+> 
+> - The Gateway API configuration is the recommended approach for this deployment. If you prefer to use the traditional Ingress approach instead, please refer to the main [README.md](README.md).
 
 
 ### 6. Access ODM services
@@ -365,12 +368,15 @@ We only have to manage a configuration to simulate the mynicecompany.com access.
 
 #### 7.1 Install the IBM Usage Metering Service
 
-The IBM Usage Metering Service (UMS) is a critical component that gathers metrics to monitor compliance and create reports. It captures business value metrics for auditing purposes, visualizes metric usage in reporting tools, and sends the information to IBM Software Central.
+IBM Usage Metering Service (UMS) gathers adoption metrics and creates reports. It captures business value metrics for auditing purposes and to visualize metric usage in reporting tools, and sends the information to IBM Software Central. For more details, see [Collecting and sending usage metrics](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-collecting-sending-usage-metrics).
+
+The IBM License Service (ILS) discovers the software that is installed in your infrastructure and generates reports containing contractual details. These metrics directly affect licensing obligations and are required for calculating license usage in compliance with IBM licensing requirements.
+
+An ILS side-car must be activated when installing UMS. This allows UMS to capture two metrics: contractual metrics for compliance purposes, and adoption metrics for various scenarios related to usage analysis.
 
 **Prerequisites:**
 - Cluster-admin permissions or appropriate RBAC roles
 - Target namespace must exist before installation
-- ODM 9.6.0 or later installed
 
 **Important Requirements:**
 - From ODM 9.6.0 onwards, UMS **must** be installed in the same namespace as ODM
@@ -380,6 +386,8 @@ The IBM Usage Metering Service (UMS) is a critical component that gathers metric
 **Installation:**
 
 For detailed installation and configuration instructions, see [Installing the usage metering service](https://www.ibm.com/docs/en/odm/9.6.0?topic=metrics-installing-metering).
+
+In this tutorial, we assume that ODM, UMS, and ILS are installed in the same namespace: `default`. The ILS side car is enabled with *namespace scope* to monitor only `default` namespace.
 
 **Troubleshooting:**
 
@@ -421,33 +429,70 @@ This documentation covers:
 
 ##### 7.1.2 Offline Mode (Air-gapped Environments)
 
-For offline/air-gapped environments where the Usage Metering Service cannot connect directly to IBM Software Central, you need to manually download and upload usage data.
+For offline/air-gapped environments where the Usage Metering Service cannot connect directly to IBM Software Central, you need to manually download and upload metric data.
 
 **Step 1: Expose the Usage Metering Service**
 
-Create a LoadBalancer service to expose UMS:
+The UMS service `ibm-usage-metering-instance` is a `ClusterIP` service that exposes the ports `8080` (usage metering fetch), `8081` (upload) and `8082` (`ls-port`, the IBM License Service).
+
+The [ums-gateway.yaml](./ums-gateway.yaml) file contains the resources to expose the ports `8080` and `8082` through a dedicated GKE Gateway:
+- **Services**: One `ClusterIP` service per exposed port that targets the UMS pods and sets `appProtocol: HTTPS`, because UMS serves HTTPS
+- **Gateway**: Configures the GKE load balancer with HTTPS termination using the `ibm-usage-metering-instance` certificate
+- **HTTPRoute**: Routes `/ibm-usage-metering-instance` to the port `8080` and `/ibm-licensing` to the port `8082`
+- **HealthCheckPolicy**: Configures HTTPS health checks for each port
+
+Apply the Gateway configuration in the namespace where UMS is installed:
 
 ```bash
-kubectl apply -f usage-metering-service-loadbalancer.yaml
+kubectl apply -f ums-gateway.yaml
+```
+
+Wait for the Gateway to be programmed. This can take several minutes:
+
+```bash
+kubectl get gateway ums-gateway
 ```
 
 **Step 2: Download Usage Data**
 
-Retrieve the metering service data from the LoadBalancer:
+Retrieve the metering service data through the Gateway:
 
 ```bash
-export NAMESPACE=<namespace>
-UMS_URL=$(kubectl get service ibm-usage-metering-instance-loadbalancer -n "${NAMESPACE}" -o jsonpath='{.status.loadBalancer.ingress[0].ip}' 2>/dev/null || echo "")
-
-UMS_TOKEN=$(kubectl get secret ibm-usage-metering-upload-token -n "${NAMESPACE}" -o jsonpath='{.data.token}' 2>/dev/null | base64 -d || echo "")
+export UMS_URL=$(kubectl get gateway ums-gateway -o jsonpath='{.status.addresses[0].value}')
+export UMS_TOKEN=$(kubectl get secret ibm-usage-metering-upload-token -o jsonpath='{.data.token}' | base64 -d)
 curl -k --output "swc_payload.tar.gz" \
      --header "Authorization: Bearer ${UMS_TOKEN}" \
-     --url "https://${UMS_URL}:8080/api/v1/swc"
+     --url "https://${UMS_URL}/ibm-usage-metering-instance/api/v1/swc"
+```
+
+The `swc_payload.tar.gz` contains the following files:
+- manifest.json
+- usage.json
+
+The `usage.json` file contains both adoption (`"metricType": "adoption"`) and contractual (`"metricType": "contract"`) metrics.
+
+To view the UMS Data page and the UMS Serviceability page, run:
+
+```bash
+# Print the URL to open in a browser
+echo "https://${UMS_URL}/ibm-usage-metering-instance/status?token=${UMS_TOKEN}"
+```
+
+Open this URL in a browser: `https://${UMS_URL}/ibm-usage-metering-instance/status?token=${UMS_TOKEN}`.
+
+- **UMS Data tab**: It displays the condition `Namespace Scope is enabled. Current cluster configuration restricts License Service to query pods that are only in these namespaces: default`. It also displays the contractual metrics of the product, such as PVU or VPC, for each Decision component.
+- **UMS Serviceability tab**: It displays the details of the last five adoption payloads, the number of exports to IBM Software Central, and other information.
+
+To retrieve the licensing snapshot from the IBM License Service (via `ls-port`), run:
+
+```bash
+# Retrieve licensing snapshot
+curl -k "https://${UMS_URL}/ibm-licensing/snapshot?token=${UMS_TOKEN}" --output ils_snapshot_report.zip
 ```
 
 **Step 3: Upload to IBM Software Central**
 
-After downloading the `swc_payload.tar.gz` file, you need to upload it to IBM Software Central to report your usage metrics. The upload process requires authentication with your IBM ID and must be performed from a machine with internet access.
+After downloading the `swc_payload.tar.gz` file, you need to upload it to IBM Software Central to report your metrics. The upload process requires authentication with your IBM ID and must be performed from a machine with internet access.
 
 For detailed instructions on how to upload the usage data file to IBM Software Central, including authentication steps and troubleshooting, refer to:
 
@@ -457,93 +502,6 @@ For detailed instructions on how to upload the usage data file to IBM Software C
 
 For general information about collecting and sending usage metrics, see:
 📖 **[Collecting and sending usage metrics](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-collecting-sending-usage-metrics)**
-
-#### 7.2 Install the IBM License Service
-
-This section explains how to track ODM usage with the IBM License Service.
-
-Follow the instructions in the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.x_cd?topic=ilsfpcr-installing-license-service-without-operator-lifecycle-manager-olm) documentation, **except for the step 3** which should be replaced by:
-
-
-##### 7.2.1 Create the IBM Licensing instance
-
-Get the [licensing-instance-gateway.yaml](./licensing-instance-gateway.yaml) file and run the following command:
-
-```shell
-kubectl apply -f licensing-instance-gateway.yaml -n ibm-licensing
-```
-
-
-
-##### 7.2.2 Expose the IBM License Service
-
-You need to create a Gateway to expose the IBM License Service using GKE's native Gateway API.
-
-Get the [`ils-gateway.yaml`](./ils-gateway.yaml) file and apply the gateway configuration with the following command:
-
-```bash
-kubectl apply -f ils-gateway.yaml -n ibm-licensing
-```
-
-**Verification:**
-
-Wait for the Gateway to be ready (this may take a few minutes):
-
-```bash
-kubectl wait --for=condition=Programmed gateway/ils-gateway -n ibm-licensing --timeout=5m
-```
-
-Check the Gateway status:
-
-```bash
-kubectl get gateway ils-gateway -n ibm-licensing
-kubectl describe gateway ils-gateway -n ibm-licensing
-```
-
-> [!NOTE]
-> The Gateway uses the `gke-l7-global-external-managed` Gateway class and requires HTTPS with a valid certificate. Ensure the `ibm-license-service-cert-internal` secret exists in the `ibm-licensing` namespace before applying this configuration.
-
-##### 7.2.3 Retrieving license usage
-
-After a couple of minutes, the Ingress configuration is created and you will be able to access the IBM License Service by retrieving the URL with the following command:
-
-```shell
-export LICENSING_URL=$(kubectl get gateway ils-gateway -n ibm-licensing -o jsonpath='{.status.addresses[0].value}')/ibm-licensing-service-instance
-export TOKEN=$(kubectl get secret ibm-licensing-token -o jsonpath={.data.token} -n ibm-licensing | base64 -d)
-```
-
-You can access the `https://${LICENSING_URL}/status?token=${TOKEN}` URL to view the licensing usage or retrieve the licensing report .zip file by running the following command:
-
-```shell
-curl "https://${LICENSING_URL}/snapshot?token=${TOKEN}" -k --output ils-report.zip
-```
-
-If your IBM License Service instance is not running properly, refer to this [troubleshooting page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.x_cd?topic=service-troubleshooting-license).
-
-##### 7.2.4 Reporting License Usage to IBM Software Central
-
-For complete information about reporting license usage to IBM Software Central, refer to the official documentation:
-
-📖 **[Reporting License Usage to IBM Software Central](https://www.ibm.com/docs/en/odm/9.6.0?topic=metering-reporting-license-usage-software-central)**
-
-###### Online Mode Configuration
-
-For detailed steps on configuring online mode (automatic data transmission), including creating the IBM Entitlement Key secret, configuring the IBMLicensing Custom Resource, and verifying the setup, refer to the [online mode documentation](https://www.ibm.com/docs/en/odm/9.6.0?topic=metering-reporting-license-usage-software-central).
-
-###### Offline Mode (Air-gapped Environments)
-
-For air-gapped environments where ILS cannot directly connect to Software Central, download the usage data using the Gateway-specific commands below:
-
-```bash
-export LICENSING_URL=$(kubectl get gateway ils-gateway -n ibm-licensing -o jsonpath='{.status.addresses[0].value}')/ibm-licensing-service-instance
-export TOKEN=$(kubectl get secret ibm-licensing-token -o jsonpath={.data.token} -n ibm-licensing | base64 -d)
-
-curl --insecure --output "swc_payload.tar.gz" \
-     "https://${LICENSING_URL}/swc_aggregations?token=${TOKEN}"
-```
-
-For complete instructions on transferring and uploading the downloaded file to Software Central, refer to the [offline mode documentation]( https://www.ibm.com/docs/en/odm/9.6.0?topic=central-online-mode-configuration).
-
 
 
 ## Troubleshooting
