@@ -465,12 +465,16 @@ curl -k --output "swc_payload.tar.gz" \
      --url "https://${UMS_URL}/ibm-usage-metering-instance/api/v1/swc"
 ```
 
-To view the licensing status and retrieve the licensing snapshot from the IBM License Service (`ls-port`), run:
+To view UMS data and also UMS Serviceability page:
 
 ```bash
-# The licensing status URL. To open it in a browser.
-echo "https://${UMS_URL}/ibm-licensing/status?token=${UMS_TOKEN}"
+# The URL to access UMS data and serviceability page. To open it in a browser.
+echo "https://${UMS_URL}/ibm-usage-metering-instance/status?token=${UMS_TOKEN}"
+```
 
+To retrieve the licensing snapshot from the IBM License Service (`ls-port`), run:
+
+```bash
 # Retrieve licensing snapshot
 curl -k "https://${UMS_URL}/ibm-licensing/snapshot?token=${UMS_TOKEN}" --output ils_snapshot_report.zip
 ```
