@@ -17,7 +17,7 @@ The project comes with the following components:
 - [IBM Operational Decision Manager](https://www.ibm.com/docs/en/odm/9.6.0?topic=operational-decision-manager-certified-kubernetes-960)
 - [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine)
 - [Google Cloud SQL for PostgreSQL](https://cloud.google.com/sql)
-- [IBM License Service](https://github.com/IBM/ibm-licensing-operator)
+- [IBM Usage Metering Service](https://github.com/IBM/charts/blob/master/repo/ibm-helm/ibm-usage-metering.md)
 
 ## Tested environment
 
@@ -30,7 +30,7 @@ First, install the following software on your machine:
 - [gcloud CLI](https://cloud.google.com/sdk/gcloud)
 - [kubectl](https://kubernetes.io/docs/tasks/tools/)
 - [gke-gcloud-auth-plugin](https://cloud.google.com/kubernetes-engine/docs/how-to/cluster-access-for-kubectl#install_plugin): required by `kubectl` to authenticate to GKE clusters.
-- [Helm v3](https://helm.sh/docs/intro/install/)
+- [Helm v4](https://helm.sh/docs/intro/install/)
 
 Then, perform the following tasks:
 
@@ -281,9 +281,11 @@ Run the following command to check the status of the pods that have been created
 kubectl get pods
 NAME                                                   READY   STATUS    RESTARTS   AGE
 <release>-odm-decisioncenter-***                       1/1     Running   0          20m
+<release>-odm-decisionmcpserver-***                    1/1     Running   0          20m
 <release>-odm-decisionrunner-***                       1/1     Running   0          20m
 <release>-odm-decisionserverconsole-***                1/1     Running   0          20m
 <release>-odm-decisionserverruntime-***                1/1     Running   0          20m
+<release>-odm-managementmcpserver-***                  1/1     Running   0          20m
 ```
 
 #### Deploy the Gateway API Configuration
