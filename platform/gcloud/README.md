@@ -12,14 +12,11 @@ The ODM on Kubernetes Docker images are available in the [IBM Entitled Registry]
 > [!IMPORTANT]
 > **Deployment Options:**
 >
-> There are three ways to expose ODM services on GKE:
+> There are two ways to expose ODM services on GKE:
 >
 > 1. **GKE Ingress (Default - Documented in this README):** Uses the [GKE Ingress controller](https://cloud.google.com/kubernetes-engine/docs/concepts/ingress) with container-native load balancing. This is the standard approach documented in the steps below.
 >
 > 2. **GKE Gateway API (Recommended for Advanced Features):** Uses the [GKE Gateway API](https://cloud.google.com/kubernetes-engine/docs/concepts/gateway-api) which provides more advanced routing capabilities, better session affinity management, and is the future direction for Kubernetes networking. See the [GKE Gateway API deployment guide](README_GATEWAY.md).
->
-> 3. **NGINX Ingress Controller (Deprecated):** The [NGINX Ingress Controller deployment guide](README_NGINX.md) is deprecated and will be removed in the coming months. Please use GKE Ingress or GKE Gateway API instead.
-
 
 ## Included components
 
@@ -28,7 +25,7 @@ The project comes with the following components:
 - [IBM Operational Decision Manager](https://www.ibm.com/docs/en/odm/9.6.0?topic=operational-decision-manager-certified-kubernetes-960)
 - [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine)
 - [Google Cloud SQL for PostgreSQL](https://cloud.google.com/sql)
-- [IBM License Service](https://github.com/IBM/ibm-licensing-operator)
+- [IBM Usage Metering Service](https://github.com/IBM/charts/blob/master/repo/ibm-helm/ibm-usage-metering.md)
 
 ## Tested environment
 
@@ -40,7 +37,8 @@ First, install the following software on your machine:
 
 - [gcloud CLI](https://cloud.google.com/sdk/gcloud)
 - [kubectl](https://kubernetes.io/docs/tasks/tools/)
-- [Helm v3](https://helm.sh/docs/intro/install/)
+- [gke-gcloud-auth-plugin](https://cloud.google.com/kubernetes-engine/docs/how-to/cluster-access-for-kubectl#install_plugin): required by `kubectl` to authenticate to GKE clusters.
+- [Helm v4](https://helm.sh/docs/intro/install/)
 
 Then, perform the following tasks:
 
@@ -75,43 +73,43 @@ Refer to the [GKE quickstart](https://cloud.google.com/kubernetes-engine/docs/qu
 
 #### Log into Google Cloud
 
-After installing the `gcloud` tool, use the following command line:
+After installing the `gcloud` tool, run the initialization wizard. This will authenticate your account, set your active project, and configure your default region and zone (e.g. europe-west9 / europe-west9-b):
+```shell
+gcloud init
+```
 
+If you have already initialized your environment and only need to re-authenticate an expired session or switch user accounts, use the login command instead:
 ```shell
 gcloud auth login
+```
+
+To inspect your existing configuration, you can run this command:
+```shell
+gcloud config list
 ```
 
 #### Create a GKE cluster
 
 There are several [types of clusters](https://docs.cloud.google.com/kubernetes-engine/docs/concepts/configuration-overview#availability).
 In this article, we chose to create a [regional cluster](https://cloud.google.com/kubernetes-engine/docs/how-to/creating-a-regional-cluster).
-Regions and zones (used below) can be listed respectively with `gcloud compute regions list` and `gcloud compute zones list`.
 
-- Set the project (associated to a billing account):
+Run the following command to create a highly available regional cluster with [autoscaling](https://cloud.google.com/kubernetes-engine/docs/how-to/cluster-autoscaler) enabled. The cluster starts with 6 nodes (2 in each of the 3 zones present in the region) and can scale up to 16 nodes in total:
 
-  ```shell
-  gcloud config set project <PROJECT_ID>
-  ```
+```shell
+gcloud container clusters create <CLUSTER_NAME> \
+  --location=<REGION (ex: europe-west9)> \
+  --release-channel=regular \
+  --cluster-version=1.35 \
+  --enable-autoscaling \
+  --num-nodes=2 \
+  --total-min-nodes=1 \
+  --total-max-nodes=16
+```
 
-- Set the region:
-
-  ```shell
-  gcloud config set compute/region <REGION (ex: europe-west9)>
-  ```
-
-- Set the zone:
-
-  ```shell
-  gcloud config set compute/zone <ZONE (ex: europe-west9-b)>
-  ```
-
-- Create a cluster and [enable autoscaling](https://cloud.google.com/kubernetes-engine/docs/how-to/cluster-autoscaler). Here, we start with 6 nodes (16 max):
-
-  ```shell
-  gcloud container clusters create <CLUSTER_NAME> \
-    --release-channel=regular --cluster-version=1.34 \
-    --enable-autoscaling --num-nodes=6 --total-min-nodes=1 --total-max-nodes=16
-  ```
+> [!TIP]
+> The cluster is created in the project selected during `gcloud init`.
+> - To use another project, run `gcloud config set project <PROJECT_ID>` first.
+> - To use another region, change the `--location` value above. Available regions can be listed with `gcloud compute regions list`.
 
 > [!NOTE]
 > You can also create your cluster from the Google Cloud Platform using the **Kubernetes Engine** > **Clusters** panel and clicking the **Create** button
@@ -119,14 +117,16 @@ Regions and zones (used below) can be listed respectively with `gcloud compute r
 
 #### Set up your environment
 
-- Create a kubeconfig to connect to your cluster:
+When you create the cluster with the `gcloud` CLI, your `kubeconfig` is updated automatically and `kubectl` targets the new cluster.
 
-  ```shell
-  gcloud container clusters get-credentials <CLUSTER_NAME>
-  ```
+If you created the cluster from the Google Cloud console or from another machine, or if you work with several clusters, run the following command to create or switch to the `kubeconfig` entry of your cluster:
+
+```shell
+gcloud container clusters get-credentials <CLUSTER_NAME> --location=<REGION (ex: europe-west9)>
+```
 
 > [!NOTE]
-> You can also retrieve the command line to configure `kubectl` from the Google Cloud Console using the **Kubernetes Engine** > **Clusters** panel and clicking **Connect** on the dedicated cluster.
+> You can also retrieve the command line to configure `kubectl` from the Google Cloud Console using the **Kubernetes Engine** > **Clusters** panel, clicking the dedicated cluster to go into its details, and then clicking the **Connect** button.
 > ![Connection](images/connection.png)
 
 - Check your environment
@@ -143,17 +143,18 @@ Regions and zones (used below) can be listed respectively with `gcloud compute r
 
 We will use the Google Cloud Platform console to create the database instance.
 
-- Go to the [SQL context](https://console.cloud.google.com/sql), and then click the **CREATE INSTANCE** button
-- Click **Choose PostgreSQL**
+- Go to the [SQL context](https://console.cloud.google.com/sql), and then click the **CREATE INSTANCE** button.
+- Click **Choose PostgreSQL** button.
+  - Choose your Cloud SQL edition (`Enterprise Plus` / `Enterprise`) based on your needs.
   - Database version: `PostgreSQL 18`
-  - Instance ID: ``<YourInstanceName>``
-  - Password: ``<PASSWORD>`` - Take note of this password.
-  - Region: ``<REGION>`` (must be the same as the cluster for the communication to be optimal between the database and the ODM instance)
-  - Eventually select **Multiple zones** for Zonal availability for redundancy
+  - Instance ID: `<YourInstanceName>`
+  - Password: `<PASSWORD>` - Take note of this password.
+  - Region: `<REGION>` - Must be the same zone as the cluster for the communication to be optimal between the database and the ODM instance.
+  - Eventually select **Multiple zones** for Zonal availability for redundancy.
   - Expand **Show customization option** and expand **Connections**
-    - As *Public IP* is selected by default, in Authorized networks, click the **ADD NETWORK** button, put a name and add *0.0.0.0/0* for Network, then click **DONE**.
+    - As *Public IP* is selected by default, in Authorized networks, click the **ADD NETWORK** button, put a name and add *0.0.0.0/0* for Network, acknowledge the risk, and then click **DONE**.
       > NOTE: It is not recommended to use a public IP. In a production environment, you should use a private IP.
-- Click **CREATE INSTANCE**
+- Click **Create Instance**.
 
 After the database instance is created, you can drill on the SQL instance overview to retrieve needed information to connect to this instance, like the IP address and the connection name. Take note of the **Public IP address**.
 
@@ -211,7 +212,7 @@ helm repo update
 ```shell
 helm search repo ibm-odm-prod
 NAME                  CHART VERSION   APP VERSION     DESCRIPTION
-ibm-helm/ibm-odm-prod 26.0.0          9.6.0.0         IBM Operational Decision Manager
+ibm-helm/ibm-odm-prod 26.3.0          9.7.0.0         IBM Operational Decision Manager
 ```
 
 ### 4. Manage a digital certificate (2 min)
@@ -240,7 +241,7 @@ The certificate must be the same as the one you used to enable TLS connections i
 #### Install an ODM Helm release
 
 The ODM services will be exposed with an Ingress that uses the previously created `mynicecompany` certificate.
-It automatically creates an HTTPS GKE load balancer. We will disable the ODM internal TLS as it is not needed.
+It automatically creates an HTTPS GKE load balancer. The ODM internal TLS stays enabled (the chart default), so the traffic between the load balancer and the ODM pods is also encrypted.
 
 - Get the [gcp-values.yaml](./gcp-values.yaml) file and replace the following key:
 
@@ -255,7 +256,6 @@ It automatically creates an HTTPS GKE load balancer. We will disable the ODM int
   helm install <release> ibm-helm/ibm-odm-prod -f gcp-values.yaml
   ```
 
-
 #### Check the topology
 
 Run the following command to check the status of the pods that have been created:
@@ -264,53 +264,98 @@ Run the following command to check the status of the pods that have been created
 kubectl get pods
 NAME                                                   READY   STATUS    RESTARTS   AGE
 <release>-odm-decisioncenter-***                       1/1     Running   0          20m
+<release>-odm-decisionmcpserver-***                    1/1     Running   0          20m
 <release>-odm-decisionrunner-***                       1/1     Running   0          20m
 <release>-odm-decisionserverconsole-***                1/1     Running   0          20m
 <release>-odm-decisionserverruntime-***                1/1     Running   0          20m
+<release>-odm-managementmcpserver-***                  1/1     Running   0          20m
 ```
+
+#### Configure the GKE load balancer backends
+
+By default, the GKE Ingress controller talks to the backends and runs its health checks over plain `HTTP`. Because the ODM pods serve `HTTPS`, you must set GKE to use `HTTPS`, and which health check to run, for each ODM service.
+
+This is done with [BackendConfigs](odm-backendconfigs.yaml), one per ODM service, that set an `HTTPS` health check with the correct port and path. The following two annotations must be added to each ODM Kubernetes service:
+
+- `cloud.google.com/backend-config` - [To link the Service to its BackendConfig](https://cloud.google.com/kubernetes-engine/docs/how-to/ingress-configuration#unique_backendconfig_per_service_port).
+- `cloud.google.com/app-protocols` - [To set the protocol used between the load balancer and the pods](https://cloud.google.com/kubernetes-engine/docs/how-to/ingress-multi-ssl#https_between_load_balancer_and_application) to `HTTPS`.
+
+For more information, see [Custom health check configuration](https://cloud.google.com/kubernetes-engine/docs/how-to/ingress-features#direct_health).
+
+The Decision Center `BackendConfig` also enables the session affinity. Sticky session is needed for Decision Center: the browser contains a cookie which identifies the user session that is linked to a unique container.
+The ODM on Kubernetes Helm chart has a [clientIP](https://kubernetes.io/docs/concepts/services-networking/service/#proxy-mode-ipvs) for the Decision Center session affinity. Unfortunately, GKE does not use it automatically. You will not encounter any issue until you scale up the Decision Center deployment.
+
+- Apply the [BackendConfigs](odm-backendconfigs.yaml):
+
+  ```shell
+  kubectl apply -f odm-backendconfigs.yaml
+  ```
+
+- Annotate the ODM Services with the BackendConfigs (replace `<release>` with your release name):
+
+  ```shell
+  R=<release>
+  annotate() {
+    kubectl annotate service $R-odm-$1 \
+      cloud.google.com/backend-config="{\"ports\":{\"443\":\"$2\"}}" \
+      cloud.google.com/app-protocols="{\"$3\":\"HTTPS\"}"
+  }
+
+  annotate decisioncenter        dc-backendconfig            dc-svc-port
+  annotate decisionserverconsole dsc-backendconfig           dsc-svc-port
+  annotate decisionserverruntime dsr-backendconfig           dsr-svc-port
+  annotate decisionrunner        dr-backendconfig            dr-svc-port
+  annotate decisionmcpserver     decisionmcp-backendconfig   mcp-svc-port
+  annotate managementmcpserver   managementmcp-backendconfig mcp-svc-port
+
+  # If you use dedicated Decision Server Runtime services (decisionServerRuntime.dedicated in the values file),
+  # uncomment the following line for each of them. Replace <name> with the name of the dedicated service.
+  # They reuse the BackendConfig of the Decision Server Runtime.
+  # annotate decisionserverruntime-<name> dsr-backendconfig dsr-svc-port
+  ```
+
+  GKE then updates the existing backend services one by one.
 
 #### Check the Ingress and the GKE LoadBalancer
 
 To get the status of the current deployment, go to the [Kubernetes Engine / Services & Ingress Panel](https://console.cloud.google.com/kubernetes/ingresses) in the console.
 
-The Ingress remains in the state *Creating ingress* for several minutes until the pods are up and running, and the backend gets in a healthy state.
+The Ingress remains in the state *Creating ingress* until the pods are up and running and the backends are in a healthy state. The backend services are first created with the HTTP protocol, then switched to HTTPS once GKE has read the Service annotations. The whole update procedure can take 20 to 30 minutes.
 
 ![Ingress creating](images/ingress_creating.png)
+
+In the Ingress details, you should eventually get a *HEALTHY* state on all backends.
+This panel also provides some logs on the load balancer activity.
+When the Ingress shows an OK status and all backends are *HEALTHY*, all ODM services can be accessed.
+
+![Ingress details](images/ingress_details.png)
+
+You can also check the backends from the command line:
+
+```shell
+kubectl get ingress <release>-odm-ingress \
+  -o jsonpath='{.metadata.annotations.ingress\.kubernetes\.io/backends}' | tr ',' '\n'
+```
+
+An example where all backends are in *HEALTHY* state:
+
+```shell
+{"k8s1-db3c7f27-defaul-myodmsample-odm-decisionserver-44-35ec8575":"HEALTHY"
+"k8s1-db3c7f27-defaul-myodmsample-odm-decisionserver-44-3f20799e":"HEALTHY"
+"k8s1-db3c7f27-defaul-myodmsample-odm-managementmcps-44-ad3db479":"HEALTHY"
+"k8s1-db3c7f27-default-myodmsample-odm-decisioncente-44-8a2ff13b":"HEALTHY"
+"k8s1-db3c7f27-default-myodmsample-odm-decisionmcpse-44-5b600a04":"HEALTHY"
+"k8s1-db3c7f27-default-myodmsample-odm-decisionrunne-44-ed9f5e4e":"HEALTHY"
+"k8s1-db3c7f27-kube-system-default-http-backend-80-5d9cf5f8":"HEALTHY"}
+```
 
 You can also check the [load balancer status](https://console.cloud.google.com/net-services/loadbalancing/list/loadBalancers). It provides information about the backend using the service health check.
 
 ![Load balancer](images/lb.png)
 
-In the Ingress details, you should get a *HEALTHY* state on all backends.
-This panel also provides some logs on the load balancer activity.
-When the Ingress shows an OK status, all ODM services can be accessed.
+When the load balancer becomes available, you can verify for Decision Center that the session affinity is set to `ClientIP` in the Load Balancer details using the Google Cloud Console.
 
-![Ingress details](images/ingress_details.png)
-
-#### Create a Backend Configuration for the Decision Center Service
-
-Sticky session is needed for Decision Center. The browser contains a cookie which identifies the user session that is linked to a unique container.
-The ODM on Kubernetes Helm chart has a [clientIP](https://kubernetes.io/docs/concepts/services-networking/service/#proxy-mode-ipvs) for the Decision Center session affinity. Unfortunately, GKE does not use it automatically.
-You will not encounter any issue until you scale up the Decision Center deployment.
-
-A configuration that uses [BackendConfig](https://cloud.google.com/kubernetes-engine/docs/how-to/ingress-features#session_affinity) is needed to manage session affinity at the load balancer level.
-
-- Create the [Decision Center Backend Config](decisioncenter-backendconfig.yaml):
-
-  ```shell
-  kubectl create -f decisioncenter-backendconfig.yaml
-  ```
-
-- Annotate the Decision Center Service with this GKE Backend Config:
-
-  ```shell
-  kubectl annotate service <release>-odm-decisioncenter \
-    cloud.google.com/backend-config='{"ports": {"80":"dc-backendconfig"}}'
-  ```
-
-  As soon as GKE manages Decision Center session affinity at the load balancer level, you can check the ClientIP availability below the Decision Center Network Endpoint Group configuration from the Google Cloud Console in the Load Balancer details.
-
-  ![DecisionCenter session affinity](images/dc_sessionaffinity.png)
+![DecisionCenter session affinity](images/dc_sessionaffinity.png)
 
 ### 6. Access ODM services
 
@@ -347,12 +392,15 @@ We only have to manage a configuration to simulate the mynicecompany.com access.
 > You can also click the Ingress frontends accessible from the Google Cloud console under the [Kubernetes Engine/Services & Ingress Details Panel](https://console.cloud.google.com/kubernetes/ingresses).
 > ![Ingress routes](images/ingress_routes.png)
 
-
 ### 7. Track ODM usage
 
 #### 7.1 Install the IBM Usage Metering Service
 
 The IBM Usage Metering Service (UMS) is a critical component that gathers metrics to monitor compliance and create reports. It captures business value metrics for auditing purposes, visualizes metric usage in reporting tools, and sends the information to IBM Software Central.
+
+The IBM License Service (ILS) discovers the software that is installed in your infrastructure and generates reports containing contractual details. These metrics directly affect licensing obligations and are required for calculating license usage in compliance with IBM licensing requirements.
+
+An ILS side-car must be activated when installing UMS. This allows UMS to capture two metrics: contractual metrics for compliance purposes, and adoption metrics for various scenarios related to usage analysis.
 
 **Prerequisites:**
 - Cluster-admin permissions or appropriate RBAC roles
@@ -367,6 +415,8 @@ The IBM Usage Metering Service (UMS) is a critical component that gathers metric
 **Installation:**
 
 For detailed installation and configuration instructions, see [Installing the usage metering service](https://www.ibm.com/docs/en/odm/9.6.0?topic=metrics-installing-metering).
+
+In this tutorial, we assume that ODM, UMS, and ILS are installed in the same namespace: `default`. The ILS side car is enabled with *namespace scope* to monitor only `default` namespace.
 
 **Troubleshooting:**
 
@@ -412,25 +462,66 @@ For offline/air-gapped environments where the Usage Metering Service cannot conn
 
 **Step 1: Expose the Usage Metering Service**
 
-Create a LoadBalancer service to expose UMS:
+The UMS service `ibm-usage-metering-instance` is only reachable inside the cluster.
+
+The [ums-ingress.yaml](./ums-ingress.yaml) file exposes them in the same way as ODM: an Ingress creates an HTTPS GKE load balancer that uses the `ibm-usage-metering-instance` TLS secret created by UMS, and the traffic to the UMS pods is also encrypted. The services are routed by host name: `ums.mynicecompany.com` to the port `8080` and `ls.mynicecompany.com` to the port `8082`.
+
+Apply it in the namespace where UMS is installed:
 
 ```bash
-kubectl apply -f usage-metering-service-loadbalancer.yaml
+kubectl apply -f ums-ingress.yaml
+```
+
+Wait for the Ingress to get an address and for its backends to be in a *HEALTHY* state:
+
+```bash
+kubectl get ingress ums-ingress
+kubectl get ingress ums-ingress \
+  -o jsonpath='{.metadata.annotations.ingress\.kubernetes\.io/backends}' | tr ',' '\n'
+```
+
+Get the Ingress address and add the following entry to your `/etc/hosts` file:
+
+```bash
+export NAMESPACE=default
+UMS_IP=$(kubectl get ingress ums-ingress -n "${NAMESPACE}" -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+echo "${UMS_IP} ums.mynicecompany.com ls.mynicecompany.com"
 ```
 
 **Step 2: Download Usage Data**
 
-Retrieve the metering service data from the LoadBalancer:
+Retrieve the metering service data through the load balancer:
 
 ```bash
-export NAMESPACE=<namespace>
-EXTERNAL_IP=$(kubectl get service ibm-usage-metering-instance-loadbalancer -n "${NAMESPACE}" -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-
 UMS_TOKEN=$(kubectl get secret ibm-usage-metering-upload-token -n "${NAMESPACE}" -o jsonpath='{.data.token}' 2>/dev/null | base64 -d || echo "")
 curl -k --output "swc_payload.tar.gz" \
      --header "Authorization: Bearer ${UMS_TOKEN}" \
-     --url "https://${EXTERNAL_IP}:8080/api/v1/swc"
+     --url "https://ums.mynicecompany.com/api/v1/swc"
 ```
+
+The `swc_payload.tar.gz` contains the following files:
+- manifest.json
+- usage.json
+
+The `usage.json` file contains both adoption (`"metricType": "adoption"`) and contractual (`"metricType": "contract"`) metrics.
+
+To view the UMS Data page and the UMS Serviceability page, open this URL in a browser:
+
+```bash
+echo "https://ums.mynicecompany.com/status?token=${UMS_TOKEN}"
+```
+
+- **UMS Data tab**: It displays the condition `Namespace Scope is enabled. Current cluster configuration restricts License Service to query pods that are only in these namespaces: default`. It also displays the contractual metrics of the product, such as PVU or VPC, for each Decision component.
+- **UMS Serviceability tab**: It displays the details of the last five adoption payloads, the number of exports to IBM Software Central, and other information.
+
+To retrieve the licensing snapshot from the IBM License Service, run:
+
+```bash
+curl -k "https://ls.mynicecompany.com/snapshot?token=${UMS_TOKEN}" --output ils_snapshot_report.zip
+```
+
+> [!NOTE]
+> The certificate presented by the load balancer is the self-signed one generated by UMS, hence `curl -k`.
 
 **Step 3: Upload to IBM Software Central**
 
@@ -444,94 +535,6 @@ For detailed instructions on how to upload the usage data file to IBM Software C
 
 For general information about collecting and sending usage metrics, see:
 📖 **[Collecting and sending usage metrics](https://www.ibm.com/docs/en/odm/9.6.0?topic=production-collecting-sending-usage-metrics)**
-
-#### 7.2 Install the IBM License Service
-
-This section explains how to track ODM usage with the IBM License Service.
-
-Follow the instructions in the **Installation** section of the [Manual installation without the Operator Lifecycle Manager (OLM)](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.x_cd?topic=ilsfpcr-installing-license-service-without-operator-lifecycle-manager-olm)
-
-
-#### 7.2.1 Expose the licensing service using the GKE LoadBalancer
-
-Wait a couple of minutes for the installation to be done.
-
-You should see two pods running:
-   ```bash
-NAME                                              READY   STATUS    RESTARTS   AGE
-ibm-licensing-operator-b8564f765-jsb95            1/1     Running   0          4m26s
-ibm-licensing-service-instance-787996886d-pzmlg   1/1     Running   0          88s
-```
-
-To expose the licensing service using the GKE LoadBalancer, run the command:
-
-```bash
-kubectl patch svc ibm-licensing-service-instance -p '{"spec": { "type": "LoadBalancer"}}' -n ibm-licensing
-```
-
-Wait a couple of minutes for the changes to be applied.
-Then, you should see an EXTERNAL-IP available for the exposed licensing service.
-
-```shell
-kubectl get service -n ibm-licensing
-NAME                                        TYPE           CLUSTER-IP     EXTERNAL-IP       PORT(S)          AGE
-ibm-licensing-service-instance              LoadBalancer   10.0.58.142    xxx.xxx.xxx.xxx   8080:32301/TCP   10m
-```
-
-#### 7.2.2 Patch the IBM Licensing instance
-
-Get the [licensing-instance.yaml](./licensing-instance.yaml) file and run the command:
-
-```bash
-kubectl patch IBMLicensing instance --type merge --patch-file licensing-instance.yaml -n ibm-licensing 
-```
-
-Wait a couple of minutes for the changes to be applied. 
-
-### 7.3.3 Retrieve license usage
-
-You will be able to access the IBM License Service by retrieving the URL and the required token with this command:
-
-```bash
-export LICENSING_URL=$(kubectl get service ibm-licensing-service-instance -n ibm-licensing -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-export TOKEN=$(kubectl get secret ibm-licensing-token -n ibm-licensing -o jsonpath='{.data.token}' |base64 -d)
-```
-
-> **Note**
-> If `LICENSING_URL` is empty, take a look at the [troubleshooting](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.x_cd?topic=service-troubleshooting-license) page.
-
-You can access the `}`http://${LICENSING_URL}:8080/status?token=${TOKEN URL to view the licensing usage or retrieve the licensing report .zip file by running:
-
-```shell
-curl -k "http://${LICENSING_URL}:8080/snapshot?token=${TOKEN}" --output report.zip
-```
-
-If your IBM License Service instance is not running properly, refer to this [troubleshooting page](https://www.ibm.com/docs/en/cloud-paks/foundational-services/4.x_cd?topic=service-troubleshooting-license).
-
-#### 7.2.4 Reporting License Usage to IBM Software Central
-
-For complete information about reporting license usage to IBM Software Central, refer to the official documentation:
-
-📖 **[Reporting License Usage to IBM Software Central](https://www.ibm.com/docs/en/odm/9.6.0?topic=metering-reporting-license-usage-software-central)**
-
-##### Online Mode Configuration
-
-For detailed steps on configuring online mode (automatic data transmission), including creating the IBM Entitlement Key secret, configuring the IBMLicensing Custom Resource, and verifying the setup, refer to the [online mode documentation](https://www.ibm.com/docs/en/odm/9.6.0?topic=central-online-mode-configuration).
-
-##### Offline Mode (Air-gapped Environments)
-
-For air-gapped environments where ILS cannot directly connect to Software Central, download the usage data using the LoadBalancer-specific commands below:
-
-```bash
-export LICENSING_URL=$(kubectl get service ibm-licensing-service-instance -n ibm-licensing -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-export TOKEN=$(kubectl get secret ibm-licensing-token -o jsonpath={.data.token} -n ibm-licensing | base64 -d)
-
-curl --insecure --output "swc_payload.tar.gz" \
-     "http://${LICENSING_URL}:8080/swc_aggregations?token=${TOKEN}"
-```
-
-For complete instructions on transferring and uploading the downloaded file to Software Central, refer to the [offline mode documentation](https://www.ibm.com/docs/en/odm/9.6.0?topic=central-offline-mode-air-gapped-environments).
-
 
 ## Troubleshooting
 
