@@ -1,0 +1,96 @@
+# GKE Ingress to expose the IBM Usage Metering Service (UMS, port 8080) and the IBM License Service
+# (ls-port, port 8082), the same way as ODM: HTTPS on the load balancer, then HTTPS between the
+# load balancer and the UMS pods. The load balancer uses the ibm-usage-metering-instance TLS secret
+# created by UMS.
+
+# The ibm-usage-metering-instance service is managed by the UMS operator, so it must not be annotated.
+# We create one dedicated ClusterIP service per port, targeting the same pods in order to annotate 
+# with the respective backend-config and app-protocols.
+apiVersion: v1
+kind: Service
+metadata:
+  name: ibm-usage-metering-fetch-svc
+  annotations:
+    cloud.google.com/backend-config: '{"default":"ums-backendconfig"}'
+    cloud.google.com/app-protocols: '{"ibm-usage-metering-fetch":"HTTPS"}'
+spec:
+  type: ClusterIP
+  ports:
+    - name: ibm-usage-metering-fetch
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app.kubernetes.io/component: ibm-usage-metering-instance
+    app.kubernetes.io/name: ibm-usage-metering
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ibm-licensing-ls-svc
+  annotations:
+    cloud.google.com/backend-config: '{"default":"ls-backendconfig"}'
+    cloud.google.com/app-protocols: '{"ls-port":"HTTPS"}'
+spec:
+  type: ClusterIP
+  ports:
+    - name: ls-port
+      port: 8082
+      protocol: TCP
+      targetPort: 8082
+  selector:
+    app.kubernetes.io/component: ibm-usage-metering-instance
+    app.kubernetes.io/name: ibm-usage-metering
+---
+# Health checks: the backends serve HTTPS, and GKE defaults to an HTTP check on GET /
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: ums-backendconfig
+spec:
+  healthCheck:
+    type: HTTPS
+    port: 8080
+    requestPath: /ready
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: ls-backendconfig
+spec:
+  healthCheck:
+    type: HTTPS
+    port: 8082
+    requestPath: /
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ums-ingress
+spec:
+  tls:
+    - hosts:
+        - ums.mynicecompany.com
+        - ls.mynicecompany.com
+      secretName: ibm-usage-metering-instance
+  rules:
+    - host: ums.mynicecompany.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: ibm-usage-metering-fetch-svc
+                port:
+                  number: 8080
+    - host: ls.mynicecompany.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: ibm-licensing-ls-svc
+                port:
+                  number: 8082

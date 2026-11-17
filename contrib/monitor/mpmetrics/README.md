@@ -142,7 +142,7 @@ connectionpool_waitTime_total_seconds{datasource="jdbc_ilogDataSource",mp_scope=
 
 ### Enable Monitoring
 
-Follow the OCP documentation explaining how to [enable monitoring for user-defined projects](https://docs.openshift.com/container-platform/4.14/monitoring/enabling-monitoring-for-user-defined-projects.html) 
+Follow the OCP documentation explaining how to [enable monitoring for user-defined projects](https://docs.redhat.com/en/documentation/openshift_container_platform/4.14/html/monitoring/configuring-user-workload-monitoring) 
 
 If you are logged as the kubeadmin user, creating the [enableMetricsConfigMap.yaml](./enableMetricsConfigMap.yaml) configmap is enough:
 

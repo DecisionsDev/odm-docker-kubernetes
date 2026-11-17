@@ -1,0 +1,67 @@
+# GKE Ingress BackendConfigs for ODM with End-to-End HTTPS (service.enableTLS: true, the chart default)
+# These BackendConfigs are intended to link to the respective ODM Services by annotation.
+# The Decision Center BackendConfig also sets the sticky session (CLIENT_IP).
+
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: dc-backendconfig
+spec:
+  sessionAffinity:
+    affinityType: "CLIENT_IP"
+  healthCheck:
+    type: HTTPS
+    port: 9453
+    requestPath: /decisioncenter/healthCheck
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: dsc-backendconfig
+spec:
+  healthCheck:
+    type: HTTPS
+    port: 9443
+    requestPath: /res/login.jsp
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  # Also used by the dedicated Decision Server Runtime services, if any
+  name: dsr-backendconfig
+spec:
+  healthCheck:
+    type: HTTPS
+    port: 9443
+    requestPath: /DecisionService/
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: dr-backendconfig
+spec:
+  healthCheck:
+    type: HTTPS
+    port: 9443
+    requestPath: /DecisionRunner/
+---
+# MCP servers listen on container port 3000
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: decisionmcp-backendconfig
+spec:
+  healthCheck:
+    type: HTTPS
+    port: 3000
+    requestPath: /mcp/decision/healthcheck
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: managementmcp-backendconfig
+spec:
+  healthCheck:
+    type: HTTPS
+    port: 3000
+    requestPath: /mcp/management/healthcheck

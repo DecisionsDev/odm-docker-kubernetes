@@ -7,7 +7,6 @@ image:
   - ibm-entitlement-key
 
 service:
-  enableTLS: false
   ingress:
     enabled: true
     tlsSecretRef: mynicecompany-tls-secret
